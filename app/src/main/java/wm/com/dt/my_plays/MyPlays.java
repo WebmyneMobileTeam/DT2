@@ -2,6 +2,7 @@ package wm.com.dt.my_plays;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.AdapterView;
 import wm.com.dt.app.BaseActivity;
 import wm.com.dt.R;
 import wm.com.dt.customviews.WMTextView;
+import wm.com.dt.settings.SettingsActivity;
 
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
@@ -45,6 +47,7 @@ public class MyPlays extends BaseActivity implements AdapterView.OnItemClickList
         drawer=(DrawerLayout) findViewById(R.id.drawer_layout);
         leftDrawerList=(ListView) findViewById(R.id.left_drawer);
         leftDrawerList.setAdapter(new NavigationDrawerAdapter(MyPlays.this, leftSliderData));
+        leftDrawerList.setOnItemClickListener(this);
 
     }
     private void initDrawer() {
@@ -69,6 +72,19 @@ public class MyPlays extends BaseActivity implements AdapterView.OnItemClickList
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Toast.makeText(this, leftSliderData[position], Toast.LENGTH_LONG).show();
         // Add your onclick logic here
+
+        switch (position){
+
+            case 0:
+
+                Intent i = new Intent(MyPlays.this, SettingsActivity.class);
+                startActivity(i);
+
+
+                break;
+
+        }
+
     }
 
 
