@@ -12,6 +12,7 @@ import wm.com.dt.my_plays.MyPlays;
 public class LoginActivity extends BaseActivity{
 
     // Added comment by dhruvil
+    // nirav changes
 
     private TextView txtLogin;
     @Override
