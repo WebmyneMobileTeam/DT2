@@ -24,7 +24,9 @@
             android:layout_gravity="center_vertical"
             android:textSize="@dimen/normalText"
             android:textColor="@android:color/black"/>
+
         <Switch
+            android:id="@+id/settingRepliknumre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|center_vertical"/>
@@ -45,7 +47,9 @@
             android:layout_gravity="center_vertical"
             android:textSize="@dimen/normalText"
             android:textColor="@android:color/black"/>
+
         <Switch
+            android:id="@+id/settingIntoWords"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|center_vertical"/>
@@ -66,7 +70,9 @@
             android:layout_gravity="center_vertical"
             android:textSize="@dimen/normalText"
             android:textColor="@android:color/black"/>
+
         <Switch
+            android:id="@+id/settingKommentarer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|center_vertical"/>
@@ -87,7 +93,9 @@
             android:layout_gravity="center_vertical"
             android:textSize="@dimen/normalText"
             android:textColor="@android:color/black"/>
+
         <Switch
+            android:id="@+id/settingAutomatiskeLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|center_vertical"/>

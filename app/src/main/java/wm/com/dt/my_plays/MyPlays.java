@@ -71,18 +71,15 @@ public class MyPlays extends BaseActivity implements AdapterView.OnItemClickList
 
         // Add your onclick logic here
         drawer.closeDrawers();
+        FragmentManager manager = getFragmentManager();
+        FragmentTransaction ft = manager.beginTransaction();
 
         switch (position){
 
             case 0:
 
-
-
-                FragmentManager manager = getFragmentManager();
-                FragmentTransaction ft = manager.beginTransaction();
-                SettingsFragment fragmentSettings = SettingsFragment.newInstance("","");
-
                 if(manager.findFragmentByTag("Settings") == null){
+                    SettingsFragment fragmentSettings = SettingsFragment.newInstance("","");
                     ft.replace(R.id.main_content, fragmentSettings, "Settings").commit();
                 }
 

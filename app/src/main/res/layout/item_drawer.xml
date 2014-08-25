@@ -13,7 +13,8 @@
         android:paddingRight="16dp"
         android:id="@+id/txtDrawerItem"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/normalText">
 
     </wm.com.dt.customviews.WMTextView>
 
