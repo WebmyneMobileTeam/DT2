@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import wm.com.app.BaseActivity;
+import wm.com.dt.app.BaseActivity;
 import wm.com.dt.R;
 import wm.com.dt.my_plays.MyPlays;
 
