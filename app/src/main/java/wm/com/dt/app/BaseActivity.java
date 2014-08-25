@@ -10,12 +10,14 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.TextView;
 
+import wm.com.dt.customviews.WMTextView;
+
 /**
  * Created by nirav on 25-08-2014.
  */
 public class BaseActivity extends Activity {
 
-    public TextView txtHeader;
+    public WMTextView txtHeader;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -27,7 +29,7 @@ public class BaseActivity extends Activity {
                 ActionBar.LayoutParams.WRAP_CONTENT,
                 ActionBar.LayoutParams.WRAP_CONTENT);
         acBarParams.gravity= Gravity.CENTER| Gravity.CENTER_VERTICAL;
-        txtHeader=new TextView(this);
+        txtHeader=new WMTextView(this);
         getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         getActionBar().setIcon(new ColorDrawable(Color.TRANSPARENT));
         getActionBar().setDisplayShowTitleEnabled(false);
