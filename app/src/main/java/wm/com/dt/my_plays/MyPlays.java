@@ -131,6 +131,7 @@ public class MyPlays extends BaseActivity implements AdapterView.OnItemClickList
     }
 
 
+    //region Drawer code
     // Navigation Drawer Adapter
     public class NavigationDrawerAdapter extends BaseAdapter {
 
@@ -180,6 +181,7 @@ public class MyPlays extends BaseActivity implements AdapterView.OnItemClickList
         }
 
     }
+    //endregion
 
 
 
