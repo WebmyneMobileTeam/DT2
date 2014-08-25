@@ -1,4 +1,4 @@
-package wm.com.dt.model.app_constants;
+package wm.com.dt.model;
 
 /**
  * Created by dhruvil on 25-08-2014.
