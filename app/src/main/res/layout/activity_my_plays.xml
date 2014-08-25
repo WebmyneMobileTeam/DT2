@@ -6,39 +6,59 @@
 
     <FrameLayout
         android:id="@+id/main_content"
-
         android:layout_width="match_parent"
         android:layout_height="match_parent"></FrameLayout>
 
     <RelativeLayout
         android:layout_width="240dp"
         android:layout_height="match_parent"
-        android:background="#ffffff"
-        android:layout_gravity="left">
+        android:layout_gravity="left"
+
+        android:background="#ffffff">
 
         <ListView
+            android:layout_marginTop="8dp"
             android:id="@+id/left_drawer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/logoutView"
+            android:layout_above="@+id/logoutImage"
             android:layout_alignParentLeft="true"
-            android:divider="#00000000"
-            android:dividerHeight="0dp"
             android:layout_alignParentTop="true"
-            />
-        <!--changes required for dim -->
+            android:divider="#00000000"
+            android:dividerHeight="0dp" />
+
         <wm.com.dt.customviews.WMTextView
-            android:id="@+id/logoutView"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:id="@+id/logoutImage"
+            android:layout_width="@dimen/logout_image_size"
+            android:layout_height="@dimen/logout_image_size"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
-            android:gravity="center"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="8dp"
+            android:layout_margin="8dp"
             android:background="@drawable/circle_shape"
-            android:text="Ka" />
+            android:gravity="center"
+            android:text="Ka"
+            android:textColor="#ffffff" />
 
+        <wm.com.dt.customviews.WMTextView
+            android:id="@+id/logoutUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/logoutButton"
+            android:gravity="center_horizontal"
+            android:layout_toRightOf="@+id/logoutImage"
+            android:text="Kasper Fuglsang"
+            android:textColor="#a0a0a0" />
+
+        <wm.com.dt.customviews.WMTextView
+            android:id="@+id/logoutButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="8dp"
+            android:layout_toRightOf="@+id/logoutImage"
+            android:text="Log ud"
+            android:textColor="#006fba" />
     </RelativeLayout>
 
 </android.support.v4.widget.DrawerLayout>
