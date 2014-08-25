@@ -1,9 +1,15 @@
 package wm.com.dt.my_plays;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import wm.com.dt.app.BaseActivity;
 import wm.com.dt.R;
+import wm.com.dt.customviews.WMTextView;
+
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -11,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -37,8 +44,8 @@ public class MyPlays extends BaseActivity implements AdapterView.OnItemClickList
     private void initFields(){
         drawer=(DrawerLayout) findViewById(R.id.drawer_layout);
         leftDrawerList=(ListView) findViewById(R.id.left_drawer);
-        leftDrawerList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,leftSliderData ));
-        leftDrawerList.setOnItemClickListener(this);
+        leftDrawerList.setAdapter(new NavigationDrawerAdapter(MyPlays.this, leftSliderData));
+
     }
     private void initDrawer() {
         drawer.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
@@ -82,6 +89,59 @@ public class MyPlays extends BaseActivity implements AdapterView.OnItemClickList
         super.onPostCreate(savedInstanceState);
         actionBarDrawerToggle.syncState();
     }
+
+
+    // Navigation Drawer Adapter
+    public class NavigationDrawerAdapter extends BaseAdapter {
+
+        Context context;
+        LayoutInflater inflater;
+
+        public NavigationDrawerAdapter(Context context, String[] leftSliderData) {
+            this.context = context;
+        }
+
+        public int getCount() {
+
+            return leftSliderData.length;
+
+        }
+
+        public Object getItem(int position) {
+            return leftSliderData[position];
+        }
+
+        public long getItemId(int position) {
+            return position;
+        }
+
+        public class ViewHolder {
+            WMTextView txtDrawerItem;
+        }
+
+
+        public View getView( final int position, View convertView,
+                             ViewGroup parent) {
+
+            final ViewHolder holder;
+            LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+
+            if (convertView == null) {
+                convertView = mInflater.inflate(R.layout.item_drawer, parent,false);
+                holder = new ViewHolder();
+                holder.txtDrawerItem = (WMTextView) convertView.findViewById(R.id.txtDrawerItem);
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+            holder.txtDrawerItem.setText(leftSliderData[position]);
+            return convertView;
+
+        }
+
+    }
+
+
 
 
 }
