@@ -19,6 +19,7 @@ import android.widget.ListView;
 import wm.com.dt.R;
 import wm.com.dt.app.BaseActivity;
 import wm.com.dt.customviews.WMTextView;
+import wm.com.dt.guide.FragmentGuide;
 import wm.com.dt.settings.SettingsFragment;
 
 /**
@@ -73,22 +74,39 @@ public class MyPlays extends BaseActivity implements AdapterView.OnItemClickList
         drawer.closeDrawers();
         FragmentManager manager = getFragmentManager();
         FragmentTransaction ft = manager.beginTransaction();
-
         switch (position){
 
             case 0:
 
+
+                SettingsFragment fragmentSettings = SettingsFragment.newInstance("","");
+
                 if(manager.findFragmentByTag("Settings") == null){
-                    SettingsFragment fragmentSettings = SettingsFragment.newInstance("","");
                     ft.replace(R.id.main_content, fragmentSettings, "Settings").commit();
                 }
-
+                txtHeader.setText("Indstillinger");
 
 
 
 
                 break;
 
+            case 5:
+
+
+
+
+                FragmentGuide fragmentGuide = FragmentGuide.newInstance("","");
+
+                if(manager.findFragmentByTag("Guide") == null){
+                    ft.replace(R.id.main_content, fragmentGuide, "Guide").commit();
+                }
+
+                txtHeader.setText("Guide");
+
+
+
+                break;
         }
 
     }
