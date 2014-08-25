@@ -1,27 +1,26 @@
 package wm.com.dt.my_plays;
 
 import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import wm.com.dt.app.BaseActivity;
-import wm.com.dt.R;
-import wm.com.dt.customviews.WMTextView;
-import wm.com.dt.settings.SettingsActivity;
-
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-
-import android.widget.ArrayAdapter;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import wm.com.dt.R;
+import wm.com.dt.app.BaseActivity;
+import wm.com.dt.customviews.WMTextView;
+import wm.com.dt.settings.SettingsFragment;
 
 /**
  * Created by nirav on 25-08-2014.
@@ -77,8 +76,16 @@ public class MyPlays extends BaseActivity implements AdapterView.OnItemClickList
 
             case 0:
 
-                Intent i = new Intent(MyPlays.this, SettingsActivity.class);
-                startActivity(i);
+
+                FragmentManager manager = getFragmentManager();
+                FragmentTransaction ft = manager.beginTransaction();
+
+
+                SettingsFragment fragmentSettings = SettingsFragment.newInstance("","");
+                ft.replace(R.id.main_content,fragmentSettings,"Settings").commit();
+
+                drawer.closeDrawers();
+
 
 
                 break;

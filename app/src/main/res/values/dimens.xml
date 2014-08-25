@@ -5,5 +5,7 @@
 
     <!-- navigation drawer dimentions -->
     <dimen name="logout_image_size">36dp</dimen>
+    <dimen name="normalText">18dp</dimen>
+
 
 </resources>
