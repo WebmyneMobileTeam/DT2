@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import wm.com.dt.customviews.WMTextView;
 
@@ -39,6 +40,7 @@ public class BaseActivity extends Activity {
         txtHeader.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
         getActionBar().setCustomView(txtHeader, acBarParams);
         //
+
 
 
 

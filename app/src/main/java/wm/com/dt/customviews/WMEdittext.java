@@ -19,6 +19,8 @@ public class WMEdittext extends EditText{
         createAndSet(context);
     }
 
+
+
     private void createAndSet(Context ctx) {
 
         typeFace = Typeface.createFromAsset(ctx.getAssets(),"helvetica.ttf");
