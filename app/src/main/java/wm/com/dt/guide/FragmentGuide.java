@@ -1,24 +1,31 @@
 package wm.com.dt.guide;
 
-import android.app.Activity;
+import android.app.Fragment;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import wm.com.dt.R;
-
+import wm.com.dt.circle_indicator.PageIndicator;
+import wm.com.dt.circle_indicator.CirclePageIndicator;
 public class FragmentGuide extends Fragment {
+
+    private PagerAdapter pagerAdapter;
+    private ViewPager viewPager;
+    private PageIndicator mIndicator;
 
     public static FragmentGuide newInstance(String param1, String param2) {
         FragmentGuide fragment = new FragmentGuide();
-
         return fragment;
     }
+
     public FragmentGuide() {
-        // Required empty public constructor
     }
 
     @Override
@@ -30,30 +37,51 @@ public class FragmentGuide extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_guide, container, false);
+        View view=inflater.inflate(R.layout.fragment_guide, container, false);
+        viewPager = (ViewPager) view.findViewById(R.id.guideSlider);
+        mIndicator = (CirclePageIndicator)view.findViewById(R.id.guideIndicator);
+        int[]   guideImages={R.drawable.tutorial1,R.drawable.tutorial2,R.drawable.tutorial3,R.drawable.tutorial4};
+        pagerAdapter= new GuideAdapter(getActivity(), guideImages);
+        viewPager.setAdapter(pagerAdapter);
+        mIndicator.setViewPager(viewPager);
+        return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
 
+
+    public class GuideAdapter extends PagerAdapter {
+        Context context;
+        LayoutInflater inflater;
+        int[] guideImages;
+        public GuideAdapter(Context context, int[] guideImages) {
+            this.context = context;
+            this.guideImages=guideImages;
+        }
+
+        @Override
+        public int getCount() {
+            return guideImages.length;
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == ((ImageView) object);
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, final int position) {
+           ImageView guideImage=new ImageView(context);
+            guideImage.setImageResource(guideImages[position]);
+            ((ViewPager) container).addView(guideImage, 0);
+            return guideImage;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            ((ViewPager) container).removeView((ImageView) object);
+        }
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
 
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
-    }
 
 }
