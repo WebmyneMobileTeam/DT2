@@ -16,10 +16,13 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
+import wm.com.dt.Messages.FragmentMessage;
 import wm.com.dt.R;
 import wm.com.dt.app.BaseActivity;
 import wm.com.dt.customviews.WMTextView;
 import wm.com.dt.guide.FragmentGuide;
+import wm.com.dt.inspiration.FragmentInspiration;
+import wm.com.dt.search.FragmentSearch;
 import wm.com.dt.settings.SettingsFragment;
 
 /**
@@ -27,33 +30,48 @@ import wm.com.dt.settings.SettingsFragment;
  */
 public class MyPlays extends BaseActivity implements AdapterView.OnItemClickListener {
 
+
+
     private DrawerLayout drawer;
     private ListView leftDrawerList;
     private ActionBarDrawerToggle actionBarDrawerToggle;
-    private String[] leftSliderData={"Indstillinger","Beskeder","Søg","Mine stykker","Inspiration","Guide"};
+    private String[] leftSliderData = {"Indstillinger", "Beskeder", "Søg", "Mine stykker", "Inspiration", "Guide"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_plays);
+
+        //Load My Places First Time
+        FragmentManager manager = getFragmentManager();
+        FragmentTransaction ft = manager.beginTransaction();
+        FragmentMyPlay fragmentMyPlay = FragmentMyPlay.newInstance("", "");
+
+        if (manager.findFragmentByTag("my_places") == null) {
+            ft.replace(R.id.main_content, fragmentMyPlay, "my_places").commit();
+        }
         txtHeader.setText("Mine Stykker");
+        //
+
         initFields();
         initDrawer();
+
     }
 
-    private void initFields(){
-        drawer=(DrawerLayout) findViewById(R.id.drawer_layout);
-        leftDrawerList=(ListView) findViewById(R.id.left_drawer);
+    private void initFields() {
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        leftDrawerList = (ListView) findViewById(R.id.left_drawer);
         leftDrawerList.setAdapter(new NavigationDrawerAdapter(MyPlays.this, leftSliderData));
         leftDrawerList.setOnItemClickListener(this);
 
     }
+
     private void initDrawer() {
         drawer.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         getActionBar().setHomeButtonEnabled(true);
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        actionBarDrawerToggle = new ActionBarDrawerToggle(MyPlays.this, drawer,R.drawable.ic_drawer, R.string.open_drawer,R.string.close_drawer) {
+        actionBarDrawerToggle = new ActionBarDrawerToggle(MyPlays.this, drawer, R.drawable.ic_drawer, R.string.open_drawer, R.string.close_drawer) {
 
             public void onDrawerClosed(View view) {
 
@@ -74,36 +92,79 @@ public class MyPlays extends BaseActivity implements AdapterView.OnItemClickList
         drawer.closeDrawers();
         FragmentManager manager = getFragmentManager();
         FragmentTransaction ft = manager.beginTransaction();
-        switch (position){
+
+        switch (position) {
 
             case 0:
 
 
-                SettingsFragment fragmentSettings = SettingsFragment.newInstance("","");
+                SettingsFragment fragmentSettings = SettingsFragment.newInstance("", "");
 
-                if(manager.findFragmentByTag("Settings") == null){
+                if (manager.findFragmentByTag("Settings") == null) {
                     ft.replace(R.id.main_content, fragmentSettings, "Settings").commit();
                 }
                 txtHeader.setText("Indstillinger");
 
+                break;
 
 
+            case 1:
+
+
+                FragmentMessage fragmentMessage = FragmentMessage.newInstance("", "");
+
+                if (manager.findFragmentByTag("message") == null) {
+                    ft.replace(R.id.main_content, fragmentMessage, "message").commit();
+                }
+                txtHeader.setText("Beskeder");
+
+                break;
+
+
+            case 2:
+
+
+                FragmentSearch fragmentSearch = FragmentSearch.newInstance("", "");
+
+                if (manager.findFragmentByTag("search") == null) {
+                    ft.replace(R.id.main_content, fragmentSearch, "search").commit();
+                }
+                txtHeader.setText("Søg");
+
+                break;
+
+            case 3:
+
+                FragmentMyPlay fragmentMyPlay = FragmentMyPlay.newInstance("", "");
+
+                if (manager.findFragmentByTag("my_places") == null) {
+                    ft.replace(R.id.main_content, fragmentMyPlay, "my_places").commit();
+                }
+                txtHeader.setText("Mine stykker");
+
+                break;
+
+            case 4:
+
+
+                FragmentInspiration fragmentInspiration = FragmentInspiration.newInstance("", "");
+
+                if (manager.findFragmentByTag("Inspiration") == null) {
+                    ft.replace(R.id.main_content, fragmentInspiration, "Inspiration").commit();
+                }
+                txtHeader.setText("Inspiration");
 
                 break;
 
             case 5:
 
+                FragmentGuide fragmentGuide = FragmentGuide.newInstance("", "");
 
-
-
-                FragmentGuide fragmentGuide = FragmentGuide.newInstance("","");
-
-                if(manager.findFragmentByTag("Guide") == null){
+                if (manager.findFragmentByTag("Guide") == null) {
                     ft.replace(R.id.main_content, fragmentGuide, "Guide").commit();
                 }
 
                 txtHeader.setText("Guide");
-
 
 
                 break;
@@ -113,9 +174,8 @@ public class MyPlays extends BaseActivity implements AdapterView.OnItemClickList
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch(item.getItemId()) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home:
                 actionBarDrawerToggle.onOptionsItemSelected(item);
                 return true;
@@ -124,8 +184,7 @@ public class MyPlays extends BaseActivity implements AdapterView.OnItemClickList
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState)
-    {
+    protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         actionBarDrawerToggle.syncState();
     }
@@ -161,14 +220,14 @@ public class MyPlays extends BaseActivity implements AdapterView.OnItemClickList
         }
 
 
-        public View getView( final int position, View convertView,
-                             ViewGroup parent) {
+        public View getView(final int position, View convertView,
+                            ViewGroup parent) {
 
             final ViewHolder holder;
             LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 
             if (convertView == null) {
-                convertView = mInflater.inflate(R.layout.item_drawer, parent,false);
+                convertView = mInflater.inflate(R.layout.item_drawer, parent, false);
                 holder = new ViewHolder();
                 holder.txtDrawerItem = (WMTextView) convertView.findViewById(R.id.txtDrawerItem);
                 convertView.setTag(holder);
@@ -182,8 +241,6 @@ public class MyPlays extends BaseActivity implements AdapterView.OnItemClickList
 
     }
     //endregion
-
-
 
 
 }
