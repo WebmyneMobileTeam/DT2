@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import wm.com.dt.R;
 import wm.com.dt.app.BaseActivity;
@@ -69,22 +68,25 @@ public class MyPlays extends BaseActivity implements AdapterView.OnItemClickList
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Toast.makeText(this, leftSliderData[position], Toast.LENGTH_LONG).show();
+
         // Add your onclick logic here
+        drawer.closeDrawers();
 
         switch (position){
 
             case 0:
 
 
+
                 FragmentManager manager = getFragmentManager();
                 FragmentTransaction ft = manager.beginTransaction();
-
-
                 SettingsFragment fragmentSettings = SettingsFragment.newInstance("","");
-                ft.replace(R.id.main_content,fragmentSettings,"Settings").commit();
 
-                drawer.closeDrawers();
+                if(manager.findFragmentByTag("Settings") == null){
+                    ft.replace(R.id.main_content, fragmentSettings, "Settings").commit();
+                }
+
+
 
 
 
