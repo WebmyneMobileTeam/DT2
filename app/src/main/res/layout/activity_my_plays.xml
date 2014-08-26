@@ -14,7 +14,7 @@
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:layout_gravity="left"
-
+        android:clickable="true"
         android:background="#ffffff">
 
         <ListView
@@ -47,6 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/logoutButton"
             android:gravity="center_horizontal"
+
             android:layout_toRightOf="@+id/logoutImage"
             android:text="Kasper Fuglsang"
             android:textColor="#a0a0a0" />
@@ -56,6 +57,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
+
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="16dp"
             android:layout_toRightOf="@+id/logoutImage"
