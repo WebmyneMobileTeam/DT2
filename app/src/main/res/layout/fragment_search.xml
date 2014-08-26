@@ -40,7 +40,7 @@
         android:id="@+id/filterCategoryList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:dividerHeight="0.5dp"
+        android:dividerHeight="1dp"
         android:drawSelectorOnTop="true"
         android:divider="@color/apptheme_color"
         android:layout_below="@+id/searchView"
@@ -52,7 +52,7 @@
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
+        android:layout_height="1dp"
         android:layout_below="@id/filterCategoryList"
         android:background="#006fb9">
 
