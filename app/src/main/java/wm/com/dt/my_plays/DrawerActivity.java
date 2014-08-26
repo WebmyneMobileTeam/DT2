@@ -28,7 +28,7 @@ import wm.com.dt.settings.SettingsFragment;
 /**
  * Created by nirav on 25-08-2014.
  */
-public class MyPlays extends BaseActivity implements AdapterView.OnItemClickListener {
+public class DrawerActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
 
 
@@ -66,7 +66,7 @@ public class MyPlays extends BaseActivity implements AdapterView.OnItemClickList
     private void initFields() {
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         leftDrawerList = (ListView) findViewById(R.id.left_drawer);
-        leftDrawerList.setAdapter(new NavigationDrawerAdapter(MyPlays.this, leftSliderData));
+        leftDrawerList.setAdapter(new NavigationDrawerAdapter(DrawerActivity.this, leftSliderData));
         leftDrawerList.setOnItemClickListener(this);
 
     }
@@ -75,7 +75,7 @@ public class MyPlays extends BaseActivity implements AdapterView.OnItemClickList
         drawer.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         getActionBar().setHomeButtonEnabled(true);
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        actionBarDrawerToggle = new ActionBarDrawerToggle(MyPlays.this, drawer, R.drawable.ic_drawer, R.string.open_drawer, R.string.close_drawer) {
+        actionBarDrawerToggle = new ActionBarDrawerToggle(DrawerActivity.this, drawer, R.drawable.ic_drawer, R.string.open_drawer, R.string.close_drawer) {
 
             public void onDrawerClosed(View view) {
 

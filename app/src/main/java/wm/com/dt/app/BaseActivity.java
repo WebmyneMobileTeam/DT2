@@ -37,6 +37,7 @@ public class BaseActivity extends Activity {
         getActionBar().setDisplayShowTitleEnabled(false);
         getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
         getActionBar().setDisplayShowCustomEnabled(true);
+
         txtHeader.setTextColor(Color.BLACK);
         txtHeader.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
         getActionBar().setCustomView(txtHeader, acBarParams);

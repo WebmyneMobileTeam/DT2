@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import wm.com.dt.app.BaseActivity;
 import wm.com.dt.R;
-import wm.com.dt.my_plays.MyPlays;
+import wm.com.dt.my_plays.DrawerActivity;
 
 public class LoginActivity extends BaseActivity{
 
@@ -22,7 +22,7 @@ public class LoginActivity extends BaseActivity{
         txtLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i=new Intent(LoginActivity.this, MyPlays.class);
+                Intent i=new Intent(LoginActivity.this, DrawerActivity.class);
                 startActivity(i);
             }
         });

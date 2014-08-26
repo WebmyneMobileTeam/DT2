@@ -1,17 +1,24 @@
 package wm.com.dt.my_plays;
 
 import android.app.Activity;
-import android.net.Uri;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import wm.com.dt.R;
+import wm.com.dt.customviews.SegmentedGroup;
 
 
-public class FragmentMyPlay extends Fragment {
+public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChangeListener{
+
+    private SegmentedGroup segmentedGroupPlays;
+    private RadioButton rbBestilte;
+    private RadioButton rbGennemsyn;
 
     public static FragmentMyPlay newInstance(String param1, String param2) {
         FragmentMyPlay fragment = new FragmentMyPlay();
@@ -31,14 +38,18 @@ public class FragmentMyPlay extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my_play, container, false);
+
+        View convertView = inflater.inflate(R.layout.fragment_my_play, container, false);
+        segmentedGroupPlays = (SegmentedGroup)convertView.findViewById(R.id.segmentedMyPlays);
+        rbBestilte = (RadioButton)convertView.findViewById(R.id.rbBestilte);
+        rbGennemsyn = (RadioButton)convertView.findViewById(R.id.rbGennemsyn);
+
+        segmentedGroupPlays.setOnCheckedChangeListener(this);
+
+
+        return convertView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-
-    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -52,10 +63,32 @@ public class FragmentMyPlay extends Fragment {
 
     }
 
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+    @Override
+    public void onResume() {
+        super.onResume();
+        rbGennemsyn.setChecked(true);
+       
     }
 
+    @Override
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+        switch (checkedId){
+
+            case R.id.rbBestilte:
+
+
+
+                break;
+
+            case R.id.rbGennemsyn:
+
+
+
+                break;
+
+        }
+
+
+    }
 }
