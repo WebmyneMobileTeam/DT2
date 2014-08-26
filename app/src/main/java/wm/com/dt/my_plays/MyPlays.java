@@ -40,6 +40,8 @@ public class MyPlays extends BaseActivity implements AdapterView.OnItemClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_plays);
 
@@ -52,7 +54,9 @@ public class MyPlays extends BaseActivity implements AdapterView.OnItemClickList
             ft.replace(R.id.main_content, fragmentMyPlay, "my_places").commit();
         }
         txtHeader.setText("Mine Stykker");
-        //
+
+
+
 
         initFields();
         initDrawer();
@@ -240,7 +244,8 @@ public class MyPlays extends BaseActivity implements AdapterView.OnItemClickList
         }
 
     }
-    //endregion
+    //</editor-fold>
+
 
 
 }
