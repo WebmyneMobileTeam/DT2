@@ -34,6 +34,7 @@ public class HUD extends Dialog{
         init();
 
 
+
     }
 
     private void init() {
@@ -48,7 +49,7 @@ public class HUD extends Dialog{
 
     }
 
-    public void dismissWithSuccess(int resource,String successMessage){
+    public void dismissWithStatus(int resource,String successMessage){
 
         pb.setVisibility(View.INVISIBLE);
         imgStatus.setVisibility(View.VISIBLE);
@@ -57,7 +58,7 @@ public class HUD extends Dialog{
 
         Webmyne.get(Techniques.BounceIn).duration(500).startOn(frameLayout);
 
-        new CountDownTimer(1500,1000){
+        new CountDownTimer(2000,1000){
 
             @Override
             public void onTick(long millisUntilFinished) {
@@ -75,25 +76,9 @@ public class HUD extends Dialog{
 
     }
 
-    public void dismissWithError(int resource,String errorMessage){
+    public void title(String title){
 
-        pb.setVisibility(View.INVISIBLE);
-        imgStatus.setVisibility(View.VISIBLE);
-        imgStatus.setImageResource(resource);
-        txtTitle.setText(errorMessage);
-        Webmyne.get(Techniques.BounceIn).duration(500).startOn(frameLayout);
-        new CountDownTimer(1500,1000){
-
-            @Override
-            public void onTick(long millisUntilFinished) {
-
-            }
-
-            @Override
-            public void onFinish() {
-
-                dismiss();
-            }
-        }.start();
+        txtTitle.setText(title);
     }
+
 }
