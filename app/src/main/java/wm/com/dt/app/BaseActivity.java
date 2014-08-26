@@ -25,9 +25,6 @@ public class BaseActivity extends Activity {
 
         super.onCreate(savedInstanceState);
 
-
-
-
         // ActionBar Style
         ActionBar.LayoutParams acBarParams = new ActionBar.LayoutParams(
                 ActionBar.LayoutParams.WRAP_CONTENT,
