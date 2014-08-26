@@ -6,10 +6,10 @@
 
     <LinearLayout
         android:id="@+id/searchView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
         android:background="#006fb9"
         android:orientation="horizontal"
         android:paddingLeft="8dp"
@@ -24,35 +24,46 @@
             android:src="@drawable/search_icon" />
 
         <wm.com.dt.customviews.WMEdittext
-            android:layout_margin="8dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:singleLine="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="8dp"
             android:background="@drawable/rounded_corner_shape"
-            android:hint="Søg på skuespil" />
+            android:hint="Søg på skuespil"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:singleLine="true" />
     </LinearLayout>
 
+    <ListView
+        android:id="@+id/filterCategoryList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:dividerHeight="0dp"
+        android:drawSelectorOnTop="true"
+        android:divider="@android:color/transparent"
+        android:layout_below="@+id/searchView"
+         >
+
+    </ListView>
 
     <LinearLayout
         android:id="@+id/searchButtonView"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
         android:orientation="horizontal">
 
         <wm.com.dt.customviews.WMTextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Søg"
+            android:layout_gravity="center_vertical"
             android:background="#006fb9"
             android:gravity="center"
+            android:text="Søg"
             android:textColor="#ffffff"
-            android:textSize="18sp"
 
-            android:layout_gravity="center_vertical" />
+            android:textSize="18sp" />
     </LinearLayout>
 
 </RelativeLayout>
