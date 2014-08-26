@@ -133,7 +133,7 @@ public class MyPlays extends BaseActivity implements AdapterView.OnItemClickList
                 if (manager.findFragmentByTag("search") == null) {
                     ft.replace(R.id.main_content, fragmentSearch, "search").commit();
                 }
-                txtHeader.setText("Søg");
+                txtHeader.setText("Søg skuespil");
 
                 break;
 
