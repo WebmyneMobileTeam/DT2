@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -49,16 +48,15 @@
         </View>
 
 </RelativeLayout>-->
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:gravity="center"
         android:layout_gravity="center_vertical"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <ImageView
@@ -71,7 +69,7 @@
             android:id="@+id/txtTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
+
             android:paddingLeft="4dp"
             android:paddingRight="4dp"
             android:singleLine="true"
@@ -80,15 +78,33 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/nextImage"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
         android:layout_gravity="right|center_vertical"
-        android:src="@drawable/ic_navigation_next_item" />
+        android:orientation="horizontal">
+
+        <wm.com.dt.customviews.WMTextView
+            android:id="@+id/txtSelectedValue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:singleLine="true"
+            android:text="value"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/nextImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:src="@drawable/ic_navigation_next_item" />
 
 
-
+    </LinearLayout>
 
 
 </FrameLayout>
