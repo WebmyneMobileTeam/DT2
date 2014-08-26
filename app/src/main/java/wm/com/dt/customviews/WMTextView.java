@@ -24,6 +24,7 @@ public class WMTextView extends TextView{
         typeFace = Typeface.createFromAsset(ctx.getAssets(),"helvetica.ttf");
         setTypeface(typeFace);
 
+
     }
 
     public WMTextView(Context context, AttributeSet attrs) {

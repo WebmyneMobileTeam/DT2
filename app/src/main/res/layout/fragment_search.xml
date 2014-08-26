@@ -24,12 +24,14 @@
             android:src="@drawable/search_icon" />
 
         <wm.com.dt.customviews.WMEdittext
-           android:layout_margin="8dp"
-            android:paddingLeft="4dp"
+            android:layout_margin="8dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:singleLine="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/rounded_corner_shape"
-            android:hint="Søg på skuespil"/>
+            android:hint="Søg på skuespil" />
     </LinearLayout>
 
 
@@ -39,19 +41,18 @@
         android:layout_alignParentLeft="true"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:orientation="horizontal"
-        >
+        android:orientation="horizontal">
 
-<wm.com.dt.customviews.WMTextView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:text="Søg"
-    android:background="#006fb9"
-    android:gravity="center"
-    android:textColor="#ffffff"
-    android:textSize="18sp"
-    android:layout_gravity="center_vertical"
-    />
+        <wm.com.dt.customviews.WMTextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Søg"
+            android:background="#006fb9"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:textSize="18sp"
+
+            android:layout_gravity="center_vertical" />
     </LinearLayout>
 
 </RelativeLayout>
