@@ -33,8 +33,6 @@ public class HUD extends Dialog{
         this.ctx = context;
         init();
 
-
-
     }
 
     private void init() {
@@ -46,6 +44,7 @@ public class HUD extends Dialog{
         imgStatus = (ImageView)convertView.findViewById(R.id.imgStatus);
         txtTitle = (TextView)convertView.findViewById(R.id.txttitle);
         frameLayout = (FrameLayout)convertView.findViewById(R.id.frame);
+
 
     }
 
