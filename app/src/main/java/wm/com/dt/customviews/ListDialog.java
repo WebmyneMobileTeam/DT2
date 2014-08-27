@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -49,7 +50,11 @@ public  class ListDialog extends Dialog{
         txtTitle = (TextView)convertView.findViewById(R.id.titleDialog);
         listDialog = (ListView)convertView.findViewById(R.id.listDialog);
 
+
+
     }
+
+
 
 
 

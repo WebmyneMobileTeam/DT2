@@ -25,6 +25,7 @@ dependencies {
     compile files('src/main/libs/webmyne_animations.jar')
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.google.code.gson:gson:2.2.4'
+    compile files('src/main/libs/volley.jar')
 }
 
 repositories {

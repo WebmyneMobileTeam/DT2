@@ -191,6 +191,12 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         actionBarDrawerToggle.syncState();
+
+
+
+
+
+
     }
 
 
