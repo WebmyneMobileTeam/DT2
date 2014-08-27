@@ -12,6 +12,7 @@
         android:orientation="horizontal">
 
         <wm.com.dt.customviews.WMTextView
+            android:id="@+id/txtPreviewTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Title a very long text"
@@ -19,6 +20,7 @@
             android:textSize="18sp" />
 
         <ImageView
+            android:id="@+id/imgPreviewTrashIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
@@ -27,18 +29,21 @@
     </FrameLayout>
 
     <wm.com.dt.customviews.WMTextView
+        android:id="@+id/txtPreviewAuther"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Auther"
         android:textSize="18sp" />
 
     <wm.com.dt.customviews.WMTextView
+        android:id="@+id/txtPreviewDuration1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Duration"
         android:textSize="18sp" />
 
     <wm.com.dt.customviews.WMTextView
+        android:id="@+id/txtPreviewDuration2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Duration"
@@ -53,6 +58,7 @@
         android:textSize="18sp">
 
         <wm.com.dt.customviews.WMTextView
+            android:id="@+id/btnOrderPreview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left|center_vertical"
@@ -63,6 +69,7 @@
             android:textSize="18sp" />
 
         <wm.com.dt.customviews.WMTextView
+            android:id="@+id/btnSharePreview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_share"
@@ -72,6 +79,7 @@
             android:textSize="18sp" />
 
         <wm.com.dt.customviews.WMTextView
+            android:id="@+id/btnReadPreview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_bookmarks"

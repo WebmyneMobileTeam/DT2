@@ -24,6 +24,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:20.0.0'
     compile files('src/main/libs/webmyne_animations.jar')
     compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.google.code.gson:gson:2.2.4'
 }
 
 repositories {
