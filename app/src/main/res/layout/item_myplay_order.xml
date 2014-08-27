@@ -33,28 +33,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Auther"
-        android:textSize="18sp" />
+        android:textColor="#a0a0a0"
+        android:textSize="14sp" />
 
     <wm.com.dt.customviews.WMTextView
         android:id="@+id/txtOrderDuration1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Duration"
-        android:textSize="18sp" />
+        android:textColor="#a0a0a0"
+        android:textSize="14sp" />
 
     <wm.com.dt.customviews.WMTextView
         android:id="@+id/txtOrderDuration2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Duration"
-        android:textSize="18sp" />
+        android:textColor="#a0a0a0"
+        android:textSize="14sp" />
 
     <wm.com.dt.customviews.WMTextView
         android:id="@+id/txtOrderNumberOfPerformance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Antal opførelser:"
-        android:textSize="18sp" />
+        android:textColor="#a0a0a0"
+        android:textSize="14sp" />
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -72,7 +76,7 @@
             android:gravity="center_vertical"
             android:text="Bestilling"
 
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
         <wm.com.dt.customviews.WMTextView
             android:id="@+id/btnShareOrder"
@@ -82,7 +86,7 @@
             android:layout_gravity="center|center_vertical"
             android:gravity="center_vertical"
             android:text="Del"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
         <wm.com.dt.customviews.WMTextView
             android:id="@+id/btnReadOrder"
@@ -92,6 +96,6 @@
             android:layout_gravity="right|center_vertical"
             android:gravity="center_vertical"
             android:text="Læs"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
     </FrameLayout>
 </LinearLayout>
