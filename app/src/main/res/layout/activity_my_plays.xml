@@ -52,6 +52,7 @@
             android:text="Kasper Fuglsang"
             android:textColor="#a0a0a0" />
 
+
         <wm.com.dt.customviews.WMTextView
             android:id="@+id/logoutButton"
             android:layout_width="match_parent"
