@@ -8,7 +8,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+<<<<<<< Updated upstream
 import android.widget.BaseAdapter;
+=======
+>>>>>>> Stashed changes
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -38,12 +41,15 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     private RadioButton rbBestilte;
     private RadioButton rbGennemsyn;
     private ListView listPlay;
+<<<<<<< Updated upstream
 
     private ArrayList<Play> playList;
     private ArrayList<Play> playListForReview = new ArrayList<Play>();
     private ArrayList<Play> playListForPerform = new ArrayList<Play>();
     private ArrayList<PlayOrderDetails> playOrderList = new ArrayList<PlayOrderDetails>();
 
+=======
+>>>>>>> Stashed changes
     public static FragmentMyPlay newInstance(String param1, String param2) {
         FragmentMyPlay fragment = new FragmentMyPlay();
 
@@ -65,15 +71,25 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                              Bundle savedInstanceState) {
 
         View convertView = inflater.inflate(R.layout.fragment_my_play, container, false);
+<<<<<<< Updated upstream
         segmentedGroupPlays = (SegmentedGroup) convertView.findViewById(R.id.segmentedMyPlays);
         rbBestilte = (RadioButton) convertView.findViewById(R.id.rbBestilte);
         rbGennemsyn = (RadioButton) convertView.findViewById(R.id.rbGennemsyn);
         segmentedGroupPlays.setOnCheckedChangeListener(this);
         listPlay = (ListView) convertView.findViewById(R.id.listPlays);
+=======
+        segmentedGroupPlays = (SegmentedGroup)convertView.findViewById(R.id.segmentedMyPlays);
+        rbBestilte = (RadioButton)convertView.findViewById(R.id.rbBestilte);
+        rbGennemsyn = (RadioButton)convertView.findViewById(R.id.rbGennemsyn);
+        segmentedGroupPlays.setOnCheckedChangeListener(this);
+
+        listPlay=(ListView)convertView.findViewById(R.id.listPlays);
+>>>>>>> Stashed changes
 //        listPlay.setAdapter(new ListPlayAdapter(getActivity(), titleList, imageList));
         return convertView;
     }
 
+<<<<<<< Updated upstream
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -140,6 +156,9 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
         });
 
     }
+=======
+
+>>>>>>> Stashed changes
 
     @Override
     public void onResume() {
