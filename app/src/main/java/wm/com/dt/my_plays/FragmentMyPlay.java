@@ -21,6 +21,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -117,10 +118,10 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 for (int i = 0; i < playList.size(); i++) {
 
                     Play bean = playList.get(i);
-                    if(bean.OrderType.equalsIgnoreCase("Review")){
+                    if (bean.OrderType.equalsIgnoreCase("Review")) {
                         playListForReview.add(bean);
                     }
-                    if(bean.OrderType.equalsIgnoreCase("Perform")){
+                    if (bean.OrderType.equalsIgnoreCase("Perform")) {
                         playListForPerform.add(bean);
                         playOrderList.add(bean.playOrderDetails);
                     }
@@ -154,7 +155,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
             case R.id.rbBestilte:
                 listPlay.setAdapter(null);
-                listPlay.setAdapter(new ListPlayAdapterForPerform(getActivity(), playListForPerform,playOrderList));
+                listPlay.setAdapter(new ListPlayAdapterForPerform(getActivity(), playListForPerform, playOrderList));
                 break;
 
             case R.id.rbGennemsyn:
@@ -223,9 +224,9 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 holder = (ViewHolder) convertView.getTag();
             }
             holder.txtTitle.setText(playList.get(position).Title);
-            holder.txtAuther.setText("Forfatter: "+playList.get(position).Author);
-            holder.txtDuration1.setText(playList.get(position).Duration+" min., "+playList.get(position).Age+" år");
-            holder.txtDuration2.setText("Musik: "+playList.get(position).Music+", "+playList.get(position).Actors+" medvirkende");
+            holder.txtAuther.setText("Forfatter: " + playList.get(position).Author);
+            holder.txtDuration1.setText(playList.get(position).Duration+" min., " + playList.get(position).Age + " år");
+            holder.txtDuration2.setText("Musik: " + playList.get(position).Music + ", " + playList.get(position).Actors + " medvirkende");
 
             return convertView;
 
@@ -243,7 +244,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
         ArrayList<Play> playList;
         ArrayList<PlayOrderDetails> playOrderDetailList;
 
-        public ListPlayAdapterForPerform(Context context, ArrayList<Play> playList,ArrayList<PlayOrderDetails> playOrderDetailList) {
+        public ListPlayAdapterForPerform(Context context, ArrayList<Play> playList, ArrayList<PlayOrderDetails> playOrderDetailList) {
 
             this.context = context;
 
@@ -292,25 +293,34 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 holder = (ViewHolder) convertView.getTag();
             }
             holder.txtTitle.setText(playList.get(position).Title);
-            if(playOrderDetailList.get(position).NumberOfAuditions.equalsIgnoreCase("True")){
+            if (playOrderDetailList.get(position).NumberOfAuditions.equalsIgnoreCase("True")) {
                 holder.txtAuther.setText("Generalprøve: Ja");
             } else {
                 holder.txtAuther.setText("Generalprøve: Nej");
             }
-            SimpleDateFormat format=new SimpleDateFormat("dd/MM/yyyy");
-            float performDateFirst=Float.parseFloat(playOrderDetailList.get(position).PerformDateFirst);
-            float performDateLast=Float.parseFloat(playOrderDetailList.get(position).PerformDateLast);
-            Date firstDate=new Date((long)performDateFirst);
-            Date lastDate=new Date((long)performDateLast);
+            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+            float performDateFirst = Float.parseFloat(playOrderDetailList.get(position).PerformDateFirst);
+            float performDateLast = Float.parseFloat(playOrderDetailList.get(position).PerformDateLast);
+            Date firstDate = float2Date(performDateFirst);
+            Date lastDate = float2Date(performDateLast);
 
-            holder.txtDuration1.setText("Første opførelse: "+format.format(firstDate));
-            holder.txtDuration2.setText("Sidste opførelse: "+format.format(lastDate));
-            holder.txtNumberOfPerformance.setText("Antal opførelser: "+playOrderDetailList.get(position).NumberOfPerformances);
+            holder.txtDuration1.setText("Første opførelse: " + format.format(firstDate));
+            holder.txtDuration2.setText("Sidste opførelse: " + format.format(lastDate));
+            holder.txtNumberOfPerformance.setText("Antal opførelser: " + playOrderDetailList.get(position).NumberOfPerformances);
             return convertView;
 
         }
 
     }
 
-
+    public static java.util.Date float2Date(float nbSeconds) {
+        java.util.Date date_origine;
+        java.util.Calendar date = java.util.Calendar.getInstance();
+        java.util.Calendar origine = java.util.Calendar.getInstance();
+        origine.set(1970, Calendar.JANUARY, 1);
+        date_origine = origine.getTime();
+        date.setTime(date_origine);
+        date.add(java.util.Calendar.SECOND, (int) nbSeconds);
+        return date.getTime();
+    }
 }

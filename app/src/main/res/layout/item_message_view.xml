@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|left"
+        android:orientation="horizontal">
+
+        <wm.com.dt.customviews.WMTextView
+            android:id="@+id/txtMessageImaage"
+            android:layout_width="@dimen/circle_image_size_blue"
+            android:layout_height="@dimen/circle_image_size_blue"
+            android:background="@drawable/circle_shape"
+            android:gravity="center"
+            android:text="Ka"
+            android:textColor="#ffffff" />
+
+        <wm.com.dt.customviews.WMTextView
+            android:id="@+id/txtMessageUserName"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="8dp"
+            android:gravity="center_vertical|left"
+            android:text="user name"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <wm.com.dt.customviews.WMTextView
+        android:id="@+id/txtMessageBadgeValue"
+        android:layout_width="@dimen/circle_image_size_red"
+        android:layout_height="@dimen/circle_image_size_red"
+        android:layout_gravity="center_vertical|right"
+        android:background="@drawable/circle_shape_red"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="1"
+        android:textColor="#ffffff"
+        android:textSize="10dp" />
+
+</FrameLayout>

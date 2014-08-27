@@ -30,8 +30,8 @@
 
         <wm.com.dt.customviews.WMTextView
             android:id="@+id/logoutImage"
-            android:layout_width="@dimen/logout_image_size"
-            android:layout_height="@dimen/logout_image_size"
+            android:layout_width="@dimen/circle_image_size_blue"
+            android:layout_height="@dimen/circle_image_size_blue"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="16dp"

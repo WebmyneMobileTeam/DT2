@@ -4,4 +4,14 @@
     android:layout_height="match_parent"
     tools:context="wm.com.dt.Messages.FragmentMessage">
 
+
+    <ListView
+        android:id="@+id/chatUserList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:dividerHeight="1dp"
+        android:padding="8dp">
+    </ListView>
+
+
 </FrameLayout>
