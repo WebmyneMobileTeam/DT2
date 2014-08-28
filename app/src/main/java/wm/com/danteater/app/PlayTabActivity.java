@@ -51,10 +51,8 @@ public class PlayTabActivity extends BaseActivity {
                 RecordingFragment.class, null);
 
 
-
-
-
-
+        mTabHost.setCurrentTab(2);
+        selectTAB(2);
 
         mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
@@ -62,18 +60,8 @@ public class PlayTabActivity extends BaseActivity {
 
                 for(int i=0;i<mTabHost.getTabWidget().getTabCount();i++){
 
-                    View v = mTabHost.getTabWidget().getChildAt(i);
-                    WMImageView iv = (WMImageView)v.findViewById(R.id.imgTab);
 
-                    if(i==mTabHost.getCurrentTab()){
-
-                        iv.selected();
-
-
-                    }else{
-
-                        iv.normal();
-                    }
+                    selectTAB(i);
 
                 }
 
@@ -81,6 +69,22 @@ public class PlayTabActivity extends BaseActivity {
         });
 
 
+    }
+
+    private void selectTAB(int i) {
+
+        View v = mTabHost.getTabWidget().getChildAt(i);
+        WMImageView iv = (WMImageView)v.findViewById(R.id.imgTab);
+
+        if(i==mTabHost.getCurrentTab()){
+
+            iv.selected();
+
+
+        }else{
+
+            iv.normal();
+        }
     }
 
 
