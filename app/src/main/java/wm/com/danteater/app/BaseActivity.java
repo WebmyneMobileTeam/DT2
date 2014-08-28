@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.support.v4.app.FragmentActivity;
 import android.util.TypedValue;
 import android.view.Gravity;
 
@@ -15,7 +16,7 @@ import wm.com.danteater.customviews.WMTextView;
 /**
  * Created by nirav on 25-08-2014.
  */
-public class BaseActivity extends Activity {
+public class BaseActivity extends FragmentActivity {
 
 
     public WMTextView txtHeader;

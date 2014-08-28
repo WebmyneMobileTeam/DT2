@@ -3,6 +3,7 @@ package wm.com.danteater.my_plays;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 
 import wm.com.danteater.R;
+import wm.com.danteater.app.PlayTabActivity;
 import wm.com.danteater.customviews.HUD;
 import wm.com.danteater.customviews.SegmentedGroup;
 import wm.com.danteater.customviews.WMTextView;
@@ -376,6 +378,11 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 @Override
                 public void onClick(View view) {
                     Toast.makeText(getActivity(), "Share", Toast.LENGTH_SHORT).show();
+
+                    Intent i = new Intent(getActivity(), PlayTabActivity.class);
+                    startActivity(i);
+
+
                 }
             });
 

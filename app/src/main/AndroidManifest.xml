@@ -2,17 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="wm.com.danteater" >
 
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name="wm.com.danteater.app.MyApplication"
+        android:name=".app.MyApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppThemen" >
         <activity
-            android:name="wm.com.danteater.login.LoginActivity"
+            android:name=".login.LoginActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,8 +20,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="wm.com.danteater.my_plays.DrawerActivity"
+            android:name=".my_plays.DrawerActivity"
             android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".app.PlayTabActivity"
+            android:label="@string/title_activity_play_tab" >
         </activity>
     </application>
 
