@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import android.widget.BaseAdapter;
 
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -215,8 +216,8 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
         class ViewHolder {
 
-            WMTextView txtTitle, txtAuther, txtDuration1, txtDuration2;
-
+            WMTextView txtTitle, txtAuther, txtDuration1, txtDuration2,btnOrderPreview,btnSharePreview,btnReadPreview;
+            ImageView imgPreviewTrashIcon;
 
         }
 
@@ -233,6 +234,10 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 holder.txtAuther = (WMTextView) convertView.findViewById(R.id.txtPreviewAuther);
                 holder.txtDuration1 = (WMTextView) convertView.findViewById(R.id.txtPreviewDuration1);
                 holder.txtDuration2 = (WMTextView) convertView.findViewById(R.id.txtPreviewDuration2);
+                holder.btnOrderPreview = (WMTextView) convertView.findViewById(R.id.btnOrderPreview);
+                holder.btnSharePreview = (WMTextView) convertView.findViewById(R.id.btnSharePreview);
+                holder.btnReadPreview = (WMTextView) convertView.findViewById(R.id.btnReadPreview);
+                holder.imgPreviewTrashIcon = (ImageView) convertView.findViewById(R.id.imgPreviewTrashIcon);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
@@ -241,7 +246,33 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             holder.txtAuther.setText("Forfatter: " + playList.get(position).Author);
             holder.txtDuration1.setText(playList.get(position).Duration+" min., " + playList.get(position).Age + " år");
             holder.txtDuration2.setText("Musik: " + playList.get(position).Music + ", " + playList.get(position).Actors + " medvirkende");
+            holder.btnOrderPreview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(getActivity(), "Order", Toast.LENGTH_SHORT).show();
+                }
+            });
 
+            holder.btnReadPreview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(getActivity(), "Read", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            holder.btnSharePreview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(getActivity(), "Share", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            holder.imgPreviewTrashIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(getActivity(), "Delete", Toast.LENGTH_SHORT).show();
+                }
+            });
             return convertView;
 
         }
@@ -283,7 +314,8 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
         class ViewHolder {
 
-            WMTextView txtTitle, txtAuther, txtDuration1, txtDuration2, txtNumberOfPerformance;
+            WMTextView txtTitle, txtAuther, txtDuration1, txtDuration2, txtNumberOfPerformance,btnOrdering,btnShareOrder,btnReadOrder;
+            ImageView imgOrderTrashIcon;
 
 
         }
@@ -302,6 +334,10 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 holder.txtDuration1 = (WMTextView) convertView.findViewById(R.id.txtOrderDuration1);
                 holder.txtDuration2 = (WMTextView) convertView.findViewById(R.id.txtOrderDuration2);
                 holder.txtNumberOfPerformance = (WMTextView) convertView.findViewById(R.id.txtOrderNumberOfPerformance);
+                holder.btnOrdering = (WMTextView) convertView.findViewById(R.id.btnOrdering);
+                holder.btnShareOrder = (WMTextView) convertView.findViewById(R.id.btnShareOrder);
+                holder.btnReadOrder = (WMTextView) convertView.findViewById(R.id.btnReadOrder);
+                holder.imgOrderTrashIcon=(ImageView)convertView.findViewById(R.id.imgOrderTrashIcon);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
@@ -321,6 +357,34 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             holder.txtDuration1.setText("Første opførelse: " + format.format(firstDate));
             holder.txtDuration2.setText("Sidste opførelse: " + format.format(lastDate));
             holder.txtNumberOfPerformance.setText("Antal opførelser: " + playOrderDetailList.get(position).NumberOfPerformances);
+
+            holder.btnOrdering.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(getActivity(), "Ordering", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            holder.btnReadOrder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(getActivity(), "Read", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            holder.btnShareOrder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(getActivity(), "Share", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            holder.imgOrderTrashIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(getActivity(), "Delete", Toast.LENGTH_SHORT).show();
+                }
+            });
             return convertView;
 
         }
