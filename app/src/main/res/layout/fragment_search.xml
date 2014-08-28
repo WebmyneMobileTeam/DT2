@@ -10,7 +10,7 @@
         android:layout_height="48dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:background="#006fb9"
+        android:background="@color/apptheme_color"
         android:orientation="horizontal"
         android:paddingLeft="8dp"
         android:paddingRight="8dp">
@@ -54,7 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/filterCategoryList"
-        android:background="#006fb9">
+        android:background="@color/apptheme_color">
 
     </View>
 
@@ -70,12 +70,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
-            android:background="#006fb9"
+            android:background="@color/apptheme_color"
             android:gravity="center"
             android:text="Søg"
-            android:textColor="#ffffff"
+            android:textColor="@android:color/white"
             android:id="@+id/btnSearch"
-            android:textSize="18sp" />
+            android:textSize="@dimen/normalText" />
     </LinearLayout>
 
 </RelativeLayout>

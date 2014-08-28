@@ -26,7 +26,7 @@
             android:paddingRight="4dp"
             android:singleLine="true"
             android:text="title"
-            android:textSize="18sp" />
+            android:textSize="@dimen/normalText" />
 
     </LinearLayout>
 
@@ -46,7 +46,7 @@
             android:paddingRight="4dp"
 
             android:text="value"
-            android:textSize="18sp" />
+            android:textSize="@dimen/normalText" />
 
         <ImageView
             android:id="@+id/nextImage"

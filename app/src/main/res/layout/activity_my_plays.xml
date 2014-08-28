@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="left"
         android:clickable="true"
-        android:background="#ffffff">
+        android:background="@android:color/white">
 
         <ListView
             android:layout_marginTop="8dp"
@@ -34,12 +34,12 @@
             android:layout_height="@dimen/circle_image_size_blue"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
-            android:layout_marginLeft="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="@dimen/activity_margin"
+            android:layout_marginBottom="@dimen/activity_margin"
             android:background="@drawable/circle_shape"
             android:gravity="center"
             android:text="Ka"
-            android:textColor="#ffffff" />
+            android:textColor="@android:color/white" />
 
         <wm.com.danteater.customviews.WMTextView
             android:id="@+id/logoutUser"
@@ -60,10 +60,10 @@
             android:gravity="center_horizontal"
 
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="@dimen/activity_margin"
             android:layout_toRightOf="@+id/logoutImage"
             android:text="Log ud"
-            android:textColor="#006fba" />
+            android:textColor="@color/apptheme_color" />
     </RelativeLayout>
 
 </android.support.v4.widget.DrawerLayout>

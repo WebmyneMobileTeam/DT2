@@ -3,7 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
+    android:padding="@dimen/activity_margin"
     android:orientation="vertical">
 
     <FrameLayout
@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:text="Title a very long text"
             android:layout_gravity="left|center_vertical"
-            android:textSize="18sp" />
+            android:textSize="@dimen/normalText" />
 
         <ImageView
             android:id="@+id/imgOrderTrashIcon"
@@ -33,39 +33,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Auther"
-        android:textColor="#a0a0a0"
-        android:textSize="14sp" />
+        android:textColor="@color/gray_color"
+        android:textSize="@dimen/fragment_my_play_small_text" />
 
     <wm.com.danteater.customviews.WMTextView
         android:id="@+id/txtOrderDuration1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Duration"
-        android:textColor="#a0a0a0"
-        android:textSize="14sp" />
+        android:textColor="@color/gray_color"
+        android:textSize="@dimen/fragment_my_play_small_text" />
 
     <wm.com.danteater.customviews.WMTextView
         android:id="@+id/txtOrderDuration2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Duration"
-        android:textColor="#a0a0a0"
-        android:textSize="14sp" />
+        android:textColor="@color/gray_color"
+        android:textSize="@dimen/fragment_my_play_small_text" />
 
     <wm.com.danteater.customviews.WMTextView
         android:id="@+id/txtOrderNumberOfPerformance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Antal opførelser:"
-        android:textColor="#a0a0a0"
-        android:textSize="14sp" />
+        android:textColor="@color/gray_color"
+        android:textSize="@dimen/fragment_my_play_small_text" />
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:textSize="18sp">
+    >
 
         <wm.com.danteater.customviews.WMTextView
             android:id="@+id/btnOrdering"
@@ -77,7 +76,7 @@
             android:gravity="center_vertical"
             android:text="Bestilling"
 
-            android:textSize="16sp" />
+            android:textSize="@dimen/fragment_my_play_button_text" />
 
         <wm.com.danteater.customviews.WMTextView
             android:id="@+id/btnShareOrder"
@@ -88,7 +87,7 @@
             android:textColor="@drawable/selector_view"
             android:gravity="center_vertical"
             android:text="Del"
-            android:textSize="16sp" />
+            android:textSize="@dimen/fragment_my_play_button_text" />
 
         <wm.com.danteater.customviews.WMTextView
             android:id="@+id/btnReadOrder"
@@ -100,6 +99,6 @@
             android:gravity="center_vertical"
 
             android:text="Læs"
-            android:textSize="16sp" />
+            android:textSize="@dimen/fragment_my_play_button_text" />
     </FrameLayout>
 </LinearLayout>

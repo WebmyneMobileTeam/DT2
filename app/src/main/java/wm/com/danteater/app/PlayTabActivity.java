@@ -1,6 +1,7 @@
 package wm.com.danteater.app;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
@@ -26,6 +27,8 @@ public class PlayTabActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_tab);
 
+        Intent i=getIntent();
+        String playinfo=i.getStringExtra("infoData");
 
         mTabHost = (FragmentTabHost)findViewById(android.R.id.tabhost);
         mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
@@ -35,9 +38,10 @@ public class PlayTabActivity extends BaseActivity {
         View view3 = getLayoutInflater().inflate(R.layout.item_tab,null,false);
         View view4 = getLayoutInflater().inflate(R.layout.item_tab_read,null,false);
         View view5 = getLayoutInflater().inflate(R.layout.item_tab_microphone,null,false);
-
+        Bundle bInfo=new Bundle();
+        bInfo.putString("infoData",playinfo+"");
         mTabHost.addTab(mTabHost.newTabSpec("tab1").setIndicator(view),
-                InfoFragment.class, null);
+                InfoFragment.class,bInfo );
 
         mTabHost.addTab(mTabHost.newTabSpec("tab2").setIndicator(view2),
                 MusicFragment.class, null);

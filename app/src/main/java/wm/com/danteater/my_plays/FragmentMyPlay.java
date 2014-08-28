@@ -380,6 +380,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                     Toast.makeText(getActivity(), "Share", Toast.LENGTH_SHORT).show();
 
                     Intent i = new Intent(getActivity(), PlayTabActivity.class);
+                    i.putExtra("infoData",playList.get(position).Synopsis+"");
                     startActivity(i);
 
 
