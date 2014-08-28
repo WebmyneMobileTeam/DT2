@@ -11,4 +11,10 @@
     <!-- my plays -->
     <dimen name="fragment_my_play_small_text">14sp</dimen>
     <dimen name="fragment_my_play_button_text">16sp</dimen>
+
+
+    <!--search-->
+    <dimen name="fragment_search_view_height">48dp</dimen>
+    <dimen name="fragment_search_button_height">40dp</dimen>
+
 </resources>
