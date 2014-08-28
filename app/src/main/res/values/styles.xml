@@ -3,7 +3,7 @@
     <!-- Base application theme. -->
     <style name="AppThemen" parent="android:Theme.Holo.Light">
         <!-- Customize your theme here. -->
-
+        <item name="android:tabWidgetStyle">@android:style/Widget.TabWidget</item>
 
 
     </style>
