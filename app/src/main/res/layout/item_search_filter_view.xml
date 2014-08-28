@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_age" />
 
-        <wm.com.dt.customviews.WMTextView
+        <wm.com.danteater.customviews.WMTextView
             android:id="@+id/txtTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
         android:layout_gravity="right|center_vertical"
         android:orientation="horizontal">
 
-        <wm.com.dt.customviews.WMTextView
+        <wm.com.danteater.customviews.WMTextView
             android:id="@+id/txtSelectedValue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

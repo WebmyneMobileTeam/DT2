@@ -12,7 +12,7 @@
         android:layout_gravity="center_vertical|left"
         android:orientation="horizontal">
 
-        <wm.com.dt.customviews.WMTextView
+        <wm.com.danteater.customviews.WMTextView
             android:id="@+id/txtMessageImaage"
             android:layout_width="@dimen/circle_image_size_blue"
             android:layout_height="@dimen/circle_image_size_blue"
@@ -22,7 +22,7 @@
             android:textColor="#ffffff" />
 
 
-        <wm.com.dt.customviews.WMTextView
+        <wm.com.danteater.customviews.WMTextView
             android:id="@+id/txtMessageUserName"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -32,7 +32,7 @@
             android:textSize="18sp" />
     </LinearLayout>
 
-    <wm.com.dt.customviews.WMTextView
+    <wm.com.danteater.customviews.WMTextView
         android:id="@+id/txtMessageBadgeValue"
         android:layout_width="@dimen/circle_image_size_red"
         android:layout_height="@dimen/circle_image_size_red"

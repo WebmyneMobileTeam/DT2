@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="wm.com.dt.my_plays.FragmentMyPlay">
+    tools:context="wm.com.danteater.my_plays.FragmentMyPlay">
 
 
     <LinearLayout
@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <wm.com.dt.customviews.SegmentedGroup
+        <wm.com.danteater.customviews.SegmentedGroup
             android:id="@+id/segmentedMyPlays"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
                 android:text="Gennemsyn"
                 style="@style/RadioButton" />
 
-        </wm.com.dt.customviews.SegmentedGroup>
+        </wm.com.danteater.customviews.SegmentedGroup>
 
         <ListView
             android:id="@+id/listPlays"

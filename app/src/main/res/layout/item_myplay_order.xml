@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <wm.com.dt.customviews.WMTextView
+        <wm.com.danteater.customviews.WMTextView
             android:id="@+id/txtOrderTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -28,7 +28,7 @@
             android:src="@drawable/trash_image_selector_view" />
     </FrameLayout>
 
-    <wm.com.dt.customviews.WMTextView
+    <wm.com.danteater.customviews.WMTextView
         android:id="@+id/txtOrderAuther"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
         android:textColor="#a0a0a0"
         android:textSize="14sp" />
 
-    <wm.com.dt.customviews.WMTextView
+    <wm.com.danteater.customviews.WMTextView
         android:id="@+id/txtOrderDuration1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
         android:textColor="#a0a0a0"
         android:textSize="14sp" />
 
-    <wm.com.dt.customviews.WMTextView
+    <wm.com.danteater.customviews.WMTextView
         android:id="@+id/txtOrderDuration2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
         android:textColor="#a0a0a0"
         android:textSize="14sp" />
 
-    <wm.com.dt.customviews.WMTextView
+    <wm.com.danteater.customviews.WMTextView
         android:id="@+id/txtOrderNumberOfPerformance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
         android:orientation="horizontal"
         android:textSize="18sp">
 
-        <wm.com.dt.customviews.WMTextView
+        <wm.com.danteater.customviews.WMTextView
             android:id="@+id/btnOrdering"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -79,7 +79,7 @@
 
             android:textSize="16sp" />
 
-        <wm.com.dt.customviews.WMTextView
+        <wm.com.danteater.customviews.WMTextView
             android:id="@+id/btnShareOrder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
             android:text="Del"
             android:textSize="16sp" />
 
-        <wm.com.dt.customviews.WMTextView
+        <wm.com.danteater.customviews.WMTextView
             android:id="@+id/btnReadOrder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

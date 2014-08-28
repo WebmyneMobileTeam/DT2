@@ -15,7 +15,7 @@
         android:orientation="vertical"
         android:layout_height="wrap_content">
 
-        <wm.com.dt.customviews.WMTextView
+        <wm.com.danteater.customviews.WMTextView
             android:id="@+id/titleDialog"
             android:text="Title"
             android:paddingTop="4dp"

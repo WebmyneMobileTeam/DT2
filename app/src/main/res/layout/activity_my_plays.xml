@@ -28,7 +28,7 @@
             android:divider="#e1e1e1"
             android:dividerHeight="0.5dp" />
 
-        <wm.com.dt.customviews.WMTextView
+        <wm.com.danteater.customviews.WMTextView
             android:id="@+id/logoutImage"
             android:layout_width="@dimen/circle_image_size_blue"
             android:layout_height="@dimen/circle_image_size_blue"
@@ -41,7 +41,7 @@
             android:text="Ka"
             android:textColor="#ffffff" />
 
-        <wm.com.dt.customviews.WMTextView
+        <wm.com.danteater.customviews.WMTextView
             android:id="@+id/logoutUser"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
             android:textColor="#a0a0a0" />
 
 
-        <wm.com.dt.customviews.WMTextView
+        <wm.com.danteater.customviews.WMTextView
             android:id="@+id/logoutButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

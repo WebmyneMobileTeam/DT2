@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="wm.com.dt.search.FragmentSearch">
+    tools:context="wm.com.danteater.search.FragmentSearch">
 
     <LinearLayout
         android:id="@+id/searchView"
@@ -23,7 +23,7 @@
             android:layout_gravity="center_vertical"
             android:src="@drawable/search_icon" />
 
-        <wm.com.dt.customviews.WMEdittext
+        <wm.com.danteater.customviews.WMEdittext
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="8dp"
@@ -66,7 +66,7 @@
         android:layout_alignParentLeft="true"
         android:orientation="horizontal">
 
-        <wm.com.dt.customviews.WMTextView
+        <wm.com.danteater.customviews.WMTextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
