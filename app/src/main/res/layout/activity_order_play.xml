@@ -15,8 +15,8 @@
         android:divider="@color/apptheme_color"
         android:paddingLeft="@dimen/activity_margin"
         android:paddingRight="@dimen/activity_margin"
-        android:paddingBottom="@dimen/activity_margin"></ListView>
-
+        android:paddingBottom="@dimen/activity_margin">
+        </ListView>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -37,14 +37,8 @@
                 android:textColor="@color/apptheme_color"
                 android:layout_height="wrap_content"
                 android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-                android:textSize="@dimen/normalText" />
+                android:textSize="@dimen/fragment_my_play_small_text" />
         </ScrollView>
-
-
-
-
-
-
 
     </LinearLayout>
     <LinearLayout
@@ -52,7 +46,6 @@
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/activity_margin"
         android:paddingTop="4dp"
-
         android:paddingRight="@dimen/activity_margin"
         android:orientation="horizontal">
 
@@ -61,20 +54,19 @@
             android:layout_height="wrap_content"
             android:text="Skole: "
             android:textColor="@color/apptheme_color"
-            android:textSize="@dimen/normalText" />
+            android:textSize="@dimen/fragment_my_play_small_text" />
 
         <wm.com.danteater.customviews.WMTextView
             android:id="@+id/schoolId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Carl Nielsen Skolen"
-            android:textSize="@dimen/normalText" />
+            android:textSize="@dimen/fragment_my_play_small_text" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         android:paddingBottom="4dp"
         android:paddingLeft="@dimen/activity_margin"
         android:paddingRight="@dimen/activity_margin"
@@ -85,14 +77,14 @@
             android:layout_height="wrap_content"
             android:text="Navn: "
             android:textColor="@color/apptheme_color"
-            android:textSize="@dimen/normalText" />
+            android:textSize="@dimen/fragment_my_play_small_text" />
 
         <wm.com.danteater.customviews.WMTextView
             android:id="@+id/userName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Kasper Fuglsang"
-            android:textSize="@dimen/normalText" />
+            android:textSize="@dimen/fragment_my_play_small_text" />
     </LinearLayout>
 
     <wm.com.danteater.customviews.WMTextView
@@ -101,8 +93,8 @@
         android:layout_height="@dimen/fragment_search_button_height"
         android:background="@color/apptheme_color"
         android:gravity="center"
-
         android:text="Bestil"
         android:textColor="@android:color/white"
         android:textSize="@dimen/normalText" />
+
 </LinearLayout>

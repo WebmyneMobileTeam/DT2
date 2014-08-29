@@ -3,21 +3,38 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    >
+    android:orientation="horizontal">
 
     <wm.com.danteater.customviews.WMTextView
         android:id="@+id/item_orderplay_value"
         android:layout_width="wrap_content"
-        android:layout_marginLeft="4dp"
         android:layout_height="wrap_content"
         android:layout_gravity="left|center_vertical"
+        android:layout_marginLeft="4dp"
         android:text="Label"
-        android:textSize="@dimen/normalText" />
+        android:textSize="@dimen/fragment_my_play_small_text" />
 
-    <ImageView
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right|center_vertical"
-        android:src="@drawable/ic_navigation_next_item" />
+        android:orientation="horizontal">
+
+        <wm.com.danteater.customviews.WMTextView
+            android:id="@+id/item_orderplay_selected_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="right|center_vertical"
+            android:text="Label"
+            android:visibility="gone"
+            android:textColor="@color/gray_color"
+            android:textSize="@dimen/fragment_my_play_small_text" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_navigation_next_item" />
+    </LinearLayout>
 </FrameLayout>
