@@ -27,6 +27,10 @@
             android:name=".app.PlayTabActivity"
             android:label="@string/title_activity_play_tab" >
         </activity>
+        <activity
+            android:name=".my_plays.OrderPlayActivity"
+            android:label="@string/title_activity_play_tab" >
+        </activity>
     </application>
 
 </manifest>
