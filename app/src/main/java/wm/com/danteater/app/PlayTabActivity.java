@@ -1,9 +1,7 @@
 package wm.com.danteater.app;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,8 +36,10 @@ public class PlayTabActivity extends BaseActivity {
         View view3 = getLayoutInflater().inflate(R.layout.item_tab,null,false);
         View view4 = getLayoutInflater().inflate(R.layout.item_tab_read,null,false);
         View view5 = getLayoutInflater().inflate(R.layout.item_tab_microphone,null,false);
+
         Bundle bInfo=new Bundle();
         bInfo.putString("infoData",playinfo+"");
+
         mTabHost.addTab(mTabHost.newTabSpec("tab1").setIndicator(view),
                 InfoFragment.class,bInfo );
 
@@ -95,7 +95,7 @@ public class PlayTabActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.play_tab, menu);
+     //   getMenuInflater().inflate(R.menu.play_tab, menu);
         return true;
     }
 

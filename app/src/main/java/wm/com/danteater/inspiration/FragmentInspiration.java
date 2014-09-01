@@ -34,7 +34,7 @@ public class FragmentInspiration extends Fragment {
         return inflater.inflate(R.layout.fragment_inspiration, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
+
     public void onButtonPressed(Uri uri) {
 
     }
@@ -53,7 +53,7 @@ public class FragmentInspiration extends Fragment {
 
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
+
         public void onFragmentInteraction(Uri uri);
     }
 

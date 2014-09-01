@@ -101,9 +101,7 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
         }
 
         public int getCount() {
-
             return titleList.size();
-
         }
 
         public Object getItem(int position) {
@@ -113,7 +111,6 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
         public long getItemId(int position) {
             return position;
         }
-
 
         class ViewHolder {
 
@@ -157,16 +154,12 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
                 dialog.title("Mine Stykker");
                 dialog.show();
 
-
-
                 new CountDownTimer(3500,1000){
-
 
                     @Override
                     public void onTick(long millisUntilFinished) {
 
                     }
-
 
                     @Override
                     public void onFinish() {
@@ -181,10 +174,6 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
         });
 
     }
-
-
-
-
 
 
     @Override

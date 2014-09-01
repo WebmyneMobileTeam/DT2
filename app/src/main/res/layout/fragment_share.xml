@@ -1,15 +1,65 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:background="@android:color/white"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="wm.com.danteater.tab_share.ShareFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <!-- TODO: Update blank fragment layout -->
-    <EditText
+    <wm.com.danteater.customviews.SegmentedGroup
+        android:id="@+id/segmentShare"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Share Fragment"
-        />
-</FrameLayout>
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rbTeacher"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lærere"
+            android:layout_weight="1"
+            style="@style/RadioButton" />
+
+        <RadioButton
+            android:id="@+id/rbPupils"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Elever"
+            style="@style/RadioButton" />
+
+    </wm.com.danteater.customviews.SegmentedGroup>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/layout_child_with_tabs"
+        android:visibility="visible"
+        android:orientation="vertical">
+
+    <wm.com.danteater.customviews.PagerSlidingTabStrip
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="48dip"
+        android:background="@drawable/background_tab"/>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+       />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/listTeachersShare"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:dividerHeight="1dp" />
+
+
+</LinearLayout>

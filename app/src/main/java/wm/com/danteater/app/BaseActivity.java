@@ -2,11 +2,10 @@ package wm.com.danteater.app;
 
 
 import android.app.ActionBar;
-import android.app.Activity;
-import android.graphics.Typeface;
-import android.os.Bundle;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -18,12 +17,14 @@ import wm.com.danteater.customviews.WMTextView;
  */
 public class BaseActivity extends FragmentActivity {
 
-
     public WMTextView txtHeader;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+
 
         // ActionBar Style
         ActionBar.LayoutParams acBarParams = new ActionBar.LayoutParams(
@@ -42,9 +43,6 @@ public class BaseActivity extends FragmentActivity {
         txtHeader.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
         getActionBar().setCustomView(txtHeader, acBarParams);
         txtHeader.setTypeface(Typeface.createFromAsset(getAssets(),"helvetica.ttf"),Typeface.BOLD);
-
-
-
 
     }
 }

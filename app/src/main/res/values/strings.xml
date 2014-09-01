@@ -11,4 +11,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_play_tab">PlayTabActivity</string>
 
+    <string name="action_share">Del</string>
+
+
 </resources>
