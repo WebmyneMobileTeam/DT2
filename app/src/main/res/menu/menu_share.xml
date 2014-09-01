@@ -3,6 +3,7 @@
     tools:context=".LoginActivity" >
     <item android:id="@+id/actionShare"
         android:title="@string/action_share"
+        android:icon="@drawable/ic_action_del_unselected"
         android:orderInCategory="100"
         android:showAsAction="always" />
 </menu>

@@ -9,9 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.BaseAdapter;
-
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -35,9 +33,11 @@ import wm.com.danteater.customviews.HUD;
 import wm.com.danteater.customviews.SegmentedGroup;
 import wm.com.danteater.customviews.WMTextView;
 import wm.com.danteater.model.CallWebService;
+import wm.com.danteater.model.ComplexPreferences;
 
 
 public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChangeListener {
+
     private HUD dialog;
     private SegmentedGroup segmentedGroupPlays;
     private RadioButton rbBestilte;
@@ -94,9 +94,11 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         dialog = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
         dialog.title("Mine Stykker");
         dialog.show();
+
         new CallWebService("http://api.danteater.dk/api/MyPlays?UserId=kf", CallWebService.TYPE_JSONARRAY) {
 
             @Override
@@ -135,12 +137,15 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 for (int i = 0; i < playList.size(); i++) {
 
                     Play bean = playList.get(i);
+
                     if (bean.OrderType.equalsIgnoreCase("Review")) {
                         playListForReview.add(bean);
                     }
                     if (bean.OrderType.equalsIgnoreCase("Perform")) {
+
                         playListForPerform.add(bean);
                         playOrderList.add(bean.playOrderDetails);
+
                     }
 
                 }
@@ -347,12 +352,16 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
+
             holder.txtTitle.setText(playList.get(position).Title);
+
             if (playOrderDetailList.get(position).NumberOfAuditions.equalsIgnoreCase("True")) {
                 holder.txtAuther.setText("Generalprøve: Ja");
             } else {
                 holder.txtAuther.setText("Generalprøve: Nej");
             }
+
+
             SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
             float performDateFirst = Float.parseFloat(playOrderDetailList.get(position).PerformDateFirst);
             float performDateLast = Float.parseFloat(playOrderDetailList.get(position).PerformDateLast);
@@ -366,25 +375,27 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             holder.btnOrdering.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(getActivity(), "Ordering", Toast.LENGTH_SHORT).show();
+
                 }
             });
 
             holder.btnReadOrder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(getActivity(), "Read", Toast.LENGTH_SHORT).show();
+
+                    gotoTabActivity(position,"Read");
+
+
+
                 }
             });
 
             holder.btnShareOrder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(getActivity(), "Share", Toast.LENGTH_SHORT).show();
 
-                    Intent i = new Intent(getActivity(), PlayTabActivity.class);
-                    i.putExtra("infoData",playList.get(position).Synopsis+"");
-                    startActivity(i);
+
+                  gotoTabActivity(position,"Share");
 
 
                 }
@@ -399,6 +410,21 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             return convertView;
 
         }
+
+    }
+
+    private void gotoTabActivity(int position,String type) {
+
+        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref",0);
+        complexPreferences.putObject("selected_play",playListForPerform.get(position));
+        complexPreferences.commit();
+
+
+        Intent i = new Intent(getActivity(), PlayTabActivity.class);
+        i.putExtra("infoData",playList.get(position).Synopsis+"");
+       i.putExtra("type_navigation",type);
+        startActivity(i);
+
 
     }
 

@@ -58,7 +58,9 @@
         android:id="@+id/listTeachersShare"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:choiceMode="multipleChoice"
         android:visibility="gone"
+        android:layout_marginTop="16dp"
         android:dividerHeight="1dp" />
 
 

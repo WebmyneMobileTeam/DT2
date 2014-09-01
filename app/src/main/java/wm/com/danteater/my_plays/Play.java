@@ -55,6 +55,7 @@ public class Play {
     @SerializedName("PlayOrderDetails")
     public PlayOrderDetails playOrderDetails;
 
+
     public Play(String playId, String orderId, String orderType, String orderUserId, String title, String subtitleShort, String subtitleLong, String author, String actors, String age, String music, String musicCount, String duration, String synopsis, String playVersion, PlayOrderDetails playOrderDetails) {
         PlayId = playId;
         OrderId = orderId;

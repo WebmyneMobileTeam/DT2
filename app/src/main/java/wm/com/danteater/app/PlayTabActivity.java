@@ -19,6 +19,7 @@ import wm.com.danteater.tab_share.ShareFragment;
 public class PlayTabActivity extends BaseActivity {
 
     private FragmentTabHost mTabHost;
+    private String type_navigation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +27,9 @@ public class PlayTabActivity extends BaseActivity {
         setContentView(R.layout.activity_play_tab);
 
         Intent i=getIntent();
+
         String playinfo=i.getStringExtra("infoData");
+        type_navigation = i.getStringExtra("type_navigation");
 
         mTabHost = (FragmentTabHost)findViewById(android.R.id.tabhost);
         mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
@@ -36,6 +39,7 @@ public class PlayTabActivity extends BaseActivity {
         View view3 = getLayoutInflater().inflate(R.layout.item_tab,null,false);
         View view4 = getLayoutInflater().inflate(R.layout.item_tab_read,null,false);
         View view5 = getLayoutInflater().inflate(R.layout.item_tab_microphone,null,false);
+
 
         Bundle bInfo=new Bundle();
         bInfo.putString("infoData",playinfo+"");
@@ -55,8 +59,19 @@ public class PlayTabActivity extends BaseActivity {
                 RecordingFragment.class, null);
 
 
-        mTabHost.setCurrentTab(2);
-        selectTAB(2);
+
+        if(type_navigation.equalsIgnoreCase("Read")){
+
+            mTabHost.setCurrentTab(3);
+            selectTAB(3);
+
+        }else if(type_navigation.equalsIgnoreCase("Share")){
+
+            mTabHost.setCurrentTab(2);
+            selectTAB(2);
+        }
+
+
 
         mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
@@ -72,6 +87,12 @@ public class PlayTabActivity extends BaseActivity {
             }
         });
 
+
+    }
+
+    public void resetHeader(String text){
+
+        txtHeader.setText(text);
 
     }
 
