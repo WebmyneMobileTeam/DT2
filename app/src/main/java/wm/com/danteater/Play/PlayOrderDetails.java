@@ -1,4 +1,4 @@
-package wm.com.danteater.my_plays;
+package wm.com.danteater.Play;
 
 import com.google.gson.annotations.SerializedName;
 

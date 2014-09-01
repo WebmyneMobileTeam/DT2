@@ -2,6 +2,11 @@ package wm.com.danteater.my_plays;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
+import wm.com.danteater.Play.PlayLines;
+import wm.com.danteater.Play.PlayOrderDetails;
+
 /**
  * Created by nirav on 27-08-2014.
  */
@@ -55,6 +60,9 @@ public class Play {
     @SerializedName("PlayOrderDetails")
     public PlayOrderDetails playOrderDetails;
 
+    @SerializedName("PlayLines")
+    public ArrayList<PlayLines> playLinesList;
+
 
     public Play(String playId, String orderId, String orderType, String orderUserId, String title, String subtitleShort, String subtitleLong, String author, String actors, String age, String music, String musicCount, String duration, String synopsis, String playVersion, PlayOrderDetails playOrderDetails) {
         PlayId = playId;
@@ -73,6 +81,29 @@ public class Play {
         Synopsis = synopsis;
         PlayVersion = playVersion;
         this.playOrderDetails = playOrderDetails;
+    }
+
+    public Play(String playId, String orderId, String orderType, String orderUserId, String title, String subtitleShort, String subtitleLong, String author, String actors, String age, String music, String musicCount, String duration, String synopsis, String playVersion, ArrayList<PlayLines> playLinesList) {
+        PlayId = playId;
+        OrderId = orderId;
+        OrderType = orderType;
+        OrderUserId = orderUserId;
+        Title = title;
+        SubtitleShort = subtitleShort;
+        SubtitleLong = subtitleLong;
+        Author = author;
+        Actors = actors;
+        Age = age;
+        Music = music;
+        MusicCount = musicCount;
+        Duration = duration;
+        Synopsis = synopsis;
+        PlayVersion = playVersion;
+        this.playLinesList = playLinesList;
+    }
+
+    public ArrayList<PlayLines> getPlayLinesList() {
+        return playLinesList;
     }
 
     public String getPlayId() {
