@@ -91,7 +91,7 @@
         android:id="@+id/btnPlayOrder"
         android:layout_width="match_parent"
         android:layout_height="@dimen/fragment_search_button_height"
-        android:background="@color/apptheme_color"
+        android:background="@color/gray_color"
         android:gravity="center"
         android:text="Bestil"
         android:textColor="@android:color/white"

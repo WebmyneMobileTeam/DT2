@@ -1,29 +1,32 @@
 package wm.com.danteater.my_plays;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Switch;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import wm.com.danteater.R;
 import wm.com.danteater.app.BaseActivity;
-import wm.com.danteater.app.PlayTabActivity;
 import wm.com.danteater.customviews.WMTextView;
 
 public class OrderPlayActivity extends BaseActivity {
@@ -32,25 +35,54 @@ public class OrderPlayActivity extends BaseActivity {
     Context context;
     private String title;
     String bDate;
-    ArrayList<String> nameList=new ArrayList<String>();
+    ArrayList<String> nameList = new ArrayList<String>();
     private DatePickerDialog datePickerdialog;
+    private WMTextView orderPlay;
 
+    //views of listview at positions 0,1 and 3
+    View firstView;
+    WMTextView firstViewValue;
+    EditText etFirstView;
+    View firstDateView;
+    WMTextView txtFirstDate;
+    View secondDateView;
+    WMTextView txtSecondDate;
+
+    //
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_play);
-        context=OrderPlayActivity.this;
-        Intent i =getIntent();
-        title=i.getStringExtra("title");
+        context = OrderPlayActivity.this;
+        Intent i = getIntent();
+        title = i.getStringExtra("title");
         txtHeader.setText(title);
-        orderPlayList = (ListView)findViewById(R.id.orderPlayList);
-
+        orderPlayList = (ListView) findViewById(R.id.orderPlayList);
+        orderPlay = (WMTextView) findViewById(R.id.btnPlayOrder);
         nameList.add("Antal opførelser");
         nameList.add("Dato for premiere");
         nameList.add("Generalprøve");
         nameList.add("Dato for sidste opførelse");
         getActionBar().setDisplayHomeAsUpEnabled(true);
+
+
         orderPlayList.setAdapter(new ListPlayAdapterForPerform(context, nameList));
+        orderPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                firstView = orderPlayList.getChildAt(0);
+                firstViewValue = (WMTextView) firstView.findViewById(R.id.item_orderplay_selected_value);
+                firstDateView = orderPlayList.getChildAt(1);
+                txtFirstDate = (WMTextView) firstDateView.findViewById(R.id.item_orderplay_selected_value);
+                secondDateView = orderPlayList.getChildAt(3);
+                txtSecondDate = (WMTextView) secondDateView.findViewById(R.id.item_orderplay_selected_value);
+
+                if (!((firstViewValue.getText().toString() == null || firstViewValue.getText().toString() == "" || firstViewValue.getText().toString().isEmpty()) || (txtFirstDate.getText().toString() == null || txtFirstDate.getText().toString() == "" || txtFirstDate.getText().toString().isEmpty()) || (txtSecondDate.getText().toString() == null || txtSecondDate.getText().toString() == "" || txtSecondDate.getText().toString().isEmpty()))) {
+                    orderPlay.setBackgroundColor(getResources().getColor(R.color.apptheme_color));
+                }
+
+            }
+        });
     }
 
     @Override
@@ -101,20 +133,18 @@ public class OrderPlayActivity extends BaseActivity {
         }
 
 
-
-
         public View getView(final int position, View convertView,
                             ViewGroup parent) {
 
             final ViewHolder holder;
             LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 
-            if(position==2){
+            if (position == 2) {
                 if (convertView == null) {
                     convertView = mInflater.inflate(R.layout.item_orderplay_rehersal_view, parent, false);
                     holder = new ViewHolder();
                     holder.txtTitle = (WMTextView) convertView.findViewById(R.id.item_orderplay_rehersal_value);
-                    holder.imgOrderPlayInfo=(ImageView) convertView.findViewById(R.id.orderPlayInfo);
+                    holder.imgOrderPlayInfo = (ImageView) convertView.findViewById(R.id.orderPlayInfo);
                     convertView.setTag(holder);
                 } else {
                     holder = (ViewHolder) convertView.getTag();
@@ -123,7 +153,7 @@ public class OrderPlayActivity extends BaseActivity {
                 holder.imgOrderPlayInfo.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(context, "Info Click", Toast.LENGTH_SHORT).show();
+                        showAlert("title", "message");
                     }
                 });
             } else {
@@ -131,7 +161,7 @@ public class OrderPlayActivity extends BaseActivity {
                     convertView = mInflater.inflate(R.layout.item_orderplay_view, parent, false);
                     holder = new ViewHolder();
                     holder.txtTitle = (WMTextView) convertView.findViewById(R.id.item_orderplay_value);
-                    holder.item_orderplay_selected_value=(WMTextView) convertView.findViewById(R.id.item_orderplay_selected_value);
+                    holder.item_orderplay_selected_value = (WMTextView) convertView.findViewById(R.id.item_orderplay_selected_value);
                     convertView.setTag(holder);
                 } else {
                     holder = (ViewHolder) convertView.getTag();
@@ -141,18 +171,17 @@ public class OrderPlayActivity extends BaseActivity {
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(position==1 || position==3) {
+                        if (position == 1 || position == 3) {
 
                             processDate(position);
+                        }
 
+                        if (position == 0) {
+                            numberOfPerformances();
                         }
                     }
                 });
             }
-
-
-
-
             return convertView;
 
         }
@@ -190,7 +219,7 @@ public class OrderPlayActivity extends BaseActivity {
                                         int which) {
                         // TODO Auto-generated method stub
                         datePickerdialog.dismiss();
-                      bDate = datePickerdialog
+                        bDate = datePickerdialog
                                 .getDatePicker().getDayOfMonth()
                                 + "/"
                                 + datePickerdialog.getDatePicker()
@@ -198,10 +227,38 @@ public class OrderPlayActivity extends BaseActivity {
                                 + "-"
                                 + datePickerdialog.getDatePicker()
                                 .getYear();
-                       View view= orderPlayList.getChildAt(position);
-                        WMTextView item_orderplay_selected_value=(WMTextView)view.findViewById(R.id.item_orderplay_selected_value);
+
+
+                        View view = orderPlayList.getChildAt(position);
+                        WMTextView item_orderplay_selected_value = (WMTextView) view.findViewById(R.id.item_orderplay_selected_value);
                         item_orderplay_selected_value.setVisibility(View.VISIBLE);
                         item_orderplay_selected_value.setText(bDate);
+
+                        firstView = orderPlayList.getChildAt(0);
+                        firstViewValue = (WMTextView) firstView.findViewById(R.id.item_orderplay_selected_value);
+                        firstDateView = orderPlayList.getChildAt(1);
+                        txtFirstDate = (WMTextView) firstDateView.findViewById(R.id.item_orderplay_selected_value);
+                        secondDateView = orderPlayList.getChildAt(3);
+                        txtSecondDate = (WMTextView) secondDateView.findViewById(R.id.item_orderplay_selected_value);
+                        if (!((firstViewValue.getText().toString() == null || firstViewValue.getText().toString() == "" || firstViewValue.getText().toString().isEmpty()) || (txtFirstDate.getText().toString() == null || txtFirstDate.getText().toString() == "" || txtFirstDate.getText().toString().isEmpty()) || (txtSecondDate.getText().toString() == null || txtSecondDate.getText().toString() == "" || txtSecondDate.getText().toString().isEmpty()))) {
+                            orderPlay.setBackgroundColor(getResources().getColor(R.color.apptheme_color));
+                        }
+                        if (((txtFirstDate.getText().toString() != null || txtFirstDate.getText().toString() != "") || (txtSecondDate.getText().toString() != null || txtSecondDate.getText().toString() != ""))) {
+                            try {
+                                Date firstDate = new SimpleDateFormat("dd/MM-yyyy", Locale.ENGLISH).parse(txtFirstDate.getText().toString());
+                                Date seocndDate = new SimpleDateFormat("dd/MM-yyyy", Locale.ENGLISH).parse(txtSecondDate.getText().toString());
+                                System.out.println(firstDate);
+                                System.out.println(seocndDate);
+                                if (firstDate.after(seocndDate) || firstDate.equals(seocndDate)) {
+                                    item_orderplay_selected_value.setText("");
+                                    orderPlay.setBackgroundColor(getResources().getColor(R.color.gray_color));
+                                    showAlert("title", "message");
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
                     }
 
 
@@ -214,9 +271,63 @@ public class OrderPlayActivity extends BaseActivity {
 
     public class ViewHolder {
 
-        WMTextView txtTitle,item_orderplay_selected_value;
+        WMTextView txtTitle, item_orderplay_selected_value;
         ImageView imgOrderPlayInfo;
         Switch aSwitch;
+
+    }
+
+    void showAlert(String title, String message) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle(title);
+        alert.setMessage(message);
+        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // TODO Auto-generated method stub
+
+                dialog.dismiss();
+            }
+        });
+        alert.show();
+
+    }
+
+    void numberOfPerformances() {
+        firstView = orderPlayList.getChildAt(0);
+        firstViewValue = (WMTextView) firstView.findViewById(R.id.item_orderplay_selected_value);
+        firstDateView = orderPlayList.getChildAt(1);
+        txtFirstDate = (WMTextView) firstDateView.findViewById(R.id.item_orderplay_selected_value);
+        secondDateView = orderPlayList.getChildAt(3);
+        txtSecondDate = (WMTextView) secondDateView.findViewById(R.id.item_orderplay_selected_value);
+        if (!((firstViewValue.getText().toString() == null || firstViewValue.getText().toString() == "" || firstViewValue.getText().toString().isEmpty()) || (txtFirstDate.getText().toString() == null || txtFirstDate.getText().toString() == "" || txtFirstDate.getText().toString().isEmpty()) || (txtSecondDate.getText().toString() == null || txtSecondDate.getText().toString() == "" || txtSecondDate.getText().toString().isEmpty()))) {
+            orderPlay.setBackgroundColor(getResources().getColor(R.color.apptheme_color));
+        }
+
+        etFirstView = (EditText) firstView.findViewById(R.id.item_orderplay_selected_value_et);
+        etFirstView.setVisibility(firstView.VISIBLE);
+        firstViewValue.setVisibility(firstView.GONE);
+
+        etFirstView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+
+                if (Integer.parseInt(etFirstView.getText().toString()) > 4 || Integer.parseInt(etFirstView.getText().toString()) < 1) {
+                    etFirstView.setText("");
+                    orderPlay.setBackgroundColor(getResources().getColor(R.color.gray_color));
+                    showAlert("title", "message");
+                } else {
+                    etFirstView.setVisibility(firstView.GONE);
+                    firstViewValue.setVisibility(firstView.VISIBLE);
+                    firstViewValue.setText(etFirstView.getText().toString());
+                }
+
+
+                return false;
+            }
+        });
+
 
     }
 }
