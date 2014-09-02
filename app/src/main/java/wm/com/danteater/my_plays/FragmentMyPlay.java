@@ -27,6 +27,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import wm.com.danteater.Play.Play;
 import wm.com.danteater.Play.PlayOrderDetails;
 import wm.com.danteater.R;
 import wm.com.danteater.app.PlayTabActivity;
@@ -46,9 +47,9 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     private ListView listPlay;
 
 
-    private ArrayList<wm.com.danteater.my_plays.Play> playList;
-    private ArrayList<wm.com.danteater.my_plays.Play> playListForReview = new ArrayList<wm.com.danteater.my_plays.Play>();
-    private ArrayList<wm.com.danteater.my_plays.Play> playListForPerform = new ArrayList<wm.com.danteater.my_plays.Play>();
+    private ArrayList<Play> playList;
+    private ArrayList<Play> playListForReview = new ArrayList<Play>();
+    private ArrayList<Play> playListForPerform = new ArrayList<Play>();
     private ArrayList<PlayOrderDetails> playOrderList = new ArrayList<PlayOrderDetails>();
 
 
@@ -96,6 +97,10 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+
+
+        // show loading
+
         dialog = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
         dialog.title("Mine Stykker");
         dialog.show();
@@ -126,7 +131,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             @Override
             public void run() {
 
-                Type listType = new TypeToken<List<wm.com.danteater.my_plays.Play>>() {
+                Type listType = new TypeToken<List<Play>>() {
 
                 }.getType();
 
@@ -137,7 +142,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 //testing response
                 for (int i = 0; i < playList.size(); i++) {
 
-                    wm.com.danteater.my_plays.Play bean = playList.get(i);
+                    Play bean = playList.get(i);
 
                     if (bean.OrderType.equalsIgnoreCase("Review")) {
                         playListForReview.add(bean);
@@ -196,10 +201,10 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
         LayoutInflater inflater;
 
-        ArrayList<wm.com.danteater.my_plays.Play> playList;
+        ArrayList<Play> playList;
         ArrayList<PlayOrderDetails> playOrderDetailList;
 
-        public ListPlayAdapterForReview(Context context, ArrayList<wm.com.danteater.my_plays.Play> playList) {
+        public ListPlayAdapterForReview(Context context, ArrayList<Play> playList) {
 
             this.context = context;
 
@@ -297,10 +302,10 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
         LayoutInflater inflater;
 
-        ArrayList<wm.com.danteater.my_plays.Play> playList;
+        ArrayList<Play> playList;
         ArrayList<PlayOrderDetails> playOrderDetailList;
 
-        public ListPlayAdapterForPerform(Context context, ArrayList<wm.com.danteater.my_plays.Play> playList, ArrayList<PlayOrderDetails> playOrderDetailList) {
+        public ListPlayAdapterForPerform(Context context, ArrayList<Play> playList, ArrayList<PlayOrderDetails> playOrderDetailList) {
 
             this.context = context;
 

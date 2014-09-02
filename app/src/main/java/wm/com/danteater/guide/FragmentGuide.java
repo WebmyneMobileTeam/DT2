@@ -13,6 +13,13 @@ import android.widget.ImageView;
 import wm.com.danteater.R;
 import wm.com.danteater.circle_indicator.PageIndicator;
 import wm.com.danteater.circle_indicator.CirclePageIndicator;
+
+
+/**
+ * App overview page with swipe
+ *
+ */
+
 public class FragmentGuide extends Fragment {
 
     private PagerAdapter pagerAdapter;
