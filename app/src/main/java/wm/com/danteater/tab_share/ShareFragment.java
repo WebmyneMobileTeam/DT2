@@ -25,12 +25,13 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import wm.com.danteater.Play.Play;
 import wm.com.danteater.R;
 import wm.com.danteater.customviews.PagerSlidingTabStrip;
 import wm.com.danteater.customviews.SegmentedGroup;
 import wm.com.danteater.customviews.WMTextView;
 import wm.com.danteater.model.ComplexPreferences;
-import wm.com.danteater.my_plays.Play;
+
 
 public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChangeListener{
 

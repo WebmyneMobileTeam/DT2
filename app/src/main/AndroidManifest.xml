@@ -3,7 +3,7 @@
     package="wm.com.danteater" >
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".app.MyApplication"
@@ -24,6 +24,7 @@
             android:name=".my_plays.DrawerActivity"
             android:label="@string/app_name" >
         </activity>
+
         <activity
             android:name=".app.PlayTabActivity"
             android:label="@string/title_activity_play_tab" >
@@ -31,6 +32,10 @@
         <activity
             android:name=".my_plays.OrderPlayActivity"
             android:label="@string/title_activity_play_tab" >
+        </activity>
+        <activity
+            android:name=".guide.GuideStartup"
+            android:label="@string/title_activity_guide_startup" >
         </activity>
     </application>
 

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import wm.com.danteater.Play.AssignedUsers;
+import wm.com.danteater.Play.Play;
 import wm.com.danteater.Play.PlayLines;
 import wm.com.danteater.Play.TextLines;
 import wm.com.danteater.R;
@@ -25,7 +26,6 @@ import wm.com.danteater.customviews.HUD;
 import wm.com.danteater.customviews.WMTextView;
 import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
-import wm.com.danteater.my_plays.Play;
 
 
 public class ReadFragment extends Fragment {

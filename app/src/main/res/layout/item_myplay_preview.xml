@@ -60,38 +60,38 @@
         android:textColor="@color/gray_color"
         >
 
-        <wm.com.danteater.customviews.WMTextView
-            android:id="@+id/btnOrderPreview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left|center_vertical"
-            android:drawableLeft="@drawable/ic_ordericon_black"
-            android:textColor="@drawable/selector_view"
-            android:gravity="center_vertical"
-            android:text="Bestil"
+        <!--<wm.com.danteater.customviews.WMTextView-->
+            <!--android:id="@+id/btnOrderPreview"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="left|center_vertical"-->
+            <!--android:drawableLeft="@drawable/ic_ordericon_black"-->
+            <!--android:textColor="@drawable/selector_view"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:text="Bestil"-->
 
-            android:textSize="@dimen/fragment_my_play_button_text" />
+            <!--android:textSize="@dimen/fragment_my_play_button_text" />-->
 
         <wm.com.danteater.customviews.WMTextView
             android:id="@+id/btnSharePreview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_share_black"
-            android:layout_gravity="center|center_vertical"
+            android:layout_gravity="left|center_vertical"
             android:gravity="center_vertical"
             android:textColor="@drawable/selector_view"
-            android:text="Del"
+            android:text="Del med kollega"
             android:textSize="@dimen/fragment_my_play_button_text" />
 
-        <wm.com.danteater.customviews.WMTextView
-            android:id="@+id/btnReadPreview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_bookmarks_black"
-            android:layout_gravity="right|center_vertical"
-            android:gravity="center_vertical"
-            android:textColor="@drawable/selector_view"
-            android:text="Læs"
-            android:textSize="@dimen/fragment_my_play_button_text" />
+        <!--<wm.com.danteater.customviews.WMTextView-->
+            <!--android:id="@+id/btnReadPreview"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:drawableLeft="@drawable/ic_bookmarks_black"-->
+            <!--android:layout_gravity="right|center_vertical"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:textColor="@drawable/selector_view"-->
+            <!--android:text="Læs"-->
+            <!--android:textSize="@dimen/fragment_my_play_button_text" />-->
     </FrameLayout>
 </LinearLayout>

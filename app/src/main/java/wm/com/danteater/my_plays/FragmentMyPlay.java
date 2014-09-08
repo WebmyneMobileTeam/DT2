@@ -27,6 +27,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import wm.com.danteater.Play.Play;
 import wm.com.danteater.Play.PlayOrderDetails;
 import wm.com.danteater.R;
 import wm.com.danteater.app.PlayTabActivity;
@@ -46,9 +47,9 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     private ListView listPlay;
 
 
-    private ArrayList<wm.com.danteater.my_plays.Play> playList;
-    private ArrayList<wm.com.danteater.my_plays.Play> playListForReview = new ArrayList<wm.com.danteater.my_plays.Play>();
-    private ArrayList<wm.com.danteater.my_plays.Play> playListForPerform = new ArrayList<wm.com.danteater.my_plays.Play>();
+    private ArrayList<Play> playList;
+    private ArrayList<Play> playListForReview = new ArrayList<Play>();
+    private ArrayList<Play> playListForPerform = new ArrayList<Play>();
     private ArrayList<PlayOrderDetails> playOrderList = new ArrayList<PlayOrderDetails>();
 
 
@@ -126,7 +127,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             @Override
             public void run() {
 
-                Type listType = new TypeToken<List<wm.com.danteater.my_plays.Play>>() {
+                Type listType = new TypeToken<List<Play>>() {
 
                 }.getType();
 
@@ -137,7 +138,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 //testing response
                 for (int i = 0; i < playList.size(); i++) {
 
-                    wm.com.danteater.my_plays.Play bean = playList.get(i);
+                    Play bean = playList.get(i);
 
                     if (bean.OrderType.equalsIgnoreCase("Review")) {
                         playListForReview.add(bean);
@@ -196,10 +197,10 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
         LayoutInflater inflater;
 
-        ArrayList<wm.com.danteater.my_plays.Play> playList;
+        ArrayList<Play> playList;
         ArrayList<PlayOrderDetails> playOrderDetailList;
 
-        public ListPlayAdapterForReview(Context context, ArrayList<wm.com.danteater.my_plays.Play> playList) {
+        public ListPlayAdapterForReview(Context context, ArrayList<Play> playList) {
 
             this.context = context;
 
@@ -224,7 +225,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
         class ViewHolder {
 
-            WMTextView txtTitle, txtAuther, txtDuration1, txtDuration2,btnOrderPreview,btnSharePreview,btnReadPreview;
+            WMTextView txtTitle, txtAuther, txtDuration1, txtDuration2,btnSharePreview;
             ImageView imgPreviewTrashIcon;
 
         }
@@ -242,9 +243,9 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 holder.txtAuther = (WMTextView) convertView.findViewById(R.id.txtPreviewAuther);
                 holder.txtDuration1 = (WMTextView) convertView.findViewById(R.id.txtPreviewDuration1);
                 holder.txtDuration2 = (WMTextView) convertView.findViewById(R.id.txtPreviewDuration2);
-                holder.btnOrderPreview = (WMTextView) convertView.findViewById(R.id.btnOrderPreview);
+//                holder.btnOrderPreview = (WMTextView) convertView.findViewById(R.id.btnOrderPreview);
                 holder.btnSharePreview = (WMTextView) convertView.findViewById(R.id.btnSharePreview);
-                holder.btnReadPreview = (WMTextView) convertView.findViewById(R.id.btnReadPreview);
+//                holder.btnReadPreview = (WMTextView) convertView.findViewById(R.id.btnReadPreview);
                 holder.imgPreviewTrashIcon = (ImageView) convertView.findViewById(R.id.imgPreviewTrashIcon);
                 convertView.setTag(holder);
             } else {
@@ -254,22 +255,22 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             holder.txtAuther.setText("Forfatter: " + playList.get(position).Author);
             holder.txtDuration1.setText(playList.get(position).Duration+" min., " + playList.get(position).Age + " år");
             holder.txtDuration2.setText("Musik: " + playList.get(position).Music + ", " + playList.get(position).Actors + " medvirkende");
-            holder.btnOrderPreview.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(getActivity(), "Order", Toast.LENGTH_SHORT).show();
-                    Intent i = new Intent(getActivity(), OrderPlayActivity.class);
-                    i.putExtra("title",playList.get(position).Title+"");
-                    startActivity(i);
-                }
-            });
+//            holder.btnOrderPreview.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    Toast.makeText(getActivity(), "Order", Toast.LENGTH_SHORT).show();
+//                    Intent i = new Intent(getActivity(), OrderPlayActivity.class);
+//                    i.putExtra("title",playList.get(position).Title+"");
+//                    startActivity(i);
+//                }
+//            });
 
-            holder.btnReadPreview.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(getActivity(), "Read", Toast.LENGTH_SHORT).show();
-                }
-            });
+//            holder.btnReadPreview.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    Toast.makeText(getActivity(), "Read", Toast.LENGTH_SHORT).show();
+//                }
+//            });
 
             holder.btnSharePreview.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -297,10 +298,10 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
         LayoutInflater inflater;
 
-        ArrayList<wm.com.danteater.my_plays.Play> playList;
+        ArrayList<Play> playList;
         ArrayList<PlayOrderDetails> playOrderDetailList;
 
-        public ListPlayAdapterForPerform(Context context, ArrayList<wm.com.danteater.my_plays.Play> playList, ArrayList<PlayOrderDetails> playOrderDetailList) {
+        public ListPlayAdapterForPerform(Context context, ArrayList<Play> playList, ArrayList<PlayOrderDetails> playOrderDetailList) {
 
             this.context = context;
 
@@ -325,7 +326,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
         class ViewHolder {
 
-            WMTextView txtTitle, txtAuther, txtDuration1, txtDuration2, txtNumberOfPerformance,btnOrdering,btnShareOrder,btnReadOrder;
+            WMTextView txtTitle, txtAuther, txtDuration1, txtDuration2, txtNumberOfPerformance,btnOrdering,btnShareOrder;
             ImageView imgOrderTrashIcon;
 
 
@@ -347,7 +348,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 holder.txtNumberOfPerformance = (WMTextView) convertView.findViewById(R.id.txtOrderNumberOfPerformance);
                 holder.btnOrdering = (WMTextView) convertView.findViewById(R.id.btnOrdering);
                 holder.btnShareOrder = (WMTextView) convertView.findViewById(R.id.btnShareOrder);
-                holder.btnReadOrder = (WMTextView) convertView.findViewById(R.id.btnReadOrder);
+//                holder.btnReadOrder = (WMTextView) convertView.findViewById(R.id.btnReadOrder);
                 holder.imgOrderTrashIcon=(ImageView)convertView.findViewById(R.id.imgOrderTrashIcon);
                 convertView.setTag(holder);
             } else {
@@ -380,16 +381,16 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 }
             });
 
-            holder.btnReadOrder.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    gotoTabActivity(position, "Read");
-
-
-
-                }
-            });
+//            holder.btnReadOrder.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//
+//                    gotoTabActivity(position, "Read");
+//
+//
+//
+//                }
+//            });
 
             holder.btnShareOrder.setOnClickListener(new View.OnClickListener() {
                 @Override

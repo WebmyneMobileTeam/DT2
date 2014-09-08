@@ -74,7 +74,7 @@
             android:drawableLeft="@drawable/ic_changeicon_black"
             android:textColor="@drawable/selector_view"
             android:gravity="center_vertical"
-            android:text="Bestilling"
+            android:text="Ret Bestilling"
 
             android:textSize="@dimen/fragment_my_play_button_text" />
 
@@ -83,22 +83,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_share_black"
-            android:layout_gravity="center|center_vertical"
-            android:textColor="@drawable/selector_view"
-            android:gravity="center_vertical"
-            android:text="Del"
-            android:textSize="@dimen/fragment_my_play_button_text" />
-
-        <wm.com.danteater.customviews.WMTextView
-            android:id="@+id/btnReadOrder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_bookmarks_black"
             android:layout_gravity="right|center_vertical"
             android:textColor="@drawable/selector_view"
             android:gravity="center_vertical"
-
-            android:text="Læs"
+            android:text="Del med elever"
             android:textSize="@dimen/fragment_my_play_button_text" />
+
+        <!--<wm.com.danteater.customviews.WMTextView-->
+            <!--android:id="@+id/btnReadOrder"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:drawableLeft="@drawable/ic_bookmarks_black"-->
+            <!--android:layout_gravity="right|center_vertical"-->
+            <!--android:textColor="@drawable/selector_view"-->
+            <!--android:gravity="center_vertical"-->
+
+            <!--android:text="Læs"-->
+            <!--android:textSize="@dimen/fragment_my_play_button_text" />-->
     </FrameLayout>
 </LinearLayout>
