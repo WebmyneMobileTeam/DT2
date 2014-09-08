@@ -1,43 +1,40 @@
 package wm.com.danteater.tab_read;
 
 import android.app.Activity;
-import android.net.Uri;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import com.android.volley.VolleyError;
 import com.google.gson.GsonBuilder;
-
 import java.util.ArrayList;
-import java.util.List;
 
 import wm.com.danteater.Play.AssignedUsers;
+import wm.com.danteater.Play.Play;
 import wm.com.danteater.Play.PlayLines;
-import wm.com.danteater.Play.TextLines;
 import wm.com.danteater.R;
 import wm.com.danteater.customviews.HUD;
 import wm.com.danteater.customviews.WMTextView;
 import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
-import wm.com.danteater.my_plays.Play;
 
 
 public class ReadFragment extends Fragment {
     private Play selectedPlay;
     private ArrayList<PlayLines> playLinesesList;
-    private ArrayList<AssignedUsers> assignedUsersesList=new ArrayList<AssignedUsers>();
+    private ArrayList<AssignedUsers> assignedUsersesList = new ArrayList<AssignedUsers>();
     private HUD dialog;
+
     public static ReadFragment newInstance(String param1, String param2) {
         ReadFragment fragment = new ReadFragment();
 
         return fragment;
     }
+
     public ReadFragment() {
         // Required empty public constructor
     }
@@ -46,11 +43,12 @@ public class ReadFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref", 0);
-        selectedPlay = complexPreferences.getObject("selected_play",Play.class);
-        ((WMTextView)getActivity().getActionBar().getCustomView()).setText(selectedPlay.Title);
+        selectedPlay = complexPreferences.getObject("selected_play", Play.class);
+        ((WMTextView) getActivity().getActionBar().getCustomView()).setText(selectedPlay.Title);
 
 
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -65,7 +63,7 @@ public class ReadFragment extends Fragment {
         dialog = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
         dialog.title("Mine Stykker");
         dialog.show();
-        new CallWebService("http://api.danteater.dk/api/playfull/"+selectedPlay.OrderId, CallWebService.TYPE_JSONOBJECT) {
+        new CallWebService("http://api.danteater.dk/api/playfull/" + selectedPlay.OrderId, CallWebService.TYPE_JSONOBJECT) {
 
             @Override
             public void response(String response) {
@@ -94,27 +92,25 @@ public class ReadFragment extends Fragment {
 
                 Play play = new GsonBuilder().create().fromJson(
                         response, Play.class);
-                playLinesesList=play.playLinesList;
+                playLinesesList = play.playLinesList;
 
-                Log.e("PlayId",play.PlayId+"");
-                for(int i=0;i<playLinesesList.size();i++) {
+                Log.e("PlayId", play.PlayId + "");
+                for (int i = 0; i < playLinesesList.size(); i++) {
 
 //                    Log.e("LineCount",playLinesesList.get(i).LineCount+"");
-                    for(int j=0;j<playLinesesList.get(i).assignedUsersList.size();j++){
+                    for (int j = 0; j < playLinesesList.get(i).assignedUsersList.size(); j++) {
 
 //                        Log.e("AssignedUserId",playLinesesList.get(i).assignedUsersList.get(j).AssignedUserId+"");
                     }
-                    for(int j=0;j<playLinesesList.get(i).textLinesList.size();j++){
-                        if(playLinesesList.get(i).textLinesList.get(j).LineText !=null) {
+                    for (int j = 0; j < playLinesesList.get(i).textLinesList.size(); j++) {
+                        if (playLinesesList.get(i).textLinesList.get(j).LineText != null) {
                             Log.e("LineText", playLinesesList.get(i).textLinesList.get(j).LineText + "");
                         }
                     }
-                    for(int j=0;j<playLinesesList.get(i).castMatchesList.size();j++){
+                    for (int j = 0; j < playLinesesList.get(i).castMatchesList.size(); j++) {
 
 //                        Log.e("castMatchesList",playLinesesList.get(i).castMatchesList.get(j)+"");
                     }
-
-
 
 
                 }
