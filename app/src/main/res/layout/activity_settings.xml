@@ -23,13 +23,17 @@
             android:layout_weight="1"
             android:layout_gravity="center_vertical"
             android:textSize="@dimen/normalText"
-            android:textColor="@android:color/black"/>
+            android:textColor="@android:color/black" />
 
-        <Switch
+        <ToggleButton
             android:id="@+id/settingRepliknumre"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right|center_vertical"/>
+            android:layout_width="@dimen/switch_width"
+            android:layout_height="@dimen/switch_height"
+            android:background="@drawable/toggle_selector"
+            android:layout_gravity="right|center_vertical"
+            android:checked="true"
+            android:textOff=""
+            android:textOn="" />
 
     </FrameLayout>
 
@@ -46,13 +50,17 @@
             android:layout_weight="1"
             android:layout_gravity="center_vertical"
             android:textSize="@dimen/normalText"
-            android:textColor="@android:color/black"/>
+            android:textColor="@android:color/black" />
 
-        <Switch
+        <ToggleButton
             android:id="@+id/settingIntoWords"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right|center_vertical"/>
+            android:layout_width="@dimen/switch_width"
+            android:layout_height="@dimen/switch_height"
+            android:background="@drawable/toggle_selector"
+            android:layout_gravity="right|center_vertical"
+            android:checked="true"
+            android:textOff=""
+            android:textOn="" />
 
     </FrameLayout>
 
@@ -69,13 +77,17 @@
             android:layout_weight="1"
             android:layout_gravity="center_vertical"
             android:textSize="@dimen/normalText"
-            android:textColor="@android:color/black"/>
+            android:textColor="@android:color/black" />
 
-        <Switch
+        <ToggleButton
             android:id="@+id/settingKommentarer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right|center_vertical"/>
+            android:layout_width="@dimen/switch_width"
+            android:layout_height="@dimen/switch_height"
+            android:background="@drawable/toggle_selector"
+            android:layout_gravity="right|center_vertical"
+            android:checked="true"
+            android:textOff=""
+            android:textOn="" />
 
     </FrameLayout>
 
@@ -92,15 +104,27 @@
             android:layout_weight="1"
             android:layout_gravity="center_vertical"
             android:textSize="@dimen/normalText"
-            android:textColor="@android:color/black"/>
+            android:textColor="@android:color/black" />
 
-        <Switch
+        <ToggleButton
             android:id="@+id/settingAutomatiskeLogin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right|center_vertical"/>
+            android:layout_width="@dimen/switch_width"
+            android:layout_height="@dimen/switch_height"
+            android:background="@drawable/toggle_selector"
+            android:layout_gravity="right|center_vertical"
+            android:checked="true"
+            android:textOff=""
+            android:textOn="" />
+
 
     </FrameLayout>
 
-
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_margin"
+        android:text="Anbefal til andre"
+        android:textSize="@dimen/normalText"
+        android:background="@drawable/button_selector"
+        android:textColor="@android:color/white" />
 </LinearLayout>

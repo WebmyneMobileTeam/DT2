@@ -6,30 +6,34 @@
     android:padding="@dimen/activity_margin"
     android:orientation="vertical">
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
 
         <wm.com.danteater.customviews.WMTextView
             android:id="@+id/txtPreviewTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:text="Title a very long text"
-            android:layout_gravity="left|center_vertical"
+            android:layout_alignParentLeft="true"
+            android:gravity="center_vertical"
+            android:layout_toLeftOf="@+id/imgPreviewTrashIcon"
+            android:layout_alignBottom="@+id/imgPreviewTrashIcon"
             android:textSize="@dimen/normalText" />
 
         <ImageView
             android:id="@+id/imgPreviewTrashIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
+            android:layout_alignParentRight="true"
             android:layout_gravity="right|center_vertical"
             android:src="@drawable/trash_image_selector_view" />
-    </FrameLayout>
+    </RelativeLayout>
 
     <wm.com.danteater.customviews.WMTextView
         android:id="@+id/txtPreviewAuther"
+        android:singleLine="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Auther"
@@ -39,12 +43,14 @@
     <wm.com.danteater.customviews.WMTextView
         android:id="@+id/txtPreviewDuration1"
         android:layout_width="match_parent"
+        android:singleLine="true"
         android:layout_height="wrap_content"
         android:text="Duration"
         android:textColor="@color/gray_color"
         android:textSize="@dimen/fragment_my_play_small_text" />
 
     <wm.com.danteater.customviews.WMTextView
+        android:singleLine="true"
         android:id="@+id/txtPreviewDuration2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

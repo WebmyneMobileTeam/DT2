@@ -19,4 +19,15 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|clip_horizontal"
         android:padding="10dp" />
+
+    <wm.com.danteater.customviews.WMButton
+        android:id="@+id/btnStartUp"
+        android:visibility="gone"
+        android:background="@drawable/button_selector"
+        android:textColor="@android:color/white"
+        android:layout_gravity="top|right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start"
+        android:layout_margin="@dimen/activity_margin"/>
 </FrameLayout>
