@@ -16,20 +16,80 @@ import wm.com.danteater.tab_read.ReadFragment;
 import wm.com.danteater.tab_recording.RecordingFragment;
 import wm.com.danteater.tab_share.ShareFragment;
 
+
+/**
+ * Tab activity that inclide these following tabs functionality
+ *
+ *  1. Info
+ *  2. Music
+ *  3. Share
+ *  4. Read
+ *  5. Record
+ *
+ */
+
 public class PlayTabActivity extends BaseActivity {
 
     private FragmentTabHost mTabHost;
     private String type_navigation;
+    private String playinfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_tab);
 
-        Intent i=getIntent();
 
-        String playinfo=i.getStringExtra("infoData");
+
+       // Receive the extra string for specific tab selection.
+        Intent i=getIntent();
+        playinfo =i.getStringExtra("infoData");
         type_navigation = i.getStringExtra("type_navigation");
+
+
+
+        // Helping to create a tabs to this application
+           initTabHost();
+
+
+
+
+
+
+        // Check weather the received extra string is read or share to select corresponding tabs;
+        if(type_navigation.equalsIgnoreCase("Read")){
+
+            mTabHost.setCurrentTab(3);
+            selectTAB(3);
+
+        }else if(type_navigation.equalsIgnoreCase("Share")){
+
+            mTabHost.setCurrentTab(2);
+            selectTAB(2);
+        }
+
+
+
+        // Changing image and selecting functionality when tabs is changed.
+
+        mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+            @Override
+            public void onTabChanged(String tabId) {
+
+                for(int i=0;i<mTabHost.getTabWidget().getTabCount();i++){
+
+
+                    selectTAB(i);
+
+                }
+
+            }
+        });
+
+
+    }
+
+    private void initTabHost() {
 
         mTabHost = (FragmentTabHost)findViewById(android.R.id.tabhost);
         mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
@@ -57,36 +117,6 @@ public class PlayTabActivity extends BaseActivity {
                 ReadFragment.class, null);
         mTabHost.addTab(mTabHost.newTabSpec("tab5").setIndicator(view5),
                 RecordingFragment.class, null);
-
-
-
-        if(type_navigation.equalsIgnoreCase("Read")){
-
-            mTabHost.setCurrentTab(3);
-            selectTAB(3);
-
-        }else if(type_navigation.equalsIgnoreCase("Share")){
-
-            mTabHost.setCurrentTab(2);
-            selectTAB(2);
-        }
-
-
-
-        mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
-            @Override
-            public void onTabChanged(String tabId) {
-
-                for(int i=0;i<mTabHost.getTabWidget().getTabCount();i++){
-
-
-                    selectTAB(i);
-
-                }
-
-            }
-        });
-
 
     }
 

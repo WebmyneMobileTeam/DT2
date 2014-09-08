@@ -4,11 +4,8 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
-import wm.com.danteater.Play.PlayLines;
-import wm.com.danteater.Play.PlayOrderDetails;
-
 /**
- * Created by nirav on 27-08-2014.
+ * Created by nirav.
  */
 public class Play {
 

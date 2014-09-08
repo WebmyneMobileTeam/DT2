@@ -16,7 +16,15 @@ import com.androidanimations.library.Webmyne;
 import wm.com.danteater.R;
 
 /**
- * Created by dhruvil on 26-08-2014.
+ * Created by Dhruvil
+ *
+ * Custom dialog class like HUD in iOS
+ *
+ * This class has status functionality
+ *
+ * 1. Success with custom image
+ * 2. Failure with custom image
+ *
  */
 public class HUD extends Dialog{
 
@@ -48,6 +56,13 @@ public class HUD extends Dialog{
 
     }
 
+
+    /*
+
+    This method helps to show custom text and image in dialog and dismiss it
+    automatically after 2 seconds
+
+     */
     public void dismissWithStatus(int resource,String successMessage){
 
         pb.setVisibility(View.INVISIBLE);
@@ -70,8 +85,6 @@ public class HUD extends Dialog{
                 dismiss();
             }
         }.start();
-
-
 
     }
 

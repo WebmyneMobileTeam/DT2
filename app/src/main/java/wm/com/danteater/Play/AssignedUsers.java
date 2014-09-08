@@ -3,7 +3,7 @@ package wm.com.danteater.Play;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by nirav on 01-09-2014.
+ * Created by nirav
  */
 public class AssignedUsers {
 

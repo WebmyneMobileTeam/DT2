@@ -8,6 +8,12 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 
+
+/**
+ * This class helps to store class object in the shared preferences
+ *
+ */
+
 public class ComplexPreferences {
 
 	private static ComplexPreferences complexPreferences;

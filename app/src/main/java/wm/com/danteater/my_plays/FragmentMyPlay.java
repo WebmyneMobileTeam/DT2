@@ -97,6 +97,10 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+
+
+        // show loading
+
         dialog = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
         dialog.title("Mine Stykker");
         dialog.show();

@@ -14,6 +14,8 @@ import wm.com.danteater.customviews.WMTextView;
 
 /**
  * Created by nirav on 25-08-2014.
+ * Base activity for application.
+ * Contains basic actionbar integration for all the screen which extends this Activity.
  */
 public class BaseActivity extends FragmentActivity {
 
@@ -31,6 +33,10 @@ public class BaseActivity extends FragmentActivity {
                 ActionBar.LayoutParams.WRAP_CONTENT,
                 ActionBar.LayoutParams.WRAP_CONTENT);
         acBarParams.gravity= Gravity.CENTER| Gravity.CENTER_VERTICAL;
+
+
+        // Adding the new custom textview to the actionbar that has center alined property.
+
         txtHeader=new WMTextView(this);
 
         getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
