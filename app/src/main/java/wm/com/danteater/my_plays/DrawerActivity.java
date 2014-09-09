@@ -32,6 +32,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
 
 
 
+
     private DrawerLayout drawer;
     private ListView leftDrawerList;
     private ActionBarDrawerToggle actionBarDrawerToggle;
