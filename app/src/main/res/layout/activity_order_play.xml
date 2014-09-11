@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@android:color/white"
-    tools:context="wm.com.danteater.my_plays.OrderPlayActivity">
+    tools:context="wm.com.danteater.my_plays.OrderPlayActivityForPerform">
 
     <ListView
         android:id="@+id/orderPlayList"

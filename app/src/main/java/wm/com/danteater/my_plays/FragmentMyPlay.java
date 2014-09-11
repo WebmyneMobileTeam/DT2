@@ -415,16 +415,18 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             holder.btnOrdering.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                  Intent intent=new Intent(getActivity(),OrderPlayActivityForPerform.class);
+                    startActivity(intent);
                 }
             });
+
+
 
             holder.btnShareOrder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
-
-
+                    Intent intent=new Intent(getActivity(),ShareActivityForPerform.class);
+                    startActivity(intent);
 
 
                 }

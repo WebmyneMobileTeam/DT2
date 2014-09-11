@@ -29,7 +29,7 @@ import wm.com.danteater.R;
 import wm.com.danteater.app.BaseActivity;
 import wm.com.danteater.customviews.WMTextView;
 
-public class OrderPlayActivity extends BaseActivity {
+public class OrderPlayActivityForPerform extends BaseActivity {
 
     private ListView orderPlayList;
     Context context;
@@ -53,7 +53,7 @@ public class OrderPlayActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_play);
-        context = OrderPlayActivity.this;
+        context = OrderPlayActivityForPerform.this;
         Intent i = getIntent();
         title = i.getStringExtra("title");
         txtHeader.setText(title);

@@ -29,7 +29,7 @@
             android:label="@string/title_activity_play_tab" >
         </activity>
         <activity
-            android:name=".my_plays.OrderPlayActivity"
+            android:name=".my_plays.OrderPlayActivityForPerform"
             android:label="@string/title_activity_play_tab" >
         </activity>
         <activity
