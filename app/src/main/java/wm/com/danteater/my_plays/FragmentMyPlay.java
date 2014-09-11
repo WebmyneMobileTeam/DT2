@@ -269,7 +269,14 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 @Override
                 public void onClick(View view) {
                     Toast.makeText(getActivity(), "Share", Toast.LENGTH_SHORT).show();
+                    ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref",0);
+                    complexPreferences.putObject("selected_play",playListForReview.get(position));
+                    complexPreferences.commit();
 
+
+                    Intent i = new Intent(getActivity(), ShareActivityForPreview.class);
+
+                    startActivity(i);
 
 
                 }
