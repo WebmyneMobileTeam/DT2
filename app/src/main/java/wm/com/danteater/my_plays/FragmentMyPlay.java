@@ -414,8 +414,13 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             holder.btnOrdering.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
+                    ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref",0);
+                    complexPreferences.putObject("selected_play",playListForPerform.get(position));
+                    complexPreferences.commit();
+
                   Intent intent=new Intent(getActivity(),OrderPlayActivityForPerform.class);
-                    startActivity(intent);
+                  startActivity(intent);
                 }
             });
 
@@ -424,6 +429,12 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             holder.btnShareOrder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
+                    ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref",0);
+                    complexPreferences.putObject("selected_play",playListForPerform.get(position));
+                    complexPreferences.commit();
+
+
                     Intent intent=new Intent(getActivity(),ShareActivityForPerform.class);
                     startActivity(intent);
 
