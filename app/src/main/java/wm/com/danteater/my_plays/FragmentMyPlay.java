@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -164,6 +165,10 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 }
 
                 listPlay.setAdapter(new ListPlayAdapterForReview(getActivity(), playListForReview));
+
+
+
+
             }
         });
 
@@ -259,27 +264,14 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             holder.txtAuther.setText("Forfatter: " + playList.get(position).Author);
             holder.txtDuration1.setText(playList.get(position).Duration+" min., " + playList.get(position).Age + " år");
             holder.txtDuration2.setText("Musik: " + playList.get(position).Music + ", " + playList.get(position).Actors + " medvirkende");
-//            holder.btnOrderPreview.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    Toast.makeText(getActivity(), "Order", Toast.LENGTH_SHORT).show();
-//                    Intent i = new Intent(getActivity(), OrderPlayActivity.class);
-//                    i.putExtra("title",playList.get(position).Title+"");
-//                    startActivity(i);
-//                }
-//            });
-
-//            holder.btnReadPreview.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    Toast.makeText(getActivity(), "Read", Toast.LENGTH_SHORT).show();
-//                }
-//            });
 
             holder.btnSharePreview.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Toast.makeText(getActivity(), "Share", Toast.LENGTH_SHORT).show();
+
+
+
                 }
             });
 
@@ -289,6 +281,48 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                     Toast.makeText(getActivity(), "Delete", Toast.LENGTH_SHORT).show();
                 }
             });
+
+
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+
+                    // Goto read page
+
+                    final HUD dialog = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
+                    dialog.title("Henter Seneste\nændringer");
+                    dialog.show();
+
+                    new CountDownTimer(2500, 1000) {
+
+                        @Override
+                        public void onFinish() {
+
+                            dialog.dismiss();
+
+                            Intent i = new Intent(getActivity(),ReadActivityFromPreview.class);
+                            startActivity(i);
+
+
+                        }
+
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+
+                        }
+                    }.start();
+
+
+
+
+
+
+
+                }
+            });
+
+
             return convertView;
 
         }

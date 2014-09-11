@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="apptheme_color">#006fb1</color>
     <color name="gray_color">#a0a0a0</color>
     <color name="aqua">#009688</color>
-    <color name="radio_button_selected_color">#496d55</color>
+    <color name="greenTheme">#3c7933</color>
+    <color name="radio_button_selected_color">#3c7933</color>
     <color name="radio_button_unselected_color">@android:color/transparent</color>
     <color name="background_tab_pressed">#6633B5E5</color>
+
+
 </resources>

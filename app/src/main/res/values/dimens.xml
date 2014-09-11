@@ -23,7 +23,7 @@
 
     <!-- switch -->
     <dimen name="switch_height">30dp</dimen>
-    <dimen name="switch_width">50dp</dimen>
+    <dimen name="switch_width">45dp</dimen>
 
     <!-- Inspiration -->
     <dimen name="inspiration_coming_label_width">200dp</dimen>

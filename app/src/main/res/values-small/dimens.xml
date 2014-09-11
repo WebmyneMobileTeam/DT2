@@ -3,5 +3,5 @@
 
     <!-- switch -->
     <dimen name="switch_height">25dp</dimen>
-    <dimen name="switch_width">45dp</dimen>
+    <dimen name="switch_width">40dp</dimen>
 </resources>

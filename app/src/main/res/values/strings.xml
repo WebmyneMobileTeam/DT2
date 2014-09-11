@@ -12,5 +12,6 @@
     <string name="title_activity_play_tab">PlayTabActivity</string>
     <string name="action_share">Del</string>
     <string name="title_activity_guide_startup">GuideStartup</string>
+    <string name="title_activity_read_activity_from_preview">ReadActivityFromPreview</string>
 
 </resources>

@@ -1,0 +1,40 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    tools:context="wm.com.danteater.my_plays.ReadActivityFromPreview">
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/greenTheme"
+        android:layout_gravity="bottom">
+
+        <ImageView
+            android:contentDescription="@string/app_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_av_download"
+            android:layout_marginRight="8dp"
+            android:layout_gravity="right|center_vertical"
+            android:scaleType="centerInside" />
+
+        <wm.com.danteater.customviews.WMTextView
+
+            android:paddingLeft="4dp"
+            android:text="Du har stykket til gennemsyn.\nBestil til opførelse her."
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_gravity="center_vertical"
+            android:textColor="#fff"
+            android:textSize="18sp"/>
+
+    </FrameLayout>
+
+
+</FrameLayout>

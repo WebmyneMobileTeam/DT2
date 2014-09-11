@@ -32,6 +32,8 @@ public class GuideStartup extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_guide);
         getActionBar().hide();
+
+
         viewPager = (ViewPager)findViewById(R.id.guideSlider);
         btnStartUp=(WMButton)findViewById(R.id.btnStartUp);
         mIndicator = (CirclePageIndicator)findViewById(R.id.guideIndicator);

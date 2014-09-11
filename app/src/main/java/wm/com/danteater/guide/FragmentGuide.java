@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import wm.com.danteater.R;
-import wm.com.danteater.circle_indicator.PageIndicator;
 import wm.com.danteater.circle_indicator.CirclePageIndicator;
+import wm.com.danteater.circle_indicator.PageIndicator;
 
 
 /**
@@ -31,7 +31,12 @@ public class FragmentGuide extends Fragment {
         return fragment;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
 
+
+    }
 
     public FragmentGuide() {
     }

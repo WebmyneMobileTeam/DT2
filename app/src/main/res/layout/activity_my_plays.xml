@@ -47,7 +47,6 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/logoutButton"
             android:gravity="center_horizontal"
-
             android:layout_toRightOf="@+id/logoutImage"
             android:text="Kasper Fuglsang"
             android:textColor="#a0a0a0" />
@@ -58,12 +57,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="@dimen/activity_margin"
             android:layout_toRightOf="@+id/logoutImage"
             android:text="Log ud"
             android:textColor="@color/apptheme_color" />
+
+
     </RelativeLayout>
 
 </android.support.v4.widget.DrawerLayout>

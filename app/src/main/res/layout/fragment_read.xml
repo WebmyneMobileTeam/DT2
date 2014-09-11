@@ -12,4 +12,6 @@
         android:layout_height="wrap_content"
         android:text="Read Fragment"
         />
+
+
 </FrameLayout>

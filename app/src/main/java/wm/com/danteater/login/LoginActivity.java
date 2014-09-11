@@ -6,14 +6,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import wm.com.danteater.app.BaseActivity;
 import wm.com.danteater.R;
+import wm.com.danteater.app.BaseActivity;
 import wm.com.danteater.guide.GuideStartup;
 import wm.com.danteater.my_plays.DrawerActivity;
 
 public class LoginActivity extends BaseActivity{
 
     private TextView txtLogin;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

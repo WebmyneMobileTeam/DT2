@@ -46,13 +46,8 @@ public class PlayTabActivity extends BaseActivity {
         playinfo =i.getStringExtra("infoData");
         type_navigation = i.getStringExtra("type_navigation");
 
-
-
         // Helping to create a tabs to this application
            initTabHost();
-
-
-
 
 
 
