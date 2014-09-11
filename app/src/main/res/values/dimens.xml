@@ -4,6 +4,7 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_margin">16dp</dimen>
     <dimen name="normalText">18sp</dimen>
+    <dimen name="small_text">14dp</dimen>
 
     <!-- navigation drawer dimentions -->
     <dimen name="circle_image_size_blue">36dp</dimen>
@@ -27,5 +28,6 @@
 
     <!-- Inspiration -->
     <dimen name="inspiration_coming_label_width">200dp</dimen>
+
 
 </resources>

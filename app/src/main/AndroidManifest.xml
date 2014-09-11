@@ -40,6 +40,11 @@
             android:name=".my_plays.ReadActivityFromPreview"
             android:label="@string/title_activity_read_activity_from_preview" >
         </activity>
+        <activity
+            android:name=".inspiration.VideoPlay"
+            android:screenOrientation="landscape"
+            android:label="@string/title_activity_guide_startup" >
+        </activity>
     </application>
 
 </manifest>

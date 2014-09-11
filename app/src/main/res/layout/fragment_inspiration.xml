@@ -25,6 +25,7 @@
 
     <LinearLayout
         android:id="@+id/teacherView"
+        android:visibility="visible"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -42,16 +43,19 @@
                 android:textSize="@dimen/normalText"
 
                 android:gravity="center_vertical"
-                android:padding="@dimen/activity_margin" />
+                android:paddingLeft="@dimen/activity_margin"
+                android:paddingRight="@dimen/activity_margin"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"/>
 
             <GridView
                 android:id="@+id/videos_one_teacherview"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:numColumns="2"
-                android:horizontalSpacing="@dimen/activity_margin"
-                android:verticalSpacing="@dimen/activity_margin"
+                android:horizontalSpacing="2dp"
+                android:verticalSpacing="2dp"
                 android:drawSelectorOnTop="true" />
         </LinearLayout>
 
@@ -67,16 +71,19 @@
                 android:text="Eleverne kan se......"
                 android:textSize="@dimen/normalText"
                 android:gravity="center_vertical"
-                android:padding="@dimen/activity_margin" />
+                android:paddingLeft="@dimen/activity_margin"
+                android:paddingRight="@dimen/activity_margin"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp" />
 
             <GridView
                 android:id="@+id/videos_two_teacherview"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:numColumns="2"
-                android:horizontalSpacing="@dimen/activity_margin"
-                android:verticalSpacing="@dimen/activity_margin"
+                android:horizontalSpacing="2dp"
+                android:verticalSpacing="2dp"
                 android:drawSelectorOnTop="true" />
         </LinearLayout>
     </LinearLayout>
@@ -85,18 +92,39 @@
         android:id="@+id/studentView"
         android:orientation="vertical"
         android:visibility="gone"
+        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <GridView
-            android:id="@+id/videos_for_students"
+        <wm.com.danteater.customviews.WMTextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Din lærer har ikke delt et skuespil med dig endnu..."
+
+            android:textSize="@dimen/normalText"
+            android:gravity="center_vertical"
+            android:padding="@dimen/activity_margin" />
+
+        <GridView
+            android:id="@+id/videos_studentview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:numColumns="2"
-            android:horizontalSpacing="8dp"
-            android:verticalSpacing="8dp"
+            android:gravity="center"
+
+            android:horizontalSpacing="2dp"
+            android:verticalSpacing="2dp"
             android:drawSelectorOnTop="true" />
+
+        <wm.com.danteater.customviews.WMTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="...men du kan jo se lidt dramaøvelser, mens du venter"
+            android:textSize="@dimen/normalText"
+
+            android:gravity="center_vertical"
+            android:padding="@dimen/activity_margin" />
     </LinearLayout>
 
 </FrameLayout>
