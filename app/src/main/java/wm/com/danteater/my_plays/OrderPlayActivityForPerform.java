@@ -25,9 +25,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import wm.com.danteater.Play.Play;
 import wm.com.danteater.R;
 import wm.com.danteater.app.BaseActivity;
 import wm.com.danteater.customviews.WMTextView;
+import wm.com.danteater.model.ComplexPreferences;
 
 public class OrderPlayActivityForPerform extends BaseActivity {
 
@@ -47,7 +49,7 @@ public class OrderPlayActivityForPerform extends BaseActivity {
     WMTextView txtFirstDate;
     View secondDateView;
     WMTextView txtSecondDate;
-
+    Play selectedPlay;
     //
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,7 +66,9 @@ public class OrderPlayActivityForPerform extends BaseActivity {
         nameList.add("Generalprøve");
         nameList.add("Dato for sidste opførelse");
         getActionBar().setDisplayHomeAsUpEnabled(true);
-
+        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(this, "mypref", 0);
+        selectedPlay = complexPreferences.getObject("selected_play",Play.class);
+        ((WMTextView)getActionBar().getCustomView()).setText(selectedPlay.Title);
 
         orderPlayList.setAdapter(new ListPlayAdapterForPerform(context, nameList));
         orderPlay.setOnClickListener(new View.OnClickListener() {
