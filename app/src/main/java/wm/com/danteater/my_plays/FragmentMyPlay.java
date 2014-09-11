@@ -165,9 +165,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                     }
                 }
 
-                listPlay.setAdapter(new ListPlayAdapterForReview(getActivity(), playListForReview));
-
-
+                listPlay.setAdapter(new ListPlayAdapterForPerform(getActivity(), playListForPerform, playOrderList));
 
 
             }
@@ -178,7 +176,8 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     @Override
     public void onResume() {
         super.onResume();
-        rbGennemsyn.setChecked(true);
+
+        rbBestilte.setChecked(true);
 
     }
 
