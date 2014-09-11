@@ -36,7 +36,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
     private DrawerLayout drawer;
     private ListView leftDrawerList;
     private ActionBarDrawerToggle actionBarDrawerToggle;
-    private String[] leftSliderData = {"Indstillinger", "Beskeder", "Søg", "Mine stykker", "Inspiration", "Guide"};
+    private String[] leftSliderData = { "Søg", "Mine stykker", "Beskeder" ,"Dramaøvelser","Indstillinger", "Hjælp"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +100,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
 
         switch (position) {
 
-            case 0:
+            case 4:
 
 
                 SettingsFragment fragmentSettings = SettingsFragment.newInstance("", "");
@@ -113,7 +113,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
                 break;
 
 
-            case 1:
+            case 2:
 
 
                 FragmentMessage fragmentMessage = FragmentMessage.newInstance("", "");
@@ -126,7 +126,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
                 break;
 
 
-            case 2:
+            case 0:
 
 
                 FragmentSearch fragmentSearch = FragmentSearch.newInstance("", "");
@@ -138,7 +138,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
 
                 break;
 
-            case 3:
+            case 1:
 
                 FragmentMyPlay fragmentMyPlay = FragmentMyPlay.newInstance("", "");
 
@@ -149,7 +149,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
 
                 break;
 
-            case 4:
+            case 3:
 
 
                 FragmentInspiration fragmentInspiration = FragmentInspiration.newInstance("", "");
@@ -157,7 +157,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
                 if (manager.findFragmentByTag("Inspiration") == null) {
                     ft.replace(R.id.main_content, fragmentInspiration, "Inspiration").commit();
                 }
-                txtHeader.setText("Inspiration");
+                txtHeader.setText("Dramaøvelser");
 
                 break;
 
@@ -169,7 +169,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
                     ft.replace(R.id.main_content, fragmentGuide, "Guide").commit();
                 }
 
-                txtHeader.setText("Guide");
+                txtHeader.setText("Hjælp");
 
 
                 break;

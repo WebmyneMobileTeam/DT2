@@ -45,6 +45,7 @@ public class BaseActivity extends FragmentActivity {
                 getActionBar().setDisplayShowCustomEnabled(true);
 
         txtHeader.setTextColor(Color.BLACK);
+        txtHeader.setSingleLine();
             txtHeader.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
         getActionBar().setCustomView(txtHeader, acBarParams);
         txtHeader.setTypeface(Typeface.createFromAsset(getAssets(),"helvetica.ttf"),Typeface.BOLD);

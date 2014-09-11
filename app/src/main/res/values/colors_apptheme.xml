@@ -2,6 +2,7 @@
 <resources>
 
     <color name="apptheme_color">#006fb1</color>
+
     <color name="gray_color">#a0a0a0</color>
     <color name="aqua">#009688</color>
     <color name="greenTheme">#3c7933</color>

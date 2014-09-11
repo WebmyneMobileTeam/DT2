@@ -24,9 +24,10 @@ public class ShareActivityForPerform extends BaseActivity {
         FragmentTransaction ft = manager.beginTransaction();
         ShareFragment fragmentShare = ShareFragment.newInstance("", "");
 
+        if (manager.findFragmentByTag("share_perform") == null) {
             ft.replace(R.id.main_content, fragmentShare, "share_perform").commit();
+        }
 
-        txtHeader.setText("share");
     }
 
     @Override

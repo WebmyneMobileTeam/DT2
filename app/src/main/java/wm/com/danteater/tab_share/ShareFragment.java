@@ -208,7 +208,7 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         pager.setPageMargin(pageMargin);
 
         tabs.setViewPager(pager);
-        tabs.setIndicatorColor(getResources().getColor(R.color.apptheme_color));
+        tabs.setIndicatorColor(getResources().getColor(R.color.greenTheme));
         tabs.setBackgroundColor(Color.parseColor("#f5f5f5"));
 
         getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
