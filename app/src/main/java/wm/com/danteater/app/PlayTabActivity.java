@@ -10,11 +10,10 @@ import android.widget.TabHost;
 
 import wm.com.danteater.R;
 import wm.com.danteater.customviews.WMImageView;
-import wm.com.danteater.tab_info.InfoFragment;
+import wm.com.danteater.inspiration.FragmentInspiration;
 import wm.com.danteater.tab_music.MusicFragment;
 import wm.com.danteater.tab_read.ReadFragment;
 import wm.com.danteater.tab_recording.RecordingFragment;
-import wm.com.danteater.tab_share.ShareFragment;
 
 
 /**
@@ -29,6 +28,7 @@ import wm.com.danteater.tab_share.ShareFragment;
  */
 
 public class PlayTabActivity extends BaseActivity {
+
 
     private FragmentTabHost mTabHost;
     private String type_navigation;
@@ -54,8 +54,8 @@ public class PlayTabActivity extends BaseActivity {
         // Check weather the received extra string is read or share to select corresponding tabs;
         if(type_navigation.equalsIgnoreCase("Read")){
 
-            mTabHost.setCurrentTab(3);
-            selectTAB(3);
+            mTabHost.setCurrentTab(0);
+            selectTAB(0);
 
         }else if(type_navigation.equalsIgnoreCase("Share")){
 
@@ -89,7 +89,7 @@ public class PlayTabActivity extends BaseActivity {
         mTabHost = (FragmentTabHost)findViewById(android.R.id.tabhost);
         mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
 
-        View view = getLayoutInflater().inflate(R.layout.item_tab_info,null,false);
+
         View view2 = getLayoutInflater().inflate(R.layout.item_tab_music,null,false);
         View view3 = getLayoutInflater().inflate(R.layout.item_tab,null,false);
         View view4 = getLayoutInflater().inflate(R.layout.item_tab_read,null,false);
@@ -99,19 +99,25 @@ public class PlayTabActivity extends BaseActivity {
         Bundle bInfo=new Bundle();
         bInfo.putString("infoData",playinfo+"");
 
-        mTabHost.addTab(mTabHost.newTabSpec("tab1").setIndicator(view),
-                InfoFragment.class,bInfo );
+
+        mTabHost.addTab(mTabHost.newTabSpec("tab4").setIndicator(view4),
+                ReadFragment.class, null);
+
+        mTabHost.addTab(mTabHost.newTabSpec("tab5").setIndicator(view5),
+                RecordingFragment.class, null);
+
+
 
         mTabHost.addTab(mTabHost.newTabSpec("tab2").setIndicator(view2),
                 MusicFragment.class, null);
 
 
         mTabHost.addTab(mTabHost.newTabSpec("tab3").setIndicator(view3),
-                ShareFragment.class, null);
-        mTabHost.addTab(mTabHost.newTabSpec("tab4").setIndicator(view4),
-                ReadFragment.class, null);
-        mTabHost.addTab(mTabHost.newTabSpec("tab5").setIndicator(view5),
-                RecordingFragment.class, null);
+                FragmentInspiration.class, null);
+
+
+
+
 
     }
 

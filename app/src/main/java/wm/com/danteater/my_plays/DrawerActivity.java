@@ -1,8 +1,8 @@
 package wm.com.danteater.my_plays;
 
 import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -47,7 +47,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
         setContentView(R.layout.activity_my_plays);
 
         //Load My Places First Time
-        FragmentManager manager = getFragmentManager();
+        FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction ft = manager.beginTransaction();
         FragmentMyPlay fragmentMyPlay = FragmentMyPlay.newInstance("", "");
 
@@ -95,7 +95,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
 
         // Add your onclick logic here
         drawer.closeDrawers();
-        FragmentManager manager = getFragmentManager();
+        FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction ft = manager.beginTransaction();
 
         switch (position) {

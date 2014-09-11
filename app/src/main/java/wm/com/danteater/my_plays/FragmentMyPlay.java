@@ -1,11 +1,12 @@
 package wm.com.danteater.my_plays;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -401,7 +402,6 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 holder.txtAuther.setText("Generalprøve: Nej");
             }
 
-
             SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
             float performDateFirst = Float.parseFloat(playOrderDetailList.get(position).PerformDateFirst);
             float performDateLast = Float.parseFloat(playOrderDetailList.get(position).PerformDateLast);
@@ -419,23 +419,12 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 }
             });
 
-//            holder.btnReadOrder.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//
-//                    gotoTabActivity(position, "Read");
-//
-//
-//
-//                }
-//            });
-
             holder.btnShareOrder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
 
-                    gotoTabActivity(position, "Share");
+
 
 
                 }
@@ -447,6 +436,49 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                     Toast.makeText(getActivity(), "Delete", Toast.LENGTH_SHORT).show();
                 }
             });
+
+
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    final HUD dialogRead = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
+                    dialogRead.title("Henter");
+                    dialogRead.show();
+
+                    new CountDownTimer(2000, 1000) {
+
+                        @Override
+                        public void onFinish() {
+
+                            dialogRead.dismiss();
+
+                            new Handler().post(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    gotoTabActivity(position, "Read");
+
+                                }
+                            });
+
+
+
+                        }
+
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+
+                        }
+                    }.start();
+
+
+
+
+                }
+            });
+
+
             return convertView;
 
 

@@ -1,10 +1,10 @@
 package wm.com.danteater.search;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.v4.app.Fragment;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-
 
 import wm.com.danteater.R;
 import wm.com.danteater.customviews.HUD;

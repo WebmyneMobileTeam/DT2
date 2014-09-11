@@ -2,18 +2,15 @@ package wm.com.danteater.inspiration;
 
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
-
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaMetadataRetriever;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,11 +19,9 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-
-
 import java.util.ArrayList;
-import wm.com.danteater.R;
 
+import wm.com.danteater.R;
 import wm.com.danteater.customviews.WMTextView;
 
 public class FragmentInspiration extends Fragment {
