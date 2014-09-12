@@ -31,9 +31,6 @@ public class BaseActivity extends FragmentActivity {
                 ActionBar.LayoutParams.WRAP_CONTENT);
         acBarParams.gravity= Gravity.CENTER| Gravity.CENTER_VERTICAL;
 
-
-
-
         // Adding the new custom textview to the actionbar that has center alined property.
 
         txtHeader=new WMTextView(this);
@@ -45,10 +42,12 @@ public class BaseActivity extends FragmentActivity {
                 getActionBar().setDisplayShowCustomEnabled(true);
 
         txtHeader.setTextColor(Color.BLACK);
-        txtHeader.setSingleLine();
+
+        txtHeader.setSingleLine(true);
             txtHeader.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
         getActionBar().setCustomView(txtHeader, acBarParams);
         txtHeader.setTypeface(Typeface.createFromAsset(getAssets(),"helvetica.ttf"),Typeface.BOLD);
+        txtHeader.setMaxWidth((int)(getResources().getDisplayMetrics().widthPixels/2));
 
 
 

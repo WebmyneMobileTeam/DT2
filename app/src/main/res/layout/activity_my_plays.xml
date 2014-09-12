@@ -14,18 +14,19 @@
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:layout_gravity="left"
+        android:background="#d1d1d1"
         android:clickable="true"
-        android:background="@android:color/white">
+
+        >
 
         <ListView
-            android:layout_marginTop="8dp"
             android:id="@+id/left_drawer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/logoutImage"
+            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:divider="#e1e1e1"
+            android:background="@android:color/white"
             android:dividerHeight="0.5dp" />
 
         <wm.com.danteater.customviews.WMTextView
@@ -49,7 +50,7 @@
             android:gravity="center_horizontal"
             android:layout_toRightOf="@+id/logoutImage"
             android:text="Kasper Fuglsang"
-            android:textColor="#a0a0a0" />
+            android:textColor="#000"/>
 
 
         <wm.com.danteater.customviews.WMTextView
@@ -62,7 +63,6 @@
             android:layout_toRightOf="@+id/logoutImage"
             android:text="Log ud"
             android:textColor="@color/apptheme_color" />
-
 
     </RelativeLayout>
 

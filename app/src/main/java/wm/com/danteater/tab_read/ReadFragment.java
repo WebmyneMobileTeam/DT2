@@ -1,16 +1,24 @@
 package wm.com.danteater.tab_read;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import com.android.volley.VolleyError;
 import com.google.gson.GsonBuilder;
+
 import java.util.ArrayList;
 
 import wm.com.danteater.Play.AssignedUsers;
@@ -24,10 +32,14 @@ import wm.com.danteater.model.ComplexPreferences;
 
 
 public class ReadFragment extends Fragment {
+
     private Play selectedPlay;
     private ArrayList<PlayLines> playLinesesList;
     private ArrayList<AssignedUsers> assignedUsersesList = new ArrayList<AssignedUsers>();
     private HUD dialog;
+    private View layout_gotoLine;
+    private boolean isGoToLineVisible = true;
+    private Menu menu;
 
     public static ReadFragment newInstance(String param1, String param2) {
         ReadFragment fragment = new ReadFragment();
@@ -46,6 +58,10 @@ public class ReadFragment extends Fragment {
         selectedPlay = complexPreferences.getObject("selected_play", Play.class);
         ((WMTextView) getActivity().getActionBar().getCustomView()).setText(selectedPlay.Title);
 
+       setHasOptionsMenu(true);
+       getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+        ((WMTextView)getActivity().getActionBar().getCustomView()).setGravity(Gravity.LEFT);
+
 
     }
 
@@ -53,7 +69,11 @@ public class ReadFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_read, container, false);
+
+        View convertView = inflater.inflate(R.layout.fragment_read, container, false);
+        layout_gotoLine = (View)convertView.findViewById(R.id.layout_item_goto_line);
+
+        return convertView;
     }
 
 
@@ -112,7 +132,6 @@ public class ReadFragment extends Fragment {
 //                        Log.e("castMatchesList",playLinesesList.get(i).castMatchesList.get(j)+"");
                     }
 
-
                 }
 
             }
@@ -133,5 +152,79 @@ public class ReadFragment extends Fragment {
 
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+       // super.onCreateOptionsMenu(menu, inflater);
+        this.menu = menu;
+        getActivity().getMenuInflater().inflate(R.menu.menu_read,menu);
 
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+
+            case android.R.id.home:
+
+                getActivity().finish();
+
+                break;
+
+
+            case R.id.action_line_number:
+
+                int static_height = 0;
+
+
+                if(isGoToLineVisible == true){
+
+                    static_height = (int)(layout_gotoLine.getY() - layout_gotoLine.getHeight());
+                    start_onoff(static_height);
+
+                }else{
+                    static_height = (int)(layout_gotoLine.getY() + layout_gotoLine.getHeight());
+                    start_onoff(static_height);
+
+                }
+
+
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void start_onoff(int static_height) {
+
+        ObjectAnimator animUp = ObjectAnimator.ofFloat(layout_gotoLine,"y",static_height);
+        animUp.setDuration(300);
+        animUp.start();
+        animUp.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+
+                isGoToLineVisible = !isGoToLineVisible;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+
+
+    }
 }

@@ -520,6 +520,12 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
     }
 
+
+    /**
+     * @param nbSeconds
+     * @return
+     */
+
     public static java.util.Date float2Date(float nbSeconds) {
         java.util.Date date_origine;
         java.util.Calendar date = java.util.Calendar.getInstance();

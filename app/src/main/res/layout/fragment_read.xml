@@ -2,16 +2,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@android:color/black"
+
     tools:context="wm.com.danteater.tab_read.ReadFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <!-- TODO: Update blank fragment layout -->
-    <EditText
-        android:layout_width="match_parent"
+
+    <include
+        android:id="@+id/layout_item_goto_line"
+        layout="@layout/item_goto_line"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Read Fragment"
-        />
+        android:layout_gravity="top|center_horizontal"
+        ></include>
+
+
+
 
 
 </FrameLayout>

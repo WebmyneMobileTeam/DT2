@@ -14,4 +14,9 @@
     <string name="title_activity_guide_startup">GuideStartup</string>
     <string name="title_activity_read_activity_from_preview">ReadActivityFromPreview</string>
 
+    <string name="menu_line_number">Line Number</string>
+    <string name="menu_section">Section</string>
+
+
+
 </resources>
