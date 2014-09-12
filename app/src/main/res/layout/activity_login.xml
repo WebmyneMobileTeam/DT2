@@ -1,31 +1,101 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_margin"
-    android:paddingRight="@dimen/activity_margin"
-    android:paddingTop="@dimen/activity_margin"
-    android:paddingBottom="@dimen/activity_margin"
+
     android:background="@android:color/white"
     tools:context=".LoginActivity">
 
+    <!-- Temp Button-->
     <TextView
         android:text="@string/label_login"
         android:layout_width="wrap_content"
+        android:visibility="gone"
         android:layout_height="wrap_content"
-       android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
         android:id="@+id/txtLogin" />
 
-    <GridLayout
-        android:id="@+id/fragment_layout"
+
+    <!-- Login View-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        android:orientation="vertical">
+
+
+        <!-- Display Login View From Server -->
+        <GridLayout
+            android:id="@+id/fragment_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
+        </GridLayout>
+    </LinearLayout>
+
+    <!-- No Network View-->
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-       android:layout_centerInParent="true">
-    </GridLayout>
+        android:gravity="center"
+        android:visibility="gone"
+        android:orientation="vertical">
 
 
 
+    </LinearLayout>
 
-</RelativeLayout>
+    <!-- No Access View-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+         >
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/activity_margin"
+        android:layout_centerInParent="true"
+
+        android:orientation="vertical">
+
+        <wm.com.danteater.customviews.WMTextView
+            android:id="@+id/txtTopLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Din skole har endnu ikke abonnement til Teater Aftale"
+            android:gravity="center"
+            />
+        <ImageView
+            android:id="@+id/imgNoAccess"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_width="@dimen/no_access_img_width"
+            android:layout_height="@dimen/no_access_img_height"
+            android:background="@drawable/no_access"/>
+
+        <wm.com.danteater.customviews.WMTextView
+            android:id="@+id/txtBottomLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ring til MV-Nordic på 6591 8022 eller klik her for at læse mere."
+            android:gravity="center"
+            />
+
+        </LinearLayout>
+
+
+        <ImageView
+            android:id="@+id/imgBottomBanner"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bottom_banner_height"
+            android:background="@drawable/bottom_banner_no_access"/>
+    </RelativeLayout>
+
+
+</FrameLayout>

@@ -9,6 +9,7 @@
     <color name="radio_button_selected_color">#3c7933</color>
     <color name="radio_button_unselected_color">@android:color/transparent</color>
     <color name="background_tab_pressed">#6633B5E5</color>
-
+    <color name="internet_unavailable_bg">#dbefff</color>
+    <color name="internet_unavailable_round_view">#c2ccd4</color>
 
 </resources>
