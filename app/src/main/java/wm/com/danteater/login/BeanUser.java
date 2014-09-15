@@ -19,13 +19,24 @@ public class BeanUser {
     private String primaryGroup;
     @SerializedName("roles")
     private ArrayList<String> roles;
+    @SerializedName("domain")
+    private String domain;
 
-    public BeanUser(String firstName, String lastName, String userId, String primaryGroup, ArrayList<String> roles) {
+    public BeanUser(String firstName, String lastName, String userId, String primaryGroup, ArrayList<String> roles, String domain) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.userId = userId;
         this.primaryGroup = primaryGroup;
         this.roles = roles;
+        this.domain = domain;
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
     }
 
     public String getFirstName() {

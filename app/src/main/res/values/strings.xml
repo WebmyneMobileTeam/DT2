@@ -16,7 +16,7 @@
 
     <string name="menu_line_number">Line Number</string>
     <string name="menu_section">Section</string>
-
+    <string name="link"><a href="https://www.mv-nordic.com/dk/produkter/teater-aftale">her</a></string>
 
 
 </resources>

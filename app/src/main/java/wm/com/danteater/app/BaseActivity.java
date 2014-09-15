@@ -2,15 +2,19 @@ package wm.com.danteater.app;
 
 
 import android.app.ActionBar;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.TypedValue;
 import android.view.Gravity;
 
 import wm.com.danteater.customviews.WMTextView;
+import wm.com.danteater.login.LoginActivity;
 
 /**
  * Created by nirav.
@@ -53,4 +57,14 @@ public class BaseActivity extends FragmentActivity {
 
 
     }
+    // Check Internet Connection
+    public  boolean isConnected() {
+        ConnectivityManager cm =(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+        return  isConnected;
+    }
+
 }

@@ -28,6 +28,7 @@
 
         <!-- Display Login View From Server -->
         <GridLayout
+
             android:id="@+id/fragment_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"></GridLayout>
@@ -62,7 +63,7 @@
                 android:gravity="center" />
 
             <wm.com.danteater.customviews.WMTextView
-
+                android:id="@+id/txtTryAgain"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/normalText"

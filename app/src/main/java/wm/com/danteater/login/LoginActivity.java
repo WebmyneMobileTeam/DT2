@@ -1,15 +1,19 @@
 package wm.com.danteater.login;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
+import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -34,6 +38,7 @@ import wm.com.danteater.app.MyApplication;
 import wm.com.danteater.customviews.WMTextView;
 import wm.com.danteater.guide.GuideStartup;
 import wm.com.danteater.model.AdvancedSpannableString;
+import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.my_plays.DrawerActivity;
 
 public class LoginActivity extends BaseActivity implements AdvancedSpannableString.OnClickableSpanListner {
@@ -45,6 +50,8 @@ public class LoginActivity extends BaseActivity implements AdvancedSpannableStri
     private RelativeLayout noNetworkView;
     boolean isTeacherOrAdmin;
     private WMTextView txtBottomLabel;
+    BeanUser beanUser;
+    WMTextView txtTryAgain;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +64,8 @@ public class LoginActivity extends BaseActivity implements AdvancedSpannableStri
         noNetworkView=(RelativeLayout)findViewById(R.id.noNetworkView);
 
         txtBottomLabel=(WMTextView)findViewById(R.id.txtBottomLabel);
+
+        txtTryAgain=(WMTextView)findViewById(R.id.txtTryAgain);
         // get login value from setting activity
         // true- automatic login
         // false- manual login
@@ -88,11 +97,14 @@ public class LoginActivity extends BaseActivity implements AdvancedSpannableStri
         m_device_security.excludeLoginGroup("private");
         // if automatic login is off, release the device registration
         if (shouldShowLoginView == false) {
+
             m_device_security.releaseDeviceRegistration();
         }
         // try to login
         m_device_security.doLogin("product.ios.da.intowords", R.id.fragment_layout);
-
+        loginView.setVisibility(View.VISIBLE);
+        noAccessView.setVisibility(View.GONE);
+        noNetworkView.setVisibility(View.GONE);
     }
 
 
@@ -123,37 +135,54 @@ public class LoginActivity extends BaseActivity implements AdvancedSpannableStri
             String session_id = m_device_security.getMVSessionID(response.access_identifier);
 
             if (session_id == "" || session_id == null) {
+
+                m_device_security.releaseDeviceRegistration();
+
+
                 // no internet connection
                 // shows no network view
+                //TODO open from database (Last visited play)
 
-//                m_device_security.releaseDeviceRegistration();
-//
-//                AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
-//                alert.setTitle("Intet netværk");
-//                alert.setMessage("Login-serveren kunne ikke kontaktes. Tjek venligst dine netværksindstillinger, og prøv at logge ind igen.");
-//                alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        m_device_security.releaseDeviceRegistration();
-//                    }
-//                });
-//                alert.show();
-//
-//                loginView.setVisibility(View.GONE);
-//                noAccessView.setVisibility(View.GONE);
-//                noNetworkView.setVisibility(View.VISIBLE);
+                txtTryAgain.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(isConnected()) {
 
-                //TODO
+                            ((GridLayout)findViewById(R.id.fragment_layout)).clearDisappearingChildren();
+                            loginView.setVisibility(View.VISIBLE);
+                            noAccessView.setVisibility(View.GONE);
+                            noNetworkView.setVisibility(View.GONE);
+                            m_device_security.doLogin("product.ios.da.intowords", R.id.fragment_layout);
+
+                        }
+
+                        Toast.makeText(LoginActivity.this, "try again", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+
+                AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
+                alert.setTitle("Intet netværk");
+                alert.setMessage("Login-serveren kunne ikke kontaktes. Tjek venligst dine netværksindstillinger, og prøv at logge ind igen.");
+                alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        m_device_security.releaseDeviceRegistration();
+                    }
+                });
+                alert.show();
+
                 loginView.setVisibility(View.GONE);
-                noAccessView.setVisibility(View.VISIBLE);
-                noNetworkView.setVisibility(View.GONE);
+                noAccessView.setVisibility(View.GONE);
+                noNetworkView.setVisibility(View.VISIBLE);
 
-                loginView.setVisibility(View.GONE);
-                noAccessView.setVisibility(View.VISIBLE);
-                noNetworkView.setVisibility(View.GONE);
-                txtBottomLabel.setMovementMethod(LinkMovementMethod.getInstance());
-                txtBottomLabel.setText(Html.fromHtml("Ring til MV-Nordic på 6591 8022 eller klik <a href=\\\"https://www.mv-nordic.com/dk/produkter/teater-aftale\\\">her</a> for at læse mere."));
+
+
+
+
+
 
 
 
@@ -227,13 +256,14 @@ public class LoginActivity extends BaseActivity implements AdvancedSpannableStri
                     Intent intent = null;
                     BeanUserResult beanCustomerInfo = new GsonBuilder().create().fromJson(response, BeanUserResult.class);
                     BeanUserInfo beanUserInfo = beanCustomerInfo.getBeanUserResult();
-                    BeanUser beanUser = beanUserInfo.getBeanUser();
+                    beanUser = beanUserInfo.getBeanUser();
 
                     Log.e("user_id: ", beanUser.getUserId() + "");
                     Log.e("first_name: ", beanUser.getFirstName() + "");
                     Log.e("last_name: ", beanUser.getLastName() + "");
                     Log.e("primary_group: ", beanUser.getPrimaryGroup() + "");
                     Log.e("roles: ", beanUser.getRoles() + "");
+                    Log.e("domain: ", beanUser.getDomain() + "");
                     isTeacherOrAdmin=checkTeacherOrAdmin(beanUser.getRoles());
 
                 } catch (JsonSyntaxException e) {
@@ -242,17 +272,21 @@ public class LoginActivity extends BaseActivity implements AdvancedSpannableStri
                     e.printStackTrace();
                 }
 
-                // store current user and domain in shared preferences
-
+                //store current user and domain in shared preferences
+                ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(LoginActivity.this, "user_pref",0);
+                complexPreferences.putObject("current_user",beanUser);
+                complexPreferences.commit();
 
                 // if logged in user is teacher or admin and has no access
                 if (!mvid_response.has_access && isTeacherOrAdmin) {
-                    //TODO
+
                     loginView.setVisibility(View.GONE);
                     noAccessView.setVisibility(View.VISIBLE);
                     noNetworkView.setVisibility(View.GONE);
-                    txtBottomLabel.setText(Html.fromHtml("Ring til MV-Nordic på 6591 8022 eller klik <a href=\\\"https://www.mv-nordic.com/dk/produkter/teater-aftale\\\">her</a> for at læse mere."));
 
+
+                    txtBottomLabel.setText(Html.fromHtml("Ring til MV-Nordic på 6591 8022 eller klik <a href=\"https://www.mv-nordic.com/dk/produkter/teater-aftale\\\">her</a> for at læse mere."));
+                    txtBottomLabel.setMovementMethod(LinkMovementMethod.getInstance());
                 } else {
 
                     loginView.setVisibility(View.VISIBLE);
@@ -332,5 +366,7 @@ public class LoginActivity extends BaseActivity implements AdvancedSpannableStri
         }
         return isPupil;
     }
+
+
 
 }
