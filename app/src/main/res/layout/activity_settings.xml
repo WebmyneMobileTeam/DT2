@@ -112,7 +112,7 @@
             android:layout_height="@dimen/switch_height"
             android:background="@drawable/toggle_selector"
             android:layout_gravity="right|center_vertical"
-            android:checked="true"
+            android:checked="false"
             android:textOff=""
             android:textOn="" />
 

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <!-- switch -->
-    <dimen name="switch_height">25dp</dimen>
-    <dimen name="switch_width">40dp</dimen>
-</resources>
