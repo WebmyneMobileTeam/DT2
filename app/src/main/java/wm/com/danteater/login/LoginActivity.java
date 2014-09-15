@@ -1,24 +1,16 @@
 package wm.com.danteater.login;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
-import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -27,31 +19,27 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import com.mvnordic.mviddeviceconnector.DeviceSecurity;
-
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-
 import wm.com.danteater.R;
 import wm.com.danteater.app.BaseActivity;
 import wm.com.danteater.app.MyApplication;
 import wm.com.danteater.customviews.WMTextView;
 import wm.com.danteater.guide.GuideStartup;
-import wm.com.danteater.model.AdvancedSpannableString;
 import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.my_plays.DrawerActivity;
 
-public class LoginActivity extends BaseActivity implements AdvancedSpannableString.OnClickableSpanListner {
+public class LoginActivity extends BaseActivity {
 
 
     DeviceSecurity m_device_security = null;
     boolean shouldShowLoginView;
-    private LinearLayout loginView,noAccessView;
+    private LinearLayout loginView, noAccessView;
     private RelativeLayout noNetworkView;
     boolean isTeacherOrAdmin;
     private WMTextView txtBottomLabel;
     BeanUser beanUser;
     WMTextView txtTryAgain;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,13 +47,13 @@ public class LoginActivity extends BaseActivity implements AdvancedSpannableStri
         txtHeader.setText("Login");
 
         // Alternative Views
-        loginView=(LinearLayout)findViewById(R.id.LoginView);
-        noAccessView=(LinearLayout)findViewById(R.id.noAccessView);
-        noNetworkView=(RelativeLayout)findViewById(R.id.noNetworkView);
+        loginView = (LinearLayout) findViewById(R.id.LoginView);
+        noAccessView = (LinearLayout) findViewById(R.id.noAccessView);
+        noNetworkView = (RelativeLayout) findViewById(R.id.noNetworkView);
 
-        txtBottomLabel=(WMTextView)findViewById(R.id.txtBottomLabel);
+        txtBottomLabel = (WMTextView) findViewById(R.id.txtBottomLabel);
+        txtTryAgain = (WMTextView) findViewById(R.id.txtTryAgain);
 
-        txtTryAgain=(WMTextView)findViewById(R.id.txtTryAgain);
         // get login value from setting activity
         // true- automatic login
         // false- manual login
@@ -77,18 +65,13 @@ public class LoginActivity extends BaseActivity implements AdvancedSpannableStri
             Intent i = new Intent(LoginActivity.this, DrawerActivity.class);
             startActivity(i);
             finish();
-
         } else {
             // automatic login is off
             proceedLogin();
         }
-
-
     }
 
     private void proceedLogin() {
-
-
         m_device_security = new DeviceSecurity(this);
         m_device_security.addDeviceSecurityListener(device_security_listener);
 
@@ -101,43 +84,30 @@ public class LoginActivity extends BaseActivity implements AdvancedSpannableStri
             m_device_security.releaseDeviceRegistration();
         }
         // try to login
-        m_device_security.doLogin("product.ios.da.intowords", R.id.fragment_layout);
-        loginView.setVisibility(View.VISIBLE);
-        noAccessView.setVisibility(View.GONE);
-        noNetworkView.setVisibility(View.GONE);
+        if (isConnected()) {
+            // TODO change to login with android
+            m_device_security.doLogin("product.ios.da.intowords", R.id.fragment_layout);
+            loginView.setVisibility(View.VISIBLE);
+            noAccessView.setVisibility(View.GONE);
+            noNetworkView.setVisibility(View.GONE);
+        } else {
+            m_device_security.doLogin("product.ios.da.intowords", R.id.fragment_layout);
+            loginView.setVisibility(View.GONE);
+            noAccessView.setVisibility(View.GONE);
+            noNetworkView.setVisibility(View.GONE);
+        }
     }
 
-
-    @Override
-    public void onSpanClick() {
-        Toast.makeText(this, "https://www.mv-nordic.com/dk/produkter/teater-aftale/", Toast.LENGTH_SHORT).show();
-        String url = "https://www.mv-nordic.com/dk/produkter/teater-aftale/";
-        Intent i = new Intent(Intent.ACTION_VIEW);
-        i.setData(Uri.parse(url));
-        startActivity(i);
-    }
 
     private DeviceSecurity.DeviceSecurityListener device_security_listener = new DeviceSecurity.DeviceSecurityListener() {
-
         @Override
         public void onMVIDResponseReady(MVIDResponse response) {
-           /* String toast = String.format("AI: %s\nREQUEST_ID: %s\nGOT ACCESS: %s",
-                    response.access_identifier,
-                    response.request_id,
-                    response.has_access ? "YES" : "NO" );
-            Toast.makeText(getBaseContext(), toast,
-                    Toast.LENGTH_SHORT).show();*/
-
             if (response.has_access == false) {
                 m_device_security.releaseDeviceRegistration();
             }
-
             String session_id = m_device_security.getMVSessionID(response.access_identifier);
-
             if (session_id == "" || session_id == null) {
-
                 m_device_security.releaseDeviceRegistration();
-
 
                 // no internet connection
                 // shows no network view
@@ -146,46 +116,21 @@ public class LoginActivity extends BaseActivity implements AdvancedSpannableStri
                 txtTryAgain.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(isConnected()) {
-
-                            ((GridLayout)findViewById(R.id.fragment_layout)).clearDisappearingChildren();
+                        if (isConnected()) {
+                            m_device_security.doLogin("product.ios.da.intowords", R.id.fragment_layout);
                             loginView.setVisibility(View.VISIBLE);
                             noAccessView.setVisibility(View.GONE);
                             noNetworkView.setVisibility(View.GONE);
-                            m_device_security.doLogin("product.ios.da.intowords", R.id.fragment_layout);
-
                         }
-
-                        Toast.makeText(LoginActivity.this, "try again", Toast.LENGTH_SHORT).show();
                     }
                 });
 
+                showDialog("Intet netværk","Login-serveren kunne ikke kontaktes. Tjek venligst dine netværksindstillinger, og prøv at logge ind igen.");
 
-
-                AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
-                alert.setTitle("Intet netværk");
-                alert.setMessage("Login-serveren kunne ikke kontaktes. Tjek venligst dine netværksindstillinger, og prøv at logge ind igen.");
-                alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        m_device_security.releaseDeviceRegistration();
-                    }
-                });
-                alert.show();
 
                 loginView.setVisibility(View.GONE);
                 noAccessView.setVisibility(View.GONE);
                 noNetworkView.setVisibility(View.VISIBLE);
-
-
-
-
-
-
-
-
-
             } else {
 
                 loginView.setVisibility(View.VISIBLE);
@@ -203,15 +148,11 @@ public class LoginActivity extends BaseActivity implements AdvancedSpannableStri
             }
         }
 
-
         private void callWebServicePost(String session_id, final MVIDResponse mvid_response) {
-
 
             JSONObject params = new JSONObject();
             JSONObject request_params = new JSONObject();
-
             try {
-
                 params.put("session_id", session_id);
                 params.put("lookup_primary_group", true);
                 params.put("extract_userroles", true);
@@ -227,23 +168,18 @@ public class LoginActivity extends BaseActivity implements AdvancedSpannableStri
 
                 @Override
                 public void onResponse(JSONObject jobj) {
-
                     String res = jobj.toString();
                     Log.e("response: ", res + "");
                     handlePostsList(res, mvid_response);
-
                 }
             }, new Response.ErrorListener() {
 
                 @Override
                 public void onErrorResponse(VolleyError arg0) {
-
                 }
             });
             MyApplication.getInstance().addToRequestQueue(req);
         }
-
-
     };
 
     private void handlePostsList(final String response, final DeviceSecurity.DeviceSecurityListener.MVIDResponse mvid_response) {
@@ -252,7 +188,6 @@ public class LoginActivity extends BaseActivity implements AdvancedSpannableStri
             public void run() {
 
                 try {
-
                     Intent intent = null;
                     BeanUserResult beanCustomerInfo = new GsonBuilder().create().fromJson(response, BeanUserResult.class);
                     BeanUserInfo beanUserInfo = beanCustomerInfo.getBeanUserResult();
@@ -264,7 +199,7 @@ public class LoginActivity extends BaseActivity implements AdvancedSpannableStri
                     Log.e("primary_group: ", beanUser.getPrimaryGroup() + "");
                     Log.e("roles: ", beanUser.getRoles() + "");
                     Log.e("domain: ", beanUser.getDomain() + "");
-                    isTeacherOrAdmin=checkTeacherOrAdmin(beanUser.getRoles());
+                    isTeacherOrAdmin = beanUser.checkTeacherOrAdmin(beanUser.getRoles());
 
                 } catch (JsonSyntaxException e) {
                     e.printStackTrace();
@@ -273,8 +208,8 @@ public class LoginActivity extends BaseActivity implements AdvancedSpannableStri
                 }
 
                 //store current user and domain in shared preferences
-                ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(LoginActivity.this, "user_pref",0);
-                complexPreferences.putObject("current_user",beanUser);
+                ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(LoginActivity.this, "user_pref", 0);
+                complexPreferences.putObject("current_user", beanUser);
                 complexPreferences.commit();
 
                 // if logged in user is teacher or admin and has no access
@@ -299,13 +234,10 @@ public class LoginActivity extends BaseActivity implements AdvancedSpannableStri
 
                     // go to next screen
                     if (isFirstTime()) { // show guide pages
-
                         Intent i = new Intent(LoginActivity.this, GuideStartup.class);
                         startActivity(i);
                         finish();
-
                     } else {    // show home screen
-
                         Intent i = new Intent(LoginActivity.this, DrawerActivity.class);
                         startActivity(i);
                         finish();
@@ -328,45 +260,18 @@ public class LoginActivity extends BaseActivity implements AdvancedSpannableStri
         return !ranBefore;
     }
 
-    private boolean checkTeacherOrAdmin(ArrayList<String> roles) {
-        boolean isTeacher=false;
-        if(roles==null){
-            return false;
-        }
-        if(roles.size()==0){
-            return false;
-        }
 
-        for(String name: roles) {
+    private void showDialog( String title,String message ) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
+        alert.setTitle(title);
+        alert.setMessage(message);
+        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
-            if((name.equalsIgnoreCase("teacher")) || (name.equalsIgnoreCase("admin")) ) {
-                isTeacher=true;
-                break;
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                m_device_security.releaseDeviceRegistration();
             }
-        }
-        return isTeacher;
+        });
+        alert.show();
     }
-
-
-    private boolean checkPupil(ArrayList<String> roles) {
-        boolean isPupil=false;
-        if(roles==null){
-            return false;
-        }
-        if(roles.size()==0){
-            return false;
-        }
-
-        for(String name: roles) {
-
-            if((name.equalsIgnoreCase("pupil")) ) {
-                isPupil=true;
-                break;
-            }
-        }
-        return isPupil;
-    }
-
-
-
 }

@@ -78,4 +78,45 @@ public class BeanUser {
     public void setRoles(ArrayList<String> roles) {
         this.roles = roles;
     }
+
+
+    public boolean checkTeacherOrAdmin(ArrayList<String> roles) {
+        boolean isTeacher=false;
+        if(roles==null){
+            return false;
+        }
+        if(roles.size()==0){
+            return false;
+        }
+
+        for(String name: roles) {
+
+            if((name.equalsIgnoreCase("teacher")) || (name.equalsIgnoreCase("admin")) ) {
+                isTeacher=true;
+                break;
+            }
+        }
+        return isTeacher;
+    }
+
+
+    public boolean checkPupil(ArrayList<String> roles) {
+        boolean isPupil=false;
+        if(roles==null){
+            return false;
+        }
+        if(roles.size()==0){
+            return false;
+        }
+
+        for(String name: roles) {
+
+            if((name.equalsIgnoreCase("pupil")) ) {
+                isPupil=true;
+                break;
+            }
+        }
+        return isPupil;
+    }
+
 }
