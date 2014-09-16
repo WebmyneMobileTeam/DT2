@@ -39,16 +39,18 @@ public class BaseActivity extends FragmentActivity {
 
         txtHeader=new WMTextView(this);
 
-                     getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         getActionBar().setIcon(new ColorDrawable(Color.TRANSPARENT));
         getActionBar().setDisplayShowTitleEnabled(false);
         getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
-                getActionBar().setDisplayShowCustomEnabled(true);
+        getActionBar().setDisplayShowCustomEnabled(true);
+
+
 
         txtHeader.setTextColor(Color.BLACK);
 
         txtHeader.setSingleLine(true);
-            txtHeader.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
+        txtHeader.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
         getActionBar().setCustomView(txtHeader, acBarParams);
         txtHeader.setTypeface(Typeface.createFromAsset(getAssets(),"helvetica.ttf"),Typeface.BOLD);
         txtHeader.setMaxWidth((int)(getResources().getDisplayMetrics().widthPixels/2));

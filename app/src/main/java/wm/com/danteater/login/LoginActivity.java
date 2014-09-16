@@ -72,6 +72,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void proceedLogin() {
+
         m_device_security = new DeviceSecurity(this);
         m_device_security.addDeviceSecurityListener(device_security_listener);
 
@@ -100,11 +101,14 @@ public class LoginActivity extends BaseActivity {
 
 
     private DeviceSecurity.DeviceSecurityListener device_security_listener = new DeviceSecurity.DeviceSecurityListener() {
+
         @Override
         public void onMVIDResponseReady(MVIDResponse response) {
+
             if (response.has_access == false) {
                 m_device_security.releaseDeviceRegistration();
             }
+
             String session_id = m_device_security.getMVSessionID(response.access_identifier);
             if (session_id == "" || session_id == null) {
                 m_device_security.releaseDeviceRegistration();
@@ -188,6 +192,7 @@ public class LoginActivity extends BaseActivity {
             public void run() {
 
                 try {
+
                     Intent intent = null;
                     BeanUserResult beanCustomerInfo = new GsonBuilder().create().fromJson(response, BeanUserResult.class);
                     BeanUserInfo beanUserInfo = beanCustomerInfo.getBeanUserResult();
@@ -227,6 +232,7 @@ public class LoginActivity extends BaseActivity {
                     loginView.setVisibility(View.VISIBLE);
                     noAccessView.setVisibility(View.GONE);
                     noNetworkView.setVisibility(View.GONE);
+
                     //TODO start login timer
                     //TODO retrive school teacher
                     //TODO retrive school classes

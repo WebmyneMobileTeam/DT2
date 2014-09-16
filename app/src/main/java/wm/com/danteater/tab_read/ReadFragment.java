@@ -38,7 +38,7 @@ public class ReadFragment extends Fragment {
     private ArrayList<AssignedUsers> assignedUsersesList = new ArrayList<AssignedUsers>();
     private HUD dialog;
     private View layout_gotoLine;
-    private boolean isGoToLineVisible = true;
+    private boolean isGoToLineVisible = false;
     private Menu menu;
 
     public static ReadFragment newInstance(String param1, String param2) {
@@ -60,7 +60,7 @@ public class ReadFragment extends Fragment {
 
        setHasOptionsMenu(true);
        getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
-        ((WMTextView)getActivity().getActionBar().getCustomView()).setGravity(Gravity.LEFT);
+       ((WMTextView)getActivity().getActionBar().getCustomView()).setGravity(Gravity.LEFT);
 
 
     }
@@ -76,6 +76,13 @@ public class ReadFragment extends Fragment {
         return convertView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+
+
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -158,7 +165,6 @@ public class ReadFragment extends Fragment {
         this.menu = menu;
         getActivity().getMenuInflater().inflate(R.menu.menu_read,menu);
 
-
     }
 
     @Override
@@ -177,6 +183,7 @@ public class ReadFragment extends Fragment {
 
                 int static_height = 0;
 
+                menu.getItem(0).setEnabled(false);
 
                 if(isGoToLineVisible == true){
 
@@ -203,14 +210,12 @@ public class ReadFragment extends Fragment {
         animUp.start();
         animUp.addListener(new Animator.AnimatorListener() {
             @Override
-            public void onAnimationStart(Animator animation) {
-
-
-            }
+            public void onAnimationStart(Animator animation) { }
 
             @Override
             public void onAnimationEnd(Animator animation) {
 
+                menu.getItem(0).setEnabled(true);
                 isGoToLineVisible = !isGoToLineVisible;
             }
 

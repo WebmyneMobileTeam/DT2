@@ -1,13 +1,13 @@
 package wm.com.danteater.model;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import wm.com.danteater.app.MyApplication;
 
@@ -50,6 +50,7 @@ import wm.com.danteater.app.MyApplication;
  * 
  */
 public abstract class CallWebService implements IService {
+
 
 	
 	public abstract void response(String response);

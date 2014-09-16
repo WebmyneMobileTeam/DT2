@@ -9,6 +9,8 @@ import java.util.ArrayList;
  */
 public class BeanUser {
 
+    // Dhruvil
+
     @SerializedName("givenName")
     private String firstName;
     @SerializedName("sn")

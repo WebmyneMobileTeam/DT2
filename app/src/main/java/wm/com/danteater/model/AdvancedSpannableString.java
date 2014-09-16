@@ -1,8 +1,6 @@
 package wm.com.danteater.model;
 
-import android.content.Intent;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.text.SpannableString;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
@@ -12,7 +10,6 @@ import android.text.style.StyleSpan;
 import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
 import android.view.View;
-import android.widget.Toast;
 
 public class AdvancedSpannableString extends SpannableString {
 
@@ -20,7 +17,6 @@ public class AdvancedSpannableString extends SpannableString {
     private OnClickableSpanListner listner;
 	public AdvancedSpannableString(CharSequence source) {
 		super(source);
-
 		mainString = source.toString();
 		
 	}

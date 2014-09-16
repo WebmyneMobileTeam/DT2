@@ -14,10 +14,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import wm.com.danteater.R;
 import wm.com.danteater.customviews.HUD;
 import wm.com.danteater.customviews.ListDialog;
@@ -68,7 +66,6 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
         imageList.add(R.drawable.ic_age);
         imageList.add(R.drawable.ic_music);
         imageList.add(R.drawable.ic_duration);
-
         titleList.add("Medvirkende");
         titleList.add("Alder");
         titleList.add("Musik");
