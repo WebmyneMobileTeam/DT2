@@ -36,6 +36,8 @@ import wm.com.danteater.app.PlayTabActivity;
 import wm.com.danteater.customviews.HUD;
 import wm.com.danteater.customviews.SegmentedGroup;
 import wm.com.danteater.customviews.WMTextView;
+import wm.com.danteater.login.BeanUser;
+import wm.com.danteater.login.LoginActivity;
 import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
 
@@ -53,7 +55,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     private ArrayList<Play> playListForReview = new ArrayList<Play>();
     private ArrayList<Play> playListForPerform = new ArrayList<Play>();
     private ArrayList<PlayOrderDetails> playOrderList = new ArrayList<PlayOrderDetails>();
-
+    private BeanUser beanUser;
 
     public static FragmentMyPlay newInstance(String param1, String param2) {
         FragmentMyPlay fragment = new FragmentMyPlay();
@@ -68,7 +70,8 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "user_pref", 0);
+        beanUser=complexPreferences.getObject("current_user", BeanUser.class);
     }
 
     @Override
@@ -107,7 +110,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
         dialog.title("Mine Stykker");
         dialog.show();
 
-        new CallWebService("http://api.danteater.dk/api/MyPlays?UserId=kf", CallWebService.TYPE_JSONARRAY) {
+        new CallWebService("http://api.danteater.dk/api/MyPlays?UserId="+beanUser.getUserId(), CallWebService.TYPE_JSONARRAY) {
 
             @Override
             public void response(String response) {
