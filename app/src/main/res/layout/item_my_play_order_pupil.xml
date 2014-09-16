@@ -1,14 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingRight="16dp"
+    android:paddingLeft="16dp"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp"
+    android:orientation="vertical">
 
-    android:layout_height="match_parent">
 
-    <ListView
-        android:id="@+id/listPlayForPupil"
+    <wm.com.danteater.customviews.WMTextView
+        android:id="@+id/txtOrderTitlePupil"
+        android:singleLine="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:dividerHeight="1dp" />
-</FrameLayout>
+        android:layout_height="wrap_content"
+        android:text="Title a very long text"
+        android:layout_alignParentLeft="true"
+        android:gravity="center_vertical"
+        android:textSize="@dimen/normalText" />
+
+
+    <wm.com.danteater.customviews.WMTextView
+        android:id="@+id/txtOrderAutherPupil"
+        android:singleLine="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Auther"
+        android:textColor="@color/gray_color"
+        android:textSize="@dimen/fragment_my_play_small_text" />
+
+    <wm.com.danteater.customviews.WMTextView
+        android:id="@+id/txtOrderDuration1Pupil"
+        android:layout_width="match_parent"
+        android:singleLine="true"
+        android:layout_height="wrap_content"
+        android:text="Duration"
+        android:textColor="@color/gray_color"
+        android:textSize="@dimen/fragment_my_play_small_text" />
+
+    <wm.com.danteater.customviews.WMTextView
+        android:singleLine="true"
+        android:id="@+id/txtOrderDuration2Pupil"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Duration"
+        android:textColor="@color/gray_color"
+        android:textSize="@dimen/fragment_my_play_small_text" />
+
+    <wm.com.danteater.customviews.WMTextView
+        android:singleLine="true"
+        android:id="@+id/txtOrderNumberOfPerformancePupil"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Antal opførelser:"
+        android:textColor="@color/gray_color"
+        android:textSize="@dimen/fragment_my_play_small_text" />
+
+
+</LinearLayout>

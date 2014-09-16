@@ -60,16 +60,16 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction ft = manager.beginTransaction();
         if(isPupil) {
-            FragmentMyPlay fragmentMyPlay = FragmentMyPlay.newInstance("", "");
+            FragmentMyPlayPupil fragmentMyPlayPupil = FragmentMyPlayPupil.newInstance("", "");
 
-            if (manager.findFragmentByTag("my_places") == null) {
-                ft.replace(R.id.main_content, fragmentMyPlay, "my_places").commit();
+            if (manager.findFragmentByTag("my_plays_pupil") == null) {
+                ft.replace(R.id.main_content, fragmentMyPlayPupil, "my_plays_pupil").commit();
             }
         } else {
             FragmentMyPlay fragmentMyPlay = FragmentMyPlay.newInstance("", "");
 
-            if (manager.findFragmentByTag("my_places") == null) {
-                ft.replace(R.id.main_content, fragmentMyPlay, "my_places").commit();
+            if (manager.findFragmentByTag("my_plays") == null) {
+                ft.replace(R.id.main_content, fragmentMyPlay, "my_plays").commit();
             }
         }
 
@@ -140,9 +140,10 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
         if (isPupil) {
             switch (position) {
                 case 0:
-                    FragmentMyPlay fragmentMyPlay = FragmentMyPlay.newInstance("", "");
-                    if (manager.findFragmentByTag("my_places") == null) {
-                        ft.replace(R.id.main_content, fragmentMyPlay, "my_places").commit();
+                    FragmentMyPlayPupil fragmentMyPlayPupil = FragmentMyPlayPupil.newInstance("", "");
+
+                    if (manager.findFragmentByTag("my_plays_pupil") == null) {
+                        ft.replace(R.id.main_content, fragmentMyPlayPupil, "my_plays_pupil").commit();
                     }
                     txtHeader.setText("Mine stykker");
                     break;
@@ -184,8 +185,8 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
 
                 case 1:
                     FragmentMyPlay fragmentMyPlay = FragmentMyPlay.newInstance("", "");
-                    if (manager.findFragmentByTag("my_places") == null) {
-                        ft.replace(R.id.main_content, fragmentMyPlay, "my_places").commit();
+                    if (manager.findFragmentByTag("my_plays") == null) {
+                        ft.replace(R.id.main_content, fragmentMyPlay, "my_plays").commit();
                     }
                     txtHeader.setText("Mine stykker");
                     break;
