@@ -32,7 +32,7 @@ import wm.com.danteater.R;
 import wm.com.danteater.app.PlayTabActivity;
 import wm.com.danteater.customviews.HUD;
 import wm.com.danteater.customviews.WMTextView;
-import wm.com.danteater.login.BeanUser;
+import wm.com.danteater.login.User;
 import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
 
@@ -43,7 +43,7 @@ public class FragmentMyPlayPupil extends Fragment {
 
     private HUD dialog;
     private ListView listPlay;
-    private BeanUser beanUser;
+    private User user;
     private ArrayList<Play> playList;
 
     private ArrayList<Play> playListForPerform = new ArrayList<Play>();
@@ -61,11 +61,9 @@ public class FragmentMyPlayPupil extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "user_pref", 0);
-        beanUser = complexPreferences.getObject("current_user", BeanUser.class);
+        user = complexPreferences.getObject("current_user", User.class);
     }
 
     @Override
@@ -79,15 +77,12 @@ public class FragmentMyPlayPupil extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-
         // show loading
-
         dialog = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
         dialog.title("Mine Stykker");
         dialog.show();
 
-        new CallWebService("http://api.danteater.dk/api/MyPlays?UserId=" + beanUser.getUserId(), CallWebService.TYPE_JSONARRAY) {
-
+        new CallWebService("http://api.danteater.dk/api/MyPlays?UserId=" + user.getUserId(), CallWebService.TYPE_JSONARRAY) {
             @Override
             public void response(String response) {
                 dialog.dismiss();
@@ -99,7 +94,6 @@ public class FragmentMyPlayPupil extends Fragment {
             public void error(VolleyError error) {
                 dialog.dismissWithStatus(R.drawable.ic_navigation_cancel, "Error");
                 Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-
             }
         }.start();
     }
@@ -234,33 +228,23 @@ public class FragmentMyPlayPupil extends Fragment {
                     final HUD dialogRead = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
                     dialogRead.title("Henter");
                     dialogRead.show();
-
                     new CountDownTimer(2000, 1000) {
-
                         @Override
                         public void onFinish() {
-
                             dialogRead.dismiss();
-
                             new Handler().post(new Runnable() {
                                 @Override
                                 public void run() {
 
                                     gotoTabActivity(position, "Read");
-
                                 }
                             });
-
-
                         }
-
                         @Override
                         public void onTick(long millisUntilFinished) {
 
                         }
                     }.start();
-
-
                 }
             });
 

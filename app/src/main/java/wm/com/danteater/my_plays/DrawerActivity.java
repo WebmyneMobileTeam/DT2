@@ -24,7 +24,7 @@ import wm.com.danteater.app.BaseActivity;
 import wm.com.danteater.customviews.WMTextView;
 import wm.com.danteater.guide.FragmentGuide;
 import wm.com.danteater.inspiration.FragmentInspiration;
-import wm.com.danteater.login.BeanUser;
+import wm.com.danteater.login.User;
 import wm.com.danteater.login.LoginActivity;
 import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.search.FragmentSearch;
@@ -38,7 +38,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
     private DrawerLayout drawer;
     private ListView leftDrawerList;
     private ActionBarDrawerToggle actionBarDrawerToggle;
-    private BeanUser beanUser;
+    private User user;
     private String[] leftSliderDataForTeacher = {"Søg", "Mine stykker", "Beskeder", "Dramaøvelser", "Indstillinger", "Hjælp"};
     private String[] leftSliderDataForStudent = {"Mine stykker", "Beskeder", "Dramaøvelser", "Indstillinger",};
     private boolean isPupil;
@@ -49,8 +49,8 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_plays);
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(DrawerActivity.this, "user_pref", 0);
-        beanUser = complexPreferences.getObject("current_user", BeanUser.class);
-        isPupil = beanUser.checkPupil(beanUser.getRoles());
+        user = complexPreferences.getObject("current_user", User.class);
+        isPupil = user.checkPupil(user.getRoles());
 
         logoutImage = (WMTextView) findViewById(R.id.logoutImage);
         logoutButton = (WMTextView) findViewById(R.id.logoutButton);
@@ -98,8 +98,8 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
     private void initDrawer() {
 
         //logout contents
-        logoutUser.setText(beanUser.getFirstName().toString()+" "+beanUser.getLastName().toString());
-        logoutImage.setText(beanUser.getFirstName().toString().substring(0, 2));
+        logoutUser.setText(user.getFirstName().toString()+" "+ user.getLastName().toString());
+        logoutImage.setText(user.getFirstName().toString().substring(0, 2));
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

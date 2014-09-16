@@ -7,7 +7,7 @@ import java.util.ArrayList;
 /**
  * Created by nirav on 12-09-2014.
  */
-public class BeanUser {
+public class User {
 
     // Dhruvil
 
@@ -24,7 +24,7 @@ public class BeanUser {
     @SerializedName("domain")
     private String domain;
 
-    public BeanUser(String firstName, String lastName, String userId, String primaryGroup, ArrayList<String> roles, String domain) {
+    public User(String firstName, String lastName, String userId, String primaryGroup, ArrayList<String> roles, String domain) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.userId = userId;

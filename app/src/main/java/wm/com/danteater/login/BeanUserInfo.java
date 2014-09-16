@@ -8,13 +8,13 @@ import com.google.gson.annotations.SerializedName;
 public class BeanUserInfo {
 
     @SerializedName("user_info")
-    BeanUser beanUser;
+    User user;
 
-    public BeanUser getBeanUser() {
-        return beanUser;
+    public User getUser() {
+        return user;
     }
 
-    public void setBeanUser(BeanUser beanUser) {
-        this.beanUser = beanUser;
+    public void setUser(User user) {
+        this.user = user;
     }
 }

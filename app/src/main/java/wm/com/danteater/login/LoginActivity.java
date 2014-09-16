@@ -26,6 +26,7 @@ import wm.com.danteater.app.MyApplication;
 import wm.com.danteater.customviews.WMTextView;
 import wm.com.danteater.guide.GuideStartup;
 import wm.com.danteater.model.ComplexPreferences;
+import wm.com.danteater.model.StateManager;
 import wm.com.danteater.my_plays.DrawerActivity;
 
 public class LoginActivity extends BaseActivity {
@@ -37,9 +38,9 @@ public class LoginActivity extends BaseActivity {
     private RelativeLayout noNetworkView;
     boolean isTeacherOrAdmin;
     private WMTextView txtBottomLabel;
-    BeanUser beanUser;
+    User user;
     WMTextView txtTryAgain;
-
+    String session_id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,7 +110,7 @@ public class LoginActivity extends BaseActivity {
                 m_device_security.releaseDeviceRegistration();
             }
 
-            String session_id = m_device_security.getMVSessionID(response.access_identifier);
+            session_id = m_device_security.getMVSessionID(response.access_identifier);
             if (session_id == "" || session_id == null) {
                 m_device_security.releaseDeviceRegistration();
 
@@ -196,15 +197,15 @@ public class LoginActivity extends BaseActivity {
                     Intent intent = null;
                     BeanUserResult beanCustomerInfo = new GsonBuilder().create().fromJson(response, BeanUserResult.class);
                     BeanUserInfo beanUserInfo = beanCustomerInfo.getBeanUserResult();
-                    beanUser = beanUserInfo.getBeanUser();
+                    user = beanUserInfo.getUser();
 
-                    Log.e("user_id: ", beanUser.getUserId() + "");
-                    Log.e("first_name: ", beanUser.getFirstName() + "");
-                    Log.e("last_name: ", beanUser.getLastName() + "");
-                    Log.e("primary_group: ", beanUser.getPrimaryGroup() + "");
-                    Log.e("roles: ", beanUser.getRoles() + "");
-                    Log.e("domain: ", beanUser.getDomain() + "");
-                    isTeacherOrAdmin = beanUser.checkTeacherOrAdmin(beanUser.getRoles());
+                    Log.e("user_id: ", user.getUserId() + "");
+                    Log.e("first_name: ", user.getFirstName() + "");
+                    Log.e("last_name: ", user.getLastName() + "");
+                    Log.e("primary_group: ", user.getPrimaryGroup() + "");
+                    Log.e("roles: ", user.getRoles() + "");
+                    Log.e("domain: ", user.getDomain() + "");
+                    isTeacherOrAdmin = user.checkTeacherOrAdmin(user.getRoles());
 
                 } catch (JsonSyntaxException e) {
                     e.printStackTrace();
@@ -214,7 +215,7 @@ public class LoginActivity extends BaseActivity {
 
                 //store current user and domain in shared preferences
                 ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(LoginActivity.this, "user_pref", 0);
-                complexPreferences.putObject("current_user", beanUser);
+                complexPreferences.putObject("current_user", user);
                 complexPreferences.commit();
 
                 // if logged in user is teacher or admin and has no access
@@ -236,6 +237,8 @@ public class LoginActivity extends BaseActivity {
                     //TODO start login timer
                     //TODO retrive school teacher
                     //TODO retrive school classes
+                    StateManager.retriveSchoolTeachers(session_id, user.getDomain());
+                      StateManager.retriveSchoolClasses(session_id, user.getDomain());
                     //TODO update contents of navigation drawer
 
                     // go to next screen
