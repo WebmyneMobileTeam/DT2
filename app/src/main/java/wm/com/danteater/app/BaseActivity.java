@@ -58,6 +58,7 @@ public class BaseActivity extends FragmentActivity {
 
 
 
+
     }
     // Check Internet Connection
     public  boolean isConnected() {
