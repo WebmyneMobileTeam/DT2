@@ -86,7 +86,7 @@
                 android:id="@+id/music_download"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/ic_launcher" />
+                android:background="@drawable/ic_av_download" />
 
             <ImageView
                 android:id="@+id/music_play"
@@ -94,7 +94,7 @@
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/ic_launcher" />
+                android:background="@drawable/ic_play" />
 
             <ImageView
                 android:id="@+id/music_pause"
@@ -102,7 +102,7 @@
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/ic_launcher" />
+                android:background="@drawable/ic_pause" />
         </FrameLayout>
 
     </LinearLayout>
