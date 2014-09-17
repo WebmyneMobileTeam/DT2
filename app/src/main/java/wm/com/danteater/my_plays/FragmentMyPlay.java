@@ -3,9 +3,11 @@ package wm.com.danteater.my_plays;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -102,6 +104,8 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
         super.onActivityCreated(savedInstanceState);
 
 
+        // TODO : chat API helper for counting unread messages
+
 
         // show loading
 
@@ -125,6 +129,10 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
             }
         }.start();
+
+
+
+
     }
 
     public void handledataafterresponseVolly(final String response) {
@@ -205,7 +213,6 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     public class ListPlayAdapterForReview extends BaseAdapter {
 
         Context context;
-
         LayoutInflater inflater;
 
         ArrayList<Play> playList;
@@ -342,7 +349,6 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     public class ListPlayAdapterForPerform extends BaseAdapter {
 
         Context context;
-
         LayoutInflater inflater;
 
         ArrayList<Play> playList;
@@ -351,7 +357,6 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
         public ListPlayAdapterForPerform(Context context, ArrayList<Play> playList, ArrayList<PlayOrderDetails> playOrderDetailList) {
 
             this.context = context;
-
             this.playList = playList;
             this.playOrderDetailList = playOrderDetailList;
         }

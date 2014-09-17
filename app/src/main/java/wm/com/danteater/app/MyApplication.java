@@ -8,6 +8,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.Volley;
 
+import wm.com.danteater.model.DatabaseWrapper;
+
 
 /**
  * Application class that called once when application is installed for the first time on device.
@@ -31,11 +33,22 @@ public class MyApplication extends Application {
      */
     private static MyApplication sInstance;
 
+    /**
+     * A class that helps to store database file from assets to
+     */
+    private DatabaseWrapper db_wrapper;
+
     @Override
     public void onCreate() {
 	super.onCreate();
     // initialize the singleton
     sInstance = this;
+
+        db_wrapper = new DatabaseWrapper(this.getApplicationContext());
+        try {
+            db_wrapper.createDataBase();
+        }catch(Exception e){e.printStackTrace();}
+
 	
     }
     
