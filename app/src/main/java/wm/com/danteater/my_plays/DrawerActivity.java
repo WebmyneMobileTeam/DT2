@@ -27,6 +27,7 @@ import wm.com.danteater.inspiration.FragmentInspiration;
 import wm.com.danteater.login.User;
 import wm.com.danteater.login.LoginActivity;
 import wm.com.danteater.model.ComplexPreferences;
+import wm.com.danteater.model.StateManager;
 import wm.com.danteater.search.FragmentSearch;
 import wm.com.danteater.settings.SettingsFragment;
 
@@ -47,6 +48,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_my_plays);
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(DrawerActivity.this, "user_pref", 0);
         user = complexPreferences.getObject("current_user", User.class);

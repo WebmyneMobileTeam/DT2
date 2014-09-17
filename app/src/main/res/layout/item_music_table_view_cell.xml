@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<!-- change color of linear layout at run time -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/music_cell_layout"
+    android:orientation="vertical"
+    android:background="@android:color/holo_red_dark"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:background="@android:color/white"></View>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:padding="@dimen/activity_margin"
+        android:layout_height="match_parent"
+        >
+
+        <LinearLayout
+            android:layout_width="odp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <wm.com.danteater.customviews.WMTextView
+                android:id="@+id/music_table_view_cell_title"
+                android:layout_width="match_parent"
+                android:singleLine="true"
+                android:layout_marginBottom="8dp"
+                android:gravity="center_vertical"
+
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/normalText"
+                android:text="Song title label"
+                android:textColor="@android:color/black" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+
+                <wm.com.danteater.customviews.WMTextView
+                    android:id="@+id/start_label"
+                    android:layout_width="wrap_content"
+
+                    android:gravity="center_vertical"
+
+                    android:layout_height="match_parent"
+                    android:textSize="@dimen/normalText"
+                    android:text="0:00"
+                    android:textColor="@android:color/black" />
+
+                <SeekBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/seekBar"
+                    android:layout_weight="1" />
+
+                <wm.com.danteater.customviews.WMTextView
+                    android:id="@+id/end_label"
+                    android:layout_width="wrap_content"
+
+                    android:gravity="center_vertical"
+
+                    android:layout_height="match_parent"
+                    android:textSize="@dimen/normalText"
+                    android:text="9:99"
+                    android:textColor="@android:color/black" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_marginLeft="4dp"
+
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_gravity="center"
+                android:id="@+id/music_download"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_launcher" />
+
+            <ImageView
+                android:id="@+id/music_play"
+                android:visibility="gone"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_launcher" />
+
+            <ImageView
+                android:id="@+id/music_pause"
+                android:visibility="gone"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_launcher" />
+        </FrameLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
