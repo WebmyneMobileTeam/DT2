@@ -11,5 +11,8 @@
     <color name="background_tab_pressed">#6633B5E5</color>
     <color name="internet_unavailable_bg">#dbefff</color>
     <color name="internet_unavailable_round_view">#c2ccd4</color>
-
+    <color name="music_table_section">#e78300</color>
+    <color name="script_table_view_cell">#ffebd0</color>
+    <color name="music_table_view_cell_first_color">#ffd692</color>
+    <color name="music_table_view_cell_second_color">#ffba4a</color>
 </resources>

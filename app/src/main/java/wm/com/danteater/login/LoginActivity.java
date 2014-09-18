@@ -20,6 +20,10 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import com.mvnordic.mviddeviceconnector.DeviceSecurity;
 import org.json.JSONObject;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
 import wm.com.danteater.R;
 import wm.com.danteater.app.BaseActivity;
 import wm.com.danteater.app.MyApplication;
@@ -41,6 +45,7 @@ public class LoginActivity extends BaseActivity {
     User user;
     WMTextView txtTryAgain;
     String session_id;
+    Timer timer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -161,6 +166,7 @@ public class LoginActivity extends BaseActivity {
                 params.put("session_id", session_id);
                 params.put("lookup_primary_group", true);
                 params.put("extract_userroles", true);
+
                 request_params.put("methodname", "whoami");
                 request_params.put("type", "jsonwsp/request");
                 request_params.put("version", "1.0");
@@ -234,12 +240,12 @@ public class LoginActivity extends BaseActivity {
                     noAccessView.setVisibility(View.GONE);
                     noNetworkView.setVisibility(View.GONE);
 
-                    //TODO start login timer
-                    //TODO retrive school teacher
-                    //TODO retrive school classes
+
+                    startLoginTimer();
+
                     StateManager.retriveSchoolTeachers(session_id, user.getDomain());
                       StateManager.retriveSchoolClasses(session_id, user.getDomain());
-                    //TODO update contents of navigation drawer
+
 
                     // go to next screen
                     if (isFirstTime()) { // show guide pages
@@ -255,6 +261,58 @@ public class LoginActivity extends BaseActivity {
             }
         });
     }
+
+    private void startLoginTimer() {
+
+        timer=new Timer();
+       // stopLoginTimer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                tryToLogin2();
+            }
+        },0,1000*60*10);
+
+    }
+
+    private void stopLoginTimer() {
+
+        timer.cancel();
+    }
+
+    private void tryToLogin2() {
+
+        JSONObject params = new JSONObject();
+        JSONObject request_params = new JSONObject();
+        try {
+            params.put("session_id", session_id);
+
+
+            request_params.put("methodname", "keepAlive");
+            request_params.put("type", "jsonwsp/request");
+            request_params.put("version", "1.0");
+            request_params.put("args", params);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, "https://mvid-services.mv-nordic.com/v2/UserService/jsonwsp", request_params, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject jobj) {
+                String res = jobj.toString();
+                Log.e("response continue: ", res + "");
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError arg0) {
+            }
+        });
+        MyApplication.getInstance().addToRequestQueue(req);
+    }
+
 
     // check user is login first time or not
     private boolean isFirstTime() {
