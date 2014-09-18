@@ -14,13 +14,14 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-import wm.com.danteater.R;
+
 import wm.com.danteater.customviews.HUD;
 import wm.com.danteater.customviews.ListDialog;
 
-public class FragmentSearch extends Fragment implements AdapterView.OnItemClickListener,ListDialog.setSelectedListner{
+public class FragmentSearch extends Fragment implements AdapterView.OnItemClickListener, ListDialog.setSelectedListner {
 
     private static int CLICKED_POSITION = 0;
     private HUD dialog;
@@ -30,10 +31,10 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
     private ArrayList<String> titleList = new ArrayList<String>();
 
     private SparseArray listSubItems;
-    private String[] MEDVIRKENDE = {"Alle","1-5","6-10","11-15","16-20","21-30","30+"};
-    private String[] ALDER = {"Alle","7-9","10-12","13-15","16+"};
-    private String[] MUSIK = {"Intet","Lidt","Musical"};
-    private String[] VARIGHED = {"Alle","1-30 min","30-45 min","45-60 min","60-75 min","75-120 min","Over 120 min"};
+    private String[] MEDVIRKENDE = {"Alle", "1-5", "6-10", "11-15", "16-20", "21-30", "30+"};
+    private String[] ALDER = {"Alle", "7-9", "10-12", "13-15", "16+"};
+    private String[] MUSIK = {"Intet", "Lidt", "Musical"};
+    private String[] VARIGHED = {"Alle", "1-30 min", "30-45 min", "45-60 min", "60-75 min", "75-120 min", "Over 120 min"};
 
 
     public static FragmentSearch newInstance(String param1, String param2) {
@@ -51,17 +52,17 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
 
         listSubItems = new SparseArray();
 
-        listSubItems.put(0,new ArrayList<String>(Arrays.asList(MEDVIRKENDE)));
-        listSubItems.put(1,new ArrayList<String>(Arrays.asList(ALDER)));
-        listSubItems.put(2,new ArrayList<String>(Arrays.asList(MUSIK)));
-        listSubItems.put(3,new ArrayList<String>(Arrays.asList(VARIGHED)));
+        listSubItems.put(0, new ArrayList<String>(Arrays.asList(MEDVIRKENDE)));
+        listSubItems.put(1, new ArrayList<String>(Arrays.asList(ALDER)));
+        listSubItems.put(2, new ArrayList<String>(Arrays.asList(MUSIK)));
+        listSubItems.put(3, new ArrayList<String>(Arrays.asList(VARIGHED)));
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
-        
+
         imageList.add(R.drawable.ic_number_of_participants);
         imageList.add(R.drawable.ic_age);
         imageList.add(R.drawable.ic_music);
@@ -73,7 +74,7 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
         filterCategoryList = (ListView) view.findViewById(R.id.filterCategoryList);
         filterCategoryList.setAdapter(new FilterCategoryAdapter(getActivity(), titleList, imageList));
         filterCategoryList.setOnItemClickListener(this);
-        btnSearch = (TextView)view.findViewById(R.id.btnSearch);
+        btnSearch = (TextView) view.findViewById(R.id.btnSearch);
 
 
         return view;
@@ -146,11 +147,11 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
             @Override
             public void onClick(View v) {
 
-                dialog = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
+                dialog = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
                 dialog.title("Mine Stykker");
                 dialog.show();
 
-                new CountDownTimer(3500,1000){
+                new CountDownTimer(3500, 1000) {
 
                     @Override
                     public void onTick(long millisUntilFinished) {
@@ -160,7 +161,7 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
                     @Override
                     public void onFinish() {
 
-                        dialog.dismissWithStatus(R.drawable.ic_navigation_accept,"Success");
+                        dialog.dismissWithStatus(R.drawable.ic_navigation_accept, "Success");
 
 
                     }
@@ -173,10 +174,10 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
 
 
     @Override
-    public void onItemClick(AdapterView <?> parent, View view, int position, long id) {
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
         CLICKED_POSITION = position;
-        ListDialog dialog = new ListDialog(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
+        ListDialog dialog = new ListDialog(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
         dialog.title("Title");
         dialog.setItems((ArrayList) listSubItems.get(position));
         dialog.setSelectedListner(this);
@@ -189,7 +190,7 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
     public void selected(String value) {
 
         View v = filterCategoryList.getChildAt(CLICKED_POSITION);
-        TextView tv = (TextView)v.findViewById(R.id.txtSelectedValue);
+        TextView tv = (TextView) v.findViewById(R.id.txtSelectedValue);
         tv.setText(value);
 
     }

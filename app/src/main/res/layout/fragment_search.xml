@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     tools:context="wm.com.danteater.search.FragmentSearch">
 
+    <!-- Search Box -->
     <LinearLayout
         android:id="@+id/searchView"
         android:layout_width="match_parent"
@@ -34,48 +35,72 @@
             android:singleLine="true" />
     </LinearLayout>
 
+<!-- Search Filter View -->
+    <RelativeLayout
+        android:id="@+id/searchFilterView"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/searchView"
+        android:layout_height="wrap_content">
+
+        <ListView
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:id="@+id/filterCategoryList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:dividerHeight="1dp"
+            android:drawSelectorOnTop="true"
+            android:divider="@color/apptheme_color"
+
+            >
+
+        </ListView>
+
+        <View
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/filterCategoryList"
+            android:background="@color/apptheme_color">
+
+        </View>
+
+        <LinearLayout
+            android:id="@+id/searchButtonView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/fragment_search_button_height"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:orientation="horizontal">
+
+            <wm.com.danteater.customviews.WMTextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:background="@color/apptheme_color"
+                android:gravity="center"
+                android:text="Søg"
+                android:textColor="@android:color/white"
+                android:id="@+id/btnSearch"
+                android:textSize="@dimen/normalText" />
+        </LinearLayout>
+    </RelativeLayout>
+
+
+    <!--Search Result view -->
     <ListView
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
-        android:id="@+id/filterCategoryList"
+        android:id="@+id/searchResultList"
+        android:layout_below="@+id/searchView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:dividerHeight="1dp"
         android:drawSelectorOnTop="true"
         android:divider="@color/apptheme_color"
-        android:layout_below="@+id/searchView"
-         >
 
-    </ListView>
+        />
 
-    <View
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@id/filterCategoryList"
-        android:background="@color/apptheme_color">
-
-    </View>
-
-    <LinearLayout
-        android:id="@+id/searchButtonView"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/fragment_search_button_height"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:orientation="horizontal">
-
-        <wm.com.danteater.customviews.WMTextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:background="@color/apptheme_color"
-            android:gravity="center"
-            android:text="Søg"
-            android:textColor="@android:color/white"
-            android:id="@+id/btnSearch"
-            android:textSize="@dimen/normalText" />
-    </LinearLayout>
 
 </RelativeLayout>
