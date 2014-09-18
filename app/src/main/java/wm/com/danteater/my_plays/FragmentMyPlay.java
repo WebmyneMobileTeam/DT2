@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -39,13 +40,20 @@ import wm.com.danteater.customviews.HUD;
 import wm.com.danteater.customviews.SegmentedGroup;
 import wm.com.danteater.customviews.WMTextView;
 import wm.com.danteater.login.User;
+import wm.com.danteater.model.API;
 import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
+import wm.com.danteater.model.DatabaseWrapper;
 
 
 public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChangeListener {
 
+    private enum ACTIVITY_TYPE{
+        TAB_ACTIVITY,ORDER_ACTIVITY
+    }
+
     private HUD dialog;
+    private HUD dialog_next;
     private SegmentedGroup segmentedGroupPlays;
     private RadioButton rbBestilte;
     private RadioButton rbGennemsyn;
@@ -302,38 +310,13 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                 // Goto read page
 
-
-                    // Goto read page
-
-                    final HUD dialog = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
+               /*     final HUD dialog = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
                     dialog.title("Henter Seneste\nændringer");
-                    dialog.show();
+                    dialog.show();*/
 
-                    new CountDownTimer(2500, 1000) {
-
-                        @Override
-                        public void onFinish() {
-
-                            dialog.dismiss();
-
-                            Intent i = new Intent(getActivity(),ReadActivityFromPreview.class);
-                            startActivity(i);
-
-
-                        }
-
-                        @Override
-                        public void onTick(long millisUntilFinished) {
-
-                        }
-                    }.start();
-
-
-
-
-
-
+                    gotoSpecificPage(0,playListForPerform.get(position),ACTIVITY_TYPE.ORDER_ACTIVITY);
 
                 }
             });
@@ -468,37 +451,18 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 @Override
                 public void onClick(View v) {
 
-                    final HUD dialogRead = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
-                    dialogRead.title("Henter");
-                    dialogRead.show();
+                    dialog_next = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
+                    dialog_next.title("Henter");
+                    dialog_next.show();
 
-                    new CountDownTimer(2000, 1000) {
-
+                    new Handler().post(new Runnable() {
                         @Override
-                        public void onFinish() {
-
-                            dialogRead.dismiss();
-
-                            new Handler().post(new Runnable() {
-                                @Override
-                                public void run() {
-
-                                    gotoTabActivity(position, "Read");
-
-                                }
-                            });
-
-
+                        public void run() {
+                            //  gotoTabActivity(position, "Read");
+                            gotoSpecificPage(0,playListForPerform.get(position),ACTIVITY_TYPE.TAB_ACTIVITY);
 
                         }
-
-                        @Override
-                        public void onTick(long millisUntilFinished) {
-
-                        }
-                    }.start();
-
-
+                    });
 
 
                 }
@@ -512,12 +476,118 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
     }
 
+    private void gotoSpecificPage(int tab_index, final Play play,ACTIVITY_TYPE type){
+
+
+        DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
+        boolean hasPlay = dbh.hasPlayWithPlayOrderIdText(play.OrderId);
+        dbh.close();
+
+
+        if(hasPlay == true){
+
+            Log.i("hasplay","true");
+
+            new CallWebService(API.link_retrievePlayContentsForPlayOrderId +play.OrderId,CallWebService.TYPE_JSONOBJECT) {
+
+                @Override
+                public void response(String response) {
+
+                    Log.i("Response full play : ",""+response);
+
+                    dialog_next.dismiss();
+
+                    Play receivedPlay = new GsonBuilder().create().fromJson(response, Play.class);
+                    DatabaseWrapper db = new DatabaseWrapper(getActivity());
+                    db.insertPlay(receivedPlay,false);
+
+                    db.close();
+
+                }
+
+                @Override
+                public void error(VolleyError error) {
+                    dialog_next.dismiss();
+                    Toast.makeText(getActivity(),error.getMessage(), Toast.LENGTH_SHORT).show();
+
+                }
+            }.start();
+
+
+        }else{
+            Log.i("hasplay","false");
+            // insert new play to db
+
+            new CallWebService(API.link_retrievePlayContentsForPlayOrderId +play.OrderId,CallWebService.TYPE_JSONOBJECT) {
+
+                @Override
+                public void response(final String response) {
+
+                    Log.i("Response full play : ",""+response);
+                    new AsyncTask<String,Integer,String>(){
+
+                        @Override
+                        protected String doInBackground(String... params) {
+
+                            Play receivedPlay = new GsonBuilder().create().fromJson(response, Play.class);
+                            DatabaseWrapper db = new DatabaseWrapper(getActivity());
+                            db.insertPlay(receivedPlay, false);
+                            db.close();
+
+                            return null;
+                        }
+
+                        @Override
+                        protected void onPostExecute(String s) {
+                            super.onPostExecute(s);
+                            dialog_next.dismiss();
+                        }
+                    }.execute();
+
+                }
+
+                @Override
+                public void error(VolleyError error) {
+                    dialog_next.dismiss();
+
+                    Toast.makeText(getActivity(),error.getMessage(), Toast.LENGTH_SHORT).show();
+
+                }
+            }.start();
+
+
+        }
+
+        switch (type){
+
+            case ORDER_ACTIVITY:
+
+                Intent i = new Intent(getActivity(),ReadActivityFromPreview.class);
+                startActivity(i);
+
+                break;
+
+            case TAB_ACTIVITY:
+
+                Toast.makeText(getActivity(), "TAB", Toast.LENGTH_SHORT).show();
+
+                break;
+
+        }
+
+
+
+
+
+
+
+    }
+
     private void gotoTabActivity(int position,String type) {
 
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref",0);
         complexPreferences.putObject("selected_play",playListForPerform.get(position));
         complexPreferences.commit();
-
 
         Intent i = new Intent(getActivity(), PlayTabActivity.class);
         i.putExtra("infoData",playList.get(position).Synopsis+"");

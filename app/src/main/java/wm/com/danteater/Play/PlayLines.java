@@ -9,6 +9,29 @@ import java.util.ArrayList;
  */
 public class PlayLines {
 
+    public enum PlayLType {
+        PlayLineTypeUnknown,
+        PlayLineTypeAuthor,
+        PlayLineTypeTitle,
+        PlayLineTypeAct,
+        PlayLineTypeRole,
+        PlayLineTypeLine,
+        PlayLineTypeNote,
+        PlayLineTypeInfo,
+        PlayLineTypeSong,
+        PlayLineTypeSongLine,
+        PlayLineTypeSongLineVerse,
+        PlayLineTypeChooseSong,
+        PlayLineTypePicutre
+    }
+
+    public boolean showRoleHighlight = false;
+    public boolean allowComments = false;
+    public boolean allowRecording = false;
+    public boolean showIntoWords = false;
+    public boolean showLineNumber = false;
+    public boolean isLastSongLine = false;
+
     @SerializedName("LineCount")
     public String LineCount;
 
@@ -19,7 +42,7 @@ public class PlayLines {
     public String RoleName;
 
     @SerializedName("AssignedUsers")
-    public ArrayList<AssignedUsers>  assignedUsersList;
+    public ArrayList<AssignedUsers> assignedUsersList;
 
     @SerializedName("RoleLinesCount")
     public String RoleLinesCount;
@@ -32,6 +55,8 @@ public class PlayLines {
 
     @SerializedName("CastMatches")
     public ArrayList<String> castMatchesList;
+
+    public String castMatchesString;
 
     @SerializedName("Comments")
     public ArrayList<Comments> commentsList;
@@ -51,6 +76,9 @@ public class PlayLines {
         this.castMatchesList = castMatchesList;
         this.commentsList = commentsList;
         this.songFilesList = songFilesList;
+
+
+
     }
 
     public String getLineCount() {
@@ -92,4 +120,51 @@ public class PlayLines {
     public ArrayList<SongFiles> getSongFilesList() {
         return songFilesList;
     }
+
+    public PlayLType playLineType(){
+
+        if(this.MainLineType.equalsIgnoreCase("") || this.MainLineType == null){
+            return PlayLType.PlayLineTypeUnknown;
+        }
+        else if(this.MainLineType.equalsIgnoreCase("Forfatter")){
+            return PlayLType.PlayLineTypeAuthor;
+        }
+        else if(this.MainLineType.equalsIgnoreCase("Titel")){
+            return PlayLType.PlayLineTypeTitle;
+        }
+        else if(this.MainLineType.equalsIgnoreCase("Akt")){
+            return PlayLType.PlayLineTypeAct;
+        }
+        else if(this.MainLineType.equalsIgnoreCase("Rolle")){
+            return PlayLType.PlayLineTypeRole;
+        }
+        else if(this.MainLineType.equalsIgnoreCase("Note")){
+            return PlayLType.PlayLineTypeNote;
+        }
+        else if(this.MainLineType.equalsIgnoreCase("Info")){
+            return PlayLType.PlayLineTypeInfo;
+        }
+        else if(this.MainLineType.equalsIgnoreCase("Replik")){
+            return PlayLType.PlayLineTypeLine;
+        }
+        else if(this.MainLineType.equalsIgnoreCase("Song")){
+            return PlayLType.PlayLineTypeSong;
+        }
+        else if(this.MainLineType.equalsIgnoreCase("Songline")){
+            return PlayLType.PlayLineTypeSongLine;
+        }
+        else if(this.MainLineType.equalsIgnoreCase("Song")){
+            return PlayLType.PlayLineTypeSongLineVerse;
+        }
+        else if(this.MainLineType.equalsIgnoreCase("Song")){
+            return PlayLType.PlayLineTypePicutre;
+        }
+
+        return PlayLType.PlayLineTypeUnknown;
+    }
+
 }
+
+
+
+

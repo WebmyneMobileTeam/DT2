@@ -1,5 +1,6 @@
 package wm.com.danteater.model;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -7,11 +8,16 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.mvnordic.mviddeviceconnector.L;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import wm.com.danteater.Play.Play;
+import wm.com.danteater.Play.PlayLines;
 
 /**
  * Created by dhruvil on 16-09-2014.
@@ -70,7 +76,7 @@ import java.io.OutputStream;
  *
  * TODO - updatePlayInfo [play]
  *
- * TODO - hasPlayWithPlayOrderIdText [playOrderIdText]
+ * TOD - hasPlayWithPlayOrderIdText [playOrderIdText]
  *
  *
  */
@@ -162,20 +168,116 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
    // All the methods for fetching specific data from local Database
 
 
-    public boolean hasPlayWithPlayOrderIdText(String playOrderIdText){
-
-        boolean hasPlay = false;
-
-        myDataBase = this.getWritableDatabase();
-        String selectQuery = "SELECT COUNT(id_) AS cnt FROM plays WHERE play_order_id_text_ ="+playOrderIdText;
-        Cursor cursor = myDataBase.rawQuery(selectQuery, null);
+    public boolean hasPlayWithPlayOrderIdText(String playOrderIdText) {
         // looping through all rows and adding to list
+ /*       if (cursor.moveToFirst()) {
+            do {
 
-        try{
-            System.out.println("Row count is : "+cursor.getCount());
-        }catch(Exception e){}
+            } while (cursor.moveToNext());
+        }
+*/
+        System.out.println("play orderidtext : " + playOrderIdText);
+        boolean hasPlay = false;
+        myDataBase = this.getWritableDatabase();
+        String selectQuery = "SELECT * FROM plays WHERE play_order_id_text_ ="+"\""+playOrderIdText.toString().trim()+"\"";
+        Cursor cursor = myDataBase.rawQuery(selectQuery, null);
+
+        if(cursor.getCount()>0){
+            hasPlay = true;
+        }else{
+            hasPlay = false;
+        }
+
+        cursor.close();
+        myDataBase.close();
 
         return hasPlay;
+    }
+
+
+    public void insertPlay(Play play,boolean wasPlayAlreadyOrderedForPreview){
+
+        ContentValues cvPlays = new ContentValues();
+        cvPlays.put("play_id_text_",play.PlayId);
+        cvPlays.put("play_order_id_text_",play.OrderId.trim());
+        cvPlays.put("title_",play.Title);
+        cvPlays.put("subtitle_short_",play.SubtitleShort);
+        cvPlays.put("subtitle_long_",play.SubtitleLong);
+        cvPlays.put("author_",play.Author);
+        cvPlays.put("actors_",play.Actors);
+        cvPlays.put("age_",play.Age);
+        cvPlays.put("music_",play.Music);
+        cvPlays.put("song_count_",play.MusicCount);
+        cvPlays.put("duration_",play.Duration);
+        cvPlays.put("synopsis_",play.Synopsis);
+        cvPlays.put("version_",play.PlayVersion);
+        cvPlays.put("order_type_",play.OrderType);
+
+        myDataBase = this.getWritableDatabase();
+        myDataBase.insert("plays",null,cvPlays);
+        myDataBase.close();
+
+        // Add PlayLines
+
+        myDataBase = this.getWritableDatabase();
+        String selectQuery = "SELECT * FROM plays WHERE play_order_id_text_ ="+"\""+play.OrderId.toString().trim()+"\"";
+        Cursor cursor = myDataBase.rawQuery(selectQuery, null);
+
+        cursor.moveToFirst();
+        Log.e("Play Id in Database : ",""+cursor.getInt(cursor.getColumnIndex("id_")));
+        int playID = cursor.getInt(cursor.getColumnIndex("id_"));
+
+        for(PlayLines line : play.playLinesList){
+            insertPlayLine(line,playID);
+        }
+
+    }
+
+    public void insertPlayLine(PlayLines play_line,int playid){
+
+        String castMatchesString = new String();
+        for(String castMatch : play_line.castMatchesList){
+                castMatchesString.concat(castMatch);
+        }
+        play_line.castMatchesString = castMatchesString;
+
+        //
+
+        ContentValues cvPlays = new ContentValues();
+        cvPlays.put("line_number_",play_line.LineCount);
+        cvPlays.put("playline_id_text_",play_line.LineID);
+        cvPlays.put("play_id_",playid);
+        cvPlays.put("role_name_",play_line.RoleName);
+        cvPlays.put("show_role_highlight_",play_line.showRoleHighlight);
+        cvPlays.put("allow_comments_",play_line.allowComments);
+        cvPlays.put("allow_recording_",play_line.allowRecording);
+        cvPlays.put("show_into_words_",play_line.showIntoWords);
+        cvPlays.put("show_line_number_",play_line.showLineNumber);
+        cvPlays.put("main_line_type_",play_line.MainLineType);
+        cvPlays.put("role_line_count_",play_line.RoleLinesCount);
+        cvPlays.put("is_last_song_line_",play_line.isLastSongLine);
+        cvPlays.put("cast_matches_",play_line.castMatchesString);
+
+        myDataBase = this.getWritableDatabase();
+        myDataBase.insert("playlines",null,cvPlays);
+        myDataBase.close();
+
+        //
+        myDataBase = this.getWritableDatabase();
+        String selectQuery = "SELECT id_ FROM playlines WHERE playline_id_text_ ="+"\""+play_line.LineID.toString().trim()+"\"";
+        Cursor cursor = myDataBase.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        int playLineId = cursor.getInt(cursor.getColumnIndex("id_"));
+
+        // TODO remaining all the things
+
+        if(play_line.playLineType() == PlayLines.PlayLType.PlayLineTypeRole){
+
+
+
+        }
+
+
     }
 
 
