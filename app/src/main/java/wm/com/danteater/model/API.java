@@ -27,8 +27,6 @@ public class API {
 
     public static String link_retrievePlayContentsForPlayOrderId = "http://api.danteater.dk/api/playfull/";
 
-
-
     public static Reader callWebservicePost(String SERVER_URL,String jsonString) {
 
         Reader reader = null;

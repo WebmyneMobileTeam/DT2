@@ -4,6 +4,26 @@
     android:layout_height="match_parent"
     tools:context="wm.com.danteater.search.FragmentSearch">
 
+    <LinearLayout
+        android:id="@+id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="@color/internet_unavailable_bg"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="@dimen/normalText"
+            android:textColor="#747e87"
+            android:text="Ingen resultater på søgning"
+            android:background="@drawable/circle_for_internet_unavailable" />
+    </LinearLayout>
+
     <!-- Search Box -->
     <LinearLayout
         android:id="@+id/searchView"
@@ -25,6 +45,7 @@
             android:src="@drawable/search_icon" />
 
         <wm.com.danteater.customviews.WMEdittext
+            android:id="@+id/search_box"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="8dp"
@@ -32,11 +53,13 @@
             android:hint="Søg på skuespil"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
+            android:imeOptions="actionSearch"
             android:singleLine="true" />
     </LinearLayout>
 
 <!-- Search Filter View -->
     <RelativeLayout
+        android:visibility="visible"
         android:id="@+id/searchFilterView"
         android:layout_width="match_parent"
         android:layout_below="@+id/searchView"
@@ -48,7 +71,7 @@
             android:id="@+id/filterCategoryList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:dividerHeight="1dp"
+            android:dividerHeight="0.5dp"
             android:drawSelectorOnTop="true"
             android:divider="@color/apptheme_color"
 
@@ -60,7 +83,7 @@
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="0.5dp"
             android:layout_below="@id/filterCategoryList"
             android:background="@color/apptheme_color">
 
@@ -71,13 +94,14 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/fragment_search_button_height"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
+
             android:orientation="horizontal">
 
             <wm.com.danteater.customviews.WMTextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
+
                 android:background="@color/apptheme_color"
                 android:gravity="center"
                 android:text="Søg"
@@ -91,14 +115,17 @@
     <!--Search Result view -->
     <ListView
         android:layout_marginLeft="4dp"
+        android:visibility="gone"
         android:layout_marginRight="4dp"
         android:id="@+id/searchResultList"
         android:layout_below="@+id/searchView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:dividerHeight="1dp"
+        android:fastScrollEnabled="true"
+
         android:drawSelectorOnTop="true"
-        android:divider="@color/apptheme_color"
+        android:divider="#e1e1e1"
 
         />
 

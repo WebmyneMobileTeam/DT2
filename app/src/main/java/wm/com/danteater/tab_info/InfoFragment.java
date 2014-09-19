@@ -8,10 +8,13 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 
 import wm.com.danteater.R;
+import wm.com.danteater.model.ComplexPreferences;
+import wm.com.danteater.search.BeanSearch;
 
 
 public class InfoFragment extends Fragment {
     private String Synopsis;
+    BeanSearch beanSearch;
     public static InfoFragment newInstance(String param1, String param2) {
         InfoFragment fragment = new InfoFragment();
 
@@ -24,8 +27,9 @@ public class InfoFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle bInfo=getArguments();
-        Synopsis=bInfo.getString("infoData");
+        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "search_result_play",0);
+        beanSearch=complexPreferences.getObject("searched_play", BeanSearch.class);
+        Synopsis=beanSearch.Synopsis;
     }
 
     @Override
