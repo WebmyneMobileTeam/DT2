@@ -197,7 +197,7 @@ public class InfoFragment extends Fragment {
                 try
 
                 {
-                    Reader readerForNone = API.callWebservicePost("http://api.danteater.dk/api/playshare/" + beanSearch.PlayId, shareWithUsersArrayN.toString());
+                    Reader readerForNone = API.callWebservicePost("http://api.danteater.dk/api/playshare/" + beanSearch.OrderId, shareWithUsersArrayN.toString());
                     Log.e("reader", readerForNone + "");
 
                     StringBuffer response = new StringBuffer();
@@ -227,6 +227,7 @@ public class InfoFragment extends Fragment {
 
     private void sharePlayWithMe() {
         final ArrayList<User> totalUsers = new ArrayList<User>();
+
         final JSONArray shareWithUsersArray = new JSONArray();
         totalUsers.add(currentUser);
         if (totalUsers != null || totalUsers.size() != 0) {
@@ -255,20 +256,23 @@ public class InfoFragment extends Fragment {
             @Override
             protected Void doInBackground(Void... voids) {
 
-                try {
-                    Reader readerForMe = API.callWebservicePost("http://api.danteater.dk/api/playshare/" + beanSearch.PlayId, shareWithUsersArray.toString());
-                    Log.e("reader", readerForMe + "");
+                try
+
+                {
+                    Reader readerForNone = API.callWebservicePost("http://api.danteater.dk/api/playshare/"+beanSearch.OrderId, shareWithUsersArray.toString());
+                    Log.e("reader", readerForNone + "");
 
                     StringBuffer response = new StringBuffer();
                     int i = 0;
                     do {
-                        i = readerForMe.read();
+                        i = readerForNone.read();
                         char character = (char) i;
                         response.append(character);
 
                     } while (i != -1);
-                    readerForMe.close();
+                    readerForNone.close();
                     Log.e("response", response + " ");
+                    sharePlayWithMe();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
