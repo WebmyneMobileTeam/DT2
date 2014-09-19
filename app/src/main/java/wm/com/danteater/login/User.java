@@ -33,6 +33,9 @@ public class User {
         this.domain = domain;
     }
 
+    public User() {
+    }
+
     public String getDomain() {
         return domain;
     }

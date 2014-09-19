@@ -2,6 +2,7 @@ package wm.com.danteater.search;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -46,6 +47,7 @@ import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.my_plays.DrawerActivity;
 import wm.com.danteater.my_plays.FragmentMyPlayPupil;
 import wm.com.danteater.tab_info.InfoFragment;
+import wm.com.danteater.tab_info.PlayInfoActivity;
 
 public class FragmentSearch extends Fragment implements AdapterView.OnItemClickListener, ListDialog.setSelectedListner {
 
@@ -57,6 +59,7 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
     private ArrayList<String> titleList = new ArrayList<String>();
     private ArrayList<BeanSearch> beanSearchList;
     private Reader reader;
+
     WMEdittext searchBox;
     private BeanSearch searchResultPlay;
     private SparseArray listSubItems;
@@ -106,6 +109,8 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
         titleList.add("Varighed");
         filterCategoryList = (ListView) view.findViewById(R.id.filterCategoryList);
         searchFilterView=(RelativeLayout) view.findViewById(R.id.searchFilterView);
+
+
         searchIcon=(ImageView) view.findViewById(R.id.searchIcon);
         emptyView=(LinearLayout) view.findViewById(R.id.empty);
         filterCategoryList.setAdapter(new FilterCategoryAdapter(getActivity(), titleList, imageList));
@@ -355,13 +360,8 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
                     complexPreferences.commit();
 
 
-                    FragmentManager manager = getActivity().getSupportFragmentManager();
-                    FragmentTransaction ft = manager.beginTransaction();
-                    InfoFragment infoFragment = InfoFragment.newInstance("", "");
-
-                    if (manager.findFragmentByTag("infoFragment") == null) {
-                        ft.replace(R.id.main_content, infoFragment, "infoFragment").commit();
-                    }
+                    Intent i=new Intent(getActivity(), PlayInfoActivity.class);
+                    startActivity(i);
 
 
                 }

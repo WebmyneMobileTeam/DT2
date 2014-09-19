@@ -55,6 +55,12 @@
             android:screenOrientation="landscape"
             android:label="@string/title_activity_guide_startup" >
         </activity>
+        <activity
+            android:name=".tab_info.PlayInfoActivity"
+            android:windowSoftInputMode="adjustPan"
+            android:label="PlayInfoActivity"
+            >
+        </activity>
     </application>
 
 </manifest>
