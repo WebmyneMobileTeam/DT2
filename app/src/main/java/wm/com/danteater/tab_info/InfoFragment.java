@@ -141,6 +141,7 @@ public class InfoFragment extends Fragment {
     }
 
     private void retrievePlayContentsForPlayOrderId() {
+        //TODO store in seperate thread
         new CallWebService("http://api.danteater.dk/api/playfull/" + beanSearch.PlayId, CallWebService.TYPE_JSONOBJECT) {
 
             @Override

@@ -175,6 +175,7 @@ public class LoginActivity extends BaseActivity {
                 e.printStackTrace();
             }
 
+            //TODO store in seperate thread
             JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, "https://mvid-services.mv-nordic.com/v2/UserService/jsonwsp", request_params, new Response.Listener<JSONObject>() {
 
                 @Override
@@ -295,7 +296,7 @@ public class LoginActivity extends BaseActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        //TODO store in seperate thread
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, "https://mvid-services.mv-nordic.com/v2/UserService/jsonwsp", request_params, new Response.Listener<JSONObject>() {
 
             @Override

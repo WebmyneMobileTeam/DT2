@@ -243,7 +243,7 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
+                //TODO store in seperate thread
                 reader = API.callWebservicePost("http://api.danteater.dk/api/PlaySearch", params.toString());
                 Type listType = new TypeToken<List<BeanSearch>>() {
                 }.getType();
