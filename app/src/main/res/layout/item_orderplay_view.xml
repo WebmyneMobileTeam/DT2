@@ -39,12 +39,14 @@
                 android:id="@+id/item_orderplay_selected_value_et"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="center"
+                android:gravity="center_vertical|right"
                 android:inputType="number"
                 android:singleLine="true"
                 android:text=""
+                android:ems="2"
+                android:focusable="true"
 
-
+                android:background="@android:color/white"
                 android:textColor="@color/gray_color"
                 android:textSize="@dimen/fragment_my_play_small_text"
                 android:visibility="gone" />

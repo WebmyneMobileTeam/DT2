@@ -49,6 +49,7 @@ public class OrderPlayActivityForPerform extends BaseActivity {
     WMTextView txtFirstDate;
     View secondDateView;
     WMTextView txtSecondDate;
+
     Play selectedPlay;
     //
     @Override
@@ -71,23 +72,31 @@ public class OrderPlayActivityForPerform extends BaseActivity {
         ((WMTextView)getActionBar().getCustomView()).setText(selectedPlay.Title);
 
         orderPlayList.setAdapter(new ListPlayAdapterForPerform(context, nameList));
+      orderPlay.setBackgroundColor(getResources().getColor(R.color.gray_color));
         orderPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                firstView = orderPlayList.getChildAt(0);
-                firstViewValue = (WMTextView) firstView.findViewById(R.id.item_orderplay_selected_value);
-                firstDateView = orderPlayList.getChildAt(1);
-                txtFirstDate = (WMTextView) firstDateView.findViewById(R.id.item_orderplay_selected_value);
-                secondDateView = orderPlayList.getChildAt(3);
-                txtSecondDate = (WMTextView) secondDateView.findViewById(R.id.item_orderplay_selected_value);
+                InitViews();
 
                 if (!((firstViewValue.getText().toString() == null || firstViewValue.getText().toString() == "" || firstViewValue.getText().toString().isEmpty()) || (txtFirstDate.getText().toString() == null || txtFirstDate.getText().toString() == "" || txtFirstDate.getText().toString().isEmpty()) || (txtSecondDate.getText().toString() == null || txtSecondDate.getText().toString() == "" || txtSecondDate.getText().toString().isEmpty()))) {
-                    orderPlay.setBackgroundColor(getResources().getColor(R.color.apptheme_color));
+                    //TODO
                 }
 
             }
         });
     }
+
+    // Views init
+    private void InitViews() {
+        firstView = orderPlayList.getChildAt(0);
+        firstViewValue = (WMTextView) firstView.findViewById(R.id.item_orderplay_selected_value);
+        firstDateView = orderPlayList.getChildAt(1);
+        txtFirstDate = (WMTextView) firstDateView.findViewById(R.id.item_orderplay_selected_value);
+        secondDateView = orderPlayList.getChildAt(3);
+        txtSecondDate = (WMTextView) secondDateView.findViewById(R.id.item_orderplay_selected_value);
+
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -175,13 +184,21 @@ public class OrderPlayActivityForPerform extends BaseActivity {
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        InitViews();
                         if (position == 1 || position == 3) {
 
+                            // check for date validation
                             processDate(position);
                         }
 
                         if (position == 0) {
+
+                            etFirstView = (EditText) firstView.findViewById(R.id.item_orderplay_selected_value_et);
+                            etFirstView.setVisibility(firstView.VISIBLE);
+                            etFirstView.setFocusable(true);
+                            // check number of performance 1-4
                             numberOfPerformances();
+
                         }
                     }
                 });
@@ -193,7 +210,7 @@ public class OrderPlayActivityForPerform extends BaseActivity {
     }
 
     protected void processDate(final int position) {
-        // TODO Auto-generated method stub
+
 
         final Calendar c = Calendar.getInstance();
         int year = c.get(Calendar.YEAR);
@@ -211,7 +228,7 @@ public class OrderPlayActivityForPerform extends BaseActivity {
                     @Override
                     public void onClick(DialogInterface dialog,
                                         int which) {
-                        // TODO Auto-generated method stub
+
                         datePickerdialog.dismiss();
                     }
                 });
@@ -221,7 +238,7 @@ public class OrderPlayActivityForPerform extends BaseActivity {
                     @Override
                     public void onClick(DialogInterface dialog,
                                         int which) {
-                        // TODO Auto-generated method stub
+
                         datePickerdialog.dismiss();
                         bDate = datePickerdialog
                                 .getDatePicker().getDayOfMonth()
@@ -238,15 +255,8 @@ public class OrderPlayActivityForPerform extends BaseActivity {
                         item_orderplay_selected_value.setVisibility(View.VISIBLE);
                         item_orderplay_selected_value.setText(bDate);
 
-                        firstView = orderPlayList.getChildAt(0);
-                        firstViewValue = (WMTextView) firstView.findViewById(R.id.item_orderplay_selected_value);
-                        firstDateView = orderPlayList.getChildAt(1);
-                        txtFirstDate = (WMTextView) firstDateView.findViewById(R.id.item_orderplay_selected_value);
-                        secondDateView = orderPlayList.getChildAt(3);
-                        txtSecondDate = (WMTextView) secondDateView.findViewById(R.id.item_orderplay_selected_value);
-                        if (!((firstViewValue.getText().toString() == null || firstViewValue.getText().toString() == "" || firstViewValue.getText().toString().isEmpty()) || (txtFirstDate.getText().toString() == null || txtFirstDate.getText().toString() == "" || txtFirstDate.getText().toString().isEmpty()) || (txtSecondDate.getText().toString() == null || txtSecondDate.getText().toString() == "" || txtSecondDate.getText().toString().isEmpty()))) {
-                            orderPlay.setBackgroundColor(getResources().getColor(R.color.apptheme_color));
-                        }
+                        InitViews();
+
                         if (((txtFirstDate.getText().toString() != null || txtFirstDate.getText().toString() != "") || (txtSecondDate.getText().toString() != null || txtSecondDate.getText().toString() != ""))) {
                             try {
                                 Date firstDate = new SimpleDateFormat("dd/MM-yyyy", Locale.ENGLISH).parse(txtFirstDate.getText().toString());
@@ -257,6 +267,10 @@ public class OrderPlayActivityForPerform extends BaseActivity {
                                     item_orderplay_selected_value.setText("");
                                     orderPlay.setBackgroundColor(getResources().getColor(R.color.gray_color));
                                     showAlert("title", "message");
+                                } else {
+                                    if (!((firstViewValue.getText().toString() == null || firstViewValue.getText().toString() == "" || firstViewValue.getText().toString().isEmpty()) || (txtFirstDate.getText().toString() == null || txtFirstDate.getText().toString() == "" || txtFirstDate.getText().toString().isEmpty()) || (txtSecondDate.getText().toString() == null || txtSecondDate.getText().toString() == "" || txtSecondDate.getText().toString().isEmpty()))) {
+                                        orderPlay.setBackgroundColor(getResources().getColor(R.color.apptheme_color));
+                                    }
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -289,7 +303,7 @@ public class OrderPlayActivityForPerform extends BaseActivity {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // TODO Auto-generated method stub
+
 
                 dialog.dismiss();
             }
@@ -299,18 +313,11 @@ public class OrderPlayActivityForPerform extends BaseActivity {
     }
 
     void numberOfPerformances() {
-        firstView = orderPlayList.getChildAt(0);
-        firstViewValue = (WMTextView) firstView.findViewById(R.id.item_orderplay_selected_value);
-        firstDateView = orderPlayList.getChildAt(1);
-        txtFirstDate = (WMTextView) firstDateView.findViewById(R.id.item_orderplay_selected_value);
-        secondDateView = orderPlayList.getChildAt(3);
-        txtSecondDate = (WMTextView) secondDateView.findViewById(R.id.item_orderplay_selected_value);
-        if (!((firstViewValue.getText().toString() == null || firstViewValue.getText().toString() == "" || firstViewValue.getText().toString().isEmpty()) || (txtFirstDate.getText().toString() == null || txtFirstDate.getText().toString() == "" || txtFirstDate.getText().toString().isEmpty()) || (txtSecondDate.getText().toString() == null || txtSecondDate.getText().toString() == "" || txtSecondDate.getText().toString().isEmpty()))) {
-            orderPlay.setBackgroundColor(getResources().getColor(R.color.apptheme_color));
-        }
+        InitViews();
 
-        etFirstView = (EditText) firstView.findViewById(R.id.item_orderplay_selected_value_et);
-        etFirstView.setVisibility(firstView.VISIBLE);
+
+
+
         firstViewValue.setVisibility(firstView.GONE);
 
         etFirstView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -325,6 +332,9 @@ public class OrderPlayActivityForPerform extends BaseActivity {
                     etFirstView.setVisibility(firstView.GONE);
                     firstViewValue.setVisibility(firstView.VISIBLE);
                     firstViewValue.setText(etFirstView.getText().toString());
+                    if (!((firstViewValue.getText().toString() == null || firstViewValue.getText().toString() == "" || firstViewValue.getText().toString().isEmpty()) || (txtFirstDate.getText().toString() == null || txtFirstDate.getText().toString() == "" || txtFirstDate.getText().toString().isEmpty()) || (txtSecondDate.getText().toString() == null || txtSecondDate.getText().toString() == "" || txtSecondDate.getText().toString().isEmpty()))) {
+                        orderPlay.setBackgroundColor(getResources().getColor(R.color.apptheme_color));
+                    }
                 }
 
 
@@ -334,4 +344,6 @@ public class OrderPlayActivityForPerform extends BaseActivity {
 
 
     }
+
+
 }

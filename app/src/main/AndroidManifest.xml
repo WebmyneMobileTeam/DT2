@@ -32,6 +32,7 @@
         </activity>
         <activity
             android:name=".my_plays.OrderPlayActivityForPerform"
+            android:windowSoftInputMode="adjustPan"
             android:label="@string/title_activity_play_tab" >
         </activity>
         <activity

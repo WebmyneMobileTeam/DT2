@@ -331,7 +331,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                 // Goto read page
+                    // Goto read page
                     dialog_next = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
                     dialog_next.title("Henter");
                     dialog_next.show();
@@ -350,7 +350,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
 
 
-   public void showDialogForReviewDelete(String title,String message) {
+    public void showDialogForReviewDelete(String title,String message) {
 
         AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
         alert.setTitle(title);
@@ -360,7 +360,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                        removePlayForReview();
+                removePlayForReview();
 
 
                 dialog.dismiss();
@@ -386,31 +386,31 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
         Log.e("removePlayForReview: ", "inside removePlayForReview");
         new AsyncTask<Void,Void,Void>(){
 
-@Override
-protected Void doInBackground(Void... voids) {
+            @Override
+            protected Void doInBackground(Void... voids) {
 
-        try {
-            Reader reader = APIDelete.postData("http://api.danteater.dk/api/PlayOrderReview/" + playSelectedToBeDeleted.OrderId + "?userid=" + currentUser.getUserId());
-            StringBuffer response = new StringBuffer();
-            int i = 0;
-            do {
-                i = reader.read();
-                char character = (char) i;
-                response.append(character);
+                try {
+                    Reader reader = APIDelete.postData("http://api.danteater.dk/api/PlayOrderReview/" + playSelectedToBeDeleted.OrderId + "?userid=" + currentUser.getUserId());
+                    StringBuffer response = new StringBuffer();
+                    int i = 0;
+                    do {
+                        i = reader.read();
+                        char character = (char) i;
+                        response.append(character);
 
-            } while (i != -1);
-            reader.close();
-            Log.e("response after deleted: ", response + " ");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-            return null;
-        }
+                    } while (i != -1);
+                    reader.close();
+                    Log.e("response after deleted: ", response + " ");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
 
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-         removePlayForReviewFromList();
+                removePlayForReviewFromList();
             }
         }.execute();
 
@@ -419,12 +419,12 @@ protected Void doInBackground(Void... voids) {
 
     public void removePlayForReviewFromList() {
         for (int i=0;i<playListForReview.size();i++) {
-                    if (playListForReview.get(i).PlayId.contains(playSelectedToBeDeleted.getPlayId())) {
-                        playListForReview.remove(playListForReview.get(i));
+            if (playListForReview.get(i).PlayId.contains(playSelectedToBeDeleted.getPlayId())) {
+                playListForReview.remove(playListForReview.get(i));
 
-                    }
-                }
-                listPlayAdapterForReview.notifyDataSetChanged();
+            }
+        }
+        listPlayAdapterForReview.notifyDataSetChanged();
     }
     // For Order tab
     public class ListPlayAdapterForPerform extends BaseAdapter {
@@ -514,8 +514,8 @@ protected Void doInBackground(Void... voids) {
                     complexPreferences.putObject("selected_play",playListForPerform.get(position));
                     complexPreferences.commit();
 
-                  Intent intent=new Intent(getActivity(),OrderPlayActivityForPerform.class);
-                  startActivity(intent);
+                    Intent intent=new Intent(getActivity(),OrderPlayActivityForPerform.class);
+                    startActivity(intent);
                 }
             });
 
@@ -661,7 +661,7 @@ protected Void doInBackground(Void... voids) {
             SharedPreferences preferences = getActivity().getSharedPreferences("Plays", getActivity().MODE_PRIVATE);
 
             String k = "PlayLatesteUpdateDate"+play.PlayId;
-          //  Toast.makeText(getActivity(),preferences.getString(k,""), Toast.LENGTH_SHORT).show();
+            //  Toast.makeText(getActivity(),preferences.getString(k,""), Toast.LENGTH_SHORT).show();
 
 
             long unixTime = Long.parseLong(preferences.getString(k,""));
@@ -716,7 +716,7 @@ protected Void doInBackground(Void... voids) {
                             @Override
                             protected void onPostExecute(String s) {
                                 super.onPostExecute(s);
-                               // dialog_next.dismiss();
+                                 dialog_next.dismiss();
 
                                 SharedPreferences preferences = getActivity().getSharedPreferences("Plays",getActivity().MODE_PRIVATE);
                                 SharedPreferences.Editor editor = preferences.edit();
@@ -734,8 +734,6 @@ protected Void doInBackground(Void... voids) {
 
 
                         }.execute();
-
-
 
                     }
 
@@ -793,8 +791,6 @@ protected Void doInBackground(Void... voids) {
 
                 }
 
-
-
                 @Override
                 public void error(VolleyError error) {
                     dialog_next.dismiss();
@@ -804,11 +800,7 @@ protected Void doInBackground(Void... voids) {
                 }
             }.start();
 
-
         }
-
-
-
 
     }
 
@@ -834,14 +826,9 @@ protected Void doInBackground(Void... voids) {
                 complexPreferences.commit();
                 Intent i = new Intent(getActivity(), PlayTabActivity.class);
                 startActivity(i);
-
                 break;
-
-
         }
     }
-
-
 
 
     /**
