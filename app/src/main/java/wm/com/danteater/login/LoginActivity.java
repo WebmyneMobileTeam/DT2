@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -46,6 +47,8 @@ public class LoginActivity extends BaseActivity {
     WMTextView txtTryAgain;
     String session_id;
     Timer timer;
+   JSONObject request_params;
+    JSONObject request_params2; //for tryToLogin2 method
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -161,7 +164,7 @@ public class LoginActivity extends BaseActivity {
         private void callWebServicePost(String session_id, final MVIDResponse mvid_response) {
 
             JSONObject params = new JSONObject();
-            JSONObject request_params = new JSONObject();
+             request_params = new JSONObject();
             try {
                 params.put("session_id", session_id);
                 params.put("lookup_primary_group", true);
@@ -175,6 +178,10 @@ public class LoginActivity extends BaseActivity {
                 e.printStackTrace();
             }
 
+            new AsyncTask<Void, Void, Void>() {
+
+                @Override
+                protected Void doInBackground(Void... voids) {
             JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, "https://mvid-services.mv-nordic.com/v2/UserService/jsonwsp", request_params, new Response.Listener<JSONObject>() {
 
                 @Override
@@ -190,6 +197,11 @@ public class LoginActivity extends BaseActivity {
                 }
             });
             MyApplication.getInstance().addToRequestQueue(req);
+                    return null;
+                }
+
+
+            }.execute();
         }
     };
 
@@ -283,20 +295,23 @@ public class LoginActivity extends BaseActivity {
     private void tryToLogin2() {
 
         JSONObject params = new JSONObject();
-        JSONObject request_params = new JSONObject();
+         request_params2 = new JSONObject();
         try {
             params.put("session_id", session_id);
 
 
-            request_params.put("methodname", "keepAlive");
-            request_params.put("type", "jsonwsp/request");
-            request_params.put("version", "1.0");
-            request_params.put("args", params);
+            request_params2.put("methodname", "keepAlive");
+            request_params2.put("type", "jsonwsp/request");
+            request_params2.put("version", "1.0");
+            request_params2.put("args", params);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        new AsyncTask<Void, Void, Void>() {
 
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, "https://mvid-services.mv-nordic.com/v2/UserService/jsonwsp", request_params, new Response.Listener<JSONObject>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, "https://mvid-services.mv-nordic.com/v2/UserService/jsonwsp", request_params2, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject jobj) {
@@ -311,6 +326,11 @@ public class LoginActivity extends BaseActivity {
             }
         });
         MyApplication.getInstance().addToRequestQueue(req);
+                return null;
+            }
+
+
+        }.execute();
     }
 
 

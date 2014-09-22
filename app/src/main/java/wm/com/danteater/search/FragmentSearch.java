@@ -244,6 +244,7 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
                     e.printStackTrace();
                 }
 
+
                 reader = API.callWebservicePost("http://api.danteater.dk/api/PlaySearch", params.toString());
                 Type listType = new TypeToken<List<BeanSearch>>() {
                 }.getType();
@@ -349,9 +350,10 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
             holder.sResultTitle.setText(beanSearchList.get(position).Title);
             holder.sResultSubTitle.setText(beanSearchList.get(position).SubtitleShort);
             holder.sResultParticipants.setText(beanSearchList.get(position).Actors+" medvirkende");
-            holder.sResultMusics.setText(beanSearchList.get(position).Age+" år");
-            holder.sResultAge.setText(beanSearchList.get(position).Duration+" min");
-            holder.sResultDuration.setText("musik: "+beanSearchList.get(position).Music);
+            holder.sResultAge.setText(beanSearchList.get(position).Age+" år");
+            holder.sResultDuration.setText(beanSearchList.get(position).Duration+" min");
+            holder.sResultMusics.setText("musik: "+beanSearchList.get(position).Music);
+
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

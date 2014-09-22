@@ -41,12 +41,15 @@ public class API {
             post.setHeader("Content-type", "application/json");
             post.setEntity(new StringEntity(jsonString));
             HttpResponse response = client.execute(post);
+            Log.e("jsonString:",jsonString+"");
+            Log.e("response:",response+"");
             StatusLine statusLine = response.getStatusLine();
             if (statusLine.getStatusCode() == 200) {
                 HttpEntity entity = response.getEntity();
                 is = entity.getContent();
                 reader = new InputStreamReader(is);
             } else {
+
                 Log.e("Error", +statusLine.getStatusCode()+"");
             }
         }catch (JsonSyntaxException e) {

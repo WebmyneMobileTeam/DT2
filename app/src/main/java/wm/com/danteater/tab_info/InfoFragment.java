@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 
+import wm.com.danteater.Play.Play;
 import wm.com.danteater.R;
 import wm.com.danteater.app.MyApplication;
 import wm.com.danteater.customviews.HUD;
@@ -32,6 +33,7 @@ import wm.com.danteater.login.User;
 import wm.com.danteater.model.API;
 import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
+import wm.com.danteater.model.DatabaseWrapper;
 import wm.com.danteater.search.BeanSearch;
 
 
@@ -141,14 +143,26 @@ public class InfoFragment extends Fragment {
     }
 
     private void retrievePlayContentsForPlayOrderId() {
-        new CallWebService("http://api.danteater.dk/api/playfull/" + beanSearch.PlayId, CallWebService.TYPE_JSONOBJECT) {
+
+        new CallWebService("http://api.danteater.dk/api/playfull/" + beanSearch.OrderId, CallWebService.TYPE_JSONOBJECT) {
 
             @Override
-            public void response(String response) {
+            public void response(final String response) {
 
                 Log.e("Response play full:", response + "");
-                //TODO store data in local db
-                sharePlayWithNoone();
+
+
+                Play receivedPlay = new GsonBuilder().create().fromJson(response, Play.class);
+                DatabaseWrapper db = new DatabaseWrapper(getActivity());
+                db.insertPlay(receivedPlay, false);
+                db.close();
+
+
+
+                        sharePlayWithNoone();
+
+
+
 //                sharePlayWithMe();
             }
 
@@ -157,6 +171,7 @@ public class InfoFragment extends Fragment {
                 Log.e("error", error + "");
             }
         }.start();
+
     }
 
 
@@ -197,7 +212,7 @@ public class InfoFragment extends Fragment {
                 try
 
                 {
-                    Reader readerForNone = API.callWebservicePost("http://api.danteater.dk/api/playshare/" + beanSearch.PlayId, shareWithUsersArrayN.toString());
+                    Reader readerForNone = API.callWebservicePost("http://api.danteater.dk/api/playshare/" + beanSearch.OrderId, shareWithUsersArrayN.toString());
                     Log.e("reader", readerForNone + "");
 
                     StringBuffer response = new StringBuffer();
@@ -210,7 +225,7 @@ public class InfoFragment extends Fragment {
                     } while (i != -1);
                     readerForNone.close();
                     Log.e("response", response + " ");
-                    sharePlayWithMe();
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -218,7 +233,11 @@ public class InfoFragment extends Fragment {
                 return null;
             }
 
-
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                sharePlayWithMe();
+            }
         }.execute();
 
 
@@ -227,6 +246,7 @@ public class InfoFragment extends Fragment {
 
     private void sharePlayWithMe() {
         final ArrayList<User> totalUsers = new ArrayList<User>();
+
         final JSONArray shareWithUsersArray = new JSONArray();
         totalUsers.add(currentUser);
         if (totalUsers != null || totalUsers.size() != 0) {
@@ -234,7 +254,9 @@ public class InfoFragment extends Fragment {
                 String nameToBeSaved;
 
                 if (user.checkTeacherOrAdmin(user.getRoles()) == true) {
-                    nameToBeSaved = currentUser.getFirstName() + " " + currentUser.getLastName() + " (lærer)";
+                    // TODO can't add "(lærer)"
+//                    nameToBeSaved = currentUser.getFirstName() + " " + currentUser.getLastName() + " (lærer)";
+                    nameToBeSaved = currentUser.getFirstName() + " " + currentUser.getLastName();
                 } else {
                     nameToBeSaved = currentUser.getFirstName() + " " + currentUser.getLastName();
                 }
@@ -255,20 +277,23 @@ public class InfoFragment extends Fragment {
             @Override
             protected Void doInBackground(Void... voids) {
 
-                try {
-                    Reader readerForMe = API.callWebservicePost("http://api.danteater.dk/api/playshare/" + beanSearch.PlayId, shareWithUsersArray.toString());
-                    Log.e("reader", readerForMe + "");
+                try
+
+                {
+                    Reader readerForNone = API.callWebservicePost("http://api.danteater.dk/api/playshare/"+beanSearch.OrderId, shareWithUsersArray.toString());
+                    Log.e("reader", readerForNone + "");
 
                     StringBuffer response = new StringBuffer();
                     int i = 0;
                     do {
-                        i = readerForMe.read();
+                        i = readerForNone.read();
                         char character = (char) i;
                         response.append(character);
 
                     } while (i != -1);
-                    readerForMe.close();
+                    readerForNone.close();
                     Log.e("response", response + " ");
+                    sharePlayWithMe();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
