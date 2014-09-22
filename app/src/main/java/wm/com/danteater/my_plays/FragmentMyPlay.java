@@ -1,14 +1,14 @@
 package wm.com.danteater.my_plays;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,10 +21,17 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.Reader;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -40,12 +47,14 @@ import wm.com.danteater.Play.Play;
 import wm.com.danteater.Play.PlayLines;
 import wm.com.danteater.Play.PlayOrderDetails;
 import wm.com.danteater.R;
+import wm.com.danteater.app.MyApplication;
 import wm.com.danteater.app.PlayTabActivity;
 import wm.com.danteater.customviews.HUD;
 import wm.com.danteater.customviews.SegmentedGroup;
 import wm.com.danteater.customviews.WMTextView;
 import wm.com.danteater.login.User;
 import wm.com.danteater.model.API;
+import wm.com.danteater.model.APIDelete;
 import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.model.DatabaseWrapper;
@@ -64,13 +73,14 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     private RadioButton rbBestilte;
     private RadioButton rbGennemsyn;
     private ListView listPlay;
-
-
+    private ListPlayAdapterForReview listPlayAdapterForReview;
+    private ListPlayAdapterForPerform listPlayAdapterForPerform;
     private ArrayList<Play> playList;
     private ArrayList<Play> playListForReview = new ArrayList<Play>();
     private ArrayList<Play> playListForPerform = new ArrayList<Play>();
     private ArrayList<PlayOrderDetails> playOrderList = new ArrayList<PlayOrderDetails>();
-    private User user;
+    private User currentUser;
+    private Play playSelectedToBeDeleted;
 
 
     public static FragmentMyPlay newInstance(String param1, String param2) {
@@ -87,7 +97,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "user_pref", 0);
-        user =complexPreferences.getObject("current_user", User.class);
+        currentUser =complexPreferences.getObject("current_user", User.class);
     }
 
     @Override
@@ -128,7 +138,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
         dialog.title("Mine Stykker");
         dialog.show();
 
-        new CallWebService("http://api.danteater.dk/api/MyPlays?UserId="+ user.getUserId(), CallWebService.TYPE_JSONARRAY) {
+        new CallWebService("http://api.danteater.dk/api/MyPlays?UserId="+ currentUser.getUserId(), CallWebService.TYPE_JSONARRAY) {
 
             @Override
             public void response(String response) {
@@ -189,8 +199,8 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                         Log.i("PlayOrderId", bean.PlayOrderId + "");
                     }
                 }
-
-                listPlay.setAdapter(new ListPlayAdapterForPerform(getActivity(), playListForPerform, playOrderList));
+                listPlayAdapterForPerform=   new ListPlayAdapterForPerform(getActivity(), playListForPerform, playOrderList);
+                listPlay.setAdapter(listPlayAdapterForPerform);
 
 
             }
@@ -213,12 +223,14 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
             case R.id.rbBestilte:
                 listPlay.setAdapter(null);
-                listPlay.setAdapter(new ListPlayAdapterForPerform(getActivity(), playListForPerform, playOrderList));
+                listPlayAdapterForPerform=new ListPlayAdapterForPerform(getActivity(), playListForPerform, playOrderList);
+                listPlay.setAdapter(listPlayAdapterForPerform);
                 break;
 
             case R.id.rbGennemsyn:
                 listPlay.setAdapter(null);
-                listPlay.setAdapter(new ListPlayAdapterForReview(getActivity(), playListForReview));
+                listPlayAdapterForReview=new ListPlayAdapterForReview(getActivity(), playListForReview);
+                listPlay.setAdapter(listPlayAdapterForReview);
                 break;
         }
 
@@ -309,7 +321,9 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             holder.imgPreviewTrashIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(getActivity(), "Delete", Toast.LENGTH_SHORT).show();
+                    playSelectedToBeDeleted=playListForReview.get(position);
+
+                    showDialogForReviewDelete("Slet","Er du sikker på, at du vil slette?");
                 }
             });
 
@@ -334,6 +348,84 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
     }
 
+
+
+   public void showDialogForReviewDelete(String title,String message) {
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+        alert.setTitle(title);
+        alert.setMessage(message);
+        alert.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                        removePlayForReview();
+
+
+                dialog.dismiss();
+
+            }
+        });
+
+        alert.setNegativeButton("Nej", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+            }
+        });
+
+        alert.show();
+    }
+
+
+
+    public void removePlayForReview() {
+        Log.e("removePlayForReview: ", "inside removePlayForReview");
+        new AsyncTask<Void,Void,Void>(){
+
+@Override
+protected Void doInBackground(Void... voids) {
+
+        try {
+            Reader reader = APIDelete.postData("http://api.danteater.dk/api/PlayOrderReview/" + playSelectedToBeDeleted.OrderId + "?userid=" + currentUser.getUserId());
+            StringBuffer response = new StringBuffer();
+            int i = 0;
+            do {
+                i = reader.read();
+                char character = (char) i;
+                response.append(character);
+
+            } while (i != -1);
+            reader.close();
+            Log.e("response after deleted: ", response + " ");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+            return null;
+        }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+         removePlayForReviewFromList();
+            }
+        }.execute();
+
+    }
+
+
+    public void removePlayForReviewFromList() {
+        for (int i=0;i<playListForReview.size();i++) {
+                    if (playListForReview.get(i).PlayId.contains(playSelectedToBeDeleted.getPlayId())) {
+                        playListForReview.remove(playListForReview.get(i));
+
+                    }
+                }
+                listPlayAdapterForReview.notifyDataSetChanged();
+    }
     // For Order tab
     public class ListPlayAdapterForPerform extends BaseAdapter {
 
@@ -448,7 +540,8 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             holder.imgOrderTrashIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(getActivity(), "Delete", Toast.LENGTH_SHORT).show();
+                    playSelectedToBeDeleted=playListForPerform.get(position);
+                    showDialogForPerformDelete("Slet","Er du sikker på, at du vil slette?");
                 }
             });
 
@@ -474,6 +567,83 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
         }
 
+    }
+
+    public void showDialogForPerformDelete(String title,String message) {
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+        alert.setTitle(title);
+        alert.setMessage(message);
+        alert.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                removePlayForPerform();
+
+
+                dialog.dismiss();
+
+            }
+        });
+
+        alert.setNegativeButton("Nej", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+            }
+        });
+
+        alert.show();
+    }
+
+
+
+    public void removePlayForPerform() {
+        Log.e("removePlayForPerform: ", "inside removePlayForPerform");
+        new AsyncTask<Void,Void,Void>(){
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+
+                try {
+                    Reader reader = APIDelete.postData("http://api.danteater.dk/api/PlayOrderPerform/" + playSelectedToBeDeleted.OrderId + "?userid=" + currentUser.getUserId());
+                    StringBuffer response = new StringBuffer();
+                    int i = 0;
+                    do {
+                        i = reader.read();
+                        char character = (char) i;
+                        response.append(character);
+
+                    } while (i != -1);
+                    reader.close();
+                    Log.e("response after deleted: ", response + " ");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                removePlayForPerformFromList();
+            }
+        }.execute();
+
+    }
+
+
+    public void removePlayForPerformFromList() {
+        for (int i=0;i<playListForPerform.size();i++) {
+            if (playListForPerform.get(i).PlayId.contains(playSelectedToBeDeleted.getPlayId())) {
+                playListForPerform.remove(playListForPerform.get(i));
+
+            }
+        }
+        listPlayAdapterForPerform.notifyDataSetChanged();
     }
 
     private void gotoSpecificPage(final int play_index,int tab_index, final Play play, final ACTIVITY_TYPE act_type){
