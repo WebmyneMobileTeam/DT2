@@ -25,7 +25,11 @@ import com.android.volley.VolleyError;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -33,6 +37,7 @@ import java.util.Date;
 import java.util.List;
 
 import wm.com.danteater.Play.Play;
+import wm.com.danteater.Play.PlayLines;
 import wm.com.danteater.Play.PlayOrderDetails;
 import wm.com.danteater.R;
 import wm.com.danteater.app.PlayTabActivity;
@@ -52,6 +57,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
         TAB_ACTIVITY,ORDER_ACTIVITY
     }
 
+    int plyIDAfterUpdate = 0; // hack
     private HUD dialog;
     private HUD dialog_next;
     private SegmentedGroup segmentedGroupPlays;
@@ -65,6 +71,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     private ArrayList<Play> playListForPerform = new ArrayList<Play>();
     private ArrayList<PlayOrderDetails> playOrderList = new ArrayList<PlayOrderDetails>();
     private User user;
+
 
     public static FragmentMyPlay newInstance(String param1, String param2) {
         FragmentMyPlay fragment = new FragmentMyPlay();
@@ -311,12 +318,11 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 @Override
                 public void onClick(View v) {
                  // Goto read page
+                    dialog_next = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
+                    dialog_next.title("Henter");
+                    dialog_next.show();
 
-               /*     final HUD dialog = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
-                    dialog.title("Henter Seneste\nændringer");
-                    dialog.show();*/
-
-                    gotoSpecificPage(0,playListForPerform.get(position),ACTIVITY_TYPE.ORDER_ACTIVITY);
+                    gotoSpecificPage(position,0,playListForPerform.get(position),ACTIVITY_TYPE.ORDER_ACTIVITY);
 
                 }
             });
@@ -455,14 +461,8 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                     dialog_next.title("Henter");
                     dialog_next.show();
 
-                    new Handler().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            //  gotoTabActivity(position, "Read");
-                            gotoSpecificPage(0,playListForPerform.get(position),ACTIVITY_TYPE.TAB_ACTIVITY);
+                    gotoSpecificPage(position,0,playListForPerform.get(position),ACTIVITY_TYPE.TAB_ACTIVITY);
 
-                        }
-                    });
 
 
                 }
@@ -476,7 +476,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
     }
 
-    private void gotoSpecificPage(int tab_index, final Play play,ACTIVITY_TYPE type){
+    private void gotoSpecificPage(final int play_index,int tab_index, final Play play, final ACTIVITY_TYPE act_type){
 
 
         DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
@@ -488,25 +488,93 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
             Log.i("hasplay","true");
 
-            new CallWebService(API.link_retrievePlayContentsForPlayOrderId +play.OrderId,CallWebService.TYPE_JSONOBJECT) {
+            SharedPreferences preferences = getActivity().getSharedPreferences("Plays", getActivity().MODE_PRIVATE);
+
+            String k = "PlayLatesteUpdateDate"+play.PlayId;
+          //  Toast.makeText(getActivity(),preferences.getString(k,""), Toast.LENGTH_SHORT).show();
+
+
+            long unixTime = Long.parseLong(preferences.getString(k,""));
+            BigDecimal bigDecimal = new BigDecimal(unixTime);
+
+            String serverLink = API.link_getPlayUpdateForPlayOrderIdString+play.PlayId+"?unixTimeStamp="+unixTime;
+
+            new CallWebService(serverLink,CallWebService.TYPE_JSONARRAY) {
 
                 @Override
-                public void response(String response) {
+                public void response(final String response) {
 
-                    Log.i("Response full play : ",""+response);
 
-                    dialog_next.dismiss();
+                    Log.i("Response update play : ",""+response);
 
-                    Play receivedPlay = new GsonBuilder().create().fromJson(response, Play.class);
-                    DatabaseWrapper db = new DatabaseWrapper(getActivity());
-                    db.insertPlay(receivedPlay,false);
 
-                    db.close();
+
+                    if(response == null || response.equalsIgnoreCase("")){
+
+                    }else{
+
+                        new AsyncTask<String,Integer,String>(){
+
+                            @Override
+                            protected String doInBackground(String... params) {
+
+                                try {
+                                    JSONArray arr = new JSONArray(response);
+
+                                    for(int i=0;i<arr.length();i++){
+
+                                        JSONObject jsonObject = arr.getJSONObject(i);
+                                        PlayLines playLine = new GsonBuilder().create().fromJson(jsonObject.toString(),PlayLines.class);
+                                        DatabaseWrapper dbWrap = new DatabaseWrapper(getActivity());
+                                        dbWrap.updatePlayLine(playLine,Integer.parseInt(play.PlayId));
+                                        dbWrap.close();
+
+
+                                        DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
+                                        plyIDAfterUpdate = dbh.getPlayIdFromDBForOrderId(play.OrderId);
+                                        dbh.close();
+
+                                    }
+                                }catch(Exception e){
+
+                                }
+
+
+                                return null;
+                            }
+
+                            @Override
+                            protected void onPostExecute(String s) {
+                                super.onPostExecute(s);
+                               // dialog_next.dismiss();
+
+                                SharedPreferences preferences = getActivity().getSharedPreferences("Plays",getActivity().MODE_PRIVATE);
+                                SharedPreferences.Editor editor = preferences.edit();
+                                String k = "PlayLatesteUpdateDate"+play.PlayId;
+                                editor.putString(k,""+System.currentTimeMillis());
+                                editor.commit();
+
+                                gotoNextPage(act_type,play_index);
+
+
+
+
+
+                            }
+
+
+                        }.execute();
+
+
+
+                    }
 
                 }
 
+
                 @Override
                 public void error(VolleyError error) {
+
                     dialog_next.dismiss();
                     Toast.makeText(getActivity(),error.getMessage(), Toast.LENGTH_SHORT).show();
 
@@ -541,10 +609,21 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                         protected void onPostExecute(String s) {
                             super.onPostExecute(s);
                             dialog_next.dismiss();
+
+                            SharedPreferences preferences = getActivity().getSharedPreferences("Plays",getActivity().MODE_PRIVATE);
+                            SharedPreferences.Editor editor = preferences.edit();
+                            String k = "PlayLatesteUpdateDate"+play.PlayId;
+                            editor.putString(k,""+System.currentTimeMillis());
+                            editor.commit();
+
+                            gotoNextPage(act_type,play_index);
+
                         }
                     }.execute();
 
                 }
+
+
 
                 @Override
                 public void error(VolleyError error) {
@@ -558,44 +637,41 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
         }
 
-        switch (type){
+
+
+
+    }
+
+    private void gotoNextPage(ACTIVITY_TYPE act_type,int position) {
+
+        switch (act_type){
 
             case ORDER_ACTIVITY:
 
-                Intent i = new Intent(getActivity(),ReadActivityFromPreview.class);
-                startActivity(i);
+                ComplexPreferences complexPreferences1 = ComplexPreferences.getComplexPreferences(getActivity(), "mypref",0);
+                complexPreferences1.putObject("selected_play",playListForReview.get(position));
+                complexPreferences1.commit();
+
+                Intent i1 = new Intent(getActivity(), ReadActivityFromPreview.class);
+                startActivity(i1);
 
                 break;
 
             case TAB_ACTIVITY:
 
-                Toast.makeText(getActivity(), "TAB", Toast.LENGTH_SHORT).show();
+                ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref",0);
+                complexPreferences.putObject("selected_play",playListForPerform.get(position));
+                complexPreferences.commit();
+                Intent i = new Intent(getActivity(), PlayTabActivity.class);
+                startActivity(i);
 
                 break;
 
+
         }
-
-
-
-
-
-
-
     }
 
-    private void gotoTabActivity(int position,String type) {
 
-        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref",0);
-        complexPreferences.putObject("selected_play",playListForPerform.get(position));
-        complexPreferences.commit();
-
-        Intent i = new Intent(getActivity(), PlayTabActivity.class);
-        i.putExtra("infoData",playList.get(position).Synopsis+"");
-        i.putExtra("type_navigation",type);
-        startActivity(i);
-
-
-    }
 
 
     /**

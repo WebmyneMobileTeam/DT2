@@ -24,9 +24,9 @@ public class SongFiles {
     public String FileDescription;
 
     @SerializedName("FileAvailableForStudents")
-    public String FileAvailableForStudents;
+    public boolean FileAvailableForStudents;
 
-    public SongFiles(String id, String songTitle, String songMp3Url, String fileType, String fileDescription, String fileAvailableForStudents) {
+    public SongFiles(String id, String songTitle, String songMp3Url, String fileType, String fileDescription, boolean fileAvailableForStudents) {
         Id = id;
         SongTitle = songTitle;
         SongMp3Url = songMp3Url;
@@ -55,7 +55,7 @@ public class SongFiles {
         return FileDescription;
     }
 
-    public String getFileAvailableForStudents() {
+    public boolean getFileAvailableForStudents() {
         return FileAvailableForStudents;
     }
 }

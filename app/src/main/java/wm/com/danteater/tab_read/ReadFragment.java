@@ -54,8 +54,10 @@ public class ReadFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref", 0);
         selectedPlay = complexPreferences.getObject("selected_play", Play.class);
+
         ((WMTextView) getActivity().getActionBar().getCustomView()).setText(selectedPlay.Title);
 
        setHasOptionsMenu(true);
@@ -87,64 +89,11 @@ public class ReadFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        dialog = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
-        dialog.title("Mine Stykker");
-        dialog.show();
-        new CallWebService("http://api.danteater.dk/api/playfull/" + selectedPlay.OrderId, CallWebService.TYPE_JSONOBJECT) {
 
-            @Override
-            public void response(String response) {
-                dialog.dismiss();
-                Log.e("Response:", response + "");
-                handledataafterresponseVolly1(response);
-            }
 
-            @Override
-            public void error(VolleyError error) {
-                dialog.dismissWithStatus(R.drawable.ic_navigation_cancel, "Error");
-                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-
-            }
-        }.start();
     }
 
-    public void handledataafterresponseVolly1(final String response) {
-        // TODO Auto-generated method stub
 
-        getActivity().runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
-
-
-                Play play = new GsonBuilder().create().fromJson(
-                        response, Play.class);
-                playLinesesList = play.playLinesList;
-
-                Log.e("PlayId", play.PlayId + "");
-                for (int i = 0; i < playLinesesList.size(); i++) {
-
-//                    Log.e("LineCount",playLinesesList.get(i).LineCount+"");
-                    for (int j = 0; j < playLinesesList.get(i).assignedUsersList.size(); j++) {
-
-//                        Log.e("AssignedUserId",playLinesesList.get(i).assignedUsersList.get(j).AssignedUserId+"");
-                    }
-                    for (int j = 0; j < playLinesesList.get(i).textLinesList.size(); j++) {
-                        if (playLinesesList.get(i).textLinesList.get(j).LineText != null) {
-                            Log.e("LineText", playLinesesList.get(i).textLinesList.get(j).LineText + "");
-                        }
-                    }
-                    for (int j = 0; j < playLinesesList.get(i).castMatchesList.size(); j++) {
-
-//                        Log.e("castMatchesList",playLinesesList.get(i).castMatchesList.get(j)+"");
-                    }
-
-                }
-
-            }
-        });
-
-    }
 
 
     @Override

@@ -31,8 +31,8 @@ public class PlayTabActivity extends BaseActivity {
 
 
     private FragmentTabHost mTabHost;
-    private String type_navigation;
-    private String playinfo;
+  //  private String type_navigation;
+  //  private String playinfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,26 +42,26 @@ public class PlayTabActivity extends BaseActivity {
 
 
        // Receive the extra string for specific tab selection.
-        Intent i=getIntent();
-        playinfo =i.getStringExtra("infoData");
-        type_navigation = i.getStringExtra("type_navigation");
+    //    Intent i=getIntent();
+    //    playinfo =i.getStringExtra("infoData");
+    //    type_navigation = i.getStringExtra("type_navigation");
 
         // Helping to create a tabs to this application
            initTabHost();
 
-
+        mTabHost.setCurrentTab(0);
+        selectTAB(0);
 
         // Check weather the received extra string is read or share to select corresponding tabs;
-        if(type_navigation.equalsIgnoreCase("Read")){
+      /*  if(type_navigation.equalsIgnoreCase("Read")){
 
-            mTabHost.setCurrentTab(0);
-            selectTAB(0);
+
 
         }else if(type_navigation.equalsIgnoreCase("Share")){
 
             mTabHost.setCurrentTab(2);
             selectTAB(2);
-        }
+        }*/
 
 
 
@@ -96,8 +96,8 @@ public class PlayTabActivity extends BaseActivity {
         View view5 = getLayoutInflater().inflate(R.layout.item_tab_microphone,null,false);
 
 
-        Bundle bInfo=new Bundle();
-        bInfo.putString("infoData",playinfo+"");
+     //   Bundle bInfo=new Bundle();
+     //   bInfo.putString("infoData",playinfo+"");
 
 
         mTabHost.addTab(mTabHost.newTabSpec("tab4").setIndicator(view4),
