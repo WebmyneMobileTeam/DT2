@@ -155,9 +155,6 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             }
         }.start();
 
-
-
-
     }
 
     public void handledataafterresponseVolly(final String response) {
@@ -336,7 +333,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                     dialog_next.title("Henter");
                     dialog_next.show();
 
-                    gotoSpecificPage(position,0,playListForPerform.get(position),ACTIVITY_TYPE.ORDER_ACTIVITY);
+                    gotoSpecificPage(position,0,playListForReview.get(position),ACTIVITY_TYPE.ORDER_ACTIVITY);
 
                 }
             });
@@ -637,6 +634,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
 
     public void removePlayForPerformFromList() {
+
         for (int i=0;i<playListForPerform.size();i++) {
             if (playListForPerform.get(i).PlayId.contains(playSelectedToBeDeleted.getPlayId())) {
                 playListForPerform.remove(playListForPerform.get(i));
@@ -662,6 +660,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
             String k = "PlayLatesteUpdateDate"+play.PlayId;
             //  Toast.makeText(getActivity(),preferences.getString(k,""), Toast.LENGTH_SHORT).show();
+
 
 
             long unixTime = Long.parseLong(preferences.getString(k,""));
@@ -725,10 +724,6 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                                 editor.commit();
 
                                 gotoNextPage(act_type,play_index);
-
-
-
-
 
                             }
 

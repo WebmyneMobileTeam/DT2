@@ -82,19 +82,13 @@ public class ReadFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-
-
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-
     }
-
-
-
 
     @Override
     public void onAttach(Activity activity) {

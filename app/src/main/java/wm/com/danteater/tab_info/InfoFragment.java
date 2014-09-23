@@ -41,6 +41,7 @@ import wm.com.danteater.search.BeanSearch;
 
 
 public class InfoFragment extends Fragment {
+
     private String Synopsis;
     BeanSearch beanSearch;
     RelativeLayout orderForPreview;
@@ -227,7 +228,6 @@ public class InfoFragment extends Fragment {
             protected Void doInBackground(Void... voids) {
 
                 try
-
                 {
                     Reader readerForNone = API.callWebservicePost("http://api.danteater.dk/api/playshare/" + beanSearch.OrderId, shareWithUsersArrayN.toString());
                     Log.e("reader", readerForNone + "");
