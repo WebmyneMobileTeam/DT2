@@ -80,7 +80,9 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     private ArrayList<Play> playListForPerform = new ArrayList<Play>();
     private ArrayList<PlayOrderDetails> playOrderList = new ArrayList<PlayOrderDetails>();
     private User currentUser;
-    private Play playSelectedToBeDeleted;
+    //private Play playSelectedToBeDeleted;
+    private Play playSelectedToBeDeletedForReview;
+    private Play playSelectedToBeDeletedForPerform;
 
 
     public static FragmentMyPlay newInstance(String param1, String param2) {
@@ -184,8 +186,8 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                     if (bean.OrderType.equalsIgnoreCase("Perform")) {
 
                         playListForPerform.add(bean);
-                        playOrderList.add(bean.playOrderDetails);
-
+                       playOrderList.add(bean.playOrderDetails);
+                        //TODO
                     }
 
                 }
@@ -318,7 +320,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             holder.imgPreviewTrashIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    playSelectedToBeDeleted=playListForReview.get(position);
+                    playSelectedToBeDeletedForReview=playListForReview.get(position);
 
                     showDialogForReviewDelete("Slet","Er du sikker på, at du vil slette?");
                 }
@@ -387,7 +389,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             protected Void doInBackground(Void... voids) {
 
                 try {
-                    Reader reader = APIDelete.postData("http://api.danteater.dk/api/PlayOrderReview/" + playSelectedToBeDeleted.OrderId + "?userid=" + currentUser.getUserId());
+                    Reader reader = APIDelete.postData("http://api.danteater.dk/api/PlayOrderReview/" + playSelectedToBeDeletedForReview.OrderId + "?userid=" + currentUser.getUserId());
                     StringBuffer response = new StringBuffer();
                     int i = 0;
                     do {
@@ -416,13 +418,14 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
     public void removePlayForReviewFromList() {
         for (int i=0;i<playListForReview.size();i++) {
-            if (playListForReview.get(i).PlayId.contains(playSelectedToBeDeleted.getPlayId())) {
+            if (playListForReview.get(i).PlayId.contains(playSelectedToBeDeletedForReview.getPlayId())) {
                 playListForReview.remove(playListForReview.get(i));
 
             }
         }
         listPlayAdapterForReview.notifyDataSetChanged();
     }
+
     // For Order tab
     public class ListPlayAdapterForPerform extends BaseAdapter {
 
@@ -537,7 +540,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             holder.imgOrderTrashIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    playSelectedToBeDeleted=playListForPerform.get(position);
+                    playSelectedToBeDeletedForPerform=playListForPerform.get(position);
                     showDialogForPerformDelete("Slet","Er du sikker på, at du vil slette?");
                 }
             });
@@ -606,7 +609,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             protected Void doInBackground(Void... voids) {
 
                 try {
-                    Reader reader = APIDelete.postData("http://api.danteater.dk/api/PlayOrderPerform/" + playSelectedToBeDeleted.OrderId + "?userid=" + currentUser.getUserId());
+                    Reader reader = APIDelete.postData("http://api.danteater.dk/api/PlayOrderPerform/" + playSelectedToBeDeletedForPerform.OrderId + "?userid=" + currentUser.getUserId());
                     StringBuffer response = new StringBuffer();
                     int i = 0;
                     do {
@@ -636,7 +639,8 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     public void removePlayForPerformFromList() {
 
         for (int i=0;i<playListForPerform.size();i++) {
-            if (playListForPerform.get(i).PlayId.contains(playSelectedToBeDeleted.getPlayId())) {
+            if (playListForPerform.get(i).PlayId.contains(playSelectedToBeDeletedForPerform.getPlayId())) {
+                playOrderList.remove(playListForPerform.get(i).playOrderDetails);
                 playListForPerform.remove(playListForPerform.get(i));
 
             }

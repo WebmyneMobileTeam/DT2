@@ -538,7 +538,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         cvTextLines.put("order_type_",play.OrderType);
 
         myDataBase = this.getWritableDatabase();
-        myDataBase.update("plays",cvTextLines,"WHERE play_order_id_text_ " + " = ?",new String[]{""+play.OrderId});
+        myDataBase.update("plays",cvTextLines," play_order_id_text_ " + " = ?",new String[]{""+play.OrderId});
         myDataBase.close();
     }
 }
