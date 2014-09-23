@@ -2,6 +2,7 @@ package wm.com.danteater.tab_info;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +25,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import wm.com.danteater.Play.Play;
 import wm.com.danteater.R;
@@ -101,6 +104,20 @@ public class InfoFragment extends Fragment {
                         } else {
                             dialog.dismissWithStatus(R.drawable.ic_navigation_accept, "Gemt til Mine stykker");
                         }
+                        new CountDownTimer(2500, 1000) {
+
+                            @Override
+                            public void onFinish() {
+                                getActivity().finish();
+
+                            }
+
+                            @Override
+                            public void onTick(long millisUntilFinished) {
+
+                            }
+                        }.start();
+
 
                     }
 
@@ -254,6 +271,7 @@ public class InfoFragment extends Fragment {
                 String nameToBeSaved;
 
                 if (user.checkTeacherOrAdmin(user.getRoles()) == true) {
+
                     // TODO can't add "(lærer)"
 //                    nameToBeSaved = currentUser.getFirstName() + " " + currentUser.getLastName() + " (lærer)";
                     nameToBeSaved = currentUser.getFirstName() + " " + currentUser.getLastName();
@@ -293,7 +311,7 @@ public class InfoFragment extends Fragment {
                     } while (i != -1);
                     readerForNone.close();
                     Log.e("response", response + " ");
-                    sharePlayWithMe();
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

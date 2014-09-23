@@ -479,6 +479,8 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
     }
 
+
+
     public void updateTextLine(TextLines textLine, int playLineID, int index) {
         myDataBase = this.getWritableDatabase();
         String selectQuery = "SELECT id_ FROM textlines WHERE playline_id_ ="+playLineID;
@@ -528,5 +530,15 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
         return playID;
 
+    }
+
+    public void updatePlayInfo(Play play) {
+
+        ContentValues cvTextLines = new ContentValues();
+        cvTextLines.put("order_type_",play.OrderType);
+
+        myDataBase = this.getWritableDatabase();
+        myDataBase.update("plays",cvTextLines,"WHERE play_order_id_text_ " + " = ?",new String[]{""+play.OrderId});
+        myDataBase.close();
     }
 }
