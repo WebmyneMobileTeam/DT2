@@ -1,0 +1,66 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="wm.com.danteater.inspiration.FragmentInspiration">
+
+    <LinearLayout
+        android:id="@+id/labelView"
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:layout_width="@dimen/inspiration_coming_label_width"
+        android:background="@color/apptheme_color"
+        android:layout_height="wrap_content">
+
+        <wm.com.danteater.customviews.WMTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Inspiration er på vej. Vi ser frem til at modtage nogle kreative indslag og billeder fra dig."
+            android:textSize="@dimen/normalText"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:layout_margin="@dimen/activity_margin" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/studentView"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <wm.com.danteater.customviews.WMTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Din lærer har ikke delt et skuespil med dig endnu..."
+
+            android:textSize="@dimen/normalText"
+            android:gravity="center_vertical"
+            android:padding="@dimen/activity_margin" />
+
+        <GridView
+            android:id="@+id/videos_studentview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:numColumns="2"
+            android:gravity="center"
+
+            android:horizontalSpacing="2dp"
+            android:verticalSpacing="2dp"
+            android:drawSelectorOnTop="true" />
+
+        <wm.com.danteater.customviews.WMTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="...men du kan jo se lidt dramaøvelser, mens du venter"
+            android:textSize="@dimen/normalText"
+
+            android:gravity="center_vertical"
+            android:padding="@dimen/activity_margin" />
+    </LinearLayout>
+
+</FrameLayout>

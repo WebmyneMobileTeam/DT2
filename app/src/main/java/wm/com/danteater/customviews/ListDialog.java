@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -27,7 +28,7 @@ public  class ListDialog extends Dialog{
     private Context ctx;
     private TextView txtTitle;
     private ListView listDialog;
-
+    private FrameLayout parentDialog;
 
 
     public ListDialog(Context context, int theme) {
@@ -46,10 +47,16 @@ public  class ListDialog extends Dialog{
         LayoutInflater inflater = (LayoutInflater) ctx.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
         convertView = inflater.inflate(R.layout.view_dialog,null);
         setContentView(convertView);
+
         txtTitle = (TextView)convertView.findViewById(R.id.titleDialog);
         listDialog = (ListView)convertView.findViewById(R.id.listDialog);
-
-
+        parentDialog=(FrameLayout)convertView.findViewById(R.id.parentDialog);
+        parentDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
 
     }
 

@@ -13,8 +13,11 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -59,7 +62,7 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
     private ArrayList<String> titleList = new ArrayList<String>();
     private ArrayList<BeanSearch> beanSearchList;
     private Reader reader;
-
+    ListDialog listDialog;
     WMEdittext searchBox;
     private BeanSearch searchResultPlay;
     private SparseArray listSubItems;
@@ -352,7 +355,7 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
             holder.sResultParticipants.setText(beanSearchList.get(position).Actors+" medvirkende");
             holder.sResultAge.setText(beanSearchList.get(position).Age+" år");
             holder.sResultDuration.setText(beanSearchList.get(position).Duration+" min");
-            holder.sResultMusics.setText("musik: "+beanSearchList.get(position).Music);
+            holder.sResultMusics.setText("Musik: "+beanSearchList.get(position).Music);
 
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -438,12 +441,13 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
         CLICKED_POSITION = position;
-        ListDialog dialog = new ListDialog(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
-        dialog.title(titleList.get(position));
-        dialog.setItems((ArrayList) listSubItems.get(position));
-        dialog.setSelectedListner(this);
-        dialog.show();
-
+        listDialog = new ListDialog(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
+        listDialog.setCancelable(true);
+        listDialog.setCanceledOnTouchOutside(true);
+        listDialog.title(titleList.get(position));
+        listDialog.setItems((ArrayList) listSubItems.get(position));
+        listDialog.setSelectedListner(this);
+        listDialog.show();
     }
 
 

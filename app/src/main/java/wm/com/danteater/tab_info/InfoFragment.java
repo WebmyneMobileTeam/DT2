@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.RelativeLayout;
 
@@ -67,7 +68,7 @@ public class InfoFragment extends Fragment {
         super.onCreate(savedInstanceState);
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "search_result_play", 0);
         beanSearch = complexPreferences.getObject("searched_play", BeanSearch.class);
-        Synopsis = beanSearch.Synopsis;
+       Synopsis = beanSearch.Synopsis;
         ComplexPreferences complexPreferencesForUser = ComplexPreferences.getComplexPreferences(getActivity(), "user_pref", 0);
         currentUser = complexPreferences.getObject("current_user", User.class);
     }
@@ -77,6 +78,8 @@ public class InfoFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_info, container, false);
         WebView webview = (WebView) view.findViewById(R.id.infoPage);
+//        WebSettings settings = webview.getSettings();
+//        settings.setDefaultTextEncodingName("utf-8");
         orderForPreview = (RelativeLayout) view.findViewById(R.id.orderForPreview);
         orderForPreview.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,7 +129,7 @@ public class InfoFragment extends Fragment {
 
             }
         });
-        webview.loadData(Synopsis, "text/html", "charset=UTF-8");
+        webview.loadData(Synopsis,  "text/html; charset=utf-8", "utf-8");
         return view;
     }
 
@@ -315,9 +318,6 @@ public class InfoFragment extends Fragment {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-
-
 
 
                 return null;

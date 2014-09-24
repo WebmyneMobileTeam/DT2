@@ -37,7 +37,7 @@ import wm.com.danteater.my_plays.DrawerActivity;
 public class LoginActivity extends BaseActivity {
 
 
-    public static DeviceSecurity m_device_security = null;
+    public  DeviceSecurity m_device_security=null;
     boolean shouldShowLoginView;
     private LinearLayout loginView, noAccessView;
     private RelativeLayout noNetworkView;

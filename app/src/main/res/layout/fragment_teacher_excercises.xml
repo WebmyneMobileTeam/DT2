@@ -39,14 +39,15 @@
             <wm.com.danteater.customviews.WMTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Til dig"
+                android:text="Tips til instruktøren:"
                 android:textSize="@dimen/normalText"
 
                 android:gravity="center_vertical"
                 android:paddingLeft="@dimen/activity_margin"
                 android:paddingRight="@dimen/activity_margin"
                 android:paddingTop="4dp"
-                android:paddingBottom="4dp"/>
+                android:paddingBottom="4dp"
+                android:id="@+id/" />
 
             <GridView
                 android:id="@+id/videos_one_teacherview"
@@ -68,13 +69,14 @@
             <wm.com.danteater.customviews.WMTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Eleverne kan se......"
+                android:text="Dramaøvelser til eleverne:"
                 android:textSize="@dimen/normalText"
                 android:gravity="center_vertical"
                 android:paddingLeft="@dimen/activity_margin"
                 android:paddingRight="@dimen/activity_margin"
                 android:paddingTop="4dp"
-                android:paddingBottom="4dp" />
+                android:paddingBottom="4dp"
+                android:id="@+id/" />
 
             <GridView
                 android:id="@+id/videos_two_teacherview"

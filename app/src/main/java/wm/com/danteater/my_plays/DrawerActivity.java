@@ -3,6 +3,7 @@ package wm.com.danteater.my_plays;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentManager;
@@ -17,6 +18,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+
+import com.mvnordic.mviddeviceconnector.DeviceSecurity;
 
 import wm.com.danteater.Messages.FragmentMessage;
 import wm.com.danteater.R;
@@ -106,7 +109,12 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
             @Override
             public void onClick(View view) {
                 //TODO clear other data like messages or other records...
-                LoginActivity.m_device_security.releaseDeviceRegistration();
+                SharedPreferences preferences = getSharedPreferences("settings",MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.clear();
+                editor.commit();
+                DeviceSecurity   m_device_security = new DeviceSecurity(DrawerActivity.this);
+               m_device_security.releaseDeviceRegistration();
                 Intent i = new Intent(DrawerActivity.this,LoginActivity.class );
                 startActivity(i);
                 finish();

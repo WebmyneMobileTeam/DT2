@@ -52,7 +52,7 @@ public class FragmentInspiration extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_inspiration, container, false);
+        View view=inflater.inflate(R.layout.fragment_teacher_excercises, container, false);
         tViewOne=(GridView)view.findViewById(R.id.videos_one_teacherview);
         tViewTwo=(GridView)view.findViewById(R.id.videos_two_teacherview);
         sView=(GridView)view.findViewById(R.id.videos_studentview);

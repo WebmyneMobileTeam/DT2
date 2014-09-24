@@ -103,7 +103,6 @@ public class StateManager { //singleton class
             methodParams.put("session_id", seesionId);
             methodParams.put("domain", domain);
             methodParams.put("group_cn", group.getGroupId());
-
             requestParams.put("methodname", "listGroupMembers");
             requestParams.put("type", "jsonwsp/request");
             requestParams.put("version", "1.0");
