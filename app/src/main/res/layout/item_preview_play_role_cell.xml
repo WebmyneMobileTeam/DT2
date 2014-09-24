@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@color/read_play_cell"
+    android:layout_width="match_parent"
+    android:padding="@dimen/activity_margin"
+    android:layout_height="wrap_content">
+
+
+    <wm.com.danteater.customviews.WMTextView
+        android:id="@+id/previewPlayRoleTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Bølle-Bob"
+        android:padding="2dp"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/normalText"/>
+    <wm.com.danteater.customviews.WMTextView
+        android:id="@+id/previewPlayRoleDescription"
+        android:layout_width="match_parent"
+        android:padding="2dp"
+        android:layout_height="wrap_content"
+        android:text="Lorem ipsum... dsdf asdf"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/medium_text"/>
+
+
+</LinearLayout>

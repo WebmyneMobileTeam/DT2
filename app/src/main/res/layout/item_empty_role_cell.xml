@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="@color/read_play_cell"
+    android:padding="@dimen/activity_margin"
+    android:layout_height="wrap_content">
+
+
+    <wm.com.danteater.customviews.WMTextView
+        android:id="@+id/emptyRoleTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Bølle-Bob"
+        android:padding="2dp"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/normalText"/>
+
+    <wm.com.danteater.customviews.WMTextView
+        android:id="@+id/emptyRoleSongTitle"
+        android:layout_width="match_parent"
+        android:padding="2dp"
+        android:layout_height="wrap_content"
+        android:text="992 sange 854 replikker"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="@dimen/small_text"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:padding="2dp"
+        android:layout_height="wrap_content">
+
+        <wm.com.danteater.customviews.WMTextView
+            android:id="@+id/emptyRoleNotAssigned"
+            android:layout_alignParentLeft="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ikke tildelt"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="@dimen/small_text"/>
+
+        <wm.com.danteater.customviews.WMTextView
+            android:id="@+id/emptyRoleAssignedButton"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tildel rolle"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="@dimen/small_text"/>
+    </RelativeLayout>
+</LinearLayout>

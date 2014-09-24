@@ -3,6 +3,7 @@
 
     <color name="apptheme_color">#006fb1</color>
 
+
     <color name="gray_color">#a0a0a0</color>
     <color name="aqua">#009688</color>
     <color name="greenTheme">#3c7933</color>
@@ -15,4 +16,5 @@
     <color name="script_table_view_cell">#ffebd0</color>
     <color name="music_table_view_cell_first_color">#ffd692</color>
     <color name="music_table_view_cell_second_color">#ffba4a</color>
+    <color name="read_play_cell">#d9e7f2</color>
 </resources>

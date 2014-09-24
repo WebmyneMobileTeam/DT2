@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@color/apptheme_color"
+    android:layout_width="match_parent"
+   android:paddingBottom="4dp"
+    android:paddingTop="4dp"
+    android:paddingLeft="@dimen/activity_margin"
+    android:paddingRight="@dimen/activity_margin"
+    android:layout_height="wrap_content">
+
+
+    <wm.com.danteater.customviews.WMTextView
+        android:id="@+id/readPlayHeaderTitle"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:maxLines="2"
+        android:text="Bølle-Bob som har et meget langt navn"
+        android:padding="2dp"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/normalText"/>
+
+    <wm.com.danteater.customviews.WMTextView
+        android:id="@+id/readPlayHeaderSubTitle"
+        android:layout_width="match_parent"
+        android:padding="2dp"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:text="subtitle"
+        android:singleLine="true"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/medium_text"/>
+
+</LinearLayout>
