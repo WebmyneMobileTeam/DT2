@@ -33,6 +33,7 @@ public class StateManager { //singleton class
     private StateManager() {
     }
 
+    public static int playID = 0;
     public static StateManager getInstance() {
         return s;
     }
@@ -43,7 +44,7 @@ public class StateManager { //singleton class
     public  static ArrayList<User> userArrayList = new ArrayList<User>();
     public  static ArrayList<Group> classes = new ArrayList<Group>();
     public static ArrayList<User> teachers = new ArrayList<User>();
-   public static HashMap<String, ArrayList<User>> pupils = new HashMap<String, ArrayList<User>>();
+    public static HashMap<String, ArrayList<User>> pupils = new HashMap<String, ArrayList<User>>();
 
 
     public static void retriveSchoolClasses(final String seesionId, final String domain) {
@@ -112,13 +113,18 @@ public class StateManager { //singleton class
 
                 @Override
                 public void onResponse(JSONObject jobj) {
+
                     String res = jobj.toString();
                     Log.e("response for retrive school teachers...: ", res + "");
+
                     BeanGroupMemberInfo beanGroupMemberInfo = new GsonBuilder().create().fromJson(res, BeanGroupMemberInfo.class);
                     BeanGroupMemberResult beanGroupMemberResult = beanGroupMemberInfo.getBeanGroupMemberResult();
+
                     ArrayList<GroupMembers> groupMembersArrayList = beanGroupMemberResult.getGroupMembersArrayList();
+
                     teachers.clear();
                     pupils.clear();
+
                     for (GroupMembers beanGroupMembers : groupMembersArrayList) {
                        userArrayList.add(new User(beanGroupMembers.getGivenName(), beanGroupMembers.getSn(), beanGroupMembers.getUid(), beanGroupMembers.getPrimaryGroup(), null, beanGroupMembers.getDomain()));
                     }

@@ -8,23 +8,37 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import wm.com.danteater.Play.Play;
 import wm.com.danteater.R;
 import wm.com.danteater.customviews.WMTextView;
+import wm.com.danteater.model.ComplexPreferences;
 
 public class ReadActivityFromPreview extends Activity {
 
     public WMTextView txtHeader;
     private FrameLayout btnPlayOrderIdForPerformance;
+    private Play play;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_read_from_preview);
+
+        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(ReadActivityFromPreview.this, "mypref", 0);
+        play = complexPreferences.getObject("selected_play", Play.class);
+
+        Log.e("Count : ",""+play.playLinesList.size());
+
+
+
         btnPlayOrderIdForPerformance=(FrameLayout)findViewById(R.id.btnPlayOrderIdForPerformance);
         btnPlayOrderIdForPerformance.setOnClickListener(new View.OnClickListener() {
             @Override

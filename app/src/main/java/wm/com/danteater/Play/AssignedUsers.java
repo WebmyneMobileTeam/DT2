@@ -7,11 +7,17 @@ import com.google.gson.annotations.SerializedName;
  */
 public class AssignedUsers {
 
+    public int uID;
+
     @SerializedName("AssignedUserId")
     public String AssignedUserId;
 
     @SerializedName("AssignedUserName")
     public String AssignedUserName;
+
+    public AssignedUsers(){
+
+    }
 
     public AssignedUsers(String assignedUserId, String assignedUserName) {
         AssignedUserId = assignedUserId;

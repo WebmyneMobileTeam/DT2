@@ -58,10 +58,13 @@ import wm.com.danteater.model.APIDelete;
 import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.model.DatabaseWrapper;
+import wm.com.danteater.model.Prefs;
+import wm.com.danteater.model.StateManager;
 
 
 public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChangeListener {
 
+    Play ply;
     private enum ACTIVITY_TYPE{
         TAB_ACTIVITY,ORDER_ACTIVITY
     }
@@ -83,6 +86,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     //private Play playSelectedToBeDeleted;
     private Play playSelectedToBeDeletedForReview;
     private Play playSelectedToBeDeletedForPerform;
+    private StateManager state = StateManager.getInstance();
 
 
     public static FragmentMyPlay newInstance(String param1, String param2) {
@@ -682,9 +686,10 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
                     Log.i("Response update play : ",""+response);
 
-
-
                     if(response == null || response.equalsIgnoreCase("")){
+
+
+
 
                     }else{
 
@@ -696,22 +701,24 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                                 try {
                                     JSONArray arr = new JSONArray(response);
 
+                                    DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
+                                    plyIDAfterUpdate = dbh.getPlayIdFromDBForOrderId(play.OrderId);
+                                    state.playID = plyIDAfterUpdate;
+                                    dbh.close();
+
                                     for(int i=0;i<arr.length();i++){
 
                                         JSONObject jsonObject = arr.getJSONObject(i);
                                         PlayLines playLine = new GsonBuilder().create().fromJson(jsonObject.toString(),PlayLines.class);
+
                                         DatabaseWrapper dbWrap = new DatabaseWrapper(getActivity());
                                         dbWrap.updatePlayLine(playLine,Integer.parseInt(play.PlayId));
                                         dbWrap.close();
 
 
-                                        DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
-                                        plyIDAfterUpdate = dbh.getPlayIdFromDBForOrderId(play.OrderId);
-                                        dbh.close();
-
                                     }
                                 }catch(Exception e){
-
+                                        e.printStackTrace();
                                 }
 
 
@@ -805,30 +812,59 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
     }
 
-    private void gotoNextPage(ACTIVITY_TYPE act_type,int position) {
+    private void gotoNextPage(final ACTIVITY_TYPE act_type,int position) {
 
-        switch (act_type){
+        new AsyncTask<String,Integer,String>(){
 
-            case ORDER_ACTIVITY:
+            @Override
+            protected String doInBackground(String... params) {
 
-                ComplexPreferences complexPreferences1 = ComplexPreferences.getComplexPreferences(getActivity(), "mypref",0);
-                complexPreferences1.putObject("selected_play",playListForReview.get(position));
-                complexPreferences1.commit();
+                DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
+                ply = dbh.retrievePlayWithId(state.playID);
+                dbh.close();
 
-                Intent i1 = new Intent(getActivity(), ReadActivityFromPreview.class);
-                startActivity(i1);
+                return null;
+            }
 
-                break;
-
-            case TAB_ACTIVITY:
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
 
                 ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref",0);
-                complexPreferences.putObject("selected_play",playListForPerform.get(position));
+                complexPreferences.putObject("selected_play",ply);
                 complexPreferences.commit();
-                Intent i = new Intent(getActivity(), PlayTabActivity.class);
-                startActivity(i);
-                break;
-        }
+
+
+
+                switch (act_type){
+
+                    case ORDER_ACTIVITY:
+
+
+                        Intent i1 = new Intent(getActivity(), ReadActivityFromPreview.class);
+                        startActivity(i1);
+
+                        break;
+
+                    case TAB_ACTIVITY:
+
+                        Intent i = new Intent(getActivity(), PlayTabActivity.class);
+                        startActivity(i);
+
+                        break;
+                }
+
+
+
+
+            }
+        }.execute();
+
+
+
+
+
+
     }
 
 

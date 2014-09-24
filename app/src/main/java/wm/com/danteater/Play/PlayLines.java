@@ -35,6 +35,8 @@ public class PlayLines {
     @SerializedName("LineCount")
     public String LineCount;
 
+    public int lID;
+
     @SerializedName("LineID")
     public String LineID;
 
@@ -64,6 +66,9 @@ public class PlayLines {
     @SerializedName("SongFiles")
     public ArrayList<SongFiles> songFilesList;
 
+    public PlayLines(){
+
+    }
 
     public PlayLines(String lineCount, String lineID, String roleName, ArrayList<AssignedUsers> assignedUsersList, String roleLinesCount, String mainLineType, ArrayList<TextLines> textLinesList, ArrayList<String> castMatchesList, ArrayList<Comments> commentsList, ArrayList<SongFiles> songFilesList) {
         LineCount = lineCount;

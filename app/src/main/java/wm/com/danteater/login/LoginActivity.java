@@ -31,6 +31,7 @@ import wm.com.danteater.app.MyApplication;
 import wm.com.danteater.customviews.WMTextView;
 import wm.com.danteater.guide.GuideStartup;
 import wm.com.danteater.model.ComplexPreferences;
+import wm.com.danteater.model.Prefs;
 import wm.com.danteater.model.StateManager;
 import wm.com.danteater.my_plays.DrawerActivity;
 
@@ -49,6 +50,7 @@ public class LoginActivity extends BaseActivity {
     Timer timer;
    JSONObject request_params;
     JSONObject request_params2; //for tryToLogin2 method
+    StateManager stateManager = StateManager.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,11 +74,23 @@ public class LoginActivity extends BaseActivity {
         // automatic login is on
         if (shouldShowLoginView == true) {
 
+            Log.i("Login Flow : ","Already LoggedIn goto next page");
+
+            ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(LoginActivity.this, "user_pref", 0);
+            User cUser = complexPreferences.getObject("current_user",User.class);
+
+            SharedPreferences pre = getSharedPreferences("session_id", MODE_PRIVATE);
+            session_id = pre.getString("session_id","");
+
+            stateManager.retriveSchoolTeachers(session_id, cUser.getDomain());
+            stateManager.retriveSchoolClasses(session_id, cUser.getDomain());
+
             Intent i = new Intent(LoginActivity.this, DrawerActivity.class);
             startActivity(i);
             finish();
 
         } else {
+            Log.i("Login Flow : ","Fresh Login");
             // automatic login is off
             proceedLogin();
         }
@@ -121,6 +135,7 @@ public class LoginActivity extends BaseActivity {
             }
 
             session_id = m_device_security.getMVSessionID(response.access_identifier);
+
             if (session_id == "" || session_id == null) {
                 m_device_security.releaseDeviceRegistration();
 
@@ -152,10 +167,11 @@ public class LoginActivity extends BaseActivity {
                 noAccessView.setVisibility(View.GONE);
                 noNetworkView.setVisibility(View.GONE);
 
+
                 // save session id in shared preferences
                 SharedPreferences preferences = getSharedPreferences("session_id", MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putString("seesion_id", session_id);
+                editor.putString("session_id", session_id);
                 editor.commit();
 
                 // post webservice
@@ -257,8 +273,9 @@ public class LoginActivity extends BaseActivity {
 
                     startLoginTimer();
 
-                    StateManager.retriveSchoolTeachers(session_id, user.getDomain());
-                      StateManager.retriveSchoolClasses(session_id, user.getDomain());
+                    stateManager.retriveSchoolTeachers(session_id, user.getDomain());
+                    stateManager.retriveSchoolClasses(session_id, user.getDomain());
+
 
 
                     // go to next screen

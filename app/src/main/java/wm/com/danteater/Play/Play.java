@@ -10,6 +10,7 @@ import java.util.ArrayList;
 public class Play {
 
 
+    public int pID = 0;
 
     @SerializedName("PlayId")
     public String PlayId;
@@ -62,6 +63,9 @@ public class Play {
     @SerializedName("PlayLines")
     public ArrayList<PlayLines> playLinesList;
 
+    public Play(){
+
+    }
 
     public Play(String playId, String orderId, String orderType, String orderUserId, String title, String subtitleShort, String subtitleLong, String author, String actors, String age, String music, String musicCount, String duration, String synopsis, String playVersion, PlayOrderDetails playOrderDetails) {
         PlayId = playId;

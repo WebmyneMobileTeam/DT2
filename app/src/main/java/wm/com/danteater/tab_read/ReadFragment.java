@@ -3,7 +3,10 @@ package wm.com.danteater.tab_read;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -18,8 +21,13 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.mvnordic.mviddeviceconnector.L;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import wm.com.danteater.Play.AssignedUsers;
 import wm.com.danteater.Play.Play;
@@ -28,9 +36,11 @@ import wm.com.danteater.R;
 import wm.com.danteater.customviews.HUD;
 import wm.com.danteater.customviews.WMTextView;
 import wm.com.danteater.login.User;
+import wm.com.danteater.model.AppConstants;
 import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.model.DatabaseWrapper;
+import wm.com.danteater.model.StateManager;
 
 
 public class ReadFragment extends Fragment {
@@ -48,6 +58,17 @@ public class ReadFragment extends Fragment {
     public boolean recordState = false;
     public boolean previewState = false;
     public boolean chatState = false;
+
+    public boolean isPreview = false;
+    private StateManager stateManager = StateManager.getInstance();
+
+    public ArrayList<AssignedUsers> _marrSharedWithUsers;
+    public ArrayList<String> marrPlayLines;
+    public ArrayList<String> marrPlaySections;
+    public HashMap<String,ArrayList<PlayLines>> dicPlayLines;
+
+    public boolean foundIndexOfFirstScene = false;
+    int indexForFirstScene = 0;
 
 
 
@@ -74,12 +95,97 @@ public class ReadFragment extends Fragment {
          setHasOptionsMenu(true);
          getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
          ((WMTextView)getActivity().getActionBar().getCustomView()).setGravity(Gravity.LEFT);
-
         // setup init for read
 
         DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
         dbh.getMyCastMatchesForUserId(currentUser.getUserId(),Integer.parseInt(selectedPlay.PlayId));
         dbh.close();
+
+
+        if(!isPreview){
+
+            //TODO fetch sharing details
+
+            new CallWebService("http://api.danteater.dk/api/PlayShare/" +selectedPlay.OrderId,CallWebService.TYPE_JSONARRAY) {
+
+                @Override
+                public void response(String response) {
+
+                    Type listType = new TypeToken<List<AssignedUsers>>() {
+                    }.getType();
+                    _marrSharedWithUsers = new GsonBuilder().create().fromJson(response,listType);
+                }
+
+                @Override
+                public void error(VolleyError error) {
+
+
+                }
+            }.start();
+
+        }
+
+        updatePlaySpecificData();
+
+    }
+
+    public void updatePlaySpecificData() {
+
+        if(marrPlayLines == null){
+            marrPlayLines = new ArrayList<String>();
+        }else{
+            marrPlayLines.clear();
+        }
+
+        if(marrPlaySections == null){
+            marrPlaySections = new ArrayList<String>();
+        }else{
+            marrPlaySections.clear();
+        }
+
+        if(dicPlayLines == null){
+            dicPlayLines = new HashMap<String,ArrayList<PlayLines>>();
+        }else{
+            dicPlayLines.clear();
+        }
+
+
+
+        // TODO implement above methods for other parts of the play
+
+        foundIndexOfFirstScene = false;
+
+        String currentKey = null;
+        for(PlayLines playLine : selectedPlay.playLinesList){
+
+            if(playLine.playLineType() == PlayLines.PlayLType.PlayLineTypeAct){
+
+                currentKey = playLine.textLinesList.get(0).LineText;
+                marrPlaySections.add(currentKey); // add section
+                dicPlayLines.put(currentKey,new ArrayList()); // add the section and blank arry to the section
+
+                if(!foundIndexOfFirstScene){
+
+                    if(!currentKey.contains("første") ||
+                            !currentKey.contains("1") ||
+                            !currentKey.contains("scene") ||
+                            !currentKey.contains("akt") ){
+
+                        indexForFirstScene = marrPlaySections.size();
+                        foundIndexOfFirstScene = true;
+                    }
+                }
+
+
+            }else{
+
+                dicPlayLines.get(currentKey).add(playLine);
+
+            }
+
+        }
+
+       System.out.println("-------------   Sections : "+marrPlaySections);
 
     }
 

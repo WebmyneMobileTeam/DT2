@@ -32,6 +32,10 @@ public class TextLines {
 
     public int textLineId;
 
+    public TextLines(){
+
+    }
+
     public TextLines(String lineType, String lineText) {
         LineType = lineType;
         LineText = lineText;

@@ -10,6 +10,8 @@ import android.util.Log;
 
 import com.mvnordic.mviddeviceconnector.L;
 
+import org.w3c.dom.Comment;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -34,23 +36,23 @@ import wm.com.danteater.Play.TextLines;
  *
  * TODO - getPlaysForReview
  *
- * TODO - retrievePlayLinesForPlay [Play]
+ * TOD - retrievePlayLinesForPlay [Play]
  *
- * TODO - retrieveAssignedUsers [playLine, playId]
+ * TOD - retrieveAssignedUsers [playLine, playId]
  *
- * TODO - retrievePlayWithId [playID]
+ * TOD - retrievePlayWithId [playID]
  *
- * TODO - getMyCastMatchesForUserId [userIdString, playId]
+ * TOD - getMyCastMatchesForUserId [userIdString, playId]
  *
  * TODO - getMyCastMatchesForRoleNames [roleNames, playId]
  *
  * TODO - retrievePlayLineForId [lineId, playId]
  *
- * TODO - retrieveTextLines [playLine]
+ * TOD - retrieveTextLines [playLine]
  *
- * TODO - retrieveComments [playLine]
+ * TOD - retrieveComments [playLine]
  *
- * TODO - retrieveSongFiles [playLine]
+ * TOD - retrieveSongFiles [playLine]
  *
  * TOD - insertPlay [play, wasPlayAlreadyOrderedForPreview]
  *
@@ -62,7 +64,7 @@ import wm.com.danteater.Play.TextLines;
  *
  * TODO - removeTextLinesForPlayLineId [playLineId]
  *
- * TODO - getPlayIdFromDBForOrderId [orderId]
+ * TOD - getPlayIdFromDBForOrderId [orderId]
  *
  * TOD - insertPlayLine [playLine, playId]
  *
@@ -80,7 +82,7 @@ import wm.com.danteater.Play.TextLines;
  *
  * TOD - insertSongFile [songFile, playLineId]
  *
- * TODO - updatePlayInfo [play]
+ * TOD - updatePlayInfo [play]
  *
  * TOD - hasPlayWithPlayOrderIdText [playOrderIdText]
  *
@@ -96,6 +98,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
     private static String DB_NAME = "DanTeater.db";
     private SQLiteDatabase myDataBase = null;
     private Context myContext;
+    private StateManager state = StateManager.getInstance();
 
     public DatabaseWrapper(Context context) {
         super(context, DB_NAME,null,1);
@@ -232,7 +235,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         cursor.moveToFirst();
         Log.e("Play Id in Database : ",""+cursor.getInt(cursor.getColumnIndex("id_")));
         int playID = cursor.getInt(cursor.getColumnIndex("id_"));
-
+        state.playID = playID;
         for(PlayLines line : play.playLinesList){
             insertPlayLine(line,playID);
         }
@@ -271,9 +274,8 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         String selectQuery = "SELECT id_ FROM playlines WHERE playline_id_text_ ="+"\""+play_line.LineID.toString().trim()+"\"";
         Cursor cursor = myDataBase.rawQuery(selectQuery, null);
         cursor.moveToFirst();
+
         int playLineId = cursor.getInt(cursor.getColumnIndex("id_"));
-
-
         // assigned users
         if(play_line.playLineType() == PlayLines.PlayLType.PlayLineTypeRole){
             removeAssignedUsersForPlayLine(play_line,playid);
@@ -417,6 +419,8 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
             } while (cursor.moveToNext());
         }
 
+
+
         if(playLineID == -1){
             myDataBase.close();
             return;
@@ -517,6 +521,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
     public int getPlayIdFromDBForOrderId(String orderId) {
 
+        Log.e("Database ","getPlayIdFromDBForOrderId");
         myDataBase = this.getWritableDatabase();
         String selectQuery = "SELECT id_ FROM plays WHERE play_order_id_text_ ="+"\""+orderId+"\"";
         Cursor cursor = myDataBase.rawQuery(selectQuery, null);
@@ -526,6 +531,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         if (cursor.moveToFirst()) {
             do {
              playID = cursor.getInt(cursor.getColumnIndex("id_"));
+
             } while (cursor.moveToNext());
         }
         myDataBase.close();
@@ -588,6 +594,293 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
 
         return  marrMyCastMatches;
+    }
+
+    public Play retrievePlayWithId(int playID){
+
+        myDataBase = this.getWritableDatabase();
+        String selectQuery = "SELECT * FROM plays WHERE id_ = "+playID;
+        Cursor cursor = myDataBase.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        Log.e("Count for play is : ",""+cursor.getCount());
+
+        Play ply = new Play();
+
+        if(cursor.moveToFirst()){
+            do {
+
+
+                ply.pID = cursor.getInt(cursor.getColumnIndex("id_"));
+                ply.PlayId = cursor.getString(cursor.getColumnIndex("play_id_text_"));
+                ply.OrderId = cursor.getString(cursor.getColumnIndex("play_order_id_text_"));
+                ply.Title = cursor.getString(cursor.getColumnIndex("title_"));
+                ply.SubtitleShort = cursor.getString(cursor.getColumnIndex("subtitle_short_"));
+                ply.SubtitleLong = cursor.getString(cursor.getColumnIndex("subtitle_long_"));
+                ply.Author = cursor.getString(cursor.getColumnIndex("author_"));
+                ply.Actors = cursor.getString(cursor.getColumnIndex("actors_"));
+                ply.Age = cursor.getString(cursor.getColumnIndex("age_"));
+                ply.Music = cursor.getString(cursor.getColumnIndex("music_"));
+                ply.MusicCount = ""+cursor.getInt(cursor.getColumnIndex("song_count_"));
+                ply.Duration = ""+cursor.getInt(cursor.getColumnIndex("duration_"));
+                ply.Synopsis = cursor.getString(cursor.getColumnIndex("synopsis_"));
+                ply.PlayVersion = ""+cursor.getInt(cursor.getColumnIndex("version_"));
+                ply.OrderType = cursor.getString(cursor.getColumnIndex("order_type_"));
+
+
+            }while (cursor.moveToNext());
+
+            retrievePlayLinesForPlay(ply);
+
+        }
+
+
+
+        return ply;
+
+    }
+
+    public void retrievePlayLinesForPlay(Play play){
+
+        myDataBase = this.getWritableDatabase();
+        String selectQuery = "SELECT * FROM playlines WHERE play_id_ ="+play.pID;
+        Cursor cursor = myDataBase.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+
+        if(play.playLinesList == null){
+            play.playLinesList = new ArrayList<PlayLines>();
+        }
+
+        if(cursor.moveToFirst()){
+            do {
+
+              PlayLines playlineModelObject = new PlayLines();
+
+                playlineModelObject.lID = cursor.getInt(cursor.getColumnIndex("id_"));
+                playlineModelObject.LineCount = ""+cursor.getInt(cursor.getColumnIndex("line_number_"));
+                playlineModelObject.LineID = cursor.getString(cursor.getColumnIndex("playline_id_text_"));
+                playlineModelObject.MainLineType = cursor.getString(cursor.getColumnIndex("main_line_type_"));
+                playlineModelObject.RoleName = cursor.getString(cursor.getColumnIndex("role_name_"));
+
+                if(cursor.getInt(cursor.getColumnIndex("show_role_highlight_")) == 0){
+                    playlineModelObject.showRoleHighlight = false;
+                }else{
+                    playlineModelObject.showRoleHighlight = true;
+                }
+
+
+                if(cursor.getInt(cursor.getColumnIndex("allow_comments_")) == 0){
+                    playlineModelObject.allowComments = false;
+                }else{
+                    playlineModelObject.allowComments = true;
+                }
+
+
+                if(cursor.getInt(cursor.getColumnIndex("allow_recording_")) == 0){
+                    playlineModelObject.allowRecording = false;
+                }else{
+                    playlineModelObject.allowRecording = true;
+                }
+
+
+                if(cursor.getInt(cursor.getColumnIndex("show_into_words_")) == 0){
+                    playlineModelObject.showIntoWords = false;
+                }else{
+                    playlineModelObject.showIntoWords = true;
+                }
+
+                if(cursor.getInt(cursor.getColumnIndex("show_line_number_")) == 0){
+                    playlineModelObject.showLineNumber = false;
+                }else{
+                    playlineModelObject.showLineNumber = true;
+                }
+
+                playlineModelObject.RoleLinesCount = cursor.getString(cursor.getColumnIndex("role_line_count_"));
+
+                if(cursor.getInt(cursor.getColumnIndex("show_line_number_")) == 0){
+                    playlineModelObject.showLineNumber = false;
+                }else{
+                    playlineModelObject.showLineNumber = true;
+                }
+
+                if(cursor.getInt(cursor.getColumnIndex("is_last_song_line_")) == 0){
+                    playlineModelObject.isLastSongLine = false;
+                }else{
+                    playlineModelObject.isLastSongLine = true;
+                }
+
+                // 1
+               retrieveAssignedUsers(playlineModelObject,play.pID);
+
+                //2
+                retrieveTextLines(playlineModelObject);
+
+                //3
+                retrieveComments(playlineModelObject);
+
+                //4
+
+                retrieveSongFiles(playlineModelObject);
+
+               // add play to playline
+               play.playLinesList.add(playlineModelObject);
+
+            }while(cursor.moveToNext());
+        }
+
+
+
+
+
+
+    }
+
+    public void retrieveSongFiles(PlayLines playlineModelObject) {
+
+        myDataBase = this.getWritableDatabase();
+        String selectQuery = "SELECT * FROM songfiles WHERE playline_id_ ="+playlineModelObject.lID;
+        Cursor cursor = myDataBase.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+
+        if(playlineModelObject.songFilesList == null){
+            playlineModelObject.songFilesList = new ArrayList<SongFiles>();
+        }
+
+        if(cursor.moveToFirst()){
+            do {
+/*
+                SongFile *songfileModelObject = [SongFile new];
+
+                songfileModelObject.songFileId = [results intForColumn:@"id_"];
+                songfileModelObject.title = [results stringForColumn:@"title_"];
+                songfileModelObject.fileUrl = [results stringForColumn:@"file_url_"];
+                songfileModelObject.fileType = [results stringForColumn:@"file_type_"];
+                songfileModelObject.fileDescription = [results stringForColumn:@"file_description_"];
+                songfileModelObject.isAvailableForPupils = [results boolForColumn:@"available_for_students_"];
+
+                [playLine.songFiles addObject:songfileModelObject];*/
+
+                SongFiles songfileModelObject = new SongFiles();
+                songfileModelObject.Id = ""+cursor.getInt(cursor.getColumnIndex("id_"));
+                songfileModelObject.SongTitle = cursor.getString(cursor.getColumnIndex("title_"));
+                songfileModelObject.SongMp3Url = cursor.getString(cursor.getColumnIndex("file_url_"));
+                songfileModelObject.FileType = cursor.getString(cursor.getColumnIndex("file_type_"));
+                songfileModelObject.FileDescription = cursor.getString(cursor.getColumnIndex("file_description_"));
+
+                if(cursor.getInt(cursor.getColumnIndex("available_for_students_")) == 0){
+                    songfileModelObject.FileAvailableForStudents = false;
+                }else{
+                    songfileModelObject.FileAvailableForStudents = true;
+                }
+
+            }while (cursor.moveToNext());
+        }
+
+
+
+
+    }
+
+    public void retrieveComments(PlayLines playlineModelObject) {
+
+        myDataBase = this.getWritableDatabase();
+        String selectQuery = "SELECT * FROM comments WHERE playline_id_ ="+playlineModelObject.lID;
+        Cursor cursor = myDataBase.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+
+        if(playlineModelObject.commentsList == null){
+            playlineModelObject.commentsList = new ArrayList<Comments>();
+        }
+
+        if(cursor.moveToFirst()){
+            do {
+
+/*                Comment *commentModelObject = [Comment new];
+                commentModelObject.commentId = [results intForColumn:@"id_"];
+                commentModelObject.username = [results stringForColumn:@"username_"];
+                commentModelObject.text = [results stringForColumn:@"text_"];
+                commentModelObject.isPrivate = [results boolForColumn:@"private_"];
+
+                [playLine.comments addObject:commentModelObject];*/
+
+                Comments commentModelObject = new Comments();
+                commentModelObject.comment_id = ""+cursor.getInt(cursor.getColumnIndex("id_"));
+                commentModelObject.userName = cursor.getString(cursor.getColumnIndex("username_"));
+                commentModelObject.commentText = cursor.getString(cursor.getColumnIndex("text_"));
+
+                if(cursor.getInt(cursor.getColumnIndex("private_")) == 0){
+                    commentModelObject.isPrivate = false;
+                }else{
+                    commentModelObject.isPrivate = true;
+                }
+
+                playlineModelObject.commentsList.add(commentModelObject);
+
+
+
+            }while (cursor.moveToNext());
+        }
+
+
+
+
+    }
+
+    public void retrieveTextLines(PlayLines playlineModelObject) {
+
+        myDataBase = this.getWritableDatabase();
+        String selectQuery = "SELECT * FROM textlines WHERE playline_id_ ="+playlineModelObject.lID;
+        Cursor cursor = myDataBase.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+
+        if(playlineModelObject.textLinesList == null){
+            playlineModelObject.textLinesList = new ArrayList<TextLines>();
+        }
+
+        if(cursor.moveToFirst()){
+            do {
+
+                TextLines textlineModelObject = new TextLines();
+                textlineModelObject.textLineId = cursor.getInt(cursor.getColumnIndex("id_"));
+                textlineModelObject.LineType = cursor.getString(cursor.getColumnIndex("type_"));
+                textlineModelObject.LineText = cursor.getString(cursor.getColumnIndex("original_text_"));
+                textlineModelObject.alteredLineText = cursor.getString(cursor.getColumnIndex("altered_text_"));
+                playlineModelObject.textLinesList.add(textlineModelObject);
+
+            }while (cursor.moveToNext());
+        }
+
+
+
+
+    }
+
+    public void retrieveAssignedUsers(PlayLines playlineModelObject, int pID) {
+
+        myDataBase = this.getWritableDatabase();
+        String selectQuery = "SELECT * FROM assigned_users WHERE play_id_ ="+pID+" AND role_name_ ="+"\""+playlineModelObject.RoleName+"\"";
+        Cursor cursor = myDataBase.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+
+        if(playlineModelObject.assignedUsersList == null){
+            playlineModelObject.assignedUsersList = new ArrayList<AssignedUsers>();
+        }
+
+        if(cursor.moveToFirst()){
+            do {
+                AssignedUsers assignedUserModelObject = new AssignedUsers();
+                assignedUserModelObject.uID = cursor.getInt(cursor.getColumnIndex("id_"));
+                assignedUserModelObject.AssignedUserId = cursor.getString(cursor.getColumnIndex("assigned_user_id_"));
+                assignedUserModelObject.AssignedUserName = cursor.getString(cursor.getColumnIndex("assigned_user_name_"));
+
+                playlineModelObject.assignedUsersList.add(assignedUserModelObject);
+
+            }while (cursor.moveToNext());
+        }
+
+
+
+
+
     }
 
 

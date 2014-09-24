@@ -26,6 +26,10 @@ public class SongFiles {
     @SerializedName("FileAvailableForStudents")
     public boolean FileAvailableForStudents;
 
+    public SongFiles(){
+
+    }
+
     public SongFiles(String id, String songTitle, String songMp3Url, String fileType, String fileDescription, boolean fileAvailableForStudents) {
         Id = id;
         SongTitle = songTitle;
