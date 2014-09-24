@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:paddingRight="@dimen/activity_margin"
+        android:paddingLeft="@dimen/activity_margin"
+        android:paddingTop="4dp"
+        android:layout_height="wrap_content">
+
+        <wm.com.danteater.customviews.WMTextView
+            android:id="@+id/readPlayLineCellRollName"
+            android:layout_alignParentLeft="true"
+            android:padding="2dp"
+            android:layout_toLeftOf="@+id/readPlayLineCellMoreImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:text="Role name"
+            android:textSize="@dimen/normalText" />
+
+        <ImageView
+            android:id="@+id/readPlayLineCellMoreImage"
+            android:layout_margin="4dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/readPlayLineCellLineNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/more" />
+
+        <wm.com.danteater.customviews.WMTextView
+            android:layout_alignParentRight="true"
+            android:id="@+id/readPlayLineCellLineNumber"
+            android:padding="4dp"
+            android:layout_centerVertical="true"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/darker_gray"
+            android:text="1709"
+            android:textSize="@dimen/small_text" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingRight="@dimen/activity_margin"
+        android:paddingBottom="4dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:background="@drawable/ic_play" />
+
+        <wm.com.danteater.customviews.WMTextView
+            android:id="@+id/readPlayLineCellDescription"
+            android:layout_alignParentRight="true"
+            android:padding="4dp"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:text="Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda."
+            android:textSize="@dimen/medium_text" />
+    </LinearLayout>
+</LinearLayout>

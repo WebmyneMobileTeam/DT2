@@ -5,6 +5,7 @@
 
 
     <color name="gray_color">#a0a0a0</color>
+    <color name="light_gray">#e5e5e5</color>
     <color name="aqua">#009688</color>
     <color name="greenTheme">#3c7933</color>
     <color name="radio_button_selected_color">#3c7933</color>
