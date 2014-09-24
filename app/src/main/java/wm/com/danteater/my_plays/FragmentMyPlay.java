@@ -98,8 +98,10 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "user_pref", 0);
         currentUser =complexPreferences.getObject("current_user", User.class);
+
     }
 
     @Override

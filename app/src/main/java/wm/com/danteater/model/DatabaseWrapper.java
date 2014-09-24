@@ -15,6 +15,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import wm.com.danteater.Play.AssignedUsers;
 import wm.com.danteater.Play.Comments;
@@ -541,4 +543,52 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         myDataBase.update("plays",cvTextLines," play_order_id_text_ " + " = ?",new String[]{""+play.OrderId});
         myDataBase.close();
     }
+
+    public ArrayList getMyCastMatchesForUserId(String userID,int playID){
+
+        String mlt = "Rolle";
+
+        ArrayList marrMyCastMatches = new ArrayList();
+        myDataBase = this.getWritableDatabase();
+        String rolenameQuery = "SELECT role_name_ FROM assigned_users WHERE play_id_ ="+playID+" AND assigned_user_id_ ="+"\""+userID+"\"";
+        Cursor cursor = myDataBase.rawQuery(rolenameQuery, null);
+
+        String roleNameForUserId = null;
+        ArrayList<String> castMatchesStringsArray = new ArrayList<String>();
+        if (cursor.moveToFirst()) {
+            do {
+
+                roleNameForUserId = cursor.getString(cursor.getColumnIndex("role_name_"));
+                if(roleNameForUserId != null){
+                    marrMyCastMatches.add(roleNameForUserId);
+                }
+
+                String castMatchesQuery = "SELECT cast_matches_ FROM playlines WHERE role_name_ =\"+\"\\\"\"+roleNameForUserId+\"\\\"\" AND main_line_type_ ="+"\""+mlt+"\"";
+                System.out.println("castMatces String query : "+castMatchesQuery);
+                Cursor castMatchesCursor = myDataBase.rawQuery(castMatchesQuery, null);
+                String castMatchesString = null;
+                if (castMatchesCursor.moveToFirst()) {
+                    do {
+                        castMatchesString = castMatchesCursor.getString(cursor.getColumnIndex("cast_matches_"));
+                        castMatchesStringsArray.add(castMatchesString);
+                    } while (castMatchesCursor.moveToNext());
+                }
+
+            } while (cursor.moveToNext());
+
+            for(String s : castMatchesStringsArray){
+
+                String[] arrMAtchesForRole = s.split(";");
+                if(arrMAtchesForRole.length>0){
+                    marrMyCastMatches.addAll(new ArrayList(Arrays.asList(arrMAtchesForRole)));
+                }
+
+            }
+        }
+
+
+        return  marrMyCastMatches;
+    }
+
+
 }

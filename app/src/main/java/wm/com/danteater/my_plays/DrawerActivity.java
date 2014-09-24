@@ -108,6 +108,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 //TODO clear other data like messages or other records...
                 SharedPreferences preferences = getSharedPreferences("settings",MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();

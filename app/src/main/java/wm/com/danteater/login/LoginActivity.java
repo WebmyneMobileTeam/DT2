@@ -71,9 +71,11 @@ public class LoginActivity extends BaseActivity {
 
         // automatic login is on
         if (shouldShowLoginView == true) {
+
             Intent i = new Intent(LoginActivity.this, DrawerActivity.class);
             startActivity(i);
             finish();
+
         } else {
             // automatic login is off
             proceedLogin();

@@ -27,8 +27,10 @@ import wm.com.danteater.Play.PlayLines;
 import wm.com.danteater.R;
 import wm.com.danteater.customviews.HUD;
 import wm.com.danteater.customviews.WMTextView;
+import wm.com.danteater.login.User;
 import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
+import wm.com.danteater.model.DatabaseWrapper;
 
 
 public class ReadFragment extends Fragment {
@@ -40,6 +42,14 @@ public class ReadFragment extends Fragment {
     private View layout_gotoLine;
     private boolean isGoToLineVisible = false;
     private Menu menu;
+    private User currentUser;
+    //
+
+    public boolean recordState = false;
+    public boolean previewState = false;
+    public boolean chatState = false;
+
+
 
     public static ReadFragment newInstance(String param1, String param2) {
         ReadFragment fragment = new ReadFragment();
@@ -57,13 +67,19 @@ public class ReadFragment extends Fragment {
 
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref", 0);
         selectedPlay = complexPreferences.getObject("selected_play", Play.class);
+        currentUser = complexPreferences.getObject("current_user", User.class);
 
-        ((WMTextView) getActivity().getActionBar().getCustomView()).setText(selectedPlay.Title);
+        // setup actionbar methods
+         ((WMTextView) getActivity().getActionBar().getCustomView()).setText(selectedPlay.Title);
+         setHasOptionsMenu(true);
+         getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+         ((WMTextView)getActivity().getActionBar().getCustomView()).setGravity(Gravity.LEFT);
 
-       setHasOptionsMenu(true);
-       getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
-       ((WMTextView)getActivity().getActionBar().getCustomView()).setGravity(Gravity.LEFT);
+        // setup init for read
 
+        DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
+        dbh.getMyCastMatchesForUserId(currentUser.getUserId(),Integer.parseInt(selectedPlay.PlayId));
+        dbh.close();
 
     }
 
