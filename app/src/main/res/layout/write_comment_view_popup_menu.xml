@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="@android:color/white"
+    android:padding="@dimen/activity_margin"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <wm.com.danteater.customviews.WMTextView
+            android:id="@+id/writeCommentPopupTitle"
+            android:layout_alignParentLeft="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Skriv note"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/normalText" />
+
+        <wm.com.danteater.customviews.WMTextView
+            android:id="@+id/writeCommentPopupCancel"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Luk"
+            android:textColor="@color/apptheme_color"
+            android:textSize="@dimen/normalText" />
+    </RelativeLayout>
+
+
+    <EditText
+        android:id="@+id/writeCommentPopupTextArea"
+        android:inputType="textMultiLine"
+        android:lines="4"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:minLines="4"
+        android:gravity="top|left"
+        android:paddingLeft="4dp"
+        android:paddingTop="4dp"
+        android:background="@drawable/ed_rounded"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:scrollbars="vertical"
+        />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <wm.com.danteater.customviews.SegmentedGroup
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/writeCommentPopupSave"
+            android:id="@+id/writeCommentPopupSegmentedGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/writeCommentPopupShareWithEveryOne"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/small_text"
+                android:text="Del med alle"
+
+                android:layout_weight="1"
+                style="@style/RadioButton" />
+
+            <RadioButton
+                android:id="@+id/writeCommentPopupShareWithMe"
+                android:layout_weight="1"
+                android:textSize="@dimen/small_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Kun til mig selv"
+                style="@style/RadioButton" />
+
+        </wm.com.danteater.customviews.SegmentedGroup>
+
+        <wm.com.danteater.customviews.WMTextView
+            android:id="@+id/writeCommentPopupSave"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gem"
+            android:layout_centerVertical="true"
+            android:textColor="@color/apptheme_color"
+            android:textSize="@dimen/normalText" />
+    </RelativeLayout>
+</LinearLayout>

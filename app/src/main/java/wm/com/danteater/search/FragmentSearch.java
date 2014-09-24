@@ -3,21 +3,15 @@ package wm.com.danteater.search;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -38,18 +32,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import wm.com.danteater.Play.Play;
 import wm.com.danteater.R;
 import wm.com.danteater.customviews.HUD;
 import wm.com.danteater.customviews.ListDialog;
 import wm.com.danteater.customviews.WMEdittext;
 import wm.com.danteater.customviews.WMTextView;
-import wm.com.danteater.login.User;
 import wm.com.danteater.model.API;
 import wm.com.danteater.model.ComplexPreferences;
-import wm.com.danteater.my_plays.DrawerActivity;
-import wm.com.danteater.my_plays.FragmentMyPlayPupil;
-import wm.com.danteater.tab_info.InfoFragment;
 import wm.com.danteater.tab_info.PlayInfoActivity;
 
 public class FragmentSearch extends Fragment implements AdapterView.OnItemClickListener, ListDialog.setSelectedListner {
@@ -124,11 +113,11 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
             @Override
             public void onClick(View view) {
 
-//                searchBox.setFocusableInTouchMode(true);
-//                searchBox.setFocusable(true);
+
                 searchFilterView.setVisibility(View.VISIBLE);
                 searchResultList.setVisibility(View.GONE);
                 emptyView.setVisibility(View.GONE);
+
             }
         });
 
