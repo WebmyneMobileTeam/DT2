@@ -44,8 +44,11 @@
             android:id="@+id/emptyRoleAssignedButton"
             android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
+           android:gravity="center"
             android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_number_of_participants_small"
             android:text="Tildel rolle"
+            android:padding="5dp"
             android:textColor="@android:color/darker_gray"
             android:textSize="@dimen/small_text"/>
     </RelativeLayout>
