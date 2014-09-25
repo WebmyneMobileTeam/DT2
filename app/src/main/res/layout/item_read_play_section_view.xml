@@ -5,6 +5,7 @@
     android:background="@color/apptheme_color"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
     <wm.com.danteater.customviews.WMTextView
         android:id="@+id/readPlaySectionName"
         android:layout_width="match_parent"

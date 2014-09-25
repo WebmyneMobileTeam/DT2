@@ -3,7 +3,9 @@ package wm.com.danteater.tab_read;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -33,7 +35,10 @@ import wm.com.danteater.Play.AssignedUsers;
 import wm.com.danteater.Play.Play;
 import wm.com.danteater.Play.PlayLines;
 import wm.com.danteater.R;
+import wm.com.danteater.app.PlayTabActivity;
 import wm.com.danteater.customviews.HUD;
+import wm.com.danteater.customviews.HeaderListView;
+import wm.com.danteater.customviews.SectionAdapter;
 import wm.com.danteater.customviews.WMTextView;
 import wm.com.danteater.login.User;
 import wm.com.danteater.model.AppConstants;
@@ -41,10 +46,14 @@ import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.model.DatabaseWrapper;
 import wm.com.danteater.model.StateManager;
+import wm.com.danteater.my_plays.ReadActivityFromPreview;
 
 
 public class ReadFragment extends Fragment {
 
+
+
+    public HeaderListView listRead;
     private Play selectedPlay;
     private ArrayList<PlayLines> playLinesesList;
     private ArrayList<AssignedUsers> assignedUsersesList = new ArrayList<AssignedUsers>();
@@ -125,7 +134,7 @@ public class ReadFragment extends Fragment {
 
         }
 
-        updatePlaySpecificData();
+
 
     }
 
@@ -187,6 +196,8 @@ public class ReadFragment extends Fragment {
 
        System.out.println("-------------   Sections : "+marrPlaySections);
 
+
+
     }
 
     @Override
@@ -196,6 +207,7 @@ public class ReadFragment extends Fragment {
 
         View convertView = inflater.inflate(R.layout.fragment_read, container, false);
         layout_gotoLine = (View)convertView.findViewById(R.id.layout_item_goto_line);
+        listRead = (HeaderListView)convertView.findViewById(R.id.listViewRead);
 
         return convertView;
     }
@@ -203,6 +215,34 @@ public class ReadFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        new AsyncTask<String,Integer,String>(){
+
+            @Override
+            protected String doInBackground(String... params) {
+
+               updatePlaySpecificData();
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+
+                for(int i = 0 ; i<marrPlaySections.size(); i++){
+
+                    Log.i(marrPlaySections.get(i)," count is : "+dicPlayLines.get(marrPlaySections.get(i)).size());
+
+
+                }
+
+
+                listRead.setAdapter(new ReadSectionAdapter());
+
+            }
+        }.execute();
+
 
     }
 
@@ -297,4 +337,69 @@ public class ReadFragment extends Fragment {
 
 
     }
+
+
+    public class ReadSectionAdapter extends SectionAdapter{
+
+
+        @Override
+        public int numberOfSections() {
+            return marrPlaySections.size();
+        }
+
+       @Override
+        public int numberOfRows(int section) {
+
+           Log.e("SSSSEEECCCTTIIIOOONNN : ",""+section);
+           int c = dicPlayLines.get(marrPlaySections.get(section)).size();
+
+           return c;
+
+        }
+
+
+        @Override
+        public View getRowView(int section, int row, View convertView, ViewGroup parent) {
+
+                convertView = getActivity().getLayoutInflater().inflate(getResources().getLayout(R.layout.item_read_play_role_cell), parent,false);
+
+            return convertView;
+        }
+
+        @Override
+        public Object getRowItem(int section, int row) {
+
+            return null;
+        }
+
+        @Override
+        public int getSectionHeaderViewTypeCount() {
+            return 2;
+        }
+
+        @Override
+        public int getSectionHeaderItemViewType(int section) {
+            return section % 2;
+        }
+
+        @Override
+        public boolean hasSectionHeaderView(int section) {
+
+            return true;
+        }
+
+        @Override
+        public View getSectionHeaderView(int section, View convertView, ViewGroup parent) {
+
+
+            convertView = getActivity().getLayoutInflater().inflate(getResources().getLayout(R.layout.item_read_play_section_view), parent,false);
+
+            WMTextView txtSectionName = (WMTextView)convertView.findViewById(R.id.readPlaySectionName);
+            txtSectionName.setText(marrPlaySections.get(section));
+
+            return convertView;
+        }
+    }
+
+
 }
