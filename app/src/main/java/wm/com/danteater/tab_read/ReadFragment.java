@@ -46,7 +46,7 @@ import wm.com.danteater.model.StateManager;
 public class ReadFragment extends Fragment {
 
 
-
+// LayoutInflater.from(context).inflate(R.layout.okcancelbar, this, true);
     public PinnedHeaderListView listRead;
     private Play selectedPlay;
     private ArrayList<PlayLines> playLinesesList;
@@ -362,6 +362,7 @@ public class ReadFragment extends Fragment {
 
 
             LinearLayout layout = null;
+
             LinearLayout layoutPlayLineTypeRole = null;
             LinearLayout layoutPlayLineTypeLine = null;
             LinearLayout layoutPlayLineTypeNote = null;
@@ -476,6 +477,7 @@ public class ReadFragment extends Fragment {
 
         @Override
         public View getSectionHeaderView(int section, View convertView, ViewGroup parent) {
+
             LinearLayout layout = null;
             if (convertView == null) {
                 LayoutInflater inflator = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -488,6 +490,7 @@ public class ReadFragment extends Fragment {
         }
 
     }
+
 
 
 }
