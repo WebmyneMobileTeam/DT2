@@ -1,7 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="horizontal"
+    android:background="@color/apptheme_color"
+    android:layout_width="wrap_content"
+    android:paddingRight="4dp"
+    android:paddingLeft="4dp"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/readPlayLineMenuMore"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_more_white" />
+
+    <wm.com.danteater.customviews.WMTextView
+        android:id="@+id/readPlayLineMenuEdit"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ret"
+        android:gravity="center"
+        android:drawableTop="@drawable/ic_assign"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/small_text" />
+
+    <wm.com.danteater.customviews.WMTextView
+        android:id="@+id/readPlayLineMenuNote"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Note"
+        android:gravity="center"
+        android:drawableTop="@drawable/ic_compose"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/small_text" />
+
+    <wm.com.danteater.customviews.WMTextView
+        android:id="@+id/readPlayLineMenuChat"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Besked"
+        android:gravity="center"
+        android:drawableTop="@drawable/ic_chat"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/small_text" />
 
 </LinearLayout>

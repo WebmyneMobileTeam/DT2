@@ -76,7 +76,7 @@
                 android:paddingRight="@dimen/activity_margin"
                 android:paddingTop="4dp"
                 android:paddingBottom="4dp"
-                />
+                 />
 
             <GridView
                 android:id="@+id/videos_two_teacherview"
@@ -87,7 +87,6 @@
                 android:horizontalSpacing="2dp"
                 android:verticalSpacing="2dp"
                 android:drawSelectorOnTop="true" />
-
         </LinearLayout>
     </LinearLayout>
 
