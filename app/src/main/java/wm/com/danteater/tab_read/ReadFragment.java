@@ -3,12 +3,9 @@ package wm.com.danteater.tab_read;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -19,12 +16,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.mvnordic.mviddeviceconnector.L;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -35,25 +32,22 @@ import wm.com.danteater.Play.AssignedUsers;
 import wm.com.danteater.Play.Play;
 import wm.com.danteater.Play.PlayLines;
 import wm.com.danteater.R;
-import wm.com.danteater.app.PlayTabActivity;
 import wm.com.danteater.customviews.HUD;
-import wm.com.danteater.customviews.HeaderListView;
-import wm.com.danteater.customviews.SectionAdapter;
+import wm.com.danteater.customviews.PinnedHeaderListView;
+import wm.com.danteater.customviews.SectionedBaseAdapter;
 import wm.com.danteater.customviews.WMTextView;
 import wm.com.danteater.login.User;
-import wm.com.danteater.model.AppConstants;
 import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.model.DatabaseWrapper;
 import wm.com.danteater.model.StateManager;
-import wm.com.danteater.my_plays.ReadActivityFromPreview;
 
 
 public class ReadFragment extends Fragment {
 
 
 
-    public HeaderListView listRead;
+    public PinnedHeaderListView listRead;
     private Play selectedPlay;
     private ArrayList<PlayLines> playLinesesList;
     private ArrayList<AssignedUsers> assignedUsersesList = new ArrayList<AssignedUsers>();
@@ -207,7 +201,8 @@ public class ReadFragment extends Fragment {
 
         View convertView = inflater.inflate(R.layout.fragment_read, container, false);
         layout_gotoLine = (View)convertView.findViewById(R.id.layout_item_goto_line);
-        listRead = (HeaderListView)convertView.findViewById(R.id.listViewRead);
+        listRead = (PinnedHeaderListView)convertView.findViewById(R.id.listViewRead);
+        listRead.setFastScrollEnabled(true);
 
         return convertView;
     }
@@ -238,7 +233,7 @@ public class ReadFragment extends Fragment {
                 }
 
 
-                listRead.setAdapter(new ReadSectionAdapter());
+                listRead.setAdapter(new ReadSectionedAdapter());
 
             }
         }.execute();
@@ -338,72 +333,160 @@ public class ReadFragment extends Fragment {
 
     }
 
-
-    public class ReadSectionAdapter extends SectionAdapter{
-
+    public class ReadSectionedAdapter extends SectionedBaseAdapter {
 
         @Override
-        public int numberOfSections() {
+        public Object getItem(int section, int position) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public long getItemId(int section, int position) {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public int getSectionCount() {
             return marrPlaySections.size();
         }
 
-       @Override
-        public int numberOfRows(int section) {
-
-           Log.e("SSSSEEECCCTTIIIOOONNN : ",""+section);
-           int c = dicPlayLines.get(marrPlaySections.get(section)).size();
-
-           return c;
-
-        }
-
-
         @Override
-        public View getRowView(int section, int row, View convertView, ViewGroup parent) {
-
-                convertView = getActivity().getLayoutInflater().inflate(getResources().getLayout(R.layout.item_read_play_role_cell), parent,false);
-
-            return convertView;
+        public int getCountForSection(int section) {
+            return dicPlayLines.get(marrPlaySections.get(section)).size();
         }
 
         @Override
-        public Object getRowItem(int section, int row) {
+        public View getItemView(int section, int position, View convertView, ViewGroup parent) {
 
-            return null;
-        }
 
-        @Override
-        public int getSectionHeaderViewTypeCount() {
-            return 2;
-        }
+            LinearLayout layout = null;
+            LinearLayout layoutPlayLineTypeRole = null;
+            LinearLayout layoutPlayLineTypeLine = null;
+            LinearLayout layoutPlayLineTypeNote = null;
+            LinearLayout layoutPlayLineTypeInfo = null;
+            LinearLayout layoutPlayLineTypePicutre = null;
+            LinearLayout layoutPlayLineTypeSong = null;
+            LinearLayout layoutPlayLineTypeSongLine = null;
 
-        @Override
-        public int getSectionHeaderItemViewType(int section) {
-            return section % 2;
-        }
 
-        @Override
-        public boolean hasSectionHeaderView(int section) {
+            LayoutInflater inflator = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            PlayLines playLine = dicPlayLines.get(marrPlaySections.get(section)).get(position);
+         //   Log.e("PlayLineType :","   Position : "+position+" : "+playLine.playLineType());
 
-            return true;
-        }
 
-        @Override
-        public Object getSectionHeaderItem(int section) {
-            return null;
+            switch (playLine.playLineType()){
+
+                case PlayLineTypeRole:
+
+                    if (layoutPlayLineTypeRole == null) {
+                        layout =  (LinearLayout)inflator.inflate(R.layout.item_read_play_role_cell, parent,false);
+                    } else {
+                        layout =  (LinearLayout)convertView;
+                    }
+
+
+                    break;
+
+                case PlayLineTypeLine:
+
+                    if (layoutPlayLineTypeLine == null) {
+                        layout = (LinearLayout)inflator.inflate(R.layout.item_read_play_line_cell, parent,false);
+                    } else {
+                        layout =  (LinearLayout)convertView;
+                    }
+
+
+
+                    break;
+
+                case PlayLineTypeNote:
+
+                    if (layoutPlayLineTypeNote == null) {
+
+                        layout =  (LinearLayout)inflator.inflate(R.layout.item_read_play_note_cell, parent,false);
+                    } else {
+                        layout =  (LinearLayout)convertView;
+                    }
+
+
+
+                    break;
+
+                case PlayLineTypeInfo:
+
+                    if (layoutPlayLineTypeInfo == null) {
+                        layout = (LinearLayout)inflator.inflate(R.layout.item_read_play_info_cell,  parent,false);
+                    } else {
+                        layout =  (LinearLayout)convertView;
+                    }
+
+
+
+                    break;
+
+                case PlayLineTypePicutre:
+
+                    if (layoutPlayLineTypePicutre == null) {
+                        layout = (LinearLayout)inflator.inflate(R.layout.item_read_play_picture_cell, parent,false);
+                    } else {
+                        layout =  (LinearLayout)convertView;
+                    }
+
+
+
+                    break;
+
+                case PlayLineTypeSong:
+
+                    if (layoutPlayLineTypeSong == null) {
+                        layout = (LinearLayout)inflator.inflate(R.layout.item_read_play_song_cell, parent,false);
+                    } else {
+                        layout =  (LinearLayout)convertView;
+                    }
+
+
+
+                    break;
+
+                case PlayLineTypeSongLine:
+                case PlayLineTypeSongLineVerse:
+
+                    if (layoutPlayLineTypeSongLine == null) {
+                        layout =  (LinearLayout)inflator.inflate(R.layout.item_read_play_song_line_cell, parent,false);
+                    } else {
+                        layout =  (LinearLayout)convertView;
+                    }
+
+                    break;
+
+                default:
+
+                    if (layoutPlayLineTypeSongLine == null) {
+                        layout  =  (LinearLayout)inflator.inflate(R.layout.item_read_play_song_line_cell, parent,false);
+                    } else {
+                        layout =  (LinearLayout)convertView;
+                    }
+
+                    break;
+            }
+            return layout;
         }
 
         @Override
         public View getSectionHeaderView(int section, View convertView, ViewGroup parent) {
-
-
-            convertView = getActivity().getLayoutInflater().inflate(getResources().getLayout(R.layout.item_read_play_section_view), parent,false);
-
-            WMTextView txtSectionName = (WMTextView)convertView.findViewById(R.id.readPlaySectionName);
-            txtSectionName.setText(marrPlaySections.get(section));
-
-            return convertView;
+            LinearLayout layout = null;
+            if (convertView == null) {
+                LayoutInflater inflator = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                layout = (LinearLayout) inflator.inflate(R.layout.item_read_play_section_view, null);
+            } else {
+                layout = (LinearLayout) convertView;
+            }
+           ((TextView) layout.findViewById(R.id.readPlaySectionName)).setText(marrPlaySections.get(section));
+            return layout;
         }
+
     }
 
 

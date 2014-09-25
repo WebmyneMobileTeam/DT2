@@ -6,6 +6,18 @@
     tools:context="wm.com.danteater.tab_read.ReadFragment">
 
 
+
+   <!-- <wm.com.danteater.customviews.HeaderListView
+        android:id="@+id/listViewRead"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></wm.com.danteater.customviews.HeaderListView>-->
+
+    <wm.com.danteater.customviews.PinnedHeaderListView
+        android:id="@+id/listViewRead"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></wm.com.danteater.customviews.PinnedHeaderListView>
+
+
     <include
         android:id="@+id/layout_item_goto_line"
         layout="@layout/item_goto_line"
@@ -16,11 +28,6 @@
         android:layout_gravity="top|center_horizontal"
         ></include>
 
-
-    <wm.com.danteater.customviews.HeaderListView
-        android:id="@+id/listViewRead"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"></wm.com.danteater.customviews.HeaderListView>
 
 
 
