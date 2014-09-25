@@ -19,8 +19,12 @@ import wm.com.danteater.R;
 
 public class HeaderListView extends RelativeLayout {
 
+    //
+    //
     // TODO: Handle listViews with fast scroll
     // TODO: See if there are methods to dispatch to mListView
+
+
 
     private static final int FADE_DELAY    = 1000;
     private static final int FADE_DURATION = 2000;

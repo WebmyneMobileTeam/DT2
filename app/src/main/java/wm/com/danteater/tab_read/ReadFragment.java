@@ -389,6 +389,11 @@ public class ReadFragment extends Fragment {
         }
 
         @Override
+        public Object getSectionHeaderItem(int section) {
+            return null;
+        }
+
+        @Override
         public View getSectionHeaderView(int section, View convertView, ViewGroup parent) {
 
 
