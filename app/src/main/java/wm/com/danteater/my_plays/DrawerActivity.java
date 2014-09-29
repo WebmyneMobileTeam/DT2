@@ -71,6 +71,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
                 ft.replace(R.id.main_content, fragmentMyPlayPupil, "my_plays_pupil").commit();
             }
         } else {
+
             FragmentMyPlay fragmentMyPlay = FragmentMyPlay.newInstance("", "");
 
             if (manager.findFragmentByTag("my_plays") == null) {

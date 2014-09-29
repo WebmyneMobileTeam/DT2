@@ -1,12 +1,14 @@
 package wm.com.danteater.app;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTabHost;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TabHost;
+import android.widget.TextView;
 
 import wm.com.danteater.R;
 import wm.com.danteater.customviews.WMImageView;
@@ -52,6 +54,7 @@ public class PlayTabActivity extends BaseActivity {
         mTabHost.setCurrentTab(0);
         selectTAB(0);
 
+
         // Check weather the received extra string is read or share to select corresponding tabs;
       /*  if(type_navigation.equalsIgnoreCase("Read")){
 
@@ -89,12 +92,18 @@ public class PlayTabActivity extends BaseActivity {
         mTabHost = (FragmentTabHost)findViewById(android.R.id.tabhost);
         mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
 
-
         View view2 = getLayoutInflater().inflate(R.layout.item_tab_music,null,false);
         View view3 = getLayoutInflater().inflate(R.layout.item_tab,null,false);
         View view4 = getLayoutInflater().inflate(R.layout.item_tab_read,null,false);
         View view5 = getLayoutInflater().inflate(R.layout.item_tab_microphone,null,false);
-
+        TextView tv=(TextView)view2.findViewById(R.id.txtTab);
+        tv.setTextColor(Color.BLACK);
+        TextView tv1=(TextView)view3.findViewById(R.id.txtTab);
+        tv1.setTextColor(Color.BLACK);
+        TextView tv2=(TextView)view4.findViewById(R.id.txtTab);
+        tv2.setTextColor(Color.BLACK);
+        TextView tv3=(TextView)view5.findViewById(R.id.txtTab);
+        tv3.setTextColor(Color.BLACK);
 
      //   Bundle bInfo=new Bundle();
      //   bInfo.putString("infoData",playinfo+"");
@@ -115,10 +124,6 @@ public class PlayTabActivity extends BaseActivity {
         mTabHost.addTab(mTabHost.newTabSpec("tab3").setIndicator(view3),
                 FragmentInspiration.class, null);
 
-
-
-
-
     }
 
     public void resetHeader(String text){
@@ -131,15 +136,18 @@ public class PlayTabActivity extends BaseActivity {
 
         View v = mTabHost.getTabWidget().getChildAt(i);
         WMImageView iv = (WMImageView)v.findViewById(R.id.imgTab);
+        TextView tv=(TextView)v.findViewById(R.id.txtTab);
 
         if(i==mTabHost.getCurrentTab()){
 
             iv.selected();
-
-
+            v.setBackgroundColor(getResources().getColor(R.color.greenTheme));
+            tv.setTextColor(Color.WHITE);
         }else{
 
             iv.normal();
+            v.setBackgroundResource(R.drawable.gradient_bg);
+            tv.setTextColor(Color.BLACK);
         }
     }
 

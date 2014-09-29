@@ -355,7 +355,7 @@ public class LoginActivity extends BaseActivity {
 
     // check user is login first time or not
     private boolean isFirstTime() {
-        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences preferences = getSharedPreferences("run_before",MODE_PRIVATE);
         boolean ranBefore = preferences.getBoolean("RanBefore", false);
         if (!ranBefore) {
             // first time

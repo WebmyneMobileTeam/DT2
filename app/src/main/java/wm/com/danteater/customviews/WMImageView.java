@@ -2,6 +2,11 @@ package wm.com.danteater.customviews;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.AvoidXfermode;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+
+import android.graphics.PorterDuff;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
@@ -36,16 +41,18 @@ public class WMImageView extends ImageView{
         a.recycle();
 
         setImageResource(src);
-
+        setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
     }
 
 
     public void normal(){
         setImageResource(src);
+        setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
     }
 
     public void selected(){
         setImageResource(selected_src);
+        setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
     }
 
 
