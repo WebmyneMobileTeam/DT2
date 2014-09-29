@@ -163,6 +163,8 @@ public class PlayLines {
         }
         else if(this.MainLineType.equalsIgnoreCase("Song")){
             return PlayLType.PlayLineTypePicutre;
+        }else{
+
         }
 
         return PlayLType.PlayLineTypeUnknown;

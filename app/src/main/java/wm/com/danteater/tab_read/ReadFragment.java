@@ -17,11 +17,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.mvnordic.mviddeviceconnector.L;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -31,6 +33,7 @@ import java.util.List;
 import wm.com.danteater.Play.AssignedUsers;
 import wm.com.danteater.Play.Play;
 import wm.com.danteater.Play.PlayLines;
+import wm.com.danteater.Play.TextLines;
 import wm.com.danteater.R;
 import wm.com.danteater.customviews.HUD;
 import wm.com.danteater.customviews.PinnedHeaderListView;
@@ -45,8 +48,6 @@ import wm.com.danteater.model.StateManager;
 
 public class ReadFragment extends Fragment {
 
-
-// LayoutInflater.from(context).inflate(R.layout.okcancelbar, this, true);
     public PinnedHeaderListView listRead;
     private Play selectedPlay;
     private ArrayList<PlayLines> playLinesesList;
@@ -56,11 +57,17 @@ public class ReadFragment extends Fragment {
     private boolean isGoToLineVisible = false;
     private Menu menu;
     private User currentUser;
-    //
 
     public boolean recordState = false;
     public boolean previewState = false;
     public boolean chatState = false;
+
+    // 0 for record state
+    // 1 for preview state
+    // 2 for chat state
+    // 3 for read
+
+    public int currentState = 3;
 
     public boolean isPreview = false;
     private StateManager stateManager = StateManager.getInstance();
@@ -72,6 +79,22 @@ public class ReadFragment extends Fragment {
 
     public boolean foundIndexOfFirstScene = false;
     int indexForFirstScene = 0;
+
+
+  static final int RecordPlayRoleCell = 0;
+  static final int EmptyPreviewPlayRoleCell = 1;
+  static final int PreviewPlayRoleCell = 2;
+  static final int EmptyPlayRoleCell = 3;
+  static final int ReadPlayRoleCell = 4;
+  static final int RecordPlayPlayLineCell = 5;
+  static final int PreviewPlayPlayLineCell = 6;
+  static final int ReadPlayPlayLineCell = 7;
+  static final int PreviewReadPlayNoteCell = 8;
+  static final int ReadPlayNoteCell = 9;
+  static final int ReadPlayInfoCell = 10;
+  static final int ReadPlayPictureCell = 11;
+  static final int ReadPlaySongCell = 12;
+  static final int ReadPlaySongLineCell = 13;
 
 
 
@@ -89,6 +112,8 @@ public class ReadFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref", 0);
         selectedPlay = complexPreferences.getObject("selected_play", Play.class);
         currentUser = complexPreferences.getObject("current_user", User.class);
@@ -98,6 +123,7 @@ public class ReadFragment extends Fragment {
          setHasOptionsMenu(true);
          getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
          ((WMTextView)getActivity().getActionBar().getCustomView()).setGravity(Gravity.LEFT);
+
         // setup init for read
 
         DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
@@ -233,7 +259,7 @@ public class ReadFragment extends Fragment {
                 }
 
 
-                listRead.setAdapter(new ReadSectionedAdapter());
+                listRead.setAdapter(new ReadSectionedAdapter(getActivity()));
 
             }
         }.execute();
@@ -335,6 +361,13 @@ public class ReadFragment extends Fragment {
 
     public class ReadSectionedAdapter extends SectionedBaseAdapter {
 
+        private LayoutInflater mInflater;
+
+        public ReadSectionedAdapter(Context context) {
+
+            mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+
         @Override
         public Object getItem(int section, int position) {
             // TODO Auto-generated method stub
@@ -345,6 +378,61 @@ public class ReadFragment extends Fragment {
         public long getItemId(int section, int position) {
             // TODO Auto-generated method stub
             return 0;
+        }
+
+        @Override
+        public int getItemViewTypeCount() {
+            return 14;
+        }
+
+        @Override
+        public int getItemViewType(int section, int position) {
+
+           PlayLines playLine = dicPlayLines.get(marrPlaySections.get(section)).get(position);
+
+            Log.e("GetItemViewType  :  Type : ",""+playLine.playLineType());
+
+            if(playLine.playLineType() == PlayLines.PlayLType.PlayLineTypeRole){
+
+                TextLines textLines = playLine.textLinesList.get(0);
+                String roleDescription = textLines.LineText;
+                if(roleDescription.length() == 0){
+                        return EmptyPlayRoleCell;
+                }else{
+                        return  ReadPlayRoleCell;
+                }
+
+            }else if(playLine.playLineType() == PlayLines.PlayLType.PlayLineTypeLine){
+
+                return ReadPlayPlayLineCell;
+
+            }else if(playLine.playLineType() == PlayLines.PlayLType.PlayLineTypeNote){
+
+                return ReadPlayNoteCell;
+
+            }else if(playLine.playLineType() == PlayLines.PlayLType.PlayLineTypeInfo){
+
+                return ReadPlayInfoCell;
+
+            }else if(playLine.playLineType() == PlayLines.PlayLType.PlayLineTypePicutre){
+
+                return ReadPlayPictureCell;
+
+            }else if(playLine.playLineType() == PlayLines.PlayLType.PlayLineTypeSong){
+
+                return ReadPlaySongCell;
+
+            }else if(playLine.playLineType() == PlayLines.PlayLType.PlayLineTypeSongLine ||
+                    playLine.playLineType() == PlayLines.PlayLType.PlayLineTypeSongLineVerse){
+
+                return ReadPlaySongLineCell;
+
+            }else{
+
+                return ReadPlayNoteCell;
+
+            }
+
         }
 
         @Override
@@ -360,119 +448,248 @@ public class ReadFragment extends Fragment {
         @Override
         public View getItemView(int section, int position, View convertView, ViewGroup parent) {
 
+            ViewHolder.HolderRecordPlayRoleCell holderRecordPlayRoleCell = null;
+            ViewHolder.HolderEmptyPreviewPlayRoleCell holderEmptyPreviewPlayRoleCell = null;
+            ViewHolder.HolderPreviewPlayRoleCell holderPreviewPlayRoleCell = null;
+            ViewHolder.HolderEmptyPlayRoleCell holderEmptyPlayRoleCell = null;
+            ViewHolder.HolderReadPlayRoleCell holderReadPlayRoleCell = null;
+            ViewHolder.HolderRecordPlayPlayLineCell holderRecordPlayPlayLineCell = null;
+            ViewHolder.HolderPreviewPlayPlayLineCell holderPreviewPlayPlayLineCell = null;
+            ViewHolder.HolderReadPlayPlayLineCell holderReadPlayPlayLineCell = null;
+            ViewHolder.HolderPreviewReadPlayNoteCell holderPreviewReadPlayNoteCell = null;
+            ViewHolder.HolderReadPlayNoteCell holderReadPlayNoteCell = null;
+            ViewHolder.HolderReadPlayInfoCell holderReadPlayInfoCell = null;
+            ViewHolder.HolderReadPlayPictureCell holderReadPlayPictureCell = null;
+            ViewHolder.HolderReadPlaySongCell holderReadPlaySongCell = null;
+            ViewHolder.HolderReadPlaySongLineCell holderReadPlaySongLineCell = null;
 
-            LinearLayout layout = null;
-
-            LinearLayout layoutPlayLineTypeRole = null;
-            LinearLayout layoutPlayLineTypeLine = null;
-            LinearLayout layoutPlayLineTypeNote = null;
-            LinearLayout layoutPlayLineTypeInfo = null;
-            LinearLayout layoutPlayLineTypePicutre = null;
-            LinearLayout layoutPlayLineTypeSong = null;
-            LinearLayout layoutPlayLineTypeSongLine = null;
-
-
-            LayoutInflater inflator = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             PlayLines playLine = dicPlayLines.get(marrPlaySections.get(section)).get(position);
-         //   Log.e("PlayLineType :","   Position : "+position+" : "+playLine.playLineType());
+            int type = getItemViewType(section,position);
+
+            switch (type){
+
+                case RecordPlayRoleCell:
+
+                    //
+                    if(convertView == null){
+                        convertView = mInflater.inflate(R.layout.item_record_play_role_cell, parent,false);
+                        holderRecordPlayRoleCell = new ViewHolder().new HolderRecordPlayRoleCell();
+                        convertView.setTag(holderRecordPlayRoleCell);
+
+                    }else{
+                        holderRecordPlayRoleCell = (ViewHolder.HolderRecordPlayRoleCell)convertView.getTag();
+                    }
 
 
-            switch (playLine.playLineType()){
+                break;
 
-                case PlayLineTypeRole:
+                case EmptyPreviewPlayRoleCell:
 
-                    if (layoutPlayLineTypeRole == null) {
-                        layout =  (LinearLayout)inflator.inflate(R.layout.item_read_play_role_cell, parent,false);
-                    } else {
-                        layout =  (LinearLayout)convertView;
+                    //
+
+                    if(convertView == null){
+                        convertView = mInflater.inflate(R.layout.item_empty_preview_play_role_cell, parent,false);
+                        holderEmptyPreviewPlayRoleCell = new ViewHolder().new HolderEmptyPreviewPlayRoleCell();
+                        convertView.setTag(holderEmptyPreviewPlayRoleCell);
+
+                    }else{
+                        holderEmptyPreviewPlayRoleCell = (ViewHolder.HolderEmptyPreviewPlayRoleCell)convertView.getTag();
+                    }
+
+                break;
+
+                case PreviewPlayRoleCell:
+
+                    //
+                    if(convertView == null){
+                        convertView = mInflater.inflate(R.layout.item_preview_play_role_cell, parent,false);
+                        holderPreviewPlayRoleCell = new ViewHolder().new HolderPreviewPlayRoleCell();
+                        convertView.setTag(holderPreviewPlayRoleCell);
+
+                    }else{
+                        holderPreviewPlayRoleCell = (ViewHolder.HolderPreviewPlayRoleCell)convertView.getTag();
+                    }
+                break;
+
+
+                case EmptyPlayRoleCell:
+
+                    //
+                    if(convertView == null){
+                        convertView = mInflater.inflate(R.layout.item_empty_role_cell, parent,false);
+                        holderEmptyPlayRoleCell = new ViewHolder().new HolderEmptyPlayRoleCell();
+                        convertView.setTag(holderEmptyPlayRoleCell);
+
+                    }else{
+                        holderEmptyPlayRoleCell = (ViewHolder.HolderEmptyPlayRoleCell)convertView.getTag();
                     }
 
 
                     break;
 
-                case PlayLineTypeLine:
 
-                    if (layoutPlayLineTypeLine == null) {
-                        layout = (LinearLayout)inflator.inflate(R.layout.item_read_play_line_cell, parent,false);
-                    } else {
-                        layout =  (LinearLayout)convertView;
+                case ReadPlayRoleCell:
+
+                    //
+                    if(convertView == null){
+                          convertView = mInflater.inflate(R.layout.item_read_play_role_cell, parent,false);
+                          holderReadPlayRoleCell = new ViewHolder().new HolderReadPlayRoleCell();
+                          convertView.setTag(holderReadPlayRoleCell);
+
+                    }else{
+                        holderReadPlayRoleCell = (ViewHolder.HolderReadPlayRoleCell)convertView.getTag();
+                    }
+
+
+                break;
+
+
+                case RecordPlayPlayLineCell:
+
+                    //
+                    if(convertView == null){
+                        convertView = mInflater.inflate(R.layout.item_record_play_line_cell, parent,false);
+                        holderRecordPlayPlayLineCell = new ViewHolder().new HolderRecordPlayPlayLineCell();
+                        convertView.setTag(holderRecordPlayPlayLineCell);
+
+                    }else{
+                        holderRecordPlayPlayLineCell = (ViewHolder.HolderRecordPlayPlayLineCell)convertView.getTag();
+                    }
+
+
+                break;
+
+
+                case PreviewPlayPlayLineCell:
+
+                    //
+                    if(convertView == null){
+                        convertView = mInflater.inflate(R.layout.item_preview_playline_cell, parent,false);
+                        holderPreviewPlayPlayLineCell = new ViewHolder().new HolderPreviewPlayPlayLineCell();
+                        convertView.setTag(holderPreviewPlayPlayLineCell);
+
+                    }else{
+                        holderPreviewPlayPlayLineCell = (ViewHolder.HolderPreviewPlayPlayLineCell)convertView.getTag();
+                    }
+                break;
+
+
+                case ReadPlayPlayLineCell:
+
+                    //
+                    if(convertView == null){
+                        convertView = mInflater.inflate(R.layout.item_read_play_line_cell, parent,false);
+                        holderReadPlayPlayLineCell = new ViewHolder().new HolderReadPlayPlayLineCell();
+                        convertView.setTag(holderReadPlayPlayLineCell);
+
+                    }else{
+                        holderReadPlayPlayLineCell = (ViewHolder.HolderReadPlayPlayLineCell)convertView.getTag();
                     }
 
 
 
-                    break;
+                break;
 
-                case PlayLineTypeNote:
 
-                    if (layoutPlayLineTypeNote == null) {
+                case PreviewReadPlayNoteCell:
+                    //
+                    if(convertView == null){
+                        convertView = mInflater.inflate(R.layout.item_preview_read_play_note_cell, parent,false);
+                        holderPreviewReadPlayNoteCell = new ViewHolder().new HolderPreviewReadPlayNoteCell();
+                        convertView.setTag(holderPreviewReadPlayNoteCell);
 
-                        layout =  (LinearLayout)inflator.inflate(R.layout.item_read_play_note_cell, parent,false);
-                    } else {
-                        layout =  (LinearLayout)convertView;
+                    }else{
+                        holderPreviewReadPlayNoteCell = (ViewHolder.HolderPreviewReadPlayNoteCell)convertView.getTag();
                     }
 
 
+                break;
 
-                    break;
 
-                case PlayLineTypeInfo:
+                case ReadPlayNoteCell:
 
-                    if (layoutPlayLineTypeInfo == null) {
-                        layout = (LinearLayout)inflator.inflate(R.layout.item_read_play_info_cell,  parent,false);
-                    } else {
-                        layout =  (LinearLayout)convertView;
+                    //
+                    if(convertView == null){
+                        convertView = mInflater.inflate(R.layout.item_read_play_note_cell, parent,false);
+                        holderReadPlayNoteCell = new ViewHolder().new HolderReadPlayNoteCell();
+                        convertView.setTag(holderReadPlayNoteCell);
+
+                    }else{
+                        holderReadPlayNoteCell = (ViewHolder.HolderReadPlayNoteCell)convertView.getTag();
                     }
+                break;
 
+                case ReadPlayInfoCell:
+                    //
+                    if(convertView == null){
+                        convertView = mInflater.inflate(R.layout.item_read_play_info_cell, parent,false);
+                        holderReadPlayInfoCell = new ViewHolder().new HolderReadPlayInfoCell();
+                        convertView.setTag(holderReadPlayInfoCell);
 
-
-                    break;
-
-                case PlayLineTypePicutre:
-
-                    if (layoutPlayLineTypePicutre == null) {
-                        layout = (LinearLayout)inflator.inflate(R.layout.item_read_play_picture_cell, parent,false);
-                    } else {
-                        layout =  (LinearLayout)convertView;
+                    }else{
+                        holderReadPlayInfoCell = (ViewHolder.HolderReadPlayInfoCell)convertView.getTag();
                     }
+                break;
 
 
+                case ReadPlayPictureCell:
 
-                    break;
+                    //
+                    if(convertView == null){
+                        convertView = mInflater.inflate(R.layout.item_read_play_picture_cell, parent,false);
+                        holderReadPlayPictureCell = new ViewHolder().new HolderReadPlayPictureCell();
+                        convertView.setTag(holderReadPlayPictureCell);
 
-                case PlayLineTypeSong:
-
-                    if (layoutPlayLineTypeSong == null) {
-                        layout = (LinearLayout)inflator.inflate(R.layout.item_read_play_song_cell, parent,false);
-                    } else {
-                        layout =  (LinearLayout)convertView;
+                    }else{
+                        holderReadPlayPictureCell = (ViewHolder.HolderReadPlayPictureCell)convertView.getTag();
                     }
+                break;
 
 
+                case ReadPlaySongCell:
+                    //
+                    if(convertView == null){
+                        convertView = mInflater.inflate(R.layout.item_read_play_song_cell, parent,false);
+                        holderReadPlaySongCell = new ViewHolder().new HolderReadPlaySongCell();
+                        convertView.setTag(holderReadPlaySongCell);
 
-                    break;
-
-                case PlayLineTypeSongLine:
-                case PlayLineTypeSongLineVerse:
-
-                    if (layoutPlayLineTypeSongLine == null) {
-                        layout =  (LinearLayout)inflator.inflate(R.layout.item_read_play_song_line_cell, parent,false);
-                    } else {
-                        layout =  (LinearLayout)convertView;
+                    }else{
+                        holderReadPlaySongCell = (ViewHolder.HolderReadPlaySongCell)convertView.getTag();
                     }
+                break;
 
-                    break;
+
+                case ReadPlaySongLineCell:
+
+                    //
+                    if(convertView == null){
+
+                        convertView = mInflater.inflate(R.layout.item_read_play_song_line_cell, parent,false);
+                        holderReadPlaySongLineCell = new ViewHolder().new HolderReadPlaySongLineCell();
+                        convertView.setTag(holderReadPlaySongLineCell);
+
+                    }else{
+                        holderReadPlaySongLineCell = (ViewHolder.HolderReadPlaySongLineCell)convertView.getTag();
+                    }
+                break;
 
                 default:
+                    //
+                    if(convertView == null){
+                        convertView = mInflater.inflate(R.layout.item_preview_read_play_note_cell, parent,false);
+                        holderPreviewReadPlayNoteCell = new ViewHolder().new HolderPreviewReadPlayNoteCell();
+                        convertView.setTag(holderPreviewReadPlayNoteCell);
 
-                    if (layoutPlayLineTypeSongLine == null) {
-                        layout  =  (LinearLayout)inflator.inflate(R.layout.item_read_play_song_line_cell, parent,false);
-                    } else {
-                        layout =  (LinearLayout)convertView;
+                    }else{
+                        holderPreviewReadPlayNoteCell = (ViewHolder.HolderPreviewReadPlayNoteCell)convertView.getTag();
                     }
 
-                    break;
+                break;
+
             }
-            return layout;
+
+            return convertView;
+
         }
 
         @Override
@@ -490,7 +707,5 @@ public class ReadFragment extends Fragment {
         }
 
     }
-
-
 
 }

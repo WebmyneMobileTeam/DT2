@@ -5,7 +5,7 @@
     <dimen name="activity_margin">16dp</dimen>
     <dimen name="normalText">18sp</dimen>
     <dimen name="medium_text">16sp</dimen>
-    <dimen name="small_text">14dp</dimen>
+    <dimen name="small_text">12dp</dimen>
 
     <!-- navigation drawer dimentions -->
     <dimen name="circle_image_size_blue">36dp</dimen>

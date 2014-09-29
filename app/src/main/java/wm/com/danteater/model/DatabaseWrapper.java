@@ -32,6 +32,7 @@ import wm.com.danteater.Play.TextLines;
  *
  * TODO - getPlays
  *
+ *
  * TODO - getPlaysForPerformance
  *
  * TODO - getPlaysForReview
@@ -245,9 +246,16 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
     public void insertPlayLine(PlayLines play_line,int playid){
 
         String castMatchesString = new String();
-        for(String castMatch : play_line.castMatchesList){
-                castMatchesString.concat(castMatch);
+        for(int i=0;i<play_line.castMatchesList.size();i++){
+            String s = play_line.castMatchesList.get(i);
+            if(i== play_line.castMatchesList.size()-1){
+                castMatchesString.concat(s);
+            }else{
+                castMatchesString.concat(s+";");
+            }
         }
+
+
         play_line.castMatchesString = castMatchesString;
         //
         ContentValues cvPlays = new ContentValues();
@@ -655,6 +663,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
               PlayLines playlineModelObject = new PlayLines();
 
+
                 playlineModelObject.lID = cursor.getInt(cursor.getColumnIndex("id_"));
                 playlineModelObject.LineCount = ""+cursor.getInt(cursor.getColumnIndex("line_number_"));
                 playlineModelObject.LineID = cursor.getString(cursor.getColumnIndex("playline_id_text_"));
@@ -709,7 +718,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
                 }
 
                 // 1
-               retrieveAssignedUsers(playlineModelObject,play.pID);
+                  retrieveAssignedUsers(playlineModelObject,play.pID);
 
                 //2
                 retrieveTextLines(playlineModelObject);
@@ -718,7 +727,6 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
                 retrieveComments(playlineModelObject);
 
                 //4
-
                 retrieveSongFiles(playlineModelObject);
 
                // add play to playline
@@ -735,6 +743,8 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
     }
 
     public void retrieveSongFiles(PlayLines playlineModelObject) {
+
+        Log.e("------------ LineID retrieveSongFiles ",""+playlineModelObject.lID);
 
         myDataBase = this.getWritableDatabase();
         String selectQuery = "SELECT * FROM songfiles WHERE playline_id_ ="+playlineModelObject.lID;

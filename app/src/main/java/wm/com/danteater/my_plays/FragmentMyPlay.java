@@ -314,9 +314,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                     complexPreferences.putObject("selected_play",playListForReview.get(position));
                     complexPreferences.commit();
 
-
                     Intent i = new Intent(getActivity(), ShareActivityForPreview.class);
-
                     startActivity(i);
 
 
@@ -345,8 +343,6 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
                 }
             });
-
-
             return convertView;
 
         }
@@ -423,6 +419,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
 
     public void removePlayForReviewFromList() {
+
         for (int i=0;i<playListForReview.size();i++) {
             if (playListForReview.get(i).PlayId.contains(playSelectedToBeDeletedForReview.getPlayId())) {
                 playListForReview.remove(playListForReview.get(i));
@@ -559,18 +556,11 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                     dialog_next = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
                     dialog_next.title("Henter");
                     dialog_next.show();
-
                     gotoSpecificPage(position,0,playListForPerform.get(position),ACTIVITY_TYPE.TAB_ACTIVITY);
-
-
 
                 }
             });
-
-
             return convertView;
-
-
         }
 
     }
@@ -665,7 +655,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
         if(hasPlay == true){
 
             Log.i("hasplay","true");
-
+            Log.i("Order Id",play.OrderId);
             SharedPreferences preferences = getActivity().getSharedPreferences("Plays", getActivity().MODE_PRIVATE);
 
             String k = "PlayLatesteUpdateDate"+play.PlayId;

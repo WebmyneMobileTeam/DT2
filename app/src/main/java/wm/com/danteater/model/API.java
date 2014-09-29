@@ -24,10 +24,8 @@ import java.io.Reader;
 public class API {
 
     //
-
     public static String link_retrievePlayContentsForPlayOrderId = "http://api.danteater.dk/api/playfull/";
     public static String link_getPlayUpdateForPlayOrderIdString = "http://api.danteater.dk/api/PlayUpdate/";
-
 
     public static Reader callWebservicePost(String SERVER_URL,String jsonString) {
 
