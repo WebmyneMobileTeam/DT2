@@ -81,10 +81,10 @@ public class LoginActivity extends BaseActivity {
 
             SharedPreferences pre = getSharedPreferences("session_id", MODE_PRIVATE);
             session_id = pre.getString("session_id","");
-
-            stateManager.retriveSchoolTeachers(session_id, cUser.getDomain());
             stateManager.retriveSchoolClasses(session_id, cUser.getDomain());
+            stateManager.retriveSchoolTeachers(session_id, cUser.getDomain());
 
+            Log.e("state manager","called ....... ");
             Intent i = new Intent(LoginActivity.this, DrawerActivity.class);
             startActivity(i);
             finish();
@@ -272,9 +272,9 @@ public class LoginActivity extends BaseActivity {
 
 
                     startLoginTimer();
-
-                    stateManager.retriveSchoolTeachers(session_id, user.getDomain());
                     stateManager.retriveSchoolClasses(session_id, user.getDomain());
+                    stateManager.retriveSchoolTeachers(session_id, user.getDomain());
+
 
 
 

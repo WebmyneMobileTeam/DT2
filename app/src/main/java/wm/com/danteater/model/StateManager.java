@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import wm.com.danteater.app.MyApplication;
 import wm.com.danteater.login.BeanGroupInfo;
@@ -40,11 +41,12 @@ public class StateManager { //singleton class
 
     public static boolean finishedRetrievingTeachers = false;
     public static int numberOfClassesToBeRetrieved = 0;
-    public  static Group GROUP_FOR_TEACHER = new Group();
-    public  static ArrayList<User> userArrayList = new ArrayList<User>();
+    public  static Group groupForTeacher = new Group();
+
     public  static ArrayList<Group> classes = new ArrayList<Group>();
-    public static ArrayList<User> teachers = new ArrayList<User>();
-    public static HashMap<String, ArrayList<User>> pupils = new HashMap<String, ArrayList<User>>();
+
+    public static ArrayList<User> teachers= new ArrayList<User>();
+    public static HashMap<String, ArrayList<User>> pupils=new HashMap<String, ArrayList<User>>();
 
 
     public static void retriveSchoolClasses(final String seesionId, final String domain) {
@@ -71,14 +73,18 @@ public class StateManager { //singleton class
                     BeanGroupResult beanGroupResult = beanGroupInfo.getBeanGroupResult();
                     ArrayList<Group> groupArrayList = beanGroupResult.getGroupArrayList();
                     classes.clear();
+                    pupils.clear();
+
                     for (Group beanGroup : groupArrayList) {
                         if (beanGroup.getGroupType().equals("classtype")) {
                             classes.add(beanGroup);
                             Log.e("group domain", beanGroup.getDomain() + "");
                             numberOfClassesToBeRetrieved++;
+
                             retriveMembers(seesionId, domain, beanGroup);
                         }
                     }
+                    Log.e("pupils after insert: ",pupils+"");
                 }
             }, new Response.ErrorListener() {
 
@@ -93,8 +99,9 @@ public class StateManager { //singleton class
     }
 
     public static void retriveSchoolTeachers(String seesionId, String domain) {
-        GROUP_FOR_TEACHER.setGroupId("teacher");
-        retriveMembers(seesionId, domain, GROUP_FOR_TEACHER);
+        groupForTeacher.setGroupId("teacher");
+        teachers.clear();
+        retriveMembers(seesionId, domain, groupForTeacher);
     }
 
     public static void retriveMembers(String seesionId, String domain, final Group group) {
@@ -121,20 +128,34 @@ public class StateManager { //singleton class
                     BeanGroupMemberResult beanGroupMemberResult = beanGroupMemberInfo.getBeanGroupMemberResult();
 
                     ArrayList<GroupMembers> groupMembersArrayList = beanGroupMemberResult.getGroupMembersArrayList();
-
-                    teachers.clear();
-                    pupils.clear();
-
+                    ArrayList<User> userArrayList = new ArrayList<User>();
+                    userArrayList.clear();
                     for (GroupMembers beanGroupMembers : groupMembersArrayList) {
+                     Log.e("given name",beanGroupMembers.getGivenName()+" "+beanGroupMembers.getSn());
+
                        userArrayList.add(new User(beanGroupMembers.getGivenName(), beanGroupMembers.getSn(), beanGroupMembers.getUid(), beanGroupMembers.getPrimaryGroup(), null, beanGroupMembers.getDomain()));
                     }
 
                     if (group.getGroupId().equals("teacher")) {
+
                         teachers.addAll(userArrayList);
+                        Log.e("teachers:",teachers+"");
+
                         finishedRetrievingTeachers = true;
                     } else {
 
                         pupils.put(group.getGroupName().toString(), userArrayList);
+
+
+                        for(Map.Entry<String,ArrayList<User>> entry : pupils.entrySet()){
+
+                            Log.e("key: ",entry.getKey()+" ");
+                            Log.e("vlaues: ",entry.getValue()+"  ");
+
+
+                        }
+                        Log.e("pupils: ",pupils+"");
+                        Log.e("pupils after insert: ",pupils.size()+"");
                         numberOfClassesToBeRetrieved--;
                     }
                     if (finishedRetrievingTeachers && numberOfClassesToBeRetrieved == 0) {

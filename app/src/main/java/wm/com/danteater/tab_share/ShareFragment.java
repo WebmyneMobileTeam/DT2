@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -24,13 +25,16 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import wm.com.danteater.Play.Play;
 import wm.com.danteater.R;
 import wm.com.danteater.customviews.PagerSlidingTabStrip;
 import wm.com.danteater.customviews.SegmentedGroup;
 import wm.com.danteater.customviews.WMTextView;
+import wm.com.danteater.login.User;
 import wm.com.danteater.model.ComplexPreferences;
+import wm.com.danteater.model.StateManager;
 
 
 public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChangeListener{
@@ -41,17 +45,16 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
     private MyPagerAdapter adapter;
     private LinearLayout layout_child_tabs;
     private ListView list_teachers;
+    public static  String selectedClassName;
     private SegmentedGroup segmentedTeachersPupils;
     private RadioButton rbTeacher;
     private RadioButton rbPupils;
     private Menu menu;
     private Play selectedPlay;
-
-
-
+    ArrayList<String> classNames;
+    private StateManager stateManager = StateManager.getInstance();
     public static ShareFragment newInstance(String param1, String param2) {
         ShareFragment fragment = new ShareFragment();
-
         return fragment;
     }
     public ShareFragment() {
@@ -61,31 +64,20 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
        // Important line to enable options menu in fragment
         setHasOptionsMenu(true);
-
-
         // Get selected Play from my play list from shared preferences
         // Here we use complex preferences to store whole Play class object and retrieve.
-
        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref", 0);
         selectedPlay = complexPreferences.getObject("selected_play",Play.class);
         ((WMTextView)getActivity().getActionBar().getCustomView()).setText(selectedPlay.Title);
-
     }
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-
         View convertView = inflater.inflate(R.layout.fragment_share, container, false);
-
         tabs = (PagerSlidingTabStrip)convertView.findViewById(R.id.tabs);
         pager = (ViewPager)convertView.findViewById(R.id.pager);
         layout_child_tabs = (LinearLayout)convertView.findViewById(R.id.layout_child_with_tabs);
@@ -94,113 +86,15 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         rbPupils = (RadioButton)convertView.findViewById(R.id.rbPupils);
         rbTeacher = (RadioButton)convertView.findViewById(R.id.rbTeacher);
         segmentedTeachersPupils.setOnCheckedChangeListener(this);
-
-        rbTeacher.setChecked(true);
-
-
-
+        // show share with pupils tab by default
+        rbPupils.setChecked(true);
         return convertView;
-    }
-
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-
-      // super.onCreateOptionsMenu(menu, inflater);
-
-       // retrieve current displayed menu reference.
-       // so that we can change menu item icon programaticaly using this new reference anywhere in this class.
-       this.menu = menu;
-
-       // inflate share menu
-       getActivity().getMenuInflater().inflate(R.menu.menu_share,menu);
-
-
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()){
-
-            // going back
-            case android.R.id.home:
-
-                getActivity().finish();
-
-                break;
-
-            // share the play
-            case R.id.actionShare:
-
-
-                break;
-
-        }
-
-        return true;
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-
-    }
-
-    @Override
-    public void onCheckedChanged(RadioGroup group, int checkedId) {
-
-        switch (checkedId){
-            
-            case R.id.rbPupils:
-                
-                setupPupils();
-                
-                break;
-            
-            case R.id.rbTeacher:
-                
-                setupTeachers();
-                
-                break;
-
-        }
-        
-    }
-
-
-    public void setupPupils(){
-
-        layout_child_tabs.setVisibility(View.VISIBLE);
-        list_teachers.setVisibility(View.GONE);
-
-        try {
-            menu.getItem(0).setIcon(getActivity().getResources().getDrawable(R.drawable.ic_action_del_unselected));
-        }catch(Exception e){}
-
-
-    }
-
-    private void setupTeachers() {
-
-        layout_child_tabs.setVisibility(View.GONE);
-        list_teachers.setVisibility(View.VISIBLE);
-
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
-
-
-        Toast.makeText(getActivity(),"On Resume called", Toast.LENGTH_SHORT).show();
 
         adapter = new MyPagerAdapter(getActivity().getSupportFragmentManager());
         pager.setAdapter(adapter);
@@ -215,18 +109,19 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
 
         // Fill the static list of teachers to show the functionality
 
-        ArrayList teachers = new ArrayList();
-        teachers.add("Teacher One");
-        teachers.add("Teacher Two");
-        teachers.add("Teacher Three");
-        teachers.add("Teacher Four");
-        teachers.add("Teacher Five");
-        teachers.add("Teacher Six");
-        teachers.add("Teacher Seven");
-        teachers.add("Teacher Eight");
+        ArrayList<User> teachers =stateManager.teachers;
+        Log.e("teachers objects: ", teachers + "");
+        ArrayList<String> teacherNames=new ArrayList<String>();
+//        for(int i=0;i<3;i++) {
+//            teacherNames.add("one");
+//        }
+        for(int i=0;i<teachers.size();i++) {
+            teacherNames.add(""+teachers.get(i).getFirstName()+" "+teachers.get(i).getLastName());
+        }
+        Collections.sort(teacherNames);
+        Log.e("teachers list: ",teacherNames+"");
 
-
-        ArrayAdapter adap = new ArrayAdapter(getActivity(),android.R.layout.simple_list_item_multiple_choice,teachers);
+        ArrayAdapter adap = new ArrayAdapter(getActivity(),android.R.layout.simple_list_item_multiple_choice,teacherNames);
 
 
         list_teachers.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
@@ -236,7 +131,7 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                enableDisableShareOptions(list_teachers.getCheckedItemPositions());
+//              enableDisableShareOptions(list_teachers.getCheckedItemPositions());
 
 
             }
@@ -244,6 +139,50 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
 
 
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // super.onCreateOptionsMenu(menu, inflater);
+        // retrieve current displayed menu reference.
+        // so that we can change menu item icon programaticaly using this new reference anywhere in this class.
+        this.menu = menu;
+        // inflate share menu
+        getActivity().getMenuInflater().inflate(R.menu.menu_share,menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            // going back
+            case android.R.id.home:
+                getActivity().finish();
+                break;
+            // share the play
+            case R.id.actionShare:
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+        switch (checkedId){
+
+            case R.id.rbPupils:
+
+                setupPupils();
+
+                break;
+
+            case R.id.rbTeacher:
+
+                setupTeachers();
+
+                break;
+        }
+    }
+
 
     private void enableDisableShareOptions(SparseBooleanArray arr) {
 
@@ -277,6 +216,28 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
     }
 
 
+
+
+    public void setupPupils(){
+
+        layout_child_tabs.setVisibility(View.VISIBLE);
+        list_teachers.setVisibility(View.GONE);
+
+        try {
+            menu.getItem(0).setIcon(getActivity().getResources().getDrawable(R.drawable.ic_action_del_unselected));
+        }catch(Exception e){}
+
+
+    }
+
+    private void setupTeachers() {
+
+        layout_child_tabs.setVisibility(View.GONE);
+        list_teachers.setVisibility(View.VISIBLE);
+
+    }
+
+
     public class MyPagerAdapter extends FragmentPagerAdapter {
 
 	/*	private final String[] TITLES = { "Categories", "Home", "Top Paid", "Top Free", "Top Grossing", "Top New Paid",
@@ -288,30 +249,28 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
 
         @Override
         public CharSequence getPageTitle(int position) {
+           classNames=new ArrayList<String>();
+            for(int i=0;i<stateManager.classes.size();i++) {
+                classNames.add(stateManager.classes.get(i).getGroupName());
+            }
+            Collections.sort(classNames);
 
-            return "1-A";
+            return classNames.get(position);
         }
 
         @Override
         public int getCount() {
-            return 5;
+            return stateManager.classes.size();
         }
 
 
         @Override
         public Fragment getItem(int position) {
 
-            return FragmentPupils.newInstance(position);
+            return FragmentPupils.newInstance(position,classNames.get(position));
         }
 
     }
-
-    public static interface onResetHeaderListner{
-
-        public void resetHeader(String headerName);
-
-    }
-
 
 
 }
