@@ -27,19 +27,38 @@ public class ViewHolder {
 
 
     public class HolderRecordPlayRoleCell extends ViewHolder{}
+
     public class HolderEmptyPreviewPlayRoleCell extends ViewHolder{}
+
     public class HolderPreviewPlayRoleCell extends ViewHolder{}
+
     public class HolderEmptyPlayRoleCell extends ViewHolder{}
-    public class HolderReadPlayRoleCell extends ViewHolder{}
+
+    public class HolderReadPlayRoleCell extends ViewHolder{
+        public CellReadPlayRole cellReadPlayRole;
+        public TextView lblCharacterName;
+    }
+
     public class HolderRecordPlayPlayLineCell extends ViewHolder{}
+
     public class HolderPreviewPlayPlayLineCell extends ViewHolder{}
-    public class HolderReadPlayPlayLineCell extends ViewHolder{}
+
+    public class HolderReadPlayPlayLineCell extends ViewHolder{
+        public CellReadPlayPlayLine cellReadPlayPlayLine;
+    }
+
     public class HolderPreviewReadPlayNoteCell extends ViewHolder{}
+
     public class HolderReadPlayNoteCell extends ViewHolder{}
+
     public class HolderReadPlayInfoCell extends ViewHolder{}
+
     public class HolderReadPlayPictureCell extends ViewHolder{}
+
     public class HolderReadPlaySongCell extends ViewHolder{}
-    public class HolderReadPlaySongLineCell extends ViewHolder{}
+
+    public class HolderReadPlaySongLineCell extends ViewHolder{ }
+
 
 
 }

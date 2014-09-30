@@ -245,18 +245,22 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
     public void insertPlayLine(PlayLines play_line,int playid){
 
-        String castMatchesString = new String();
+
+        StringBuffer castMatchesString = new StringBuffer("");
+        Log.i("Cast Main list ",""+play_line.castMatchesList);
         for(int i=0;i<play_line.castMatchesList.size();i++){
-            String s = play_line.castMatchesList.get(i);
+
+            String s = play_line.castMatchesList.get(i).toString();
+            Log.i("Cast child  ",s);
             if(i== play_line.castMatchesList.size()-1){
-                castMatchesString.concat(s);
+                castMatchesString.append(s.toString());
             }else{
-                castMatchesString.concat(s+";");
+                castMatchesString.append(s.toString()+";");
             }
         }
 
-
-        play_line.castMatchesString = castMatchesString;
+        play_line.castMatchesString = castMatchesString.toString();
+        Log.i("Cast matches string  ",castMatchesString.toString());
         //
         ContentValues cvPlays = new ContentValues();
         cvPlays.put("line_number_",play_line.LineCount);
@@ -641,6 +645,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
         }
 
+        cursor.close();
 
 
         return ply;
@@ -786,6 +791,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         }
 
 
+        cursor.close();
 
 
     }
@@ -830,7 +836,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
             }while (cursor.moveToNext());
         }
 
-
+cursor.close();
 
 
     }
@@ -859,6 +865,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
             }while (cursor.moveToNext());
         }
 
+        cursor.close();
 
 
 

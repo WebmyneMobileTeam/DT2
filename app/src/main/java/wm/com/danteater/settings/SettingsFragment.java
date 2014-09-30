@@ -13,6 +13,8 @@ import wm.com.danteater.R;
 public class SettingsFragment extends Fragment {
 
     private ToggleButton toggleAutomaticLogin;
+    private ToggleButton toggleShowLineNumber;
+
     public static SettingsFragment newInstance(String param1, String param2) {
         SettingsFragment fragment = new SettingsFragment();
         return fragment;
@@ -33,7 +35,10 @@ public class SettingsFragment extends Fragment {
 
         View rootView= inflater.inflate(R.layout.activity_settings, container, false);
         SharedPreferences preferences = getActivity().getSharedPreferences("settings",getActivity().MODE_PRIVATE);
+
         boolean shouldShowLoginView = preferences.getBoolean("shouldShowLoginView", false);
+        boolean shouldShowLineNumbers = preferences.getBoolean("showLineNumber", false);
+
         toggleAutomaticLogin=(ToggleButton)rootView.findViewById(R.id.settingAutomatiskeLogin);
         toggleAutomaticLogin.setChecked(shouldShowLoginView);
         toggleAutomaticLogin.setOnClickListener(new View.OnClickListener() {
@@ -52,8 +57,37 @@ public class SettingsFragment extends Fragment {
                 }
             }
         });
+
+        toggleShowLineNumber=(ToggleButton)rootView.findViewById(R.id.settingRepliknumre);
+        toggleShowLineNumber.setChecked(shouldShowLineNumbers);
+
+        toggleShowLineNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean on = toggleShowLineNumber.isChecked();
+                SharedPreferences preferences = getActivity().getSharedPreferences("settings",getActivity().MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                boolean showShowLine = false;
+                if (on) {
+                   showShowLine = true;
+                } else {
+                    showShowLine = false;
+                }
+                editor.putBoolean("showLineNumber",showShowLine);
+                editor.commit();
+            }
+        });
+
+
+
+
+
+
+
         return rootView;
     }
+
+
 
 
 

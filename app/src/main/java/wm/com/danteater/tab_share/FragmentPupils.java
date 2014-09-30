@@ -22,7 +22,6 @@ public class FragmentPupils extends Fragment {
         Bundle b = new Bundle();
         b.putInt(ARG_POSITION, position);
         fragment.setArguments(b);
-
         return fragment;
     }
 

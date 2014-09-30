@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.google.gson.GsonBuilder;
@@ -48,6 +50,7 @@ import wm.com.danteater.model.StateManager;
 
 public class ReadFragment extends Fragment {
 
+    public int goToLineNumberFromChatLink = 0;
     public PinnedHeaderListView listRead;
     private Play selectedPlay;
     private ArrayList<PlayLines> playLinesesList;
@@ -58,16 +61,17 @@ public class ReadFragment extends Fragment {
     private Menu menu;
     private User currentUser;
 
-    public boolean recordState = false;
-    public boolean previewState = false;
-    public boolean chatState = false;
-
     // 0 for record state
     // 1 for preview state
     // 2 for chat state
     // 3 for read
 
-    public int currentState = 3;
+    public static int STATE_RECORD = 0;
+    public static int STATE_PREVIEW = 1;
+    public static int STATE_READ = 2;
+    public static int STATE_CHAT = 3;
+
+    public int currentState = 0;
 
     public boolean isPreview = false;
     private StateManager stateManager = StateManager.getInstance();
@@ -76,9 +80,13 @@ public class ReadFragment extends Fragment {
     public ArrayList<String> marrPlayLines;
     public ArrayList<String> marrPlaySections;
     public HashMap<String,ArrayList<PlayLines>> dicPlayLines;
+    public HashMap<String,String> mdictSongIndexPaths;
+
 
     public boolean foundIndexOfFirstScene = false;
     int indexForFirstScene = 0;
+
+
 
 
   static final int RecordPlayRoleCell = 0;
@@ -114,22 +122,23 @@ public class ReadFragment extends Fragment {
 
 
 
+
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref", 0);
         selectedPlay = complexPreferences.getObject("selected_play", Play.class);
         currentUser = complexPreferences.getObject("current_user", User.class);
 
-        // setup actionbar methods
+         // setup actionbar methods
          ((WMTextView) getActivity().getActionBar().getCustomView()).setText(selectedPlay.Title);
          setHasOptionsMenu(true);
          getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
          ((WMTextView)getActivity().getActionBar().getCustomView()).setGravity(Gravity.LEFT);
 
         // setup init for read
-
         DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
         dbh.getMyCastMatchesForUserId(currentUser.getUserId(),Integer.parseInt(selectedPlay.PlayId));
         dbh.close();
 
+        currentState = STATE_READ;
 
         if(!isPreview){
 
@@ -154,8 +163,6 @@ public class ReadFragment extends Fragment {
 
         }
 
-
-
     }
 
     public void updatePlaySpecificData() {
@@ -172,16 +179,33 @@ public class ReadFragment extends Fragment {
             marrPlaySections.clear();
         }
 
+        if(mdictSongIndexPaths == null){
+            mdictSongIndexPaths = new HashMap<String, String>();
+        }else{
+            mdictSongIndexPaths.clear();
+        }
+
         if(dicPlayLines == null){
             dicPlayLines = new HashMap<String,ArrayList<PlayLines>>();
         }else{
             dicPlayLines.clear();
         }
 
+        // TODO implement dictionaries for y positions if nessasary
+
+        if(_marrSharedWithUsers == null){
+            _marrSharedWithUsers = new ArrayList<AssignedUsers>();
+        }else{
+            _marrSharedWithUsers.clear();
+        }
+
+        // TODO implement dictionary for picture
 
 
-        // TODO implement above methods for other parts of the play
+        //
+        goToLineNumberFromChatLink = 0;
 
+        //
         foundIndexOfFirstScene = false;
 
         String currentKey = null;
@@ -192,7 +216,6 @@ public class ReadFragment extends Fragment {
                 currentKey = playLine.textLinesList.get(0).LineText;
                 marrPlaySections.add(currentKey); // add section
                 dicPlayLines.put(currentKey,new ArrayList()); // add the section and blank arry to the section
-
                 if(!foundIndexOfFirstScene){
 
                     if(!currentKey.contains("første") ||
@@ -210,21 +233,67 @@ public class ReadFragment extends Fragment {
 
                 dicPlayLines.get(currentKey).add(playLine);
 
+                if(playLine.playLineType() == PlayLines.PlayLType.PlayLineTypeSong){
+
+                    int section = marrPlaySections.indexOf(currentKey);
+                    int row = dicPlayLines.get(currentKey).size();
+
+                    String songTitle = playLine.textLinesList.get(0).LineText;
+                    mdictSongIndexPaths.put(songTitle,section+","+row); // hack for similar to indexPath in iOS
+                    // seperated by ","
+                    // First object is section and second is row
+                }
+
             }
 
         }
 
+        if(currentState == STATE_RECORD){
+
+            ArrayList<String> toDelete = new ArrayList<String>();
+
+            for(String section : marrPlaySections){
+
+                if(section.contains("Personerne") || section.contains("Personer")){
+
+                    toDelete.add(section);
+                    dicPlayLines.remove(section);
+                    indexForFirstScene--;
+
+
+                    for(String title : mdictSongIndexPaths.keySet()){
+
+                        String indexPath = mdictSongIndexPaths.get(title);
+                        int s = Integer.parseInt(indexPath.split(",")[0]);
+                        int r = Integer.parseInt(indexPath.split(",")[1]);
+                        mdictSongIndexPaths.put(title,s-1+","+r);
+
+
+                    }
+
+
+
+                }
+            }
+
+            for(String sec : toDelete){
+                marrPlaySections.remove(sec);
+            }
+
+
+
+        }
+
+
        System.out.println("-------------   Sections : "+marrPlaySections);
-
-
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
 
+        // Inflate the layout for this fragment
         View convertView = inflater.inflate(R.layout.fragment_read, container, false);
         layout_gotoLine = (View)convertView.findViewById(R.id.layout_item_goto_line);
         listRead = (PinnedHeaderListView)convertView.findViewById(R.id.listViewRead);
@@ -243,27 +312,20 @@ public class ReadFragment extends Fragment {
             protected String doInBackground(String... params) {
 
                updatePlaySpecificData();
-                return null;
+               return null;
             }
 
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
 
-
-                for(int i = 0 ; i<marrPlaySections.size(); i++){
-
-                    Log.i(marrPlaySections.get(i)," count is : "+dicPlayLines.get(marrPlaySections.get(i)).size());
-
-
-                }
-
-
+             /*   for(int i = 0 ; i<marrPlaySections.size(); i++){
+                   Log.i(marrPlaySections.get(i)," count is : "+dicPlayLines.get(marrPlaySections.get(i)).size());
+                }*/
                 listRead.setAdapter(new ReadSectionedAdapter(getActivity()));
 
             }
         }.execute();
-
 
     }
 
@@ -390,25 +452,63 @@ public class ReadFragment extends Fragment {
 
            PlayLines playLine = dicPlayLines.get(marrPlaySections.get(section)).get(position);
 
-            Log.e("GetItemViewType  :  Type : ",""+playLine.playLineType());
+          Log.e("GetItemViewType  :  Type : ","pos : "+position+" "+playLine.playLineType());
 
             if(playLine.playLineType() == PlayLines.PlayLType.PlayLineTypeRole){
 
                 TextLines textLines = playLine.textLinesList.get(0);
                 String roleDescription = textLines.LineText;
-                if(roleDescription.length() == 0){
-                        return EmptyPlayRoleCell;
-                }else{
-                        return  ReadPlayRoleCell;
-                }
+
+                    if(currentState == STATE_RECORD){
+
+                        return RecordPlayRoleCell;
+
+                    }else if(currentState == STATE_PREVIEW){
+
+                        if(roleDescription.length() == 0){
+                            return EmptyPreviewPlayRoleCell;
+                        }else{
+                            return  PreviewPlayRoleCell;
+                        }
+
+                    }else{
+                        if(roleDescription.length() == 0){
+                            return EmptyPlayRoleCell;
+                        }else{
+                            return  ReadPlayRoleCell;
+                        }
+                    }
+
+
+
 
             }else if(playLine.playLineType() == PlayLines.PlayLType.PlayLineTypeLine){
 
-                return ReadPlayPlayLineCell;
+                if(currentState == STATE_RECORD){
+
+                    //todo here chat state condition
+
+                    return RecordPlayPlayLineCell;
+
+                }else if(currentState == STATE_PREVIEW){
+
+                    return  PreviewPlayPlayLineCell;
+
+                }else{
+                    return ReadPlayPlayLineCell;
+                }
+
 
             }else if(playLine.playLineType() == PlayLines.PlayLType.PlayLineTypeNote){
 
-                return ReadPlayNoteCell;
+                if(currentState == STATE_PREVIEW){
+
+                    return PreviewReadPlayNoteCell;
+
+                }else{
+                    return ReadPlayNoteCell;
+                }
+
 
             }else if(playLine.playLineType() == PlayLines.PlayLType.PlayLineTypeInfo){
 
@@ -429,7 +529,14 @@ public class ReadFragment extends Fragment {
 
             }else{
 
-                return ReadPlayNoteCell;
+                if(currentState == STATE_PREVIEW){
+
+                    return PreviewReadPlayNoteCell;
+                }else{
+                    return ReadPlayNoteCell;
+                }
+
+
 
             }
 
@@ -472,6 +579,7 @@ public class ReadFragment extends Fragment {
 
                     //
                     if(convertView == null){
+
                         convertView = mInflater.inflate(R.layout.item_record_play_role_cell, parent,false);
                         holderRecordPlayRoleCell = new ViewHolder().new HolderRecordPlayRoleCell();
                         convertView.setTag(holderRecordPlayRoleCell);
@@ -513,32 +621,37 @@ public class ReadFragment extends Fragment {
 
 
                 case EmptyPlayRoleCell:
-
-                    //
-                    if(convertView == null){
-                        convertView = mInflater.inflate(R.layout.item_empty_role_cell, parent,false);
-                        holderEmptyPlayRoleCell = new ViewHolder().new HolderEmptyPlayRoleCell();
-                        convertView.setTag(holderEmptyPlayRoleCell);
-
-                    }else{
-                        holderEmptyPlayRoleCell = (ViewHolder.HolderEmptyPlayRoleCell)convertView.getTag();
-                    }
-
-
-                    break;
-
-
                 case ReadPlayRoleCell:
 
                     //
                     if(convertView == null){
+
                           convertView = mInflater.inflate(R.layout.item_read_play_role_cell, parent,false);
                           holderReadPlayRoleCell = new ViewHolder().new HolderReadPlayRoleCell();
+                          holderReadPlayRoleCell.cellReadPlayRole = new CellReadPlayRole(convertView);
                           convertView.setTag(holderReadPlayRoleCell);
 
                     }else{
                         holderReadPlayRoleCell = (ViewHolder.HolderReadPlayRoleCell)convertView.getTag();
                     }
+                    boolean isEmpty = false;
+                    if(type == ReadPlayRoleCell){
+
+                        isEmpty = false;
+                    }else if(type == EmptyPlayRoleCell){
+                        isEmpty = true;
+                    }
+
+                    holderReadPlayRoleCell.cellReadPlayRole.setupForPlayLine(playLine,currentState,convertView,isEmpty);
+                    holderReadPlayRoleCell.cellReadPlayRole.setAssignClicked(new setOnAssignButtonClicked() {
+                        @Override
+                        public void onAssignButtonClicked() {
+
+                            Toast.makeText(getActivity(), "Assign clicked", Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+
 
 
                 break;
@@ -550,6 +663,7 @@ public class ReadFragment extends Fragment {
                     if(convertView == null){
                         convertView = mInflater.inflate(R.layout.item_record_play_line_cell, parent,false);
                         holderRecordPlayPlayLineCell = new ViewHolder().new HolderRecordPlayPlayLineCell();
+
                         convertView.setTag(holderRecordPlayPlayLineCell);
 
                     }else{
@@ -580,11 +694,14 @@ public class ReadFragment extends Fragment {
                     if(convertView == null){
                         convertView = mInflater.inflate(R.layout.item_read_play_line_cell, parent,false);
                         holderReadPlayPlayLineCell = new ViewHolder().new HolderReadPlayPlayLineCell();
+                        holderReadPlayPlayLineCell.cellReadPlayPlayLine = new CellReadPlayPlayLine(convertView,getActivity());
                         convertView.setTag(holderReadPlayPlayLineCell);
 
                     }else{
                         holderReadPlayPlayLineCell = (ViewHolder.HolderReadPlayPlayLineCell)convertView.getTag();
                     }
+
+                    holderReadPlayPlayLineCell.cellReadPlayPlayLine.setupForPlayLine(playLine,currentState);
 
 
 

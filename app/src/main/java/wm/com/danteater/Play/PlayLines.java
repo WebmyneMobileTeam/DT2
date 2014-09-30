@@ -158,10 +158,10 @@ public class PlayLines {
         else if(this.MainLineType.equalsIgnoreCase("Songline")){
             return PlayLType.PlayLineTypeSongLine;
         }
-        else if(this.MainLineType.equalsIgnoreCase("Song")){
+        else if(this.MainLineType.equalsIgnoreCase("SonglineVerse")){
             return PlayLType.PlayLineTypeSongLineVerse;
         }
-        else if(this.MainLineType.equalsIgnoreCase("Song")){
+        else if(this.MainLineType.equalsIgnoreCase("Billede")){
             return PlayLType.PlayLineTypePicutre;
         }else{
 
