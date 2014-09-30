@@ -175,7 +175,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
-   // All the methods for fetching specific data from local Database
+    // All the methods for fetching specific data from local Database
 
 
     public boolean hasPlayWithPlayOrderIdText(String playOrderIdText) {
@@ -402,9 +402,9 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
             String roleName = null;
             if (cursor.moveToFirst()) {
                 do {
-                      roleName = new String();
-                      roleName = cursor.getString(cursor.getColumnIndex("role_name_"));
-                      play_line.RoleName = roleName;
+                    roleName = new String();
+                    roleName = cursor.getString(cursor.getColumnIndex("role_name_"));
+                    play_line.RoleName = roleName;
                 } while (cursor.moveToNext());
             }
             cursor.close();
@@ -482,7 +482,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         String mainLineType = null;
         if (cursor.moveToFirst()) {
             do {
-               mainLineType = cursor.getString(cursor.getColumnIndex("main_line_type_"));
+                mainLineType = cursor.getString(cursor.getColumnIndex("main_line_type_"));
             } while (cursor.moveToNext());
         }
 
@@ -542,7 +542,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         int playID = -1;
         if (cursor.moveToFirst()) {
             do {
-             playID = cursor.getInt(cursor.getColumnIndex("id_"));
+                playID = cursor.getInt(cursor.getColumnIndex("id_"));
 
             } while (cursor.moveToNext());
         }
@@ -666,7 +666,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         if(cursor.moveToFirst()){
             do {
 
-              PlayLines playlineModelObject = new PlayLines();
+                PlayLines playlineModelObject = new PlayLines();
 
 
                 playlineModelObject.lID = cursor.getInt(cursor.getColumnIndex("id_"));
@@ -723,7 +723,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
                 }
 
                 // 1
-                  retrieveAssignedUsers(playlineModelObject,play.pID);
+                retrieveAssignedUsers(playlineModelObject,play.pID);
 
                 //2
                 retrieveTextLines(playlineModelObject);
@@ -734,8 +734,8 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
                 //4
                 retrieveSongFiles(playlineModelObject);
 
-               // add play to playline
-               play.playLinesList.add(playlineModelObject);
+                // add play to playline
+                play.playLinesList.add(playlineModelObject);
 
             }while(cursor.moveToNext());
         }
@@ -749,7 +749,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
     public void retrieveSongFiles(PlayLines playlineModelObject) {
 
-        Log.e("------------ LineID retrieveSongFiles ",""+playlineModelObject.lID);
+
 
         myDataBase = this.getWritableDatabase();
         String selectQuery = "SELECT * FROM songfiles WHERE playline_id_ ="+playlineModelObject.lID;
@@ -776,7 +776,9 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
                 SongFiles songfileModelObject = new SongFiles();
                 songfileModelObject.Id = ""+cursor.getInt(cursor.getColumnIndex("id_"));
+
                 songfileModelObject.SongTitle = cursor.getString(cursor.getColumnIndex("title_"));
+
                 songfileModelObject.SongMp3Url = cursor.getString(cursor.getColumnIndex("file_url_"));
                 songfileModelObject.FileType = cursor.getString(cursor.getColumnIndex("file_type_"));
                 songfileModelObject.FileDescription = cursor.getString(cursor.getColumnIndex("file_description_"));
@@ -786,7 +788,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
                 }else{
                     songfileModelObject.FileAvailableForStudents = true;
                 }
-
+                playlineModelObject.songFilesList.add(songfileModelObject);
             }while (cursor.moveToNext());
         }
 
@@ -822,7 +824,6 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
                 commentModelObject.comment_id = ""+cursor.getInt(cursor.getColumnIndex("id_"));
                 commentModelObject.userName = cursor.getString(cursor.getColumnIndex("username_"));
                 commentModelObject.commentText = cursor.getString(cursor.getColumnIndex("text_"));
-
                 if(cursor.getInt(cursor.getColumnIndex("private_")) == 0){
                     commentModelObject.isPrivate = false;
                 }else{
@@ -836,7 +837,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
             }while (cursor.moveToNext());
         }
 
-cursor.close();
+        cursor.close();
 
 
     }

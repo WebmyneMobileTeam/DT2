@@ -2,19 +2,24 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
+
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="4dp"
+        android:layout_height="1dp"
         android:background="@android:color/white"></View>
 
     <LinearLayout
         android:orientation="horizontal"
         android:background="@color/script_table_view_cell"
         android:layout_width="match_parent"
-        android:padding="@dimen/activity_margin"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:paddingLeft="@dimen/activity_margin"
+        android:paddingRight="@dimen/activity_margin"
+
         android:layout_height="wrap_content">
 
         <wm.com.danteater.customviews.WMTextView
@@ -31,6 +36,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
             android:background="@drawable/ic_music_playlist" />
 
     </LinearLayout>

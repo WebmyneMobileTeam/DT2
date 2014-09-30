@@ -136,8 +136,6 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
 
             }
         });
-
-
     }
 
     @Override

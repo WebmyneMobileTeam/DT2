@@ -5,19 +5,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/music_cell_layout"
     android:orientation="vertical"
-    android:background="@android:color/holo_red_dark"
+
+    android:background="@color/music_table_view_cell_first_color"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="4dp"
+        android:layout_height="0.5dp"
         android:background="@android:color/white"></View>
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:padding="@dimen/activity_margin"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:paddingLeft="@dimen/activity_margin"
+        android:paddingRight="@dimen/activity_margin"
         android:layout_height="match_parent"
         >
 
@@ -36,12 +40,13 @@
 
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/normalText"
-                android:text="Song title label"
+                android:text=""
                 android:textColor="@android:color/black" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:orientation="horizontal"
+                android:visibility="gone"
                 android:layout_height="wrap_content">
 
                 <wm.com.danteater.customviews.WMTextView
@@ -76,19 +81,21 @@
         </LinearLayout>
 
         <FrameLayout
-            android:layout_marginLeft="4dp"
+
 
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
 
             <ImageView
                 android:layout_gravity="center"
+
                 android:id="@+id/music_download"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/ic_av_download" />
+                android:background="@drawable/ic_av_download_black" />
 
             <ImageView
+
                 android:id="@+id/music_play"
                 android:visibility="gone"
                 android:layout_gravity="center"
@@ -97,6 +104,7 @@
                 android:background="@drawable/ic_play" />
 
             <ImageView
+
                 android:id="@+id/music_pause"
                 android:visibility="gone"
                 android:layout_gravity="center"
