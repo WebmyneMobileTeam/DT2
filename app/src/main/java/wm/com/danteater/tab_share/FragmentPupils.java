@@ -4,23 +4,44 @@ import android.app.Activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import wm.com.danteater.R;
+import wm.com.danteater.login.User;
+import wm.com.danteater.model.StateManager;
 
 public class FragmentPupils extends Fragment {
-
+//    private Menu menu;
+private ListView listStudents;
     private static final String ARG_POSITION = "position";
+    private static final String ARG_CLASS_NAME = "class_name";
     private int position;
-
-    public static FragmentPupils newInstance(int position) {
+    private String className;
+    private StateManager stateManager = StateManager.getInstance();
+    public static FragmentPupils newInstance(int position,String clName) {
 
         FragmentPupils fragment = new FragmentPupils();
         Bundle b = new Bundle();
         b.putInt(ARG_POSITION, position);
+        b.putString(ARG_CLASS_NAME,clName);
         fragment.setArguments(b);
         return fragment;
     }
@@ -30,35 +51,72 @@ public class FragmentPupils extends Fragment {
         super.onCreate(savedInstanceState);
 
         position = getArguments().getInt(ARG_POSITION);
-
+        className= getArguments().getString(ARG_CLASS_NAME);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
         View convertView = inflater.inflate(R.layout.fragment_fragment_pupils, container, false);
-        TextView tvTemp = (TextView)convertView.findViewById(R.id.txtTempPupil);
-        tvTemp.setText(""+position);
+        listStudents=(ListView) convertView.findViewById(R.id.listStudentsShare);
+
+         HashMap<String, ArrayList<User>> pupils=stateManager.pupils;
+        Log.e("pupils hashmap",pupils+"");
+        ArrayList<User> pupilsList=pupils.get(className);
+        Log.e("pupils listview",pupilsList+"");
 
 
+        ArrayList<String> studentNameList=new ArrayList<String>();
+        for(int i=0;i<pupilsList.size();i++) {
+            studentNameList.add(""+pupilsList.get(i).getFirstName()+" "+pupilsList.get(i).getLastName());
+        }
+
+        Collections.sort(studentNameList);
+        ArrayAdapter adap = new ArrayAdapter(getActivity(),android.R.layout.simple_list_item_multiple_choice,studentNameList);
+
+        listStudents.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        listStudents.setAdapter(adap);
+//        listStudents.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                enableDisableShareOptions(listStudents.getCheckedItemPositions());
+//            }
+//        });
         return convertView;
     }
 
+    private void enableDisableShareOptions(SparseBooleanArray arr) {
 
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+        boolean isAbleToShare = false;
+        for(int i = 0; i < listStudents.getCount() ; i++)
+        {
+            if (arr.valueAt(i))
+            {
+
+                isAbleToShare = true;
+                break;
+
+            }else{
+
+                isAbleToShare = false;
+                continue;
+
+            }
+        }
+
+//        if(isAbleToShare == true){
+//            menu.getItem(0).setIcon(getActivity().getResources().getDrawable(R.drawable.ic_action_del_selected));
+//            menu.getItem(0).setEnabled(true);
+//        }else{
+//            menu.getItem(0).setIcon(getActivity().getResources().getDrawable(R.drawable.ic_action_del_unselected));
+//            menu.getItem(0).setEnabled(false);
+//
+//        }
 
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-
-    }
 
 
 
