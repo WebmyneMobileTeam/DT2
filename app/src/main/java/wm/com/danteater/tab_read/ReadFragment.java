@@ -82,12 +82,8 @@ public class ReadFragment extends Fragment {
     public HashMap<String,ArrayList<PlayLines>> dicPlayLines;
     public HashMap<String,String> mdictSongIndexPaths;
 
-
     public boolean foundIndexOfFirstScene = false;
     int indexForFirstScene = 0;
-
-
-
 
   static final int RecordPlayRoleCell = 0;
   static final int EmptyPreviewPlayRoleCell = 1;
@@ -119,7 +115,8 @@ public class ReadFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref", 0);
+
+        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref", 0);
         selectedPlay = complexPreferences.getObject("selected_play", Play.class);
         currentUser = complexPreferences.getObject("current_user", User.class);
 
@@ -196,7 +193,6 @@ public class ReadFragment extends Fragment {
         }
 
         // TODO implement dictionary for picture
-
 
         //
         goToLineNumberFromChatLink = 0;
@@ -725,23 +721,30 @@ public class ReadFragment extends Fragment {
                     if(convertView == null){
                         convertView = mInflater.inflate(R.layout.item_read_play_note_cell, parent,false);
                         holderReadPlayNoteCell = new ViewHolder().new HolderReadPlayNoteCell();
+                        holderReadPlayNoteCell.cellReadPlayNote = new CellReadPlayNote(convertView,getActivity());
                         convertView.setTag(holderReadPlayNoteCell);
 
                     }else{
                         holderReadPlayNoteCell = (ViewHolder.HolderReadPlayNoteCell)convertView.getTag();
                     }
+                    holderReadPlayNoteCell.cellReadPlayNote.setupForPlayLine(playLine,currentState);
+
                 break;
 
                 case ReadPlayInfoCell:
                     //
                     if(convertView == null){
+
                         convertView = mInflater.inflate(R.layout.item_read_play_info_cell, parent,false);
                         holderReadPlayInfoCell = new ViewHolder().new HolderReadPlayInfoCell();
+                        holderReadPlayInfoCell.cellReadPlayInfo = new CellReadPlayInfo(convertView,getActivity());
                         convertView.setTag(holderReadPlayInfoCell);
 
                     }else{
                         holderReadPlayInfoCell = (ViewHolder.HolderReadPlayInfoCell)convertView.getTag();
                     }
+                    holderReadPlayInfoCell.cellReadPlayInfo.setupForPlayLine(playLine);
+
                 break;
 
 
@@ -751,11 +754,15 @@ public class ReadFragment extends Fragment {
                     if(convertView == null){
                         convertView = mInflater.inflate(R.layout.item_read_play_picture_cell, parent,false);
                         holderReadPlayPictureCell = new ViewHolder().new HolderReadPlayPictureCell();
+                        holderReadPlayPictureCell.cellReadPlayPicture = new CellReadPlayPicture(convertView,getActivity());
                         convertView.setTag(holderReadPlayPictureCell);
 
                     }else{
                         holderReadPlayPictureCell = (ViewHolder.HolderReadPlayPictureCell)convertView.getTag();
                     }
+
+                    holderReadPlayPictureCell.cellReadPlayPicture.setupForPlayLine(playLine);
+
                 break;
 
 

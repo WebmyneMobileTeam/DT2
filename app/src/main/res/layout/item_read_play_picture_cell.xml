@@ -6,11 +6,22 @@
     android:padding="@dimen/activity_margin"
     android:layout_height="wrap_content">
 
+    <ImageView
+        android:id="@+id/imgItemPictureCell"
+        android:contentDescription="@string/app_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:src="@drawable/ic_launcher"
+        android:scaleType="centerInside" />
+
+
     <wm.com.danteater.customviews.WMButton
         android:id="@+id/readPlayPictureCellLoadImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Henter billede..."
+        android:visibility="visible"
         android:background="@color/greenTheme"
         android:textColor="@android:color/white" />
 

@@ -27,6 +27,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.2.4'
     compile files('src/main/libs/volley.jar')
     compile files('src/main/libs/mviddeviceconnector.jar')
+    compile files('src/main/libs/universal-image-loader-1.9.3.jar')
 }
 
 repositories {

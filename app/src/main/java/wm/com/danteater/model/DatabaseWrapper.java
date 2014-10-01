@@ -287,6 +287,8 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         Cursor cursor = myDataBase.rawQuery(selectQuery, null);
         cursor.moveToFirst();
 
+
+
         int playLineId = cursor.getInt(cursor.getColumnIndex("id_"));
         // assigned users
         if(play_line.playLineType() == PlayLines.PlayLType.PlayLineTypeRole){

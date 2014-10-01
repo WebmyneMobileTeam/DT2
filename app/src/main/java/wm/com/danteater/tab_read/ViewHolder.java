@@ -49,11 +49,17 @@ public class ViewHolder {
 
     public class HolderPreviewReadPlayNoteCell extends ViewHolder{}
 
-    public class HolderReadPlayNoteCell extends ViewHolder{}
+    public class HolderReadPlayNoteCell extends ViewHolder{
+        public CellReadPlayNote cellReadPlayNote;
+    }
 
-    public class HolderReadPlayInfoCell extends ViewHolder{}
+    public class HolderReadPlayInfoCell extends ViewHolder{
+        public CellReadPlayInfo cellReadPlayInfo;
+    }
 
-    public class HolderReadPlayPictureCell extends ViewHolder{}
+    public class HolderReadPlayPictureCell extends ViewHolder{
+        public CellReadPlayPicture cellReadPlayPicture;
+    }
 
     public class HolderReadPlaySongCell extends ViewHolder{}
 

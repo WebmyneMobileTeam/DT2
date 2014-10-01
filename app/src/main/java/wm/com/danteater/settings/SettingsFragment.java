@@ -14,6 +14,7 @@ public class SettingsFragment extends Fragment {
 
     private ToggleButton toggleAutomaticLogin;
     private ToggleButton toggleShowLineNumber;
+    private ToggleButton toggleShowCommentsForUserId;
 
     public static SettingsFragment newInstance(String param1, String param2) {
         SettingsFragment fragment = new SettingsFragment();
@@ -38,6 +39,7 @@ public class SettingsFragment extends Fragment {
 
         boolean shouldShowLoginView = preferences.getBoolean("shouldShowLoginView", false);
         boolean shouldShowLineNumbers = preferences.getBoolean("showLineNumber", false);
+        boolean shouldShowComments= preferences.getBoolean("showComments", false);
 
         toggleAutomaticLogin=(ToggleButton)rootView.findViewById(R.id.settingAutomatiskeLogin);
         toggleAutomaticLogin.setChecked(shouldShowLoginView);
@@ -79,9 +81,25 @@ public class SettingsFragment extends Fragment {
         });
 
 
+        toggleShowCommentsForUserId=(ToggleButton)rootView.findViewById(R.id.settingKommentarer);
+        toggleShowCommentsForUserId.setChecked(shouldShowComments);
 
-
-
+        toggleShowCommentsForUserId.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean on = toggleShowCommentsForUserId.isChecked();
+                SharedPreferences preferences = getActivity().getSharedPreferences("settings",getActivity().MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                boolean showShowLine = false;
+                if (on) {
+                    showShowLine = true;
+                } else {
+                    showShowLine = false;
+                }
+                editor.putBoolean("showComments",showShowLine);
+                editor.commit();
+            }
+        });
 
 
         return rootView;

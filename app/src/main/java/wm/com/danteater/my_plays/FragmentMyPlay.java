@@ -678,9 +678,6 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
                     if(response == null || response.equalsIgnoreCase("")){
 
-
-
-
                     }else{
 
                         new AsyncTask<String,Integer,String>(){
