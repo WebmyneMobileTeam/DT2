@@ -31,6 +31,10 @@ import wm.com.danteater.tab_recording.RecordingFragment;
 
 public class PlayTabActivity extends BaseActivity {
 
+    public static int STATE_RECORD = 0;
+    public static int STATE_PREVIEW = 1;
+    public static int STATE_READ = 2;
+    public static int STATE_CHAT = 3;
 
     private FragmentTabHost mTabHost;
   //  private String type_navigation;
@@ -41,16 +45,14 @@ public class PlayTabActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_tab);
 
-
-
        // Receive the extra string for specific tab selection.
     //    Intent i=getIntent();
     //    playinfo =i.getStringExtra("infoData");
     //    type_navigation = i.getStringExtra("type_navigation");
 
-        // Helping to create a tabs to this application
-           initTabHost();
 
+        // Helping to create a tabs to this application
+        initTabHost();
         mTabHost.setCurrentTab(0);
         selectTAB(0);
 
@@ -75,10 +77,7 @@ public class PlayTabActivity extends BaseActivity {
             public void onTabChanged(String tabId) {
 
                 for(int i=0;i<mTabHost.getTabWidget().getTabCount();i++){
-
-
                     selectTAB(i);
-
                 }
 
             }
@@ -109,17 +108,21 @@ public class PlayTabActivity extends BaseActivity {
      //   bInfo.putString("infoData",playinfo+"");
 
 
+        Bundle args = new Bundle();
+        args.putInt("currentState",STATE_READ);
+
         mTabHost.addTab(mTabHost.newTabSpec("tab4").setIndicator(view4),
-                ReadFragment.class, null);
+                ReadFragment.class,args);
+
+
+        args = new Bundle();
+        args.putInt("currentState",STATE_RECORD);
 
         mTabHost.addTab(mTabHost.newTabSpec("tab5").setIndicator(view5),
-                RecordingFragment.class, null);
-
-
+                ReadFragment.class, args);
 
         mTabHost.addTab(mTabHost.newTabSpec("tab2").setIndicator(view2),
                 MusicFragment.class, null);
-
 
         mTabHost.addTab(mTabHost.newTabSpec("tab3").setIndicator(view3),
                 FragmentInspiration.class, null);

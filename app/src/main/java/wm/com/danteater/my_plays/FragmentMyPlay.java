@@ -64,6 +64,11 @@ import wm.com.danteater.model.StateManager;
 
 public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChangeListener {
 
+    public static int STATE_RECORD = 0;
+    public static int STATE_PREVIEW = 1;
+    public static int STATE_READ = 2;
+    public static int STATE_CHAT = 3;
+
     Play ply;
     private enum ACTIVITY_TYPE{
         TAB_ACTIVITY,ORDER_ACTIVITY
@@ -657,22 +662,16 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             Log.i("hasplay","true");
             Log.i("Order Id",play.OrderId);
             SharedPreferences preferences = getActivity().getSharedPreferences("Plays", getActivity().MODE_PRIVATE);
-
             String k = "PlayLatesteUpdateDate"+play.PlayId;
             //  Toast.makeText(getActivity(),preferences.getString(k,""), Toast.LENGTH_SHORT).show();
-
-
-
             long unixTime = Long.parseLong(preferences.getString(k,""));
             BigDecimal bigDecimal = new BigDecimal(unixTime);
 
-            String serverLink = API.link_getPlayUpdateForPlayOrderIdString+play.PlayId+"?unixTimeStamp="+unixTime;
-
+            String serverLink = API.link_getPlayUpdateForPlayOrderIdString+play.PlayId+"?unixTimeStamp="+bigDecimal;
             new CallWebService(serverLink,CallWebService.TYPE_JSONARRAY) {
 
                 @Override
                 public void response(final String response) {
-
 
                     Log.i("Response update play : ",""+response);
 
@@ -722,18 +721,14 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                                 String k = "PlayLatesteUpdateDate"+play.PlayId;
                                 editor.putString(k,""+System.currentTimeMillis());
                                 editor.commit();
-
                                 gotoNextPage(act_type,play_index);
-
                             }
-
 
                         }.execute();
 
                     }
 
                 }
-
 
                 @Override
                 public void error(VolleyError error) {
@@ -743,7 +738,6 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
                 }
             }.start();
-
 
         }else{
             Log.i("hasplay","false");
@@ -821,14 +815,13 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 complexPreferences.putObject("selected_play",ply);
                 complexPreferences.commit();
 
-
-
                 switch (act_type){
 
                     case ORDER_ACTIVITY:
 
 
                         Intent i1 = new Intent(getActivity(), ReadActivityFromPreview.class);
+                        i1.putExtra("currentState",STATE_PREVIEW);
                         startActivity(i1);
 
                         break;
@@ -841,19 +834,11 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                         break;
                 }
 
-
-
-
             }
         }.execute();
 
 
-
-
-
-
     }
-
 
     /**
      * @param nbSeconds

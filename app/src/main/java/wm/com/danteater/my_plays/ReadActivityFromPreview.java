@@ -8,6 +8,9 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -17,28 +20,27 @@ import android.widget.FrameLayout;
 
 import wm.com.danteater.Play.Play;
 import wm.com.danteater.R;
+import wm.com.danteater.app.BaseActivity;
 import wm.com.danteater.customviews.WMTextView;
 import wm.com.danteater.model.ComplexPreferences;
+import wm.com.danteater.tab_read.ReadFragment;
 
-public class ReadActivityFromPreview extends Activity {
+public class ReadActivityFromPreview extends BaseActivity {
 
     public WMTextView txtHeader;
     private FrameLayout btnPlayOrderIdForPerformance;
     private Play play;
+    int current_state = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_read_from_preview);
-
+        current_state = getIntent().getExtras().getInt("currentState");
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(ReadActivityFromPreview.this, "mypref", 0);
         play = complexPreferences.getObject("selected_play", Play.class);
-
         Log.e("Count : ",""+play.playLinesList.size());
-
-
-
         btnPlayOrderIdForPerformance=(FrameLayout)findViewById(R.id.btnPlayOrderIdForPerformance);
         btnPlayOrderIdForPerformance.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,8 +50,23 @@ public class ReadActivityFromPreview extends Activity {
             }
         });
         setUpCurrentActionBar();
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction ft = manager.beginTransaction();
+
+        Bundle args = new Bundle();
+        args.putInt("currentState",current_state);
+        ReadFragment readFragment = ReadFragment.newInstance("","");
+        readFragment.setArguments(args);
+
+        ft.replace(R.id.containerPreview,readFragment,"preview");
+        ft.commit();
+
+
 
     }
+
+
+
 
     private void setUpCurrentActionBar() {
 

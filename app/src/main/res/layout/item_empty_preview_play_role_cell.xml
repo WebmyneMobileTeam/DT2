@@ -4,7 +4,10 @@
     android:orientation="vertical"
     android:background="@color/read_play_cell"
     android:layout_width="match_parent"
-    android:padding="@dimen/activity_margin"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp"
+    android:paddingRight="@dimen/activity_margin"
+    android:paddingLeft="@dimen/activity_margin"
     android:layout_height="wrap_content">
 
 

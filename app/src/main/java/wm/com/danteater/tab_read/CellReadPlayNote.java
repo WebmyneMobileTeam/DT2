@@ -32,12 +32,18 @@ public class CellReadPlayNote {
     public int STATE_READ = 2;
     public int STATE_CHAT = 3;
 
+    View convertView;
+
     public CellReadPlayNote(View view,Context context) {
 
         ctx = context;
         tvNote = (WMTextView)view.findViewById(R.id.readPlayNoteCellDescription);
         btnMenu = (ImageView)view.findViewById(R.id.readPlayNoteCellMoreImage);
         btnEditLine = (ImageView)view.findViewById(R.id.imgItemReadPLayNoteCompose);
+
+        this.convertView = view;
+
+
 
     }
 
@@ -54,14 +60,22 @@ public class CellReadPlayNote {
         }
 
 
-        if(current_state == STATE_RECORD){
+        if(current_state == STATE_RECORD || current_state == STATE_PREVIEW){
             btnMenu.setVisibility(View.INVISIBLE);
         }
+
+      /*  if(current_state == STATE_PREVIEW){
+            convertView.setBackgroundColor(ctx.getResources().getColor(R.color.read_play_cell));
+        }else{
+            convertView.setBackgroundColor(Color.WHITE);
+        }*/
+
 
         if(user.checkPupil(user.getRoles())){
             btnMenu.setVisibility(View.INVISIBLE);
         }
 
+        tvNote.setTextColor(Color.parseColor(AppConstants.noteTextColor));
 
         ArrayList<TextLines> textLines = playline.textLinesList;
 

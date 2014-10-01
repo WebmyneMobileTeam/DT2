@@ -8,14 +8,14 @@
     android:orientation="horizontal"
     android:layout_height="wrap_content">
 
-    <EditText
+    <wm.com.danteater.customviews.WMEdittext
         android:id="@+id/edGotoLine"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Repliknummer"
         android:textSize="18sp"
         android:inputType="number"
-      android:focusable="true"
+        android:focusable="true"
         android:focusableInTouchMode="true"
         android:gravity="left"
         android:background="@drawable/ed_rounded"
@@ -23,7 +23,7 @@
 
 
 
-    <TextView
+    <wm.com.danteater.customviews.WMTextView
         android:id="@+id/txtGotoLine"
         android:text="Gå"
         android:paddingLeft="16dp"

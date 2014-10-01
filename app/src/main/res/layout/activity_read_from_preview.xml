@@ -1,4 +1,4 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -6,9 +6,11 @@
     tools:context="wm.com.danteater.my_plays.ReadActivityFromPreview">
 
 
+
     <FrameLayout
         android:id="@+id/btnPlayOrderIdForPerformance"
         android:clickable="true"
+        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/greenTheme"
@@ -39,4 +41,13 @@
     </FrameLayout>
 
 
-</FrameLayout>
+    <FrameLayout
+        android:id="@+id/containerPreview"
+        android:layout_above="@id/btnPlayOrderIdForPerformance"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></FrameLayout>
+
+
+
+
+</RelativeLayout>

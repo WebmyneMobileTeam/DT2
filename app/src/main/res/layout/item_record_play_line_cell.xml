@@ -2,7 +2,6 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -18,7 +17,7 @@
             android:id="@+id/recordPlayLineCellRollName"
             android:padding="2dp"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/recordPlayLineCellMoreImage"
+            android:layout_toLeftOf="@+id/btnOpTag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
@@ -26,14 +25,16 @@
             android:textSize="@dimen/normalText" />
 
         <wm.com.danteater.customviews.WMTextView
-            android:id="@+id/recordPlayLineCellMoreImage"
-            android:layout_margin="4dp"
+            android:id="@+id/btnOpTag"
+            android:layout_marginRight="8dp"
+
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/recordPlayLineCellLineNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textSize="@dimen/medium_text"
+
             android:drawableLeft="@drawable/record"
             android:text="Optag" />
 
@@ -60,7 +61,6 @@
             android:id="@+id/recordPlayLineCellPlayButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             android:background="@drawable/ic_play" />
 
         <wm.com.danteater.customviews.WMTextView
@@ -74,4 +74,13 @@
             android:text="Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda."
             android:textSize="@dimen/medium_text" />
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginLeft="@dimen/activity_margin"
+        android:id="@+id/listReadPlayPlaylinecell"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="4dp"
+        android:dividerHeight="1dp" />
 </LinearLayout>

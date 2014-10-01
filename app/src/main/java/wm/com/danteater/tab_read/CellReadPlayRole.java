@@ -17,7 +17,7 @@ public class CellReadPlayRole {
 
 
     private TextView tvRoleDescription;
-    private TextView lblCharacterName;
+    private WMTextView lblCharacterName;
     private TextView lblAssignedName;
     private TextView lblNumberOfSongsAndLines;
     private WMTextView btnAssignRole;
@@ -27,7 +27,7 @@ public class CellReadPlayRole {
 
         tvRoleDescription = (TextView)view.findViewById(R.id.readPlayRoleDescription);
         lblAssignedName = (TextView)view.findViewById(R.id.readPlayRoleNotAssigned);
-        lblCharacterName = (TextView)view.findViewById(R.id.readPlayRoleTitle);
+        lblCharacterName = (WMTextView)view.findViewById(R.id.readPlayRoleTitle);
         lblNumberOfSongsAndLines = (TextView)view.findViewById(R.id.readPlayRoleSongTitle);
         btnAssignRole = (WMTextView)view.findViewById(R.id.readPlayroleAssignedButton);
         btnAssignRole.setOnClickListener(new View.OnClickListener() {
@@ -36,6 +36,7 @@ public class CellReadPlayRole {
                 setClicked.onAssignButtonClicked();
             }
         });
+        lblCharacterName.setBold();
 
     }
 

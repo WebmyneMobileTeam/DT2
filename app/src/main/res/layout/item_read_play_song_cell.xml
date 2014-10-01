@@ -1,23 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
-    android:background="@color/music_table_section"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:padding="@dimen/activity_margin"
+
     android:layout_height="wrap_content">
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:background="@drawable/ic_music_selected" />
 
-    <TextView
+    <wm.com.danteater.customviews.WMTextView
         android:id="@+id/readPlaySongCelltitle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="title"
+        android:background="@color/music_table_section"
+        android:padding="16dp"
         android:gravity="center"
         android:textColor="@android:color/white"
         android:textSize="@dimen/normalText"/>
+
+    <LinearLayout
+        android:id="@+id/linearSongCell"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    </LinearLayout>
+
+
 </LinearLayout>

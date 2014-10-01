@@ -8,16 +8,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import wm.com.danteater.Play.Comments;
 import wm.com.danteater.Play.PlayLines;
@@ -27,17 +21,21 @@ import wm.com.danteater.customviews.WMTextView;
 import wm.com.danteater.login.User;
 import wm.com.danteater.model.AppConstants;
 import wm.com.danteater.model.ComplexPreferences;
-import wm.com.danteater.my_plays.DrawerActivity;
 
 /**
  * Created by dhruvil on 29-09-2014.
  */
-public class CellReadPlayPlayLine {
+public class CellRecordPlayPlayLine {
 
+
+
+
+    private ImageView imgPLay;
+    private WMTextView btnOpTag;
     private LinearLayout listReadPlayPlaylinecell;
     private WMTextView lblRoleName;
     private WMTextView tvPlayLines;
-    private ImageView btnMenu;
+
     private WMTextView lblLineNumber;
     private Context ctx;
     private boolean showLineNumber;
@@ -53,13 +51,15 @@ public class CellReadPlayPlayLine {
     String currentUserId = "";
 
 
-    public CellReadPlayPlayLine(View view, Context context) {
+    public CellRecordPlayPlayLine(View view, Context context) {
 
         this.ctx = context;
-        lblLineNumber = (WMTextView) view.findViewById(R.id.readPlayLineCellLineNumber);
-        lblRoleName = (WMTextView) view.findViewById(R.id.readPlayLineCellRollName);
-        tvPlayLines = (WMTextView) view.findViewById(R.id.readPlayLineCellDescription);
-        btnMenu = (ImageView) view.findViewById(R.id.readPlayLineCellMoreImage);
+        lblLineNumber = (WMTextView) view.findViewById(R.id.recordPlayLineCellLineNumber);
+        lblRoleName = (WMTextView) view.findViewById(R.id.recordPlayLineCellRollName);
+        tvPlayLines = (WMTextView) view.findViewById(R.id.recordPlayLineCellDescription);
+        btnOpTag = (WMTextView)view.findViewById(R.id.btnOpTag);
+        imgPLay = (ImageView)view.findViewById(R.id.recordPlayLineCellPlayButton);
+
         listReadPlayPlaylinecell = (LinearLayout)view.findViewById(R.id.listReadPlayPlaylinecell);
         lblRoleName.setBold();
 
@@ -70,9 +70,6 @@ public class CellReadPlayPlayLine {
         listReadPlayPlaylinecell.removeAllViews();
         listReadPlayPlaylinecell.invalidate();
 
-        if(current_state == STATE_PREVIEW){
-            btnMenu.setVisibility(View.INVISIBLE);
-        }
 
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(ctx, "user_pref", 0);
         user = complexPreferences.getObject("current_user", User.class);

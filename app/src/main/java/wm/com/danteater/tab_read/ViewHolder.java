@@ -16,12 +16,7 @@
 
 package wm.com.danteater.tab_read;
 
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import wm.com.danteater.my_plays.DrawerActivity;
 import wm.com.danteater.tab_music.CellMusicTableView;
@@ -32,9 +27,11 @@ public class ViewHolder {
 
     public class HolderRecordPlayRoleCell extends ViewHolder{}
 
-    public class HolderEmptyPreviewPlayRoleCell extends ViewHolder{}
+    public class HolderEmptyPreviewPlayRoleCell extends ViewHolder{
+           public CellPreviewPlayRole cellEmptyPreviewPlayRole;
+    }
 
-    public class HolderPreviewPlayRoleCell extends ViewHolder{}
+   // public class HolderPreviewPlayRoleCell extends ViewHolder{} // dont need .. managed
 
     public class HolderEmptyPlayRoleCell extends ViewHolder{}
 
@@ -43,7 +40,9 @@ public class ViewHolder {
         public TextView lblCharacterName;
     }
 
-    public class HolderRecordPlayPlayLineCell extends ViewHolder{}
+    public class HolderRecordPlayPlayLineCell extends ViewHolder{
+        public CellRecordPlayPlayLine cellRecordPlayPlayLine;
+    }
 
     public class HolderPreviewPlayPlayLineCell extends ViewHolder{}
 
@@ -65,9 +64,13 @@ public class ViewHolder {
         public CellReadPlayPicture cellReadPlayPicture;
     }
 
-    public class HolderReadPlaySongCell extends ViewHolder{}
+    public class HolderReadPlaySongCell extends ViewHolder{
+        public CellReadPlaySong cellReadPlaySong;
+    }
 
-    public class HolderReadPlaySongLineCell extends ViewHolder{ }
+    public class HolderReadPlaySongLineCell extends ViewHolder{
+        public CellReadPlaySongLine cellReadPlaySongLine;
+    }
 
     public class ViewHolderForMusic extends ViewHolder {
         public CellMusicTableView cellMusicTableView;

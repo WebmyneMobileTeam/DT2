@@ -14,6 +14,7 @@
         android:text="Label"
         android:textSize="@dimen/fragment_my_play_small_text" />
 
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -28,16 +29,15 @@
                 android:id="@+id/item_orderplay_selected_value"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-
                 android:gravity="center"
                 android:text=""
                 android:textColor="@color/gray_color"
                 android:textSize="@dimen/fragment_my_play_small_text"
                 android:visibility="gone" />
 
-            <EditText
+<!--            <EditText
                 android:id="@+id/item_orderplay_selected_value_et"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical|right"
                 android:inputType="number"
@@ -49,7 +49,7 @@
                 android:background="@android:color/white"
                 android:textColor="@color/gray_color"
                 android:textSize="@dimen/fragment_my_play_small_text"
-                android:visibility="gone" />
+                android:visibility="visible" />-->
 
         </FrameLayout>
 
@@ -60,4 +60,25 @@
             android:layout_gravity="center_vertical"
             android:src="@drawable/ic_navigation_next_item" />
     </LinearLayout>
+
+
+    <EditText
+        android:id="@+id/item_orderplay_selected_value_et"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical|right"
+        android:inputType="number"
+        android:singleLine="true"
+        android:text=""
+        android:ems="2"
+        android:clickable="true"
+        android:focusableInTouchMode="true"
+        android:paddingRight="40dp"
+        android:layout_gravity="center_vertical"
+        android:focusable="true"
+        android:background="@android:color/transparent"
+        android:textColor="@color/gray_color"
+        android:textSize="@dimen/fragment_my_play_small_text"
+        android:visibility="gone" />
+
 </FrameLayout>

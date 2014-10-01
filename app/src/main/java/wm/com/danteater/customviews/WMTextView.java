@@ -26,6 +26,10 @@ public class WMTextView extends TextView{
 
     }
 
+    public void setBold(){
+        setTypeface(typeFace,Typeface.BOLD);
+    }
+
     public WMTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
         createAndSet(context);

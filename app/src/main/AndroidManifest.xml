@@ -32,15 +32,18 @@
             android:label="@string/title_activity_play_tab" >
         </activity>
         <activity
+
             android:name=".my_plays.OrderPlayActivityForPerform"
             android:windowSoftInputMode="adjustPan"
             android:label="@string/title_activity_play_tab" >
         </activity>
         <activity
+            android:windowSoftInputMode="adjustPan"
             android:name=".my_plays.ShareActivityForPerform"
             android:label="@string/title_activity_play_tab" >
         </activity>
         <activity
+            android:windowSoftInputMode="adjustPan"
             android:name=".my_plays.ShareActivityForPreview"
             android:label="@string/title_activity_play_tab" >
         </activity>
@@ -49,6 +52,7 @@
             android:label="@string/title_activity_guide_startup" >
         </activity>
         <activity
+            android:windowSoftInputMode="adjustPan"
             android:name=".my_plays.ReadActivityFromPreview"
             android:label="@string/title_activity_read_activity_from_preview" >
         </activity>

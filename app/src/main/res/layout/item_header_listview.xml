@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@drawable/header_listview"
+    android:layout_height="wrap_content">
+
+    <wm.com.danteater.customviews.WMTextView
+        android:id="@+id/txtHeaderViewTitle"
+        android:text="@string/hello_world"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#fff"
+        android:gravity="center"
+        android:textSize="22sp" />
+
+    <wm.com.danteater.customviews.WMTextView
+        android:id="@+id/txtHeaderViewSubTitle"
+        android:text="@string/hello_world"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#fff"
+        android:gravity="center"
+        android:textSize="18sp" />
+
+
+</LinearLayout>

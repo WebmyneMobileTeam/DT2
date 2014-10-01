@@ -25,19 +25,17 @@ public class CellReadPlayPicture {
     WMButton btnLoad;
     WMButton btnSave;
     ImageLoader loader;
-
-
+    Bitmap bitmap;
 
     public CellReadPlayPicture(View view,Context ctx) {
-        this.ctx = ctx;
 
+        this.ctx = ctx;
         img = (ImageView)view.findViewById(R.id.imgItemPictureCell);
         btnLoad = (WMButton)view.findViewById(R.id.readPlayPictureCellLoadImage);
         btnSave = (WMButton)view.findViewById(R.id.readPlayPictureCellSaveImage);
 
         ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(ctx).build();
         ImageLoader.getInstance().init(configuration);
-
 
     }
 
@@ -48,19 +46,26 @@ public class CellReadPlayPicture {
 
         String url = playline.textLinesList.get(0).LineText;
 
-        ImageLoader.getInstance().loadImage(url,new SimpleImageLoadingListener() {
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                // Do whatever you want with Bitmap
+        if(bitmap == null){
+            ImageLoader.getInstance().loadImage(url,new SimpleImageLoadingListener() {
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    // Do whatever you want with Bitmap
+                    bitmap = loadedImage;
+                    setImageToCell(bitmap);
+                }
+            });
 
-                btnLoad.setVisibility(View.GONE);
-                img.setVisibility(View.VISIBLE);
-                img.setImageBitmap(loadedImage);
+        }else{
+            setImageToCell(bitmap);
+        }
 
+    }
 
-            }
-        });
+    public void setImageToCell(Bitmap b){
 
-
+        btnLoad.setVisibility(View.GONE);
+        img.setVisibility(View.VISIBLE);
+        img.setImageBitmap(b);
     }
 }

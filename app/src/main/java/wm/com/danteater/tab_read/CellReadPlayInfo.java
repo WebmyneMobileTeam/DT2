@@ -18,17 +18,26 @@ import wm.com.danteater.model.AppConstants;
 public class CellReadPlayInfo {
 
     WMTextView tvInfo;
+    public int STATE_RECORD = 0;
+    public int STATE_PREVIEW = 1;
+    public int STATE_READ = 2;
+    public int STATE_CHAT = 3;
+    View convertView;
+    Context ctx;
 
     public CellReadPlayInfo(View view,Context context) {
-
         tvInfo = (WMTextView)view.findViewById(R.id.readPlayInfoCellDescription);
-
-
+        this.convertView = view;
+        this.ctx = context;
     }
 
-    public void setupForPlayLine(PlayLines playline){
+    public void setupForPlayLine(PlayLines playline,int current_state){
 
         tvInfo.setText("");
+
+        if(current_state == STATE_PREVIEW){
+          //  convertView.setBackgroundColor(ctx.getResources().getColor(R.color.read_play_cell));
+        }
 
         ArrayList<TextLines> textLines = playline.textLinesList;
 
