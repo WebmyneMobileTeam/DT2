@@ -44,6 +44,7 @@
                 android:textColor="@android:color/black" />
 
             <LinearLayout
+                android:id="@+id/playerView"
                 android:layout_width="match_parent"
                 android:orientation="horizontal"
                 android:visibility="gone"
@@ -57,7 +58,7 @@
 
                     android:layout_height="match_parent"
                     android:textSize="@dimen/normalText"
-                    android:text="0:00"
+                    android:text=""
                     android:textColor="@android:color/black" />
 
                 <SeekBar
@@ -74,7 +75,7 @@
 
                     android:layout_height="match_parent"
                     android:textSize="@dimen/normalText"
-                    android:text="9:99"
+                    android:text=""
                     android:textColor="@android:color/black" />
             </LinearLayout>
 
@@ -101,16 +102,16 @@
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/ic_play" />
+     />
 
-            <ImageView
+            <!--<ImageView-->
 
-                android:id="@+id/music_pause"
-                android:visibility="gone"
-                android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ic_pause" />
+                <!--android:id="@+id/music_pause"-->
+                <!--android:visibility="gone"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:background="@drawable/ic_pause" />-->
         </FrameLayout>
 
     </LinearLayout>

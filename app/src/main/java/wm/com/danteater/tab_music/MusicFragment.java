@@ -3,8 +3,11 @@ package wm.com.danteater.tab_music;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,9 +16,22 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 
 import wm.com.danteater.Play.Play;
@@ -23,6 +39,7 @@ import wm.com.danteater.Play.PlayLines;
 import wm.com.danteater.Play.SongFiles;
 import wm.com.danteater.Play.TextLines;
 import wm.com.danteater.R;
+import wm.com.danteater.customviews.HUD;
 import wm.com.danteater.customviews.PinnedHeaderListView;
 import wm.com.danteater.customviews.SectionedBaseAdapter;
 import wm.com.danteater.customviews.WMTextView;
@@ -33,14 +50,18 @@ public class MusicFragment extends Fragment {
 
     private Play selectedPlay;
     private ArrayList<PlayLines> playLineses;
+
+    MediaPlayer mediaPlayer;
+    MusicSectionedAdapter musicSectionedAdapter;
     private ArrayList<String> marrSectionTitles=new ArrayList<String>();
     private ArrayList<ArrayList<SongFiles>> marrSectionsWithContent=new ArrayList<ArrayList<SongFiles>>();
     private ArrayList<SongFiles> marrSongFilesMP3=new ArrayList<SongFiles>();
     public PinnedHeaderListView listMusic;
+    private HUD dialog;
     public static int MP3_FILE = 0;
     public static int PDF_FILE = 1;
     public static MusicFragment newInstance(String param1, String param2) {
-        MusicFragment fragment = new MusicFragment();
+    MusicFragment fragment = new MusicFragment();
 
         return fragment;
     }
@@ -80,7 +101,8 @@ public class MusicFragment extends Fragment {
         // Inflate the layout for this fragment
         View convertView= inflater.inflate(R.layout.fragment_music, container, false);
         listMusic = (PinnedHeaderListView)convertView.findViewById(R.id.listViewMusic);
-        listMusic.setAdapter(new MusicSectionedAdapter(getActivity()));
+        musicSectionedAdapter=new MusicSectionedAdapter(getActivity());
+        listMusic.setAdapter(musicSectionedAdapter);
         listMusic.setFastScrollEnabled(true);
         return convertView;
     }
@@ -97,7 +119,7 @@ public class MusicFragment extends Fragment {
         @Override
         public Object getItem(int section, int position) {
 
-            return null;
+            return  null;
         }
 
         @Override
@@ -156,57 +178,70 @@ public class MusicFragment extends Fragment {
 
         @Override
         public View getItemView(int section, final int position, View convertView, ViewGroup parent) {
-            ViewHolderForMusic viewHolderForMusic=null;
-            ViewHolderForPDF viewHolderForPDF=null;
+            ViewHolder.ViewHolderForMusic viewHolderForMusic=null;
+            ViewHolder.ViewHolderForPDF viewHolderForPDF=null;
             int type=getItemViewType(section,position);
             final ArrayList<SongFiles>  songFileses=marrSectionsWithContent.get(section);
             Log.e("type:",type+"");
             if(type==MP3_FILE) {
                 if(convertView == null){
-                    viewHolderForMusic = new ViewHolderForMusic();
+                    viewHolderForMusic = new ViewHolder().new ViewHolderForMusic();
                     convertView = mInflater.inflate(R.layout.item_music_table_view_cell, parent,false);
-                    viewHolderForMusic.musicText=(WMTextView)convertView.findViewById(R.id.music_table_view_cell_title);
+                    viewHolderForMusic.cellMusicTableView=new CellMusicTableView(convertView,getActivity());
                     convertView.setTag(viewHolderForMusic);
 
                 }else{
-                    viewHolderForMusic = (ViewHolderForMusic)convertView.getTag();
+                    viewHolderForMusic = (ViewHolder.ViewHolderForMusic)convertView.getTag();
                 }
-
-                viewHolderForMusic.musicText.setText("Instrumental");
+                viewHolderForMusic.cellMusicTableView.setUpSongFile(songFileses.get(position),marrSectionTitles.get(section),getActivity());
+                viewHolderForMusic.cellMusicTableView.setReloadClicked(new setOnReload() {
+                    @Override
+                    public void onReload() {
+                        musicSectionedAdapter.notifyDataSetChanged();
+                    }
+                });
+//                viewHolderForMusic.musicPlay.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//
+//                        playMusic(songFileses.get(position).SongTitle);
+//                    }
+//                });
+//                viewHolderForMusic.musicPause.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        mediaPlayer.pause();
+//                    }
+//                });
+//
+//
+//                viewHolderForMusic.musicDownload.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//
+//                        downloadMusic(songFileses.get(position).SongMp3Url,songFileses.get(position).SongTitle,position);
+//
+//                    }
+//                });
 
 
             } else {
                 if(convertView == null){
-                    viewHolderForPDF = new ViewHolderForPDF();
+                    viewHolderForPDF = new ViewHolder().new ViewHolderForPDF();
                     convertView = mInflater.inflate(R.layout.item_script_table_view_cell, parent,false);
-
-                    viewHolderForPDF.scriptTitle=(WMTextView)convertView.findViewById(R.id.script_table_view_cell_title);
+                    viewHolderForPDF.cellScriptTableView=new CellScriptTableView(convertView,getActivity());
                     convertView.setTag(viewHolderForPDF);
-
                 }else{
-                    viewHolderForPDF = (ViewHolderForPDF)convertView.getTag();
+                    viewHolderForPDF = (ViewHolder.ViewHolderForPDF)convertView.getTag();
                 }
-                viewHolderForPDF.scriptTitle.setText(marrSectionTitles.get(section)+"");
-                convertView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent i=new Intent(getActivity(),ReadChord.class);
-                        i.putExtra("file_url", songFileses.get(position).SongMp3Url+"" );
-                        startActivity(i);
-                    }
-                });
+                viewHolderForPDF.cellScriptTableView.setUpScriptFile(songFileses.get(position),marrSectionTitles.get(section),getActivity());
             }
 
             return convertView;
         }
     }
 
-    public class ViewHolderForMusic {
-        private WMTextView musicText;
-    }
-    public class ViewHolderForPDF {
-        private WMTextView scriptTitle;
-    }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -231,5 +266,98 @@ public class MusicFragment extends Fragment {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    public void downloadMusic(final String musicUrl,final String songFileName, final int position) {
+
+
+        new AsyncTask<Void,Integer,Void>(){
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                dialog = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
+                dialog.title("Loading...");
+                dialog.show();
+            }
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                int count;
+                try {
+                    URL url = new URL(musicUrl.replace(" ","%20"));
+                    HttpURLConnection conexion = (HttpURLConnection) url.openConnection();
+                    conexion.connect();
+                    int lenghtOfFile = conexion.getContentLength();
+                    Log.e("lenghtOfFile: ",lenghtOfFile+"");
+                    File fileDir=new File(Environment.getExternalStorageDirectory()+"/danteater");
+                    if(!fileDir.exists()) {
+                        fileDir.mkdir();
+                        Log.e("directory:","created");
+                    } else {
+                        Log.e("directory:","already exist");
+                    }
+                    File file = new File(fileDir,songFileName+".mp3");
+                    FileOutputStream output = new FileOutputStream(file);
+                    InputStream input = conexion.getInputStream();
+                    byte data[] = new byte[1024];
+                    long total = 0;
+                    while ((count = input.read(data)) != -1) {
+                        total += count;
+                       publishProgress((int)(total*100/lenghtOfFile));
+                        output.write(data, 0, count);
+                    }
+                    output.flush();
+                    output.close();
+                    input.close();
+//                    updateViewAfterDownLoad(position);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e("error:",e+"");
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void onProgressUpdate(Integer... values) {
+                super.onProgressUpdate(values);
+                Log.e("progress: ",values[0].toString()+"");
+                if(values[0].toString().equalsIgnoreCase("100")) {
+
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                dialog.dismiss();
+            }
+        }.execute();
+
+
+    }
+
+
+
+    public void playMusic(final String fileName) {
+
+                try {
+                    FileDescriptor fd = null;
+                    File fileDir = new File(Environment.getExternalStorageDirectory() + "/danteater");
+                    String audioPath = fileDir.getAbsolutePath() +"/"+ fileName + ".mp3";
+                    FileInputStream fis = new FileInputStream(audioPath);
+                    fd = fis.getFD();
+                    mediaPlayer = new MediaPlayer();
+                    mediaPlayer.setDataSource(fd);
+                    mediaPlayer.prepare();
+                    mediaPlayer.start();
+                } catch (FileNotFoundException e){
+                    e.printStackTrace();
+                } catch (IOException e){
+                    e.printStackTrace();
+                }
+
+
     }
 }

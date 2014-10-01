@@ -23,6 +23,10 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import wm.com.danteater.my_plays.DrawerActivity;
+import wm.com.danteater.tab_music.CellMusicTableView;
+import wm.com.danteater.tab_music.CellScriptTableView;
+
 public class ViewHolder {
 
 
@@ -65,6 +69,12 @@ public class ViewHolder {
 
     public class HolderReadPlaySongLineCell extends ViewHolder{ }
 
+    public class ViewHolderForMusic extends ViewHolder {
+        public CellMusicTableView cellMusicTableView;
+    }
 
+    public class ViewHolderForPDF extends ViewHolder {
+        public CellScriptTableView cellScriptTableView;
+    }
 
 }

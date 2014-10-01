@@ -33,7 +33,7 @@ public class ReadChord extends BaseActivity {
         webview=(WebView)findViewById(R.id.read_chord_view);
         WebSettings settings = webview.getSettings();
         settings.setJavaScriptEnabled(true);
-        settings.setDisplayZoomControls(false);
+
         webview.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         dialog = new HUD(ReadChord.this, android.R.style.Theme_Translucent_NoTitleBar);
         dialog.title("Indlæser noder");
@@ -58,11 +58,7 @@ public class ReadChord extends BaseActivity {
             }
         });
 
-//        webview.loadUrl("http://www.adobe.com/devnet/acrobat/pdfs/"+filePath);
-
-        String doc="<iframe src='http://docs.google.com/viewer?embedded=true&url="+filePath+"'width='100%' height='100%'style='border: none;'></iframe>";
-//        webview.loadUrl(doc);
-        webview.loadUrl("https://docs.google.com/gview?embedded=true&url="+filePath);
+        webview.loadUrl("http://docs.google.com/gview?embedded=true&url="+filePath);
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

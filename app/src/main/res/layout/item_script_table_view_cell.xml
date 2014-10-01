@@ -34,6 +34,7 @@
             android:textColor="@android:color/black" />
 
         <ImageView
+            android:id="@+id/scriptView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
