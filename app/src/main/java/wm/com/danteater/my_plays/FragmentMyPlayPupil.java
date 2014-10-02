@@ -128,7 +128,7 @@ public class FragmentMyPlayPupil extends Fragment {
                     }
 
                 }
-                Log.i("first auther", playListForPerform.get(0).getAuthor() + "");
+//                Log.i("first auther", playListForPerform.get(0).getAuthor() + "");
 
 
                 for (int i = 0; i < playOrderList.size(); i++) {

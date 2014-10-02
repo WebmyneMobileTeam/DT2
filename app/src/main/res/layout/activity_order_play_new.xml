@@ -221,7 +221,14 @@
             android:paddingLeft="@dimen/activity_margin"
             android:paddingRight="@dimen/activity_margin"
             android:layout_height="match_parent">
-            <WebView
+            <wm.com.danteater.customviews.WMTextView
+                android:textSize="@dimen/fragment_my_play_small_text"
+                android:textColor="@color/apptheme_color"
+                android:text="Det er gratis at bestille et stykke til opførelse. Forfatterafgiften er også inkluderet i abonnementet.
+Men det er vigtigt, at du udfylder antal opførelser og evt. generalprøve, så vi kan udbetale de rigtige forfatterafgifter.
+Du kan rette disse oplysninger senere."
+                android:gravity="bottom"
+                android:layout_gravity="bottom"
                 android:id="@+id/txtOrderDetails"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

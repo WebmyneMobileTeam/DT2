@@ -66,7 +66,7 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
     private EditText etNumberOfPerformanceValue;
     private WMTextView txtFirstDateValue,txtSecondDateValue,schoolId,userName,btnPlayOrder;
     private ImageView orderPlayInfo;
-    private WebView txtOrderDetails;
+    private WMTextView txtOrderDetails;
     private Switch orderPlaySwitch;
     Context context;
     private DatabaseWrapper dbHelper;
@@ -96,7 +96,7 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
         btnPlayOrder=(WMTextView)findViewById(R.id.btnPlayOrderView);
         txtFirstDateValue=(WMTextView)findViewById(R.id.txtFirstDateValue);
         txtSecondDateValue=(WMTextView)findViewById(R.id.txtSecondDateValue);
-        txtOrderDetails=(WebView)findViewById(R.id.txtOrderDetails);
+        txtOrderDetails=(WMTextView)findViewById(R.id.txtOrderDetails);
         schoolId=(WMTextView)findViewById(R.id.schoolId);
         userName=(WMTextView)findViewById(R.id.userName);
         orderPlayInfo=(ImageView)findViewById(R.id.orderPlayInfo);
@@ -111,7 +111,7 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
         txtHeader.setText(selectedPlay.Title);
         schoolId.setText(currentUser.getDomain().toString()+"");
         userName.setText(currentUser.getFirstName()+" "+currentUser.getLastName());
-        txtOrderDetails.loadData(selectedPlay.Synopsis,  "text/html; charset=utf-8", "utf-8");
+        btnPlayOrder.setBackgroundColor(getResources().getColor(R.color.gray_color));
         etNumberOfPerformanceValue.setFocusable(false);
 
 
