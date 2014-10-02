@@ -726,7 +726,6 @@ public class ReadFragment extends Fragment {
 
                 break;
 
-
                 case RecordPlayPlayLineCell:
 
                     //

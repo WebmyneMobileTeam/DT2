@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,6 +37,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import wm.com.danteater.Play.Play;
 import wm.com.danteater.Play.PlayLines;
@@ -68,6 +70,8 @@ public class MusicFragment extends Fragment {
     private HUD dialog;
     public static int MP3_FILE = 0;
     public static int PDF_FILE = 1;
+
+
     public static MusicFragment newInstance(String param1, String param2) {
     MusicFragment fragment = new MusicFragment();
 
@@ -77,10 +81,13 @@ public class MusicFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public static ArrayList<String> playingMusic = new ArrayList<String>();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(false);
+
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref", 0);
         selectedPlay = complexPreferences.getObject("selected_play", Play.class);
         playLineses=selectedPlay.playLinesList;
@@ -228,12 +235,16 @@ public class MusicFragment extends Fragment {
 
         @Override
         public View getItemView(int section, final int position, View convertView, ViewGroup parent) {
+
             ViewHolder.ViewHolderForMusic viewHolderForMusic=null;
             ViewHolder.ViewHolderForPDF viewHolderForPDF=null;
+
             int type=getItemViewType(section,position);
+
             final ArrayList<SongFiles>  songFileses=marrSectionsWithContent.get(section);
             Log.e("type:",type+"");
             if(type==MP3_FILE) {
+
                 if(convertView == null){
                     viewHolderForMusic = new ViewHolder().new ViewHolderForMusic();
                     convertView = mInflater.inflate(R.layout.item_music_table_view_cell, parent,false);
@@ -244,6 +255,7 @@ public class MusicFragment extends Fragment {
                     viewHolderForMusic = (ViewHolder.ViewHolderForMusic)convertView.getTag();
                 }
                 viewHolderForMusic.cellMusicTableView.setUpSongFile(songFileses.get(position),marrSectionTitles.get(section),getActivity(),section,position);
+
                 viewHolderForMusic.cellMusicTableView.setReloadClicked(new setOnReload() {
                     @Override
                     public void onReload() {

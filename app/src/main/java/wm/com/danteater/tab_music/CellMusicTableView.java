@@ -41,7 +41,7 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
     ImageView musicDownload,musicPlay;
     LinearLayout playerView;
     Context context;
-    SeekBar songProgressBar;
+   private SeekBar songProgressBar;
     Handler mHandler;
     MediaPlayer mediaPlayer=null;
     View convertView;
@@ -49,6 +49,7 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
     private String currentSongPosition;
 
     public CellMusicTableView(View convertView,final Context context) {
+
         this.convertView=convertView;
         this.context=context;
         musicText=(WMTextView)convertView.findViewById(R.id.music_table_view_cell_title);
@@ -63,44 +64,58 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
     }
 
     public void setUpSongFile(final SongFiles songFile,final String sectionTitle,final Context context,final int section,final int position) {
+
+        mHandler= new Handler();
         try {
-            mHandler= new Handler();
+
             FileDescriptor fd = null;
             File fileDir = new File(Environment.getExternalStorageDirectory() + "/danteater");
             String audioPath = fileDir.getAbsolutePath() +"/"+ sectionTitle + ".mp3";
+
             if(position%2==0) {
                 musicCellLayout.setBackgroundColor(Color.parseColor(AppConstants.songFileOddColor));
             } else {
                 musicCellLayout.setBackgroundColor(Color.parseColor(AppConstants.songFileEvenColor));
             }
-            if(new File(audioPath).exists()) {
-                FileInputStream fis = new FileInputStream(audioPath);
-                fd = fis.getFD();
-                if(mediaPlayer==null) {
-                    mediaPlayer = new MediaPlayer();
-                    mediaPlayer.setDataSource(fd);
-                    mediaPlayer.prepare();
+
+            {
+
+                if(new File(audioPath).exists()) {
+
+                    if(mediaPlayer !=null && MusicFragment.playingMusic.size()>0 && !MusicFragment.playingMusic.get(0).equalsIgnoreCase(section+""+position)){
+                        mHandler.postDelayed(mUpdateTimeTask, 100);
+                    }
+
+                    FileInputStream fis = new FileInputStream(audioPath);
+                    fd = fis.getFD();
+
+                    if(mediaPlayer==null) {
+                        mediaPlayer = new MediaPlayer();
+                        mediaPlayer.setDataSource(fd);
+                        mediaPlayer.prepare();
+                    } else {
+                        updateProgressBar();
+                    }
+
+                    startTime.setText(milliSecondsToTimer(mediaPlayer.getCurrentPosition()));
+                    endTime.setText(milliSecondsToTimer(mediaPlayer.getDuration()));
+                    if(mediaPlayer.isPlaying()){
+                        musicPlay.setImageResource(R.drawable.ic_pause);
+                    } else {
+                        musicPlay.setImageResource(R.drawable.ic_play);
+                    }
+              /*     songProgressBar.setProgress(0);
+                    songProgressBar.setMax(100);*/
+                    musicDownload.setVisibility(View.GONE);
+                    musicPlay.setVisibility(View.VISIBLE);
+                    playerView.setVisibility(View.VISIBLE);
                 } else {
-                    updateProgressBar();
+
+                    musicDownload.setVisibility(View.VISIBLE);
+                    musicPlay.setVisibility(View.GONE);
+                    playerView.setVisibility(View.GONE);
                 }
 
-                startTime.setText(milliSecondsToTimer(mediaPlayer.getCurrentPosition()));
-                endTime.setText(milliSecondsToTimer(mediaPlayer.getDuration()));
-                if(mediaPlayer.isPlaying()){
-                    musicPlay.setImageResource(R.drawable.ic_pause);
-                } else {
-                    musicPlay.setImageResource(R.drawable.ic_play);
-                }
-                songProgressBar.setProgress(0);
-                songProgressBar.setMax(100);
-                musicDownload.setVisibility(View.GONE);
-                musicPlay.setVisibility(View.VISIBLE);
-                playerView.setVisibility(View.VISIBLE);
-            } else {
-                musicDownload.setVisibility(View.VISIBLE);
-
-                musicPlay.setVisibility(View.GONE);
-                playerView.setVisibility(View.GONE);
             }
 
         } catch (FileNotFoundException e){
@@ -123,44 +138,52 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
 
             @Override
             public void onClick(View view) {
-
-
-
                 // check for already playing
-                if(mediaPlayer.isPlaying()){
-                    if(mediaPlayer!=null){
+                String sCheck = section+"*"+position;
+                if(MusicFragment.playingMusic.size()>0 && !MusicFragment.playingMusic.get(0).equalsIgnoreCase(section+""+position)){
 
-//                            AlertDialog.Builder alert = new AlertDialog.Builder(context);
-//                            alert.setTitle("Afspiller");
-//                            alert.setMessage("Afspiller en anden sang. Venligst sæt den på pause, før du afspiller en ny. ");
-//                            alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                    dialog.dismiss();
-//                                }
-//                            });
-//                            alert.show();
+                              AlertDialog.Builder alert = new AlertDialog.Builder(context);
+                            alert.setTitle("Afspiller");
+                            alert.setMessage("Afspiller en anden sang. Venligst sæt den på pause, før du afspiller en ny. ");
+                            alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            alert.show();
+                }else{
+
+
+                    if(mediaPlayer.isPlaying()){
+
+                        if(mediaPlayer!=null){
 
                             MusicFragment.isAnySongPlayed=false;
                             mediaPlayer.pause();
                             // Changing button image to play button
                             musicPlay.setImageResource(R.drawable.ic_play);
+                            MusicFragment.playingMusic.remove(section+""+position);
 
-                    }
-                }else{
-                    // Resume song
-                    if(mediaPlayer!=null){
+                        }
+                    }else{
+                        // Resume song
+                        if(mediaPlayer!=null){
 
-                        mediaPlayer.start();
-                        // Changing button image to pause button
-                        musicPlay.setImageResource(R.drawable.ic_pause);
+                            mediaPlayer.start();
+                            // Changing button image to pause button
+                            musicPlay.setImageResource(R.drawable.ic_pause);
+
+                            MusicFragment.playingMusic.add(section+""+position);
+
+                        }
                     }
+                    updateProgressBar();
+
                 }
-                updateProgressBar();
+
             }
-
-
 
         });
     }
@@ -221,7 +244,7 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
                     musicDownload.setVisibility(View.GONE);
                     musicPlay.setVisibility(View.VISIBLE);
                     playerView.setVisibility(View.VISIBLE);
-                    convertView.invalidate();
+                   convertView.invalidate();
                     setOnReloading.onReload();
                 }
             }
@@ -296,10 +319,6 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
 
 
 
-
-
-
-
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
 
@@ -355,7 +374,6 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
     }
 
 }
-
 
 
 interface setOnReload{
