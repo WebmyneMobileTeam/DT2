@@ -116,7 +116,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
                 editor.clear();
                 editor.commit();
                 DeviceSecurity   m_device_security = new DeviceSecurity(DrawerActivity.this);
-               m_device_security.releaseDeviceRegistration();
+                m_device_security.releaseDeviceRegistration();
                 Intent i = new Intent(DrawerActivity.this,LoginActivity.class );
                 startActivity(i);
                 finish();
@@ -317,6 +317,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         return super.onCreateOptionsMenu(menu);
     }
 }

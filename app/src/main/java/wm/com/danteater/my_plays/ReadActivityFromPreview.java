@@ -45,7 +45,7 @@ public class ReadActivityFromPreview extends BaseActivity {
         btnPlayOrderIdForPerformance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i=new Intent(ReadActivityFromPreview.this,OrderPlayActivityForPerform.class);
+                Intent i=new Intent(ReadActivityFromPreview.this,OrderPlayActivityForPerformNew.class);
                 startActivity(i);
             }
         });

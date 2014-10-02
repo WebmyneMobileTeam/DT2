@@ -37,6 +37,13 @@
             android:windowSoftInputMode="adjustPan"
             android:label="@string/title_activity_play_tab" >
         </activity>
+
+        <activity
+
+            android:name=".my_plays.OrderPlayActivityForPerformNew"
+            android:windowSoftInputMode="adjustPan"
+            android:label="@string/title_activity_play_tab" >
+        </activity>
         <activity
             android:windowSoftInputMode="adjustPan"
             android:name=".my_plays.ShareActivityForPerform"

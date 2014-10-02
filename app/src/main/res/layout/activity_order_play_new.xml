@@ -1,0 +1,305 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    tools:context="wm.com.danteater.my_plays.OrderPlayActivityForPerform">
+
+    <LinearLayout
+        android:id="@+id/listoptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        >
+        <!--number of performance view-->
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/activity_margin"
+            android:paddingRight="@dimen/activity_margin">
+        <RelativeLayout
+
+            android:id="@+id/relativeNumberOfPerformance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <wm.com.danteater.customviews.WMTextView
+                android:id="@+id/txtNumberOfPerformance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="Antal opførelser"
+                android:textSize="@dimen/fragment_my_play_small_text" />
+
+            <ImageView
+                android:id="@+id/nextImg1"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_navigation_next_item" />
+        </RelativeLayout>
+
+
+            <EditText
+                android:id="@+id/etNumberOfPerformanceValue"
+                android:paddingRight="40dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:layout_gravity="center_vertical"
+                android:focusableInTouchMode="true"
+                android:focusable="true"
+                android:text=""
+                android:inputType="number"
+                android:singleLine="true"
+                android:gravity="right"
+                android:imeOptions="actionDone"
+                android:background="@android:color/transparent"
+                android:textSize="@dimen/fragment_my_play_small_text" />
+
+        </FrameLayout>
+        <View
+            android:layout_width="match_parent"
+            android:background="@color/apptheme_color"
+            android:layout_height="1dp">
+        </View>
+
+        <!--date for premiere-->
+        <RelativeLayout
+            android:clickable="true"
+            android:id="@+id/relativeFirstDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:paddingLeft="@dimen/activity_margin"
+            android:paddingRight="@dimen/activity_margin"
+            android:orientation="horizontal"
+
+            >
+            <wm.com.danteater.customviews.WMTextView
+                android:id="@+id/txtFirstDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="Dato for premiere"
+                android:textSize="@dimen/fragment_my_play_small_text" />
+            <wm.com.danteater.customviews.WMTextView
+                android:id="@+id/txtFirstDateValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/txtFirstDate"
+                android:layout_toLeftOf="@+id/nextImg2"
+                android:layout_centerVertical="true"
+                android:text=""
+                android:gravity="right"
+                android:background="@android:color/transparent"
+                android:textSize="@dimen/fragment_my_play_small_text" />
+
+            <ImageView
+                android:id="@+id/nextImg2"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_navigation_next_item" />
+        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:background="@color/apptheme_color"
+            android:layout_height="1dp">
+        </View>
+
+        <!--rehearsal-->
+        <RelativeLayout
+            android:id="@+id/relativeRehearsal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:paddingLeft="@dimen/activity_margin"
+            android:paddingRight="@dimen/activity_margin"
+            android:orientation="horizontal"
+
+            >
+            <wm.com.danteater.customviews.WMTextView
+                android:id="@+id/txtRehearsalView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="Generalprøve"
+                android:textSize="@dimen/fragment_my_play_small_text" />
+
+            <ImageView
+                android:id="@+id/orderPlayInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/orderPlaySwitch"
+                android:src="@drawable/ic_info_order_play" />
+            <Switch
+                android:id="@+id/orderPlaySwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                />
+
+        </RelativeLayout>
+        <View
+
+            android:layout_width="match_parent"
+            android:background="@color/apptheme_color"
+            android:layout_height="1dp">
+        </View>
+
+        <!--date for last performance-->
+        <RelativeLayout
+            android:clickable="true"
+            android:id="@+id/relativeSecondDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:paddingLeft="@dimen/activity_margin"
+            android:paddingRight="@dimen/activity_margin"
+            android:orientation="horizontal"
+
+            >
+            <wm.com.danteater.customviews.WMTextView
+                android:id="@+id/txtSecondDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="Dato for sidste opførelse"
+                android:textSize="@dimen/fragment_my_play_small_text" />
+            <wm.com.danteater.customviews.WMTextView
+                android:id="@+id/txtSecondDateValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/txtSecondDate"
+                android:layout_toLeftOf="@+id/nextImg4"
+                android:layout_centerVertical="true"
+                android:text=""
+                android:gravity="right"
+                android:background="@android:color/transparent"
+                android:textSize="@dimen/fragment_my_play_small_text" />
+
+            <ImageView
+                android:id="@+id/nextImg4"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_navigation_next_item" />
+        </RelativeLayout>
+        <View
+
+            android:layout_width="match_parent"
+            android:background="@color/apptheme_color"
+            android:layout_height="1dp">
+        </View>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:gravity="bottom"
+        android:layout_below="@+id/listoptions"
+        android:layout_above="@+id/schoolAndUserInfo"
+        >
+        <ScrollView
+            android:layout_width="match_parent"
+            android:paddingLeft="@dimen/activity_margin"
+            android:paddingRight="@dimen/activity_margin"
+            android:layout_height="wrap_content">
+
+            <wm.com.danteater.customviews.WMTextView
+                android:id="@+id/txtOrderDetails"
+                android:layout_width="match_parent"
+                android:textColor="@color/apptheme_color"
+                android:layout_height="wrap_content"
+                android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+                android:textSize="@dimen/fragment_my_play_small_text" />
+
+        </ScrollView>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/schoolAndUserInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+
+
+        android:layout_above="@+id/btnPlayOrderView"
+
+        >
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/activity_margin"
+            android:paddingTop="4dp"
+            android:paddingRight="@dimen/activity_margin"
+            android:orientation="horizontal">
+
+            <wm.com.danteater.customviews.WMTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Skole: "
+                android:textColor="@color/apptheme_color"
+                android:textSize="@dimen/fragment_my_play_small_text" />
+
+            <wm.com.danteater.customviews.WMTextView
+                android:id="@+id/schoolId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Carl Nielsen Skolen"
+                android:textSize="@dimen/fragment_my_play_small_text" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="4dp"
+            android:paddingLeft="@dimen/activity_margin"
+            android:paddingRight="@dimen/activity_margin"
+            android:orientation="horizontal">
+
+            <wm.com.danteater.customviews.WMTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Navn: "
+                android:textColor="@color/apptheme_color"
+                android:textSize="@dimen/fragment_my_play_small_text" />
+
+            <wm.com.danteater.customviews.WMTextView
+                android:id="@+id/userName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kasper Fuglsang"
+                android:textSize="@dimen/fragment_my_play_small_text" />
+        </LinearLayout>
+    </LinearLayout>
+    <wm.com.danteater.customviews.WMTextView
+        android:id="@+id/btnPlayOrderView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/fragment_search_button_height"
+        android:background="@color/gray_color"
+        android:gravity="center"
+        android:text="Bestil"
+        android:layout_alignParentBottom="true"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/normalText" />
+</RelativeLayout>

@@ -522,7 +522,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                     complexPreferences.putObject("selected_play",playListForPerform.get(position));
                     complexPreferences.commit();
 
-                    Intent intent=new Intent(getActivity(),OrderPlayActivityForPerform.class);
+                    Intent intent=new Intent(getActivity(),OrderPlayActivityForPerformNew.class);
                     startActivity(intent);
                 }
             });
