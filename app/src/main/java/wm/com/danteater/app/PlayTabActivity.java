@@ -1,6 +1,5 @@
 package wm.com.danteater.app;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTabHost;
@@ -12,12 +11,12 @@ import android.widget.TextView;
 
 import wm.com.danteater.R;
 import wm.com.danteater.customviews.WMImageView;
-import wm.com.danteater.inspiration.FragmentInspiration;
+import wm.com.danteater.excercise.FragmentExcerciseForTeacher;
 import wm.com.danteater.login.User;
 import wm.com.danteater.model.ComplexPreferences;
+import wm.com.danteater.tab_inspiration.FragmnentInspirationForTeacher;
 import wm.com.danteater.tab_music.MusicFragment;
 import wm.com.danteater.tab_read.ReadFragment;
-import wm.com.danteater.tab_recording.RecordingFragment;
 
 
 /**
@@ -133,7 +132,7 @@ public class PlayTabActivity extends BaseActivity {
 
         if(user.checkTeacherOrAdmin(user.getRoles())){
             mTabHost.addTab(mTabHost.newTabSpec("tab3").setIndicator(view3),
-                    FragmentInspiration.class, null);
+                    FragmnentInspirationForTeacher.class, null);
         }else{
 
         }

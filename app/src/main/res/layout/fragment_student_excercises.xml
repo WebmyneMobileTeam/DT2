@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="wm.com.danteater.inspiration.FragmentInspiration">
+    tools:context="wm.com.danteater.excercise.FragmentExcerciseForTeacher">
 
     <LinearLayout
         android:id="@+id/labelView"
@@ -27,7 +27,8 @@
     <LinearLayout
         android:id="@+id/studentView"
         android:orientation="vertical"
-        android:visibility="gone"
+        android:visibility="visible"
+        android:layout_gravity="center"
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -35,7 +36,7 @@
         <wm.com.danteater.customviews.WMTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Din lærer har ikke delt et skuespil med dig endnu..."
+            android:text="Dramaøvelser til elever"
 
             android:textSize="@dimen/normalText"
             android:gravity="center_vertical"
@@ -44,7 +45,8 @@
         <GridView
             android:id="@+id/videos_studentview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:background="@android:color/transparent"
             android:numColumns="2"
             android:gravity="center"
@@ -53,14 +55,7 @@
             android:verticalSpacing="2dp"
             android:drawSelectorOnTop="true" />
 
-        <wm.com.danteater.customviews.WMTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="...men du kan jo se lidt dramaøvelser, mens du venter"
-            android:textSize="@dimen/normalText"
 
-            android:gravity="center_vertical"
-            android:padding="@dimen/activity_margin" />
     </LinearLayout>
 
 </FrameLayout>

@@ -64,7 +64,7 @@
             android:label="@string/title_activity_read_activity_from_preview" >
         </activity>
         <activity
-            android:name=".inspiration.VideoPlay"
+            android:name=".excercise.VideoPlay"
             android:screenOrientation="landscape"
             android:label="@string/title_activity_guide_startup" >
         </activity>

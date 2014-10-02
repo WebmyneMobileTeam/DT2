@@ -1,10 +1,8 @@
-package wm.com.danteater.inspiration;
+package wm.com.danteater.excercise;
 
 import android.content.Intent;
-import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.MediaController;
 import android.widget.VideoView;
 

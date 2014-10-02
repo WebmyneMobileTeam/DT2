@@ -904,4 +904,22 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
     }
 
 
+    public boolean IsDatabseEmpty() {
+        boolean isDatabaseEmpty;
+        myDataBase = this.getWritableDatabase();
+        String selectQuery = "SELECT * FROM plays";
+        Cursor cursor = myDataBase.rawQuery(selectQuery, null);
+
+        if(cursor.getCount()>0){
+            isDatabaseEmpty=false;
+        }else{
+            isDatabaseEmpty=true;
+        }
+        cursor.close();
+        myDataBase.close();
+
+        return  isDatabaseEmpty;
+    }
+
+
 }

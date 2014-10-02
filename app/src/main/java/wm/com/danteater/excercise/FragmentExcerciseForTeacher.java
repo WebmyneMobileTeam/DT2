@@ -1,4 +1,4 @@
-package wm.com.danteater.inspiration;
+package wm.com.danteater.excercise;
 
 
 import android.app.Activity;
@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import wm.com.danteater.R;
 import wm.com.danteater.customviews.WMTextView;
 
-public class FragmentInspiration extends Fragment {
+public class FragmentExcerciseForTeacher extends Fragment {
 
     private GridView tViewOne,tViewTwo,sView;
 
@@ -35,12 +35,12 @@ public class FragmentInspiration extends Fragment {
     private ArrayList<Integer> tVideoViewTwoList=new ArrayList<Integer>();
     private ArrayList<Integer> sVideoViewList=new ArrayList<Integer>();
     private GridAdapter gridAdapter;
-    public static FragmentInspiration newInstance(String param1, String param2) {
-        FragmentInspiration fragment = new FragmentInspiration();
+    public static FragmentExcerciseForTeacher newInstance(String param1, String param2) {
+        FragmentExcerciseForTeacher fragment = new FragmentExcerciseForTeacher();
 
         return fragment;
     }
-    public FragmentInspiration() {
+    public FragmentExcerciseForTeacher() {
         // Required empty public constructor
     }
 

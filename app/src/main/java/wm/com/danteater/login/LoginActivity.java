@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
@@ -31,6 +32,7 @@ import wm.com.danteater.app.MyApplication;
 import wm.com.danteater.customviews.WMTextView;
 import wm.com.danteater.guide.GuideStartup;
 import wm.com.danteater.model.ComplexPreferences;
+import wm.com.danteater.model.DatabaseWrapper;
 import wm.com.danteater.model.Prefs;
 import wm.com.danteater.model.StateManager;
 import wm.com.danteater.my_plays.DrawerActivity;
@@ -45,7 +47,8 @@ public class LoginActivity extends BaseActivity {
     boolean isTeacherOrAdmin;
     private WMTextView txtBottomLabel;
     User user;
-    WMTextView txtTryAgain;
+    private DatabaseWrapper dbHelper;
+    WMTextView txtTryAgain,txtContinueWithLastOpen;
     String session_id;
     Timer timer;
    JSONObject request_params;
@@ -56,7 +59,7 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         txtHeader.setText("Login");
-
+        dbHelper=new DatabaseWrapper(LoginActivity.this);
         // Alternative Views
         loginView = (LinearLayout) findViewById(R.id.LoginView);
         noAccessView = (LinearLayout) findViewById(R.id.noAccessView);
@@ -64,7 +67,7 @@ public class LoginActivity extends BaseActivity {
 
         txtBottomLabel = (WMTextView) findViewById(R.id.txtBottomLabel);
         txtTryAgain = (WMTextView) findViewById(R.id.txtTryAgain);
-
+        txtContinueWithLastOpen=(WMTextView) findViewById(R.id.txtContinueWithLastOpen);
         // get login value from setting activity
         // true- automatic login
         // false- manual login
@@ -155,7 +158,32 @@ public class LoginActivity extends BaseActivity {
                     }
                 });
 
-                showDialog("Intet netværk","Login-serveren kunne ikke kontaktes. Tjek venligst dine netværksindstillinger, og prøv at logge ind igen.");
+                txtContinueWithLastOpen.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                    //TODO
+                       boolean isDatabaseEmpty=dbHelper.IsDatabseEmpty();
+
+                        if(isDatabaseEmpty==true) {
+                            Log.e("isDatabaseEmpty",isDatabaseEmpty+"");
+                            AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
+                            alert.setTitle("Title");
+                            alert.setMessage("Message");
+                            alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            alert.show();
+                        } else {
+                            Log.e("isDatabaseEmpty",isDatabaseEmpty+"");
+                        }
+                    }
+                });
+
+                showDialog("Intet netværk", "Login-serveren kunne ikke kontaktes. Tjek venligst dine netværksindstillinger, og prøv at logge ind igen.");
 
 
                 loginView.setVisibility(View.GONE);

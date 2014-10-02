@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -161,8 +163,22 @@ public class FragmentMyPlayPupil extends Fragment {
                     }
                 }
                 Log.e("adapter", "before adapter call");
-                listPlay.setAdapter(new ListPlayAdapterForPerform(getActivity(), playListForPerform, playOrderList));
-                Log.e("adapter", "after adapter call");
+                Log.e("adapter size", playList.size()+"");
+
+                if(playList.size()==0){
+                    FragmentManager manager = getActivity().getSupportFragmentManager();
+                    FragmentTransaction ft = manager.beginTransaction();
+                    FragmentPupilNoPlay fragmentMyPlayPupilNoPlay = FragmentPupilNoPlay.newInstance("", "");
+
+                    if (manager.findFragmentByTag("my_plays_pupil_no_play") == null) {
+                        ft.replace(R.id.main_content, fragmentMyPlayPupilNoPlay, "my_plays_pupil_no_play").commit();
+                    }
+                    listPlay.setVisibility(View.GONE);
+                } else {
+                    listPlay.setVisibility(View.VISIBLE);
+                    listPlay.setAdapter(new ListPlayAdapterForPerform(getActivity(), playListForPerform, playOrderList));
+                    Log.e("adapter", "after adapter call");
+                }
 
             }
         });

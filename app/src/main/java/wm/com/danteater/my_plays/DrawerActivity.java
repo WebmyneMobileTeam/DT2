@@ -25,12 +25,12 @@ import wm.com.danteater.Messages.FragmentMessage;
 import wm.com.danteater.R;
 import wm.com.danteater.app.BaseActivity;
 import wm.com.danteater.customviews.WMTextView;
+import wm.com.danteater.excercise.FragmentExcerciseForStudent;
 import wm.com.danteater.guide.FragmentGuide;
-import wm.com.danteater.inspiration.FragmentInspiration;
+import wm.com.danteater.excercise.FragmentExcerciseForTeacher;
 import wm.com.danteater.login.User;
 import wm.com.danteater.login.LoginActivity;
 import wm.com.danteater.model.ComplexPreferences;
-import wm.com.danteater.model.StateManager;
 import wm.com.danteater.search.FragmentSearch;
 import wm.com.danteater.settings.SettingsFragment;
 
@@ -169,9 +169,9 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
                     break;
 
                 case 2:
-                    FragmentInspiration fragmentInspiration = FragmentInspiration.newInstance("", "");
-                    if (manager.findFragmentByTag("Inspiration") == null) {
-                        ft.replace(R.id.main_content, fragmentInspiration, "Inspiration").commit();
+                    FragmentExcerciseForStudent fragmentExcerciseForStudent = FragmentExcerciseForStudent.newInstance("", "");
+                    if (manager.findFragmentByTag("excercise_student") == null) {
+                        ft.replace(R.id.main_content, fragmentExcerciseForStudent, "excercise_student").commit();
                     }
                     txtHeader.setText("Dramaøvelser");
                     break;
@@ -212,9 +212,9 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
                     break;
 
                 case 3:
-                    FragmentInspiration fragmentInspiration = FragmentInspiration.newInstance("", "");
-                    if (manager.findFragmentByTag("Inspiration") == null) {
-                        ft.replace(R.id.main_content, fragmentInspiration, "Inspiration").commit();
+                    FragmentExcerciseForTeacher fragmentExcerciseForTeacher = FragmentExcerciseForTeacher.newInstance("", "");
+                    if (manager.findFragmentByTag("excercise_teacher") == null) {
+                        ft.replace(R.id.main_content, fragmentExcerciseForTeacher, "excercise_teacher").commit();
                     }
                     txtHeader.setText("Dramaøvelser");
                     break;
