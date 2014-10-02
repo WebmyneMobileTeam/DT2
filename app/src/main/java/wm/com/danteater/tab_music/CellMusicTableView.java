@@ -1,6 +1,9 @@
 package wm.com.danteater.tab_music;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -25,6 +28,7 @@ import wm.com.danteater.Play.SongFiles;
 import wm.com.danteater.R;
 import wm.com.danteater.customviews.HUD;
 import wm.com.danteater.customviews.WMTextView;
+import wm.com.danteater.model.AppConstants;
 
 /**
  * Created by nirav on 01-10-2014.
@@ -32,38 +36,43 @@ import wm.com.danteater.customviews.WMTextView;
 public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
 
     private HUD dialog;
-
-         WMTextView musicText,startTime,endTime;
-         ImageView musicDownload,musicPlay;
-         LinearLayout playerView;
-        Context context;
-     SeekBar songProgressBar;
+    LinearLayout musicCellLayout;
+    WMTextView musicText,startTime,endTime;
+    ImageView musicDownload,musicPlay;
+    LinearLayout playerView;
+    Context context;
+    SeekBar songProgressBar;
     Handler mHandler;
     MediaPlayer mediaPlayer=null;
     View convertView;
     private setOnReload setOnReloading;
+    private String currentSongPosition;
 
     public CellMusicTableView(View convertView,final Context context) {
         this.convertView=convertView;
-                    this.context=context;
-                    musicText=(WMTextView)convertView.findViewById(R.id.music_table_view_cell_title);
-                    musicDownload=(ImageView)convertView.findViewById(R.id.music_download);
-                    musicPlay=(ImageView)convertView.findViewById(R.id.music_play);
-
-                    playerView=(LinearLayout)convertView.findViewById(R.id.playerView);
-                    startTime=(WMTextView)convertView.findViewById(R.id.start_label);
-                    endTime=(WMTextView)convertView.findViewById(R.id.end_label);
+        this.context=context;
+        musicText=(WMTextView)convertView.findViewById(R.id.music_table_view_cell_title);
+        musicDownload=(ImageView)convertView.findViewById(R.id.music_download);
+        musicPlay=(ImageView)convertView.findViewById(R.id.music_play);
+        musicCellLayout=(LinearLayout)convertView.findViewById(R.id.music_cell_layout);
+        playerView=(LinearLayout)convertView.findViewById(R.id.playerView);
+        startTime=(WMTextView)convertView.findViewById(R.id.start_label);
+        endTime=(WMTextView)convertView.findViewById(R.id.end_label);
         songProgressBar=(SeekBar)convertView.findViewById(R.id.seekBar);
         songProgressBar.setOnSeekBarChangeListener(this);
     }
 
-    public void setUpSongFile(final SongFiles songFile,final String sectionTitle,final Context context) {
+    public void setUpSongFile(final SongFiles songFile,final String sectionTitle,final Context context,final int section,final int position) {
         try {
             mHandler= new Handler();
             FileDescriptor fd = null;
             File fileDir = new File(Environment.getExternalStorageDirectory() + "/danteater");
             String audioPath = fileDir.getAbsolutePath() +"/"+ sectionTitle + ".mp3";
-
+            if(position%2==0) {
+                musicCellLayout.setBackgroundColor(Color.parseColor(AppConstants.songFileOddColor));
+            } else {
+                musicCellLayout.setBackgroundColor(Color.parseColor(AppConstants.songFileEvenColor));
+            }
             if(new File(audioPath).exists()) {
                 FileInputStream fis = new FileInputStream(audioPath);
                 fd = fis.getFD();
@@ -78,7 +87,6 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
                 startTime.setText(milliSecondsToTimer(mediaPlayer.getCurrentPosition()));
                 endTime.setText(milliSecondsToTimer(mediaPlayer.getDuration()));
                 if(mediaPlayer.isPlaying()){
-
                     musicPlay.setImageResource(R.drawable.ic_pause);
                 } else {
                     musicPlay.setImageResource(R.drawable.ic_play);
@@ -94,9 +102,6 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
                 musicPlay.setVisibility(View.GONE);
                 playerView.setVisibility(View.GONE);
             }
-
-
-
 
         } catch (FileNotFoundException e){
             e.printStackTrace();
@@ -118,16 +123,35 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
 
             @Override
             public void onClick(View view) {
+
+
+
                 // check for already playing
                 if(mediaPlayer.isPlaying()){
                     if(mediaPlayer!=null){
-                        mediaPlayer.pause();
-                        // Changing button image to play button
-                        musicPlay.setImageResource(R.drawable.ic_play);
+
+//                            AlertDialog.Builder alert = new AlertDialog.Builder(context);
+//                            alert.setTitle("Afspiller");
+//                            alert.setMessage("Afspiller en anden sang. Venligst sæt den på pause, før du afspiller en ny. ");
+//                            alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    dialog.dismiss();
+//                                }
+//                            });
+//                            alert.show();
+
+                            MusicFragment.isAnySongPlayed=false;
+                            mediaPlayer.pause();
+                            // Changing button image to play button
+                            musicPlay.setImageResource(R.drawable.ic_play);
+
                     }
                 }else{
                     // Resume song
                     if(mediaPlayer!=null){
+
                         mediaPlayer.start();
                         // Changing button image to pause button
                         musicPlay.setImageResource(R.drawable.ic_pause);
@@ -135,6 +159,8 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
                 }
                 updateProgressBar();
             }
+
+
 
         });
     }
@@ -337,3 +363,4 @@ interface setOnReload{
     public void onReload();
 
 }
+

@@ -503,15 +503,21 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             } else {
                 holder.txtAuther.setText("Generalprøve: Nej");
             }
+            long value=Long.parseLong(playOrderDetailList.get(position).PerformDateFirst);
+            Date date=new Date(value);
+            SimpleDateFormat df2 = new SimpleDateFormat("dd-MM-yyyy");
+            String dateText = df2.format(date);
+//            System.out.println(dateText);
+            Log.e("nirav date in long",dateText+"");
+            SimpleDateFormat formater = new SimpleDateFormat("dd-MM-yyyy");
 
-            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-            float performDateFirst = Float.parseFloat(playOrderDetailList.get(position).PerformDateFirst);
-            float performDateLast = Float.parseFloat(playOrderDetailList.get(position).PerformDateLast);
-            Date firstDate = float2Date(performDateFirst);
-            Date lastDate = float2Date(performDateLast);
+            Long performDateFirst = Long.parseLong(playOrderDetailList.get(position).PerformDateFirst);
+            Long performDateLast = Long.parseLong(playOrderDetailList.get(position).PerformDateLast);
+            Date firstDate = new Date(performDateFirst);
+            Date lastDate = new Date(performDateLast);
 
-            holder.txtDuration1.setText("Første opførelse: " + format.format(firstDate));
-            holder.txtDuration2.setText("Sidste opførelse: " + format.format(lastDate));
+            holder.txtDuration1.setText("Første opførelse: " + formater.format(firstDate));
+            holder.txtDuration2.setText("Sidste opførelse: " + formater.format(lastDate));
             holder.txtNumberOfPerformance.setText("Antal opførelser: " + playOrderDetailList.get(position).NumberOfPerformances);
 
             holder.btnOrdering.setOnClickListener(new View.OnClickListener() {

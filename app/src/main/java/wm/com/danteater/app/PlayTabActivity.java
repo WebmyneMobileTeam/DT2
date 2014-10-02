@@ -13,6 +13,7 @@ import android.widget.TextView;
 import wm.com.danteater.R;
 import wm.com.danteater.customviews.WMImageView;
 import wm.com.danteater.inspiration.FragmentInspiration;
+import wm.com.danteater.tab_music.CellMusicTableView;
 import wm.com.danteater.tab_music.MusicFragment;
 import wm.com.danteater.tab_read.ReadFragment;
 import wm.com.danteater.tab_recording.RecordingFragment;
@@ -173,4 +174,6 @@ public class PlayTabActivity extends BaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 }

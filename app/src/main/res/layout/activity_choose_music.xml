@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!--no music-->
     <LinearLayout
+        android:id="@+id/noMusicView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
@@ -14,6 +16,7 @@
         android:gravity="center">
 
         <TextView
+            android:id="@+id/txtNoMusic"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_gravity="center"
@@ -24,47 +27,14 @@
             android:background="@drawable/circle_for_internet_unavailable" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="visible"
-        android:orientation="vertical"
-        >
-        <RelativeLayout
+    <!--music list with sections-->
+
+        <wm.com.danteater.customviews.PinnedHeaderListView
+            android:id="@+id/listViewMusic"
             android:layout_width="match_parent"
-            android:padding="8dp"
-            android:background="@color/apptheme_color"
-            android:layout_height="wrap_content">
-
-            <wm.com.danteater.customviews.WMTextView
-                android:id="@+id/txtDownloadAllMusic"
-                android:singleLine="true"
-                android:layout_width="match_parent"
-                android:textColor="@android:color/white"
-                android:layout_marginLeft="8dp"
-                android:layout_height="match_parent"
-                android:text="Hent alt musik"
-                android:layout_alignParentLeft="true"
-                android:gravity="center_vertical"
-                android:layout_toLeftOf="@+id/imgDownloadAllMusic"
-                android:layout_alignBottom="@+id/imgDownloadAllMusic"
-                android:textSize="@dimen/normalText" />
-
-            <ImageView
-                android:id="@+id/imgDownloadAllMusic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_gravity="right|center_vertical"
-                android:src="@drawable/ic_av_download"/>
-        </RelativeLayout>
-        <ListView
-            android:id="@+id/music_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:divider="#e1e1e1"
-            android:dividerHeight="0.5dp" />
-        </LinearLayout>
-
+            android:dividerHeight="1dp"
+            android:divider="#d1d1d1"
+            android:layout_height="match_parent">
+        </wm.com.danteater.customviews.PinnedHeaderListView>
 
 </FrameLayout>
