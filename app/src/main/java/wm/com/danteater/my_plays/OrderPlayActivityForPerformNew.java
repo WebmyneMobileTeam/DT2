@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.WebView;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -63,8 +64,9 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
 
     private RelativeLayout relativeNumberOfPerformance,relativeFirstDate,relativeSecondDate;
     private EditText etNumberOfPerformanceValue;
-    private WMTextView txtFirstDateValue,txtSecondDateValue,txtOrderDetails,schoolId,userName,btnPlayOrder;
+    private WMTextView txtFirstDateValue,txtSecondDateValue,schoolId,userName,btnPlayOrder;
     private ImageView orderPlayInfo;
+    private WebView txtOrderDetails;
     private Switch orderPlaySwitch;
     Context context;
     private DatabaseWrapper dbHelper;
@@ -94,13 +96,11 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
         btnPlayOrder=(WMTextView)findViewById(R.id.btnPlayOrderView);
         txtFirstDateValue=(WMTextView)findViewById(R.id.txtFirstDateValue);
         txtSecondDateValue=(WMTextView)findViewById(R.id.txtSecondDateValue);
-        txtOrderDetails=(WMTextView)findViewById(R.id.txtOrderDetails);
+        txtOrderDetails=(WebView)findViewById(R.id.txtOrderDetails);
         schoolId=(WMTextView)findViewById(R.id.schoolId);
         userName=(WMTextView)findViewById(R.id.userName);
         orderPlayInfo=(ImageView)findViewById(R.id.orderPlayInfo);
         orderPlaySwitch=(Switch)findViewById(R.id.orderPlaySwitch);
-
-
         ComplexPreferences complexPreferencesUser = ComplexPreferences.getComplexPreferences(OrderPlayActivityForPerformNew.this, "user_pref", 0);
         currentUser =complexPreferencesUser.getObject("current_user", User.class);
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(this, "mypref", 0);
@@ -111,7 +111,7 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
         txtHeader.setText(selectedPlay.Title);
         schoolId.setText(currentUser.getDomain().toString()+"");
         userName.setText(currentUser.getFirstName()+" "+currentUser.getLastName());
-        txtOrderDetails.setText(selectedPlay.getSynopsis());
+        txtOrderDetails.loadData(selectedPlay.Synopsis,  "text/html; charset=utf-8", "utf-8");
         etNumberOfPerformanceValue.setFocusable(false);
 
 
@@ -137,8 +137,8 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
                         ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(etNumberOfPerformanceValue.getWindowToken(), 0);
                         numberOfPerformance=false;
                         AlertDialog.Builder alert = new AlertDialog.Builder(OrderPlayActivityForPerformNew.this);
-                        alert.setTitle("");
-                        alert.setMessage("");
+                        alert.setTitle("Antal opførelser");
+                        alert.setMessage("Du kan bestille mellem 1 og 4 opførelser.");
                         alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
                             @Override
@@ -206,8 +206,8 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(OrderPlayActivityForPerformNew.this);
-                alert.setTitle("");
-                alert.setMessage("");
+                alert.setTitle("Generalprøve");
+                alert.setMessage("Generalprøve skal indberettes for sig, og skal ikke tælles med i antal opførelser");
                 alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
                     @Override

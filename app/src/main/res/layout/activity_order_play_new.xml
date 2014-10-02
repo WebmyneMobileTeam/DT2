@@ -19,30 +19,30 @@
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/activity_margin"
             android:paddingRight="@dimen/activity_margin">
-        <RelativeLayout
+            <RelativeLayout
 
-            android:id="@+id/relativeNumberOfPerformance"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
-            <wm.com.danteater.customviews.WMTextView
-                android:id="@+id/txtNumberOfPerformance"
-                android:layout_width="wrap_content"
+                android:id="@+id/relativeNumberOfPerformance"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:text="Antal opførelser"
-                android:textSize="@dimen/fragment_my_play_small_text" />
+                android:orientation="horizontal"
+                >
+                <wm.com.danteater.customviews.WMTextView
+                    android:id="@+id/txtNumberOfPerformance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:text="Antal opførelser"
+                    android:textSize="@dimen/fragment_my_play_small_text" />
 
-            <ImageView
-                android:id="@+id/nextImg1"
-                android:layout_centerVertical="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:src="@drawable/ic_navigation_next_item" />
-        </RelativeLayout>
+                <ImageView
+                    android:id="@+id/nextImg1"
+                    android:layout_centerVertical="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/ic_navigation_next_item" />
+            </RelativeLayout>
 
 
             <EditText
@@ -220,16 +220,12 @@
             android:layout_width="match_parent"
             android:paddingLeft="@dimen/activity_margin"
             android:paddingRight="@dimen/activity_margin"
-            android:layout_height="wrap_content">
-
-            <wm.com.danteater.customviews.WMTextView
+            android:layout_height="match_parent">
+            <WebView
                 android:id="@+id/txtOrderDetails"
                 android:layout_width="match_parent"
-                android:textColor="@color/apptheme_color"
                 android:layout_height="wrap_content"
-                android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-                android:textSize="@dimen/fragment_my_play_small_text" />
-
+                />
         </ScrollView>
     </LinearLayout>
 

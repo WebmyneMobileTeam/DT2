@@ -38,8 +38,8 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
          LinearLayout playerView;
         Context context;
      SeekBar songProgressBar;
-    Handler mHandler= new Handler();
-    MediaPlayer mediaPlayer;
+    Handler mHandler;
+    MediaPlayer mediaPlayer=null;
     View convertView;
     private setOnReload setOnReloading;
 
@@ -59,6 +59,7 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
 
     public void setUpSongFile(final SongFiles songFile,final String sectionTitle,final Context context) {
         try {
+            mHandler= new Handler();
             FileDescriptor fd = null;
             File fileDir = new File(Environment.getExternalStorageDirectory() + "/danteater");
             String audioPath = fileDir.getAbsolutePath() +"/"+ sectionTitle + ".mp3";
@@ -66,9 +67,13 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
             if(new File(audioPath).exists()) {
                 FileInputStream fis = new FileInputStream(audioPath);
                 fd = fis.getFD();
-                mediaPlayer = new MediaPlayer();
-                mediaPlayer.setDataSource(fd);
-                mediaPlayer.prepare();
+                if(mediaPlayer==null) {
+                    mediaPlayer = new MediaPlayer();
+                    mediaPlayer.setDataSource(fd);
+                    mediaPlayer.prepare();
+                } else {
+                    updateProgressBar();
+                }
 
                 startTime.setText(milliSecondsToTimer(mediaPlayer.getCurrentPosition()));
                 endTime.setText(milliSecondsToTimer(mediaPlayer.getDuration()));
