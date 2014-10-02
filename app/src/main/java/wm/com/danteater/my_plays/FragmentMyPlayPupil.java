@@ -3,6 +3,8 @@ package wm.com.danteater.my_plays;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -19,7 +21,11 @@ import com.android.volley.VolleyError;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -27,27 +33,44 @@ import java.util.Date;
 import java.util.List;
 
 import wm.com.danteater.Play.Play;
+import wm.com.danteater.Play.PlayLines;
 import wm.com.danteater.Play.PlayOrderDetails;
 import wm.com.danteater.R;
 import wm.com.danteater.app.PlayTabActivity;
 import wm.com.danteater.customviews.HUD;
 import wm.com.danteater.customviews.WMTextView;
 import wm.com.danteater.login.User;
+import wm.com.danteater.model.API;
 import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
+import wm.com.danteater.model.DatabaseWrapper;
+import wm.com.danteater.model.StateManager;
 
 /**
  * Created by nirav on 16-09-2014.
  */
 public class FragmentMyPlayPupil extends Fragment {
 
+    public static int STATE_RECORD = 0;
+    public static int STATE_PREVIEW = 1;
+    public static int STATE_READ = 2;
+    public static int STATE_CHAT = 3;
+
+    Play ply;
+    int plyIDAfterUpdate = 0; // hack
     private HUD dialog;
     private ListView listPlay;
     private User user;
     private ArrayList<Play> playList;
+    private HUD dialog_next;
 
     private ArrayList<Play> playListForPerform = new ArrayList<Play>();
     private ArrayList<PlayOrderDetails> playOrderList = new ArrayList<PlayOrderDetails>();
+    private StateManager state = StateManager.getInstance();
+
+    private enum ACTIVITY_TYPE{
+        TAB_ACTIVITY,ORDER_ACTIVITY
+    }
 
     public static FragmentMyPlayPupil newInstance(String param1, String param2) {
         FragmentMyPlayPupil fragment = new FragmentMyPlayPupil();
@@ -225,26 +248,11 @@ public class FragmentMyPlayPupil extends Fragment {
                 @Override
                 public void onClick(View v) {
 
-                    final HUD dialogRead = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
-                    dialogRead.title("Henter");
-                    dialogRead.show();
-                    new CountDownTimer(2000, 1000) {
-                        @Override
-                        public void onFinish() {
-                            dialogRead.dismiss();
-                            new Handler().post(new Runnable() {
-                                @Override
-                                public void run() {
-
-                                    gotoTabActivity(position, "Read");
-                                }
-                            });
-                        }
-                        @Override
-                        public void onTick(long millisUntilFinished) {
-
-                        }
-                    }.start();
+                    dialog_next = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
+                    dialog_next.title("Henter");
+                    dialog_next.show();
+                    //   gotoTabActivity(position, "Read");
+                    gotoSpecificPage(position,0,playListForPerform.get(position),ACTIVITY_TYPE.TAB_ACTIVITY);
                 }
             });
 
@@ -254,6 +262,196 @@ public class FragmentMyPlayPupil extends Fragment {
 
         }
 
+        private void gotoSpecificPage(final int play_index,int tab_index, final Play play, final ACTIVITY_TYPE act_type){
+
+
+            DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
+            boolean hasPlay = dbh.hasPlayWithPlayOrderIdText(play.OrderId);
+            dbh.close();
+
+
+            if(hasPlay == true){
+
+                Log.i("hasplay","true");
+                Log.i("Order Id",play.OrderId);
+                SharedPreferences preferences = getActivity().getSharedPreferences("Plays", getActivity().MODE_PRIVATE);
+                String k = "PlayLatesteUpdateDate"+play.PlayId;
+                //  Toast.makeText(getActivity(),preferences.getString(k,""), Toast.LENGTH_SHORT).show();
+                long unixTime = Long.parseLong(preferences.getString(k,""));
+                BigDecimal bigDecimal = new BigDecimal(unixTime);
+
+                String serverLink = API.link_getPlayUpdateForPlayOrderIdString+play.PlayId+"?unixTimeStamp="+bigDecimal;
+                new CallWebService(serverLink,CallWebService.TYPE_JSONARRAY) {
+
+                    @Override
+                    public void response(final String response) {
+
+                        Log.i("Response update play : ",""+response);
+
+                        if(response == null || response.equalsIgnoreCase("")){
+
+                        }else{
+
+                            new AsyncTask<String,Integer,String>(){
+
+                                @Override
+                                protected String doInBackground(String... params) {
+
+                                    try {
+                                        JSONArray arr = new JSONArray(response);
+
+                                        DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
+                                        plyIDAfterUpdate = dbh.getPlayIdFromDBForOrderId(play.OrderId);
+                                        state.playID = plyIDAfterUpdate;
+                                        dbh.close();
+
+                                        for(int i=0;i<arr.length();i++){
+
+                                            JSONObject jsonObject = arr.getJSONObject(i);
+                                            PlayLines playLine = new GsonBuilder().create().fromJson(jsonObject.toString(),PlayLines.class);
+
+                                            DatabaseWrapper dbWrap = new DatabaseWrapper(getActivity());
+                                            dbWrap.updatePlayLine(playLine,Integer.parseInt(play.PlayId));
+                                            dbWrap.close();
+
+
+                                        }
+                                    }catch(Exception e){
+                                        e.printStackTrace();
+                                    }
+
+
+                                    return null;
+                                }
+
+                                @Override
+                                protected void onPostExecute(String s) {
+                                    super.onPostExecute(s);
+                                    dialog_next.dismiss();
+
+                                    SharedPreferences preferences = getActivity().getSharedPreferences("Plays",getActivity().MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = preferences.edit();
+                                    String k = "PlayLatesteUpdateDate"+play.PlayId;
+                                    editor.putString(k,""+System.currentTimeMillis());
+                                    editor.commit();
+                                    gotoNextPage(act_type,play_index);
+                                }
+
+                            }.execute();
+
+                        }
+
+                    }
+
+                    @Override
+                    public void error(VolleyError error) {
+
+                        dialog_next.dismiss();
+                        Toast.makeText(getActivity(),error.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    }
+                }.start();
+
+            }else{
+                Log.i("hasplay","false");
+                // insert new play to db
+
+                new CallWebService(API.link_retrievePlayContentsForPlayOrderId +play.OrderId,CallWebService.TYPE_JSONOBJECT) {
+
+                    @Override
+                    public void response(final String response) {
+
+                        Log.i("Response full play : ",""+response);
+                        new AsyncTask<String,Integer,String>(){
+
+                            @Override
+                            protected String doInBackground(String... params) {
+
+                                Play receivedPlay = new GsonBuilder().create().fromJson(response, Play.class);
+                                DatabaseWrapper db = new DatabaseWrapper(getActivity());
+                                db.insertPlay(receivedPlay, false);
+                                db.close();
+
+                                return null;
+                            }
+
+                            @Override
+                            protected void onPostExecute(String s) {
+                                super.onPostExecute(s);
+                                dialog_next.dismiss();
+
+                                SharedPreferences preferences = getActivity().getSharedPreferences("Plays",getActivity().MODE_PRIVATE);
+                                SharedPreferences.Editor editor = preferences.edit();
+                                String k = "PlayLatesteUpdateDate"+play.PlayId;
+                                editor.putString(k,""+System.currentTimeMillis());
+                                editor.commit();
+
+                                gotoNextPage(act_type,play_index);
+
+                            }
+                        }.execute();
+
+                    }
+
+                    @Override
+                    public void error(VolleyError error) {
+                        dialog_next.dismiss();
+
+                        Toast.makeText(getActivity(),error.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    }
+                }.start();
+
+            }
+
+        }
+
+        private void gotoNextPage(final ACTIVITY_TYPE act_type,int position) {
+
+            new AsyncTask<String,Integer,String>(){
+
+                @Override
+                protected String doInBackground(String... params) {
+
+                    DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
+                    ply = dbh.retrievePlayWithId(state.playID);
+                    dbh.close();
+
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(String s) {
+                    super.onPostExecute(s);
+
+                    ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref",0);
+                    complexPreferences.putObject("selected_play",ply);
+                    complexPreferences.commit();
+
+                    switch (act_type){
+
+                        case ORDER_ACTIVITY:
+
+
+                            Intent i1 = new Intent(getActivity(), ReadActivityFromPreview.class);
+                            i1.putExtra("currentState",STATE_PREVIEW);
+                            startActivity(i1);
+
+                            break;
+
+                        case TAB_ACTIVITY:
+
+                            Intent i = new Intent(getActivity(), PlayTabActivity.class);
+                            startActivity(i);
+
+                            break;
+                    }
+
+                }
+            }.execute();
+
+
+        }
     }
 
     private void gotoTabActivity(int position, String type) {

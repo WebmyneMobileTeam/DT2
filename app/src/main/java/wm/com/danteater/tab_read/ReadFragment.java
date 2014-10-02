@@ -125,7 +125,6 @@ public class ReadFragment extends Fragment {
         selectedPlay = complexPreferences.getObject("selected_play", Play.class);
         currentUser = complexPreferences.getObject("current_user", User.class);
 
-
          // setup actionbar methods
          ((WMTextView) getActivity().getActionBar().getCustomView()).setText(selectedPlay.Title);
          currentState = getArguments().getInt("currentState");
@@ -134,8 +133,8 @@ public class ReadFragment extends Fragment {
             setHasOptionsMenu(true);
         }
 
-         getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
-         ((WMTextView)getActivity().getActionBar().getCustomView()).setGravity(Gravity.LEFT);
+        getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+        ((WMTextView)getActivity().getActionBar().getCustomView()).setGravity(Gravity.LEFT);
 
         // setup init for read
         DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
@@ -157,6 +156,7 @@ public class ReadFragment extends Fragment {
                     Type listType = new TypeToken<List<AssignedUsers>>() {
                     }.getType();
                     _marrSharedWithUsers = new GsonBuilder().create().fromJson(response,listType);
+                    Log.e("_maarSharedWithUsers ",""+_marrSharedWithUsers);
                 }
 
                 @Override
@@ -318,7 +318,6 @@ public class ReadFragment extends Fragment {
         headerSubTitle.setText(selectedPlay.SubtitleLong);
 
 
-
         return convertView;
     }
 
@@ -331,7 +330,6 @@ public class ReadFragment extends Fragment {
             public void onClick(View v) {
 
                 final String lineNo = edGotoLine.getText().toString();
-
                 if(lineNo == null || lineNo.equalsIgnoreCase("")){
 
                 }else{
@@ -356,8 +354,6 @@ public class ReadFragment extends Fragment {
 
                         listRead.setSelection(Integer.parseInt(edGotoLine.getText().toString())-1);
 
-
-
                     }catch(Exception e){}
 
                     edGotoLine.setText("");
@@ -369,8 +365,6 @@ public class ReadFragment extends Fragment {
 
             }
         });
-
-
 
 
 
@@ -706,7 +700,7 @@ public class ReadFragment extends Fragment {
 
                           convertView = mInflater.inflate(R.layout.item_read_play_role_cell, parent,false);
                           holderReadPlayRoleCell = new ViewHolder().new HolderReadPlayRoleCell();
-                          holderReadPlayRoleCell.cellReadPlayRole = new CellReadPlayRole(convertView);
+                          holderReadPlayRoleCell.cellReadPlayRole = new CellReadPlayRole(convertView,getActivity());
                           convertView.setTag(holderReadPlayRoleCell);
 
                     }else{

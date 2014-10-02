@@ -79,6 +79,12 @@ public class CellReadPlayPlayLine {
         currentUserId = user.getUserId();
         currentUserName = user.getFirstName()+" "+user.getLastName();
 
+        if(user.checkTeacherOrAdmin(user.getRoles())){
+            btnMenu.setVisibility(View.VISIBLE);
+        }else{
+            btnMenu.setVisibility(View.INVISIBLE);
+        }
+
         tvPlayLines.setText("");
 
         SharedPreferences preferences = ctx.getSharedPreferences("settings", ctx.MODE_PRIVATE);

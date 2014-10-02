@@ -27,11 +27,14 @@
 
 
         <!-- Display Login View From Server -->
-        <GridLayout
-
+        <LinearLayout
+            android:orientation="vertical"
             android:id="@+id/fragment_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"></GridLayout>
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:layout_height="match_parent"></LinearLayout>
+
+
     </LinearLayout>
 
     <!-- No Network View-->

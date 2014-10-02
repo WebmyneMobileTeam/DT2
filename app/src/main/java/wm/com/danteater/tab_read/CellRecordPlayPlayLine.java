@@ -28,8 +28,6 @@ import wm.com.danteater.model.ComplexPreferences;
 public class CellRecordPlayPlayLine {
 
 
-
-
     private ImageView imgPLay;
     private WMTextView btnOpTag;
     private LinearLayout listReadPlayPlaylinecell;
@@ -70,13 +68,17 @@ public class CellRecordPlayPlayLine {
         listReadPlayPlaylinecell.removeAllViews();
         listReadPlayPlaylinecell.invalidate();
 
-
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(ctx, "user_pref", 0);
         user = complexPreferences.getObject("current_user", User.class);
         currentUserId = user.getUserId();
         currentUserName = user.getFirstName()+" "+user.getLastName();
-
         tvPlayLines.setText("");
+
+        if(user.checkTeacherOrAdmin(user.getRoles())){
+            btnOpTag.setVisibility(View.VISIBLE);
+        }else{
+            btnOpTag.setVisibility(View.INVISIBLE);
+        }
 
         SharedPreferences preferences = ctx.getSharedPreferences("settings", ctx.MODE_PRIVATE);
         showLineNumber = preferences.getBoolean("showLineNumber", false);
@@ -138,7 +140,6 @@ public class CellRecordPlayPlayLine {
             LayoutInflater mInflater = (LayoutInflater) ctx.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 
             for(Comments com : finalComments){
-
                 View vComment = mInflater.inflate(R.layout.item_comment_list,null);
                 WMTextView txt = (WMTextView)vComment.findViewById(R.id.txtItemCommentText);
                 txt.setText(com.commentText);

@@ -13,7 +13,8 @@ import android.widget.TextView;
 import wm.com.danteater.R;
 import wm.com.danteater.customviews.WMImageView;
 import wm.com.danteater.inspiration.FragmentInspiration;
-import wm.com.danteater.tab_music.CellMusicTableView;
+import wm.com.danteater.login.User;
+import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.tab_music.MusicFragment;
 import wm.com.danteater.tab_read.ReadFragment;
 import wm.com.danteater.tab_recording.RecordingFragment;
@@ -40,6 +41,7 @@ public class PlayTabActivity extends BaseActivity {
     private FragmentTabHost mTabHost;
   //  private String type_navigation;
   //  private String playinfo;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +91,9 @@ public class PlayTabActivity extends BaseActivity {
 
     private void initTabHost() {
 
+        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(PlayTabActivity.this, "user_pref", 0);
+        user = complexPreferences.getObject("current_user", User.class);
+
         mTabHost = (FragmentTabHost)findViewById(android.R.id.tabhost);
         mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
 
@@ -125,8 +130,16 @@ public class PlayTabActivity extends BaseActivity {
         mTabHost.addTab(mTabHost.newTabSpec("tab2").setIndicator(view2),
                 MusicFragment.class, null);
 
-        mTabHost.addTab(mTabHost.newTabSpec("tab3").setIndicator(view3),
-                FragmentInspiration.class, null);
+
+        if(user.checkTeacherOrAdmin(user.getRoles())){
+            mTabHost.addTab(mTabHost.newTabSpec("tab3").setIndicator(view3),
+                    FragmentInspiration.class, null);
+        }else{
+
+        }
+
+
+
 
     }
 
@@ -174,6 +187,4 @@ public class PlayTabActivity extends BaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 }

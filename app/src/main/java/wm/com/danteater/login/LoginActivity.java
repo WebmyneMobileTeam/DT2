@@ -100,10 +100,10 @@ public class LoginActivity extends BaseActivity {
 
         m_device_security = new DeviceSecurity(this);
         m_device_security.addDeviceSecurityListener(device_security_listener);
-
         m_device_security.setApplicationCountryCode("IntoWords_dk");
         m_device_security.excludeLoginGroup("company");
         m_device_security.excludeLoginGroup("private");
+
         // if automatic login is off, release the device registration
         if (shouldShowLoginView == false) {
 
@@ -270,13 +270,9 @@ public class LoginActivity extends BaseActivity {
                     noAccessView.setVisibility(View.GONE);
                     noNetworkView.setVisibility(View.GONE);
 
-
                     startLoginTimer();
                     stateManager.retriveSchoolClasses(session_id, user.getDomain());
                     stateManager.retriveSchoolTeachers(session_id, user.getDomain());
-
-
-
 
                     // go to next screen
                     if (isFirstTime()) { // show guide pages
@@ -317,8 +313,6 @@ public class LoginActivity extends BaseActivity {
          request_params2 = new JSONObject();
         try {
             params.put("session_id", session_id);
-
-
             request_params2.put("methodname", "keepAlive");
             request_params2.put("type", "jsonwsp/request");
             request_params2.put("version", "1.0");

@@ -1,5 +1,6 @@
 package wm.com.danteater.tab_read;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -9,6 +10,8 @@ import wm.com.danteater.Play.PlayLines;
 import wm.com.danteater.Play.TextLines;
 import wm.com.danteater.R;
 import wm.com.danteater.customviews.WMTextView;
+import wm.com.danteater.login.User;
+import wm.com.danteater.model.ComplexPreferences;
 
 /**
  * Created by dhruvil on 29-09-2014.
@@ -22,9 +25,10 @@ public class CellReadPlayRole {
     private TextView lblNumberOfSongsAndLines;
     private WMTextView btnAssignRole;
     private setOnAssignButtonClicked setClicked;
-
-    public CellReadPlayRole(View view) {
-
+    private User user;
+private Context ctx;
+    public CellReadPlayRole(View view,Context ctx) {
+        this.ctx = ctx;
         tvRoleDescription = (TextView)view.findViewById(R.id.readPlayRoleDescription);
         lblAssignedName = (TextView)view.findViewById(R.id.readPlayRoleNotAssigned);
         lblCharacterName = (WMTextView)view.findViewById(R.id.readPlayRoleTitle);
@@ -41,6 +45,17 @@ public class CellReadPlayRole {
     }
 
     public void setupForPlayLine(PlayLines playLine,int current_state,View view,boolean isEmptyPlayRole) {
+
+
+        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(ctx, "user_pref", 0);
+        user = complexPreferences.getObject("current_user", User.class);
+
+        if(user.checkTeacherOrAdmin(user.getRoles())){
+            btnAssignRole.setVisibility(View.VISIBLE);
+        }else{
+            btnAssignRole.setVisibility(View.INVISIBLE);
+        }
+
 
         if (isEmptyPlayRole == true) {
             tvRoleDescription.setVisibility(View.GONE);
