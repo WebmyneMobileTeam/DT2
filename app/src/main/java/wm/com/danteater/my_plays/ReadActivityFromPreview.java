@@ -30,18 +30,25 @@ public class ReadActivityFromPreview extends BaseActivity {
     public WMTextView txtHeader;
     private FrameLayout btnPlayOrderIdForPerformance;
     private Play play;
-    int current_state = 0;
-
+    int current_state = 1;
+    private boolean isFromLogin=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_read_from_preview);
         current_state = getIntent().getExtras().getInt("currentState");
+        isFromLogin= getIntent().getExtras().getBoolean("isFromLogin");
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(ReadActivityFromPreview.this, "mypref", 0);
         play = complexPreferences.getObject("selected_play", Play.class);
         Log.e("Count : ",""+play.playLinesList.size());
         btnPlayOrderIdForPerformance=(FrameLayout)findViewById(R.id.btnPlayOrderIdForPerformance);
+        if(isFromLogin==true) {
+            btnPlayOrderIdForPerformance.setVisibility(View.GONE);
+        } else {
+            btnPlayOrderIdForPerformance.setVisibility(View.VISIBLE);
+        }
+
         btnPlayOrderIdForPerformance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

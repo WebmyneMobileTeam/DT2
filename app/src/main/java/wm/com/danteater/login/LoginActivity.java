@@ -26,6 +26,7 @@ import org.json.JSONObject;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import wm.com.danteater.Play.Play;
 import wm.com.danteater.R;
 import wm.com.danteater.app.BaseActivity;
 import wm.com.danteater.app.MyApplication;
@@ -36,6 +37,7 @@ import wm.com.danteater.model.DatabaseWrapper;
 import wm.com.danteater.model.Prefs;
 import wm.com.danteater.model.StateManager;
 import wm.com.danteater.my_plays.DrawerActivity;
+import wm.com.danteater.my_plays.ReadActivityFromPreview;
 
 public class LoginActivity extends BaseActivity {
 
@@ -51,7 +53,8 @@ public class LoginActivity extends BaseActivity {
     WMTextView txtTryAgain,txtContinueWithLastOpen;
     String session_id;
     Timer timer;
-   JSONObject request_params;
+    Play selectedPlay;
+    JSONObject request_params;
     JSONObject request_params2; //for tryToLogin2 method
     StateManager stateManager = StateManager.getInstance();
     @Override
@@ -79,14 +82,12 @@ public class LoginActivity extends BaseActivity {
 
             Log.i("Login Flow : ","Already LoggedIn goto next page");
 
-            ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(LoginActivity.this, "user_pref", 0);
-            User cUser = complexPreferences.getObject("current_user",User.class);
-
-            SharedPreferences pre = getSharedPreferences("session_id", MODE_PRIVATE);
-            session_id = pre.getString("session_id","");
-            stateManager.retriveSchoolClasses(session_id, cUser.getDomain());
-            stateManager.retriveSchoolTeachers(session_id, cUser.getDomain());
-
+//            ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(LoginActivity.this, "user_pref", 0);
+//            User cUser = complexPreferences.getObject("current_user",User.class);
+//            SharedPreferences pre = getSharedPreferences("session_id", MODE_PRIVATE);
+//            session_id = pre.getString("session_id","");
+//            stateManager.retriveSchoolClasses(session_id, cUser.getDomain());
+//            stateManager.retriveSchoolTeachers(session_id, cUser.getDomain());
             Log.e("state manager","called ....... ");
             Intent i = new Intent(LoginActivity.this, DrawerActivity.class);
             startActivity(i);
@@ -161,25 +162,26 @@ public class LoginActivity extends BaseActivity {
                 txtContinueWithLastOpen.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                    //TODO
-                       boolean isDatabaseEmpty=dbHelper.IsDatabseEmpty();
-
-                        if(isDatabaseEmpty==true) {
-                            Log.e("isDatabaseEmpty",isDatabaseEmpty+"");
-                            AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
-                            alert.setTitle("Title");
-                            alert.setMessage("Message");
-                            alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                            alert.show();
-                        } else {
-                            Log.e("isDatabaseEmpty",isDatabaseEmpty+"");
-                        }
+                            ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(LoginActivity.this, "mypref", 0);
+                            selectedPlay = complexPreferences.getObject("selected_play", Play.class);
+                            if (selectedPlay == null) {
+                                Log.e("selected play", "false");
+                                AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
+                                alert.setTitle("Fejl");
+                                alert.setMessage("Stykket kunne ikke findes på det device. ");
+                                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                                alert.show();
+                            } else {
+                                Intent i1 = new Intent(LoginActivity.this, ReadActivityFromPreview.class);
+                                i1.putExtra("currentState",1);
+                                i1.putExtra("isFromLogin",true);
+                                startActivity(i1);
+                            }
                     }
                 });
 

@@ -10,6 +10,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,6 +62,7 @@ import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.model.DatabaseWrapper;
 import wm.com.danteater.model.Prefs;
 import wm.com.danteater.model.StateManager;
+import wm.com.danteater.search.FragmentSearch;
 
 
 public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChangeListener {
@@ -209,10 +212,27 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                         Log.i("PlayOrderId", bean.PlayOrderId + "");
                     }
                 }
-                listPlayAdapterForPerform=   new ListPlayAdapterForPerform(getActivity(), playListForPerform, playOrderList);
-                listPlay.setAdapter(listPlayAdapterForPerform);
-
-
+                if(playListForPerform.size()==0 && playListForReview.size()==0){
+                    FragmentManager manager = getActivity().getSupportFragmentManager();
+                    FragmentTransaction ft = manager.beginTransaction();
+                    FragmentSearch fragmentSearch = FragmentSearch.newInstance("", "");
+                    if (manager.findFragmentByTag("search") == null) {
+                        ft.replace(R.id.main_content, fragmentSearch, "search").commit();
+                    }
+                    ((WMTextView) getActivity().getActionBar().getCustomView()).setText("Søg skuespil");
+                } else if(playListForPerform.size()==0 && playListForReview.size()!=0) {
+                    rbGennemsyn.setChecked(true);
+                    listPlayAdapterForReview=new ListPlayAdapterForReview(getActivity(), playListForReview);
+                    listPlay.setAdapter(listPlayAdapterForReview);
+                } else if(playListForPerform.size()!=0 && playListForReview.size()==0) {
+                    rbBestilte.setChecked(true);
+                    listPlayAdapterForPerform=   new ListPlayAdapterForPerform(getActivity(), playListForPerform, playOrderList);
+                    listPlay.setAdapter(listPlayAdapterForPerform);
+                } else {
+                    rbBestilte.setChecked(true);
+                    listPlayAdapterForPerform=   new ListPlayAdapterForPerform(getActivity(), playListForPerform, playOrderList);
+                    listPlay.setAdapter(listPlayAdapterForPerform);
+                }
             }
         });
 
@@ -221,16 +241,11 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     @Override
     public void onResume() {
         super.onResume();
-
-        rbBestilte.setChecked(true);
-
     }
 
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
-
         switch (checkedId) {
-
             case R.id.rbBestilte:
                 listPlay.setAdapter(null);
                 listPlayAdapterForPerform=new ListPlayAdapterForPerform(getActivity(), playListForPerform, playOrderList);
@@ -243,26 +258,19 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 listPlay.setAdapter(listPlayAdapterForReview);
                 break;
         }
-
     }
 
     // For Preview Tab
     public class ListPlayAdapterForReview extends BaseAdapter {
-
         Context context;
         LayoutInflater inflater;
-
         ArrayList<Play> playList;
         ArrayList<PlayOrderDetails> playOrderDetailList;
-
         public ListPlayAdapterForReview(Context context, ArrayList<Play> playList) {
-
             this.context = context;
-
             this.playList = playList;
             this.playOrderDetailList = playOrderDetailList;
         }
-
         public int getCount() {
 
             return playList.size();
@@ -279,10 +287,8 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
 
         class ViewHolder {
-
             WMTextView txtTitle, txtAuther, txtDuration1, txtDuration2,btnSharePreview;
             ImageView imgPreviewTrashIcon;
-
         }
 
         public View getView(final int position, View convertView,
@@ -434,6 +440,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
         listPlayAdapterForReview.notifyDataSetChanged();
     }
 
+
     // For Order tab
     public class ListPlayAdapterForPerform extends BaseAdapter {
 
@@ -503,21 +510,27 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             } else {
                 holder.txtAuther.setText("Generalprøve: Nej");
             }
-            long value=Long.parseLong(playOrderDetailList.get(position).PerformDateFirst);
-            Date date=new Date(value);
-            SimpleDateFormat df2 = new SimpleDateFormat("dd-MM-yyyy");
-            String dateText = df2.format(date);
-//            System.out.println(dateText);
-            Log.e("nirav date in long",dateText+"");
-            SimpleDateFormat formater = new SimpleDateFormat("dd-MM-yyyy");
+//            long value=Long.parseLong(playOrderDetailList.get(position).PerformDateFirst);
+//            Date date=new Date(value);
+//            SimpleDateFormat df2 = new SimpleDateFormat("dd-MM-yyyy");
+//            String dateText = df2.format(date);
+////            System.out.println(dateText);
+//            Log.e("nirav date in long",dateText+"");
 
+            SimpleDateFormat formater = new SimpleDateFormat("dd-MM-yyyy");
             Long performDateFirst = Long.parseLong(playOrderDetailList.get(position).PerformDateFirst);
             Long performDateLast = Long.parseLong(playOrderDetailList.get(position).PerformDateLast);
             Date firstDate = new Date(performDateFirst);
             Date lastDate = new Date(performDateLast);
-
+            Date currentDate=new Date();
             holder.txtDuration1.setText("Første opførelse: " + formater.format(firstDate));
             holder.txtDuration2.setText("Sidste opførelse: " + formater.format(lastDate));
+
+            if(currentDate.after(lastDate)){
+                holder.imgOrderTrashIcon.setVisibility(View.VISIBLE);
+            } else {
+                holder.imgOrderTrashIcon.setVisibility(View.GONE);
+            }
             holder.txtNumberOfPerformance.setText("Antal opførelser: " + playOrderDetailList.get(position).NumberOfPerformances);
 
             holder.btnOrdering.setOnClickListener(new View.OnClickListener() {
@@ -828,6 +841,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
                         Intent i1 = new Intent(getActivity(), ReadActivityFromPreview.class);
                         i1.putExtra("currentState",STATE_PREVIEW);
+                        i1.putExtra("isFromLogin",false);
                         startActivity(i1);
 
                         break;

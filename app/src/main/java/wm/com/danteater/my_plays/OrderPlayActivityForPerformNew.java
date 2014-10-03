@@ -302,11 +302,10 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
                                         int which) {
 
                         datePickerdialog.dismiss();
-                        stringDate = datePickerdialog
-                                .getDatePicker().getDayOfMonth()
+                        stringDate = datePickerdialog.getDatePicker().getDayOfMonth()
                                 + "-"
-                                + datePickerdialog.getDatePicker()
-                                .getMonth()
+                                + (datePickerdialog.getDatePicker()
+                                .getMonth()+1)
                                 + "-"
                                 + datePickerdialog.getDatePicker()
                                 .getYear();
