@@ -41,11 +41,12 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
     ImageView musicDownload,musicPlay;
     LinearLayout playerView;
     Context context;
-   private SeekBar songProgressBar;
+    private SeekBar songProgressBar;
     Handler mHandler;
     MediaPlayer mediaPlayer=null;
     View convertView;
     private setOnReload setOnReloading;
+    private SetStopMusic setStopMusicSong;
     private String currentSongPosition;
 
     public CellMusicTableView(View convertView,final Context context) {
@@ -63,61 +64,53 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
         songProgressBar.setOnSeekBarChangeListener(this);
     }
 
-    public void setUpSongFile(final SongFiles songFile,final String sectionTitle,final Context context,final int section,final int position) {
-
-        mHandler= new Handler();
+    public void setUpSongFile(final SongFiles songFile,final String sectionTitle,final Context context,final int section,final int position, final String playTitle) {
         try {
-
-            FileDescriptor fd = null;
-            File fileDir = new File(Environment.getExternalStorageDirectory() + "/danteater");
-            String audioPath = fileDir.getAbsolutePath() +"/"+ sectionTitle + ".mp3";
-
             if(position%2==0) {
                 musicCellLayout.setBackgroundColor(Color.parseColor(AppConstants.songFileOddColor));
             } else {
                 musicCellLayout.setBackgroundColor(Color.parseColor(AppConstants.songFileEvenColor));
             }
+            FileDescriptor fd = null;
+            File fileDir = new File(Environment.getExternalStorageDirectory() + "/danteater");
 
-            {
+            String audioPath = fileDir.getAbsolutePath() +"/_"+playTitle+"_"+sectionTitle+"_"+section+"_"+position+"_.mp3";
+            String segments[] = audioPath.split("_");
+            Log.e("segments[0]",segments[0]+"");
+            Log.e("segments[1]",segments[1]+"");
+            Log.e("segments[2]",segments[2]+"");
+            Log.e("segments[3]",segments[3]+"");
 
-                if(new File(audioPath).exists()) {
+            if(new File(audioPath).exists()
+                 ) {
+                FileInputStream fis = new FileInputStream(audioPath);
+                fd = fis.getFD();
 
-                    if(mediaPlayer !=null && MusicFragment.playingMusic.size()>0 && !MusicFragment.playingMusic.get(0).equalsIgnoreCase(section+""+position)){
-                        mHandler.postDelayed(mUpdateTimeTask, 100);
-                    }
-
-                    FileInputStream fis = new FileInputStream(audioPath);
-                    fd = fis.getFD();
-
-                    if(mediaPlayer==null) {
-                        mediaPlayer = new MediaPlayer();
-                        mediaPlayer.setDataSource(fd);
-                        mediaPlayer.prepare();
-                    } else {
-                        updateProgressBar();
-                    }
-
+                if(mediaPlayer==null) {
+                    mHandler= new Handler();
+                    mediaPlayer = new MediaPlayer();
+                    mediaPlayer.setDataSource(fd);
+                    mediaPlayer.prepare();
+                    musicPlay.setImageResource(R.drawable.ic_play);
                     startTime.setText(milliSecondsToTimer(mediaPlayer.getCurrentPosition()));
                     endTime.setText(milliSecondsToTimer(mediaPlayer.getDuration()));
-                    if(mediaPlayer.isPlaying()){
+
+                } else {
+                    if (mediaPlayer.isPlaying()) {
                         musicPlay.setImageResource(R.drawable.ic_pause);
+                        updateProgressBar();
                     } else {
                         musicPlay.setImageResource(R.drawable.ic_play);
                     }
-              /*     songProgressBar.setProgress(0);
-                    songProgressBar.setMax(100);*/
-                    musicDownload.setVisibility(View.GONE);
-                    musicPlay.setVisibility(View.VISIBLE);
-                    playerView.setVisibility(View.VISIBLE);
-                } else {
-
-                    musicDownload.setVisibility(View.VISIBLE);
-                    musicPlay.setVisibility(View.GONE);
-                    playerView.setVisibility(View.GONE);
                 }
-
+                musicDownload.setVisibility(View.GONE);
+                musicPlay.setVisibility(View.VISIBLE);
+                playerView.setVisibility(View.VISIBLE);
+            } else {
+                musicDownload.setVisibility(View.VISIBLE);
+                musicPlay.setVisibility(View.GONE);
+                playerView.setVisibility(View.GONE);
             }
-
         } catch (FileNotFoundException e){
             e.printStackTrace();
         } catch (IOException e){
@@ -128,7 +121,7 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
         musicDownload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                downloadMusic(songFile.SongMp3Url,songFile.SongTitle);
+                downloadMusic(songFile.SongMp3Url,sectionTitle,section,position,playTitle);
 
             }
         });
@@ -142,24 +135,22 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
                 String sCheck = section+"*"+position;
                 if(MusicFragment.playingMusic.size()>0 && !MusicFragment.playingMusic.get(0).equalsIgnoreCase(section+""+position)){
 
-                              AlertDialog.Builder alert = new AlertDialog.Builder(context);
-                            alert.setTitle("Afspiller");
-                            alert.setMessage("Afspiller en anden sang. Venligst sæt den på pause, før du afspiller en ny. ");
-                            alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    AlertDialog.Builder alert = new AlertDialog.Builder(context);
+                    alert.setTitle("Afspiller");
+                    alert.setMessage("Afspiller en anden sang. Venligst sæt den på pause, før du afspiller en ny. ");
+                    alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                            alert.show();
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    alert.show();
                 }else{
 
 
                     if(mediaPlayer.isPlaying()){
-
                         if(mediaPlayer!=null){
-
                             MusicFragment.isAnySongPlayed=false;
                             mediaPlayer.pause();
                             // Changing button image to play button
@@ -170,16 +161,15 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
                     }else{
                         // Resume song
                         if(mediaPlayer!=null){
-
                             mediaPlayer.start();
+                            setStopMusicSong.onStopMusic(mediaPlayer);
                             // Changing button image to pause button
                             musicPlay.setImageResource(R.drawable.ic_pause);
-
                             MusicFragment.playingMusic.add(section+""+position);
-
+                            updateProgressBar();
                         }
                     }
-                    updateProgressBar();
+
 
                 }
 
@@ -188,7 +178,7 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
         });
     }
 
-    public void downloadMusic(final String musicUrl,final String songFileName) {
+    public void downloadMusic(final String musicUrl,final String songFileName,final int section,final int position, final String playTitleName) {
 
         new AsyncTask<Void,Integer,Void>(){
             @Override
@@ -215,7 +205,8 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
                     } else {
                         Log.e("directory:","already exist");
                     }
-                    File file = new File(fileDir,songFileName+".mp3");
+                    Log.e("file path",playTitleName+"_"+songFileName+"_"+section+"_"+position+".mp3");
+                    File file = new File(fileDir,"_"+playTitleName+"_"+songFileName+"_"+section+"_"+position+"_.mp3");
                     FileOutputStream output = new FileOutputStream(file);
                     InputStream input = conexion.getInputStream();
                     byte data[] = new byte[1024];
@@ -244,7 +235,7 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
                     musicDownload.setVisibility(View.GONE);
                     musicPlay.setVisibility(View.VISIBLE);
                     playerView.setVisibility(View.VISIBLE);
-                   convertView.invalidate();
+                    convertView.invalidate();
                     setOnReloading.onReload();
                 }
             }
@@ -274,12 +265,13 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
             songProgressBar.setProgress(progress);
 
             // Running this thread after 100 milliseconds
-            mHandler.postDelayed(this, 100);
+            mHandler.postDelayed(this, 1);
         }
+
     };
 
     public void updateProgressBar() {
-        mHandler.postDelayed(mUpdateTimeTask, 100);
+        mHandler.postDelayed(mUpdateTimeTask, 1);
     }
 
 
@@ -373,6 +365,12 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
         setOnReloading = s;
     }
 
+
+
+
+    public void setMusicSongStopClicked(SetStopMusic m){
+        setStopMusicSong=m;
+    }
 }
 
 
@@ -380,5 +378,10 @@ interface setOnReload{
 
     public void onReload();
 
+}
+
+interface SetStopMusic {
+
+    public void onStopMusic(MediaPlayer mediaPlayer);
 }
 

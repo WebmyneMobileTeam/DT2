@@ -61,7 +61,7 @@ public class MusicFragment extends Fragment {
     private Play selectedPlay;
     private ArrayList<PlayLines> playLineses;
     public static boolean isAnySongPlayed=false;
-    MediaPlayer mediaPlayer;
+
     MusicSectionedAdapter musicSectionedAdapter;
     private ArrayList<String> marrSectionTitles=new ArrayList<String>();
     private ArrayList<ArrayList<SongFiles>> marrSectionsWithContent=new ArrayList<ArrayList<SongFiles>>();
@@ -70,13 +70,14 @@ public class MusicFragment extends Fragment {
     private HUD dialog;
     public static int MP3_FILE = 0;
     public static int PDF_FILE = 1;
-
-
+    MediaPlayer mediaPlayer;
+    static MusicFragment fragment;
     public static MusicFragment newInstance(String param1, String param2) {
-    MusicFragment fragment = new MusicFragment();
+       fragment= new MusicFragment();
 
         return fragment;
     }
+
     public MusicFragment() {
         // Required empty public constructor
     }
@@ -125,7 +126,7 @@ public class MusicFragment extends Fragment {
         listMusic = (PinnedHeaderListView)convertView.findViewById(R.id.listViewMusic);
         listMusic.addHeaderView(listHeaderView);
         listMusic.setAdapter(musicSectionedAdapter);
-        listMusic.setFastScrollEnabled(true);
+
 
 
         if(marrSectionTitles.size()==0 && marrSongFilesMP3.size()==0) {
@@ -200,17 +201,24 @@ public class MusicFragment extends Fragment {
 
         }
 
-        @Override
-        public View getSectionHeaderView(int section, View convertView, ViewGroup parent) {
-            View view = null;
 
-            if (convertView == null) {
+        public class SectionHeaderHolder {
+             TextView headerTitle;
+        }
+        @Override
+        public View getSectionHeaderView(final int section, View convertView, ViewGroup parent) {
+            View view = convertView;
+            SectionHeaderHolder sectionHeaderHolder;
+            if (view == null) {
+                sectionHeaderHolder=new SectionHeaderHolder();
                 LayoutInflater inflator = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflator.inflate(R.layout.item_music_table_section, parent,false);
+                sectionHeaderHolder.headerTitle=(TextView)view.findViewById(R.id.music_table_section_title);
+                view.setTag(sectionHeaderHolder);
             } else {
-                view = convertView;
+                sectionHeaderHolder=(SectionHeaderHolder)view.getTag();
             }
-            ((TextView) view.findViewById(R.id.music_table_section_title)).setText(marrSectionTitles.get(section));
+            sectionHeaderHolder.headerTitle.setText(marrSectionTitles.get(section));
             return view;
         }
 
@@ -234,7 +242,7 @@ public class MusicFragment extends Fragment {
         }
 
         @Override
-        public View getItemView(int section, final int position, View convertView, ViewGroup parent) {
+        public View getItemView(final int section, final int position, View convertView, ViewGroup parent) {
 
             ViewHolder.ViewHolderForMusic viewHolderForMusic=null;
             ViewHolder.ViewHolderForPDF viewHolderForPDF=null;
@@ -254,12 +262,19 @@ public class MusicFragment extends Fragment {
                 }else{
                     viewHolderForMusic = (ViewHolder.ViewHolderForMusic)convertView.getTag();
                 }
-                viewHolderForMusic.cellMusicTableView.setUpSongFile(songFileses.get(position),marrSectionTitles.get(section),getActivity(),section,position);
+                viewHolderForMusic.cellMusicTableView.setUpSongFile(songFileses.get(position),marrSectionTitles.get(section),getActivity(),section,position,selectedPlay.Title);
 
                 viewHolderForMusic.cellMusicTableView.setReloadClicked(new setOnReload() {
                     @Override
                     public void onReload() {
                         musicSectionedAdapter.notifyDataSetChanged();
+                    }
+                });
+
+                viewHolderForMusic.cellMusicTableView.setMusicSongStopClicked(new SetStopMusic() {
+                    @Override
+                    public void onStopMusic(MediaPlayer media) {
+                        mediaPlayer=media;
                     }
                 });
 
@@ -307,6 +322,20 @@ public class MusicFragment extends Fragment {
 
         return super.onOptionsItemSelected(item);
     }
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(mediaPlayer !=null && mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+            playingMusic.clear();
+            mediaPlayer = null;
+        }
+    }
+
+
+
 
 
 

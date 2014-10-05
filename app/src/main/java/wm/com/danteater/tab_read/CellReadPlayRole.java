@@ -26,7 +26,7 @@ public class CellReadPlayRole {
     private WMTextView btnAssignRole;
     private setOnAssignButtonClicked setClicked;
     private User user;
-private Context ctx;
+    private Context ctx;
     public CellReadPlayRole(View view,Context ctx) {
         this.ctx = ctx;
         tvRoleDescription = (TextView)view.findViewById(R.id.readPlayRoleDescription);
