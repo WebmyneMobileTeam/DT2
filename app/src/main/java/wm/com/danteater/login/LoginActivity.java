@@ -54,7 +54,7 @@ public class LoginActivity extends BaseActivity {
     String session_id;
     Timer timer;
     Play selectedPlay;
-    JSONObject request_params;
+   JSONObject request_params;
     JSONObject request_params2; //for tryToLogin2 method
     StateManager stateManager = StateManager.getInstance();
     @Override
@@ -79,15 +79,8 @@ public class LoginActivity extends BaseActivity {
 
         // automatic login is on
         if (shouldShowLoginView == true) {
-
             Log.i("Login Flow : ","Already LoggedIn goto next page");
 
-//            ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(LoginActivity.this, "user_pref", 0);
-//            User cUser = complexPreferences.getObject("current_user",User.class);
-//            SharedPreferences pre = getSharedPreferences("session_id", MODE_PRIVATE);
-//            session_id = pre.getString("session_id","");
-//            stateManager.retriveSchoolClasses(session_id, cUser.getDomain());
-//            stateManager.retriveSchoolTeachers(session_id, cUser.getDomain());
             Log.e("state manager","called ....... ");
             Intent i = new Intent(LoginActivity.this, DrawerActivity.class);
             startActivity(i);
@@ -301,8 +294,8 @@ public class LoginActivity extends BaseActivity {
                     noNetworkView.setVisibility(View.GONE);
 
                     startLoginTimer();
-                    stateManager.retriveSchoolClasses(session_id, user.getDomain());
-                    stateManager.retriveSchoolTeachers(session_id, user.getDomain());
+//                    stateManager.retriveSchoolClasses(session_id, user.getDomain());
+//                    stateManager.retriveSchoolTeachers(session_id, user.getDomain());
 
                     // go to next screen
                     if (isFirstTime()) { // show guide pages

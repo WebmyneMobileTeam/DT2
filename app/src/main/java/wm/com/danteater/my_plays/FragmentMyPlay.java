@@ -54,6 +54,7 @@ import wm.com.danteater.app.PlayTabActivity;
 import wm.com.danteater.customviews.HUD;
 import wm.com.danteater.customviews.SegmentedGroup;
 import wm.com.danteater.customviews.WMTextView;
+import wm.com.danteater.login.LoginActivity;
 import wm.com.danteater.login.User;
 import wm.com.danteater.model.API;
 import wm.com.danteater.model.APIDelete;
@@ -71,7 +72,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     public static int STATE_PREVIEW = 1;
     public static int STATE_READ = 2;
     public static int STATE_CHAT = 3;
-
+    private StateManager stateManager = StateManager.getInstance();
     Play ply;
     private enum ACTIVITY_TYPE{
         TAB_ACTIVITY,ORDER_ACTIVITY
@@ -95,7 +96,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     private Play playSelectedToBeDeletedForReview;
     private Play playSelectedToBeDeletedForPerform;
     private StateManager state = StateManager.getInstance();
-
+    String responseValue;
 
     public static FragmentMyPlay newInstance(String param1, String param2) {
         FragmentMyPlay fragment = new FragmentMyPlay();
@@ -150,27 +151,42 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
         // show loading
 
-        dialog = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
-        dialog.title("Mine Stykker");
-        dialog.show();
-
-        new CallWebService("http://api.danteater.dk/api/MyPlays?UserId="+ currentUser.getUserId(), CallWebService.TYPE_JSONARRAY) {
+        new AsyncTask<Void,Void,Void>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                dialog = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
+                dialog.title("Mine Stykker");
+                dialog.show();
+            }
 
             @Override
-            public void response(String response) {
+
+            protected Void doInBackground(Void... voids) {
+                new CallWebService("http://api.danteater.dk/api/MyPlays?UserId="+ currentUser.getUserId(), CallWebService.TYPE_JSONARRAY) {
+
+                    @Override
+                    public void response(String response) {
+                        responseValue=response;
+                        dialog.dismiss();
+                        handledataafterresponseVolly(responseValue);
+                    }
+                    @Override
+                    public void error(VolleyError error) {
+                        dialog.dismissWithStatus(R.drawable.ic_navigation_cancel, "Error");
+                        Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }.start();
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
                 dialog.dismiss();
-                Log.e("json response", response + "");
-                handledataafterresponseVolly(response);
             }
-
-            @Override
-            public void error(VolleyError error) {
-                dialog.dismissWithStatus(R.drawable.ic_navigation_cancel, "Error");
-                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-
-            }
-        }.start();
-
+        }.execute();
     }
 
     public void handledataafterresponseVolly(final String response) {

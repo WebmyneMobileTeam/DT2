@@ -36,9 +36,11 @@ public class StateManager { //singleton class
 
     public static int playID = 0;
     public static StateManager getInstance() {
+
         return s;
     }
 
+//    public static boolean isFinishRetrivingTeachersAndStudents=false;
     public static boolean finishedRetrievingTeachers = false;
     public static int numberOfClassesToBeRetrieved = 0;
     public  static Group groupForTeacher = new Group();
@@ -67,24 +69,25 @@ public class StateManager { //singleton class
                 @Override
                 public void onResponse(JSONObject jobj) {
                     String res = jobj.toString();
-                    Log.e("response for retrive school classes...: ", res + "");
+//                    Log.e("response for retrive school classes...: ", res + "");
 
                     BeanGroupInfo beanGroupInfo = new GsonBuilder().create().fromJson(res, BeanGroupInfo.class);
                     BeanGroupResult beanGroupResult = beanGroupInfo.getBeanGroupResult();
                     ArrayList<Group> groupArrayList = beanGroupResult.getGroupArrayList();
                     classes.clear();
-                    pupils.clear();
+                 //   pupils.clear();
 
                     for (Group beanGroup : groupArrayList) {
                         if (beanGroup.getGroupType().equals("classtype")) {
                             classes.add(beanGroup);
                             Log.e("group domain", beanGroup.getDomain() + "");
                             numberOfClassesToBeRetrieved++;
-
                             retriveMembers(seesionId, domain, beanGroup);
                         }
                     }
-                    Log.e("pupils after insert: ",pupils+"");
+
+                    Log.e("classes...: ", classes + "");
+
                 }
             }, new Response.ErrorListener() {
 
@@ -122,7 +125,7 @@ public class StateManager { //singleton class
                 public void onResponse(JSONObject jobj) {
 
                     String res = jobj.toString();
-                    Log.e("response for retrive school teachers...: ", res + "");
+//                    Log.e("response for retrive school teachers...: ", res + "");
 
                     BeanGroupMemberInfo beanGroupMemberInfo = new GsonBuilder().create().fromJson(res, BeanGroupMemberInfo.class);
                     BeanGroupMemberResult beanGroupMemberResult = beanGroupMemberInfo.getBeanGroupMemberResult();
@@ -131,7 +134,7 @@ public class StateManager { //singleton class
                     ArrayList<User> userArrayList = new ArrayList<User>();
                     userArrayList.clear();
                     for (GroupMembers beanGroupMembers : groupMembersArrayList) {
-                     Log.e("given name",beanGroupMembers.getGivenName()+" "+beanGroupMembers.getSn());
+//                     Log.e("given name",beanGroupMembers.getGivenName()+" "+beanGroupMembers.getSn());
 
                        userArrayList.add(new User(beanGroupMembers.getGivenName(), beanGroupMembers.getSn(), beanGroupMembers.getUid(), beanGroupMembers.getPrimaryGroup(), null, beanGroupMembers.getDomain()));
                     }
@@ -155,12 +158,12 @@ public class StateManager { //singleton class
 
                         }
                         Log.e("pupils: ",pupils+"");
-                        Log.e("pupils after insert: ",pupils.size()+"");
+
                         numberOfClassesToBeRetrieved--;
                     }
                     if (finishedRetrievingTeachers && numberOfClassesToBeRetrieved == 0) {
-                        //TODO
-                        //FinishedRetrievingTeachersAndPupils();
+
+
                     }
                 }
             }, new Response.ErrorListener() {
@@ -175,5 +178,7 @@ public class StateManager { //singleton class
             je.printStackTrace();
         }
     }
+
+
 
 }

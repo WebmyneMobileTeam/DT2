@@ -35,7 +35,7 @@ private ListView listStudents;
     private static final String ARG_CLASS_NAME = "class_name";
     private int position;
     private String className;
-    private StateManager stateManager = StateManager.getInstance();
+//    private StateManager stateManager = StateManager.getInstance();
     public static FragmentPupils newInstance(int position,String clName) {
 
         FragmentPupils fragment = new FragmentPupils();
@@ -52,6 +52,7 @@ private ListView listStudents;
 
         position = getArguments().getInt(ARG_POSITION);
         className= getArguments().getString(ARG_CLASS_NAME);
+        Log.e("class name:.................",className+"");
     }
 
     @Override
@@ -60,8 +61,7 @@ private ListView listStudents;
         // Inflate the layout for this fragment
         View convertView = inflater.inflate(R.layout.fragment_fragment_pupils, container, false);
         listStudents=(ListView) convertView.findViewById(R.id.listStudentsShare);
-
-         HashMap<String, ArrayList<User>> pupils=stateManager.pupils;
+         HashMap<String, ArrayList<User>> pupils=ShareFragment.pupils;
         Log.e("pupils hashmap",pupils+"");
         ArrayList<User> pupilsList=pupils.get(className);
         Log.e("pupils listview",pupilsList+"");
