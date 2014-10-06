@@ -43,6 +43,7 @@ import wm.com.danteater.Play.TextLines;
 import wm.com.danteater.R;
 import wm.com.danteater.app.MyApplication;
 import wm.com.danteater.customviews.HUD;
+import wm.com.danteater.customviews.SegmentedGroup;
 import wm.com.danteater.customviews.WMEdittext;
 import wm.com.danteater.customviews.WMTextView;
 import wm.com.danteater.login.BeanGroupMemberInfo;
@@ -254,6 +255,8 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
                 break;
 
             case R.id.readPlayLineMenuNote:
+                hideMenu();
+                showCommentOptionsWithFunctionality();
 
                 break;
 
@@ -262,6 +265,34 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
                 break;
 
         }
+
+    }
+
+    private void showCommentOptionsWithFunctionality() {
+
+        final Dialog dialog = new Dialog(ctx,android.R.style.Theme_Translucent_NoTitleBar);
+        WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
+        lp.dimAmount=0.6f;
+        dialog.getWindow().setAttributes(lp);
+        dialog.setCancelable(true);
+        dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        LayoutInflater mInflater = (LayoutInflater) ctx.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        View view = mInflater.inflate(R.layout.write_comment_view_popup_menu,null);
+        dialog.setContentView(view);
+        dialog.show();
+
+        SegmentedGroup segmentedGroup = (SegmentedGroup)view.findViewById(R.id.writeCommentPopupSegmentedGroup);
+        if(user.checkPupil(user.getRoles())){
+            segmentedGroup.setVisibility(View.INVISIBLE);
+        }else{
+            segmentedGroup.setVisibility(View.VISIBLE);
+        }
+
+
+
+
 
     }
 
@@ -329,7 +360,6 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         LayoutInflater mInflater = (LayoutInflater) ctx.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         View view = mInflater.inflate(R.layout.edit_line_view_popup_menu,null);
-
         dialog.setContentView(view);
         dialog.show();
 
@@ -347,12 +377,6 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
 
             }
         });
-
-
-
-
-
-
 
     }
 

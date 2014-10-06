@@ -726,9 +726,12 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             String k = "PlayLatesteUpdateDate"+play.PlayId;
             //  Toast.makeText(getActivity(),preferences.getString(k,""), Toast.LENGTH_SHORT).show();
             long unixTime = Long.parseLong(preferences.getString(k,""));
+
             BigDecimal bigDecimal = new BigDecimal(unixTime);
 
-            String serverLink = API.link_getPlayUpdateForPlayOrderIdString+play.PlayId+"?unixTimeStamp="+bigDecimal;
+          //  String serverLink = API.link_getPlayUpdateForPlayOrderIdString+play.OrderId+"?unixTimeStamp="+unixTime;
+            String serverLink = API.link_getPlayUpdateForPlayOrderIdString+play.OrderId+"?unixTimeStamp="+1412603939;
+            Log.e("update string before update : ",serverLink);
             new CallWebService(serverLink,CallWebService.TYPE_JSONARRAY) {
 
                 @Override
@@ -748,22 +751,24 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                                 try {
                                     JSONArray arr = new JSONArray(response);
 
-                                    DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
-                                    plyIDAfterUpdate = dbh.getPlayIdFromDBForOrderId(play.OrderId);
-                                    state.playID = plyIDAfterUpdate;
-                                    dbh.close();
-
                                     for(int i=0;i<arr.length();i++){
 
                                         JSONObject jsonObject = arr.getJSONObject(i);
                                         PlayLines playLine = new GsonBuilder().create().fromJson(jsonObject.toString(),PlayLines.class);
 
                                         DatabaseWrapper dbWrap = new DatabaseWrapper(getActivity());
+                                        Log.e("Before update playId ",play.PlayId);
                                         dbWrap.updatePlayLine(playLine,Integer.parseInt(play.PlayId));
                                         dbWrap.close();
 
 
                                     }
+
+                                    DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
+                                    plyIDAfterUpdate = dbh.getPlayIdFromDBForOrderId(play.OrderId);
+                                    state.playID = plyIDAfterUpdate;
+                                    dbh.close();
+
                                 }catch(Exception e){
                                         e.printStackTrace();
                                 }

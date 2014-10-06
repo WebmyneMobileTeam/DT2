@@ -908,7 +908,6 @@ public class ReadFragment extends Fragment {
                         requestParams.put("AlteredLineText",textLine.alteredLineText);
                     }
 
-
                     arr.put(requestParams);
                 } catch (JSONException je) {
                     je.printStackTrace();

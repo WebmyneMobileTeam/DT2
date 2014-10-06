@@ -237,6 +237,8 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         Log.e("Play Id in Database : ",""+cursor.getInt(cursor.getColumnIndex("id_")));
         int playID = cursor.getInt(cursor.getColumnIndex("id_"));
         state.playID = playID;
+
+
         for(PlayLines line : play.playLinesList){
             insertPlayLine(line,playID);
         }
@@ -430,13 +432,12 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         if (cursor.moveToFirst()) {
             do {
                 playLineID = cursor.getInt(cursor.getColumnIndex("id_"));
+                Log.e("playLineID for update ",""+playLineID);
             } while (cursor.moveToNext());
         }
 
-
-
         if(playLineID == -1){
-            myDataBase.close();
+
             return;
         }
 
@@ -521,7 +522,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
                     cvTextLines.put("altered_text_",textLine.alteredLineText);
 
                     myDataBase = this.getWritableDatabase();
-                    myDataBase.update("textlines",cvTextLines,"WHERE id_ " + " = ?",new String[]{""+textLineID});
+                    myDataBase.update("textlines",cvTextLines,"id_ " + " = ?",new String[]{""+textLineID});
                     myDataBase.close();
                 }
                 count++;
