@@ -30,6 +30,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -44,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import wm.com.danteater.Play.Play;
 import wm.com.danteater.Play.PlayLines;
@@ -54,6 +56,12 @@ import wm.com.danteater.app.PlayTabActivity;
 import wm.com.danteater.customviews.HUD;
 import wm.com.danteater.customviews.SegmentedGroup;
 import wm.com.danteater.customviews.WMTextView;
+import wm.com.danteater.login.BeanGroupInfo;
+import wm.com.danteater.login.BeanGroupMemberInfo;
+import wm.com.danteater.login.BeanGroupMemberResult;
+import wm.com.danteater.login.BeanGroupResult;
+import wm.com.danteater.login.Group;
+import wm.com.danteater.login.GroupMembers;
 import wm.com.danteater.login.LoginActivity;
 import wm.com.danteater.login.User;
 import wm.com.danteater.model.API;
@@ -64,6 +72,7 @@ import wm.com.danteater.model.DatabaseWrapper;
 import wm.com.danteater.model.Prefs;
 import wm.com.danteater.model.StateManager;
 import wm.com.danteater.search.FragmentSearch;
+import wm.com.danteater.tab_share.ShareFragment;
 
 
 public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChangeListener {
@@ -74,12 +83,18 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     public static int STATE_CHAT = 3;
     private StateManager stateManager = StateManager.getInstance();
     Play ply;
+    User cUser;
+    String session_id;
+    public  boolean finishedRetrievingTeachers = false;
+    public  int numberOfClassesToBeRetrieved = 0;
+    public   Group groupForTeacher = new Group();
     private enum ACTIVITY_TYPE{
         TAB_ACTIVITY,ORDER_ACTIVITY
     }
 
     int plyIDAfterUpdate = 0; // hack
     private HUD dialog;
+    private HUD dialogForShare;
     private HUD dialog_next;
     private SegmentedGroup segmentedGroupPlays;
     private RadioButton rbBestilte;
@@ -184,7 +199,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                dialog.dismiss();
+//                dialog.dismiss();
             }
         }.execute();
     }
@@ -572,9 +587,20 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                     complexPreferences.putObject("selected_play",playListForPerform.get(position));
                     complexPreferences.commit();
 
+                    dialogForShare = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
+                    dialogForShare.title("");
+                    dialogForShare.show();
+                    ComplexPreferences complexPreferencesForUser = ComplexPreferences.getComplexPreferences(getActivity(), "user_pref", 0);
+                    cUser = complexPreferences.getObject("current_user", User.class);
+                    SharedPreferences pre = getActivity().getSharedPreferences("session_id", getActivity().MODE_PRIVATE);
+                    session_id = pre.getString("session_id", "");
+                    stateManager.classes.clear();
+                    stateManager.teachers.clear();
+                    stateManager.pupils.clear();
+                    retriveSchoolClasses(session_id, cUser.getDomain());
+                    retriveSchoolTeachers(session_id, cUser.getDomain());
 
-                    Intent intent=new Intent(getActivity(),ShareActivityForPerform.class);
-                    startActivity(intent);
+
 
 
                 }
@@ -890,5 +916,139 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
         date.setTime(date_origine);
         date.add(java.util.Calendar.SECOND, (int) nbSeconds);
         return date.getTime();
+    }
+
+
+    public  void retriveSchoolClasses(final String seesionId, final String domain) {
+
+        JSONObject methodParams = new JSONObject();
+        JSONObject requestParams = new JSONObject();
+
+        try {
+            methodParams.put("session_id", seesionId);
+            methodParams.put("domain", domain);
+
+            requestParams.put("methodname", "listGroups");
+            requestParams.put("type", "jsonwsp/request");
+            requestParams.put("version", "1.0");
+            requestParams.put("args", methodParams);
+
+            JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, "https://mvid-services.mv-nordic.com/v2/GroupService/jsonwsp", requestParams, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject jobj) {
+                    String res = jobj.toString();
+//                    Log.e("response for retrive school classes...: ", res + "");
+
+                    BeanGroupInfo beanGroupInfo = new GsonBuilder().create().fromJson(res, BeanGroupInfo.class);
+                    BeanGroupResult beanGroupResult = beanGroupInfo.getBeanGroupResult();
+                    ArrayList<Group> groupArrayList = beanGroupResult.getGroupArrayList();
+                    stateManager.classes.clear();
+                    //   pupils.clear();
+
+                    for (Group beanGroup : groupArrayList) {
+                        if (beanGroup.getGroupType().equals("classtype")) {
+                            stateManager.classes.add(beanGroup);
+                            Log.e("group domain", beanGroup.getDomain() + "");
+                            numberOfClassesToBeRetrieved++;
+                            retriveMembers(seesionId, domain, beanGroup);
+                        }
+                    }
+
+                    Log.e("classes...: ", stateManager.classes + "");
+
+                }
+            }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError arg0) {
+                }
+            });
+            MyApplication.getInstance().addToRequestQueue(req);
+
+
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+    }
+
+    public  void retriveSchoolTeachers(String seesionId, String domain) {
+        groupForTeacher.setGroupId("teacher");
+        stateManager.teachers.clear();
+        retriveMembers(seesionId, domain, groupForTeacher);
+
+    }
+
+    public  void retriveMembers(String seesionId, String domain, final Group group) {
+        JSONObject methodParams = new JSONObject();
+        JSONObject requestParams = new JSONObject();
+        try {
+            methodParams.put("session_id", seesionId);
+            methodParams.put("domain", domain);
+            methodParams.put("group_cn", group.getGroupId());
+            requestParams.put("methodname", "listGroupMembers");
+            requestParams.put("type", "jsonwsp/request");
+            requestParams.put("version", "1.0");
+            requestParams.put("args", methodParams);
+
+            JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, "https://mvid-services.mv-nordic.com/v2/GroupService/jsonwsp", requestParams, new Response.Listener<JSONObject>() {
+
+                @Override
+                public void onResponse(JSONObject jobj) {
+
+                    String res = jobj.toString();
+//                    Log.e("response for retrive school teachers...: ", res + "");
+
+                    BeanGroupMemberInfo beanGroupMemberInfo = new GsonBuilder().create().fromJson(res, BeanGroupMemberInfo.class);
+                    BeanGroupMemberResult beanGroupMemberResult = beanGroupMemberInfo.getBeanGroupMemberResult();
+
+                    ArrayList<GroupMembers> groupMembersArrayList = beanGroupMemberResult.getGroupMembersArrayList();
+                    ArrayList<User> userArrayList = new ArrayList<User>();
+                    userArrayList.clear();
+                    for (GroupMembers beanGroupMembers : groupMembersArrayList) {
+//                     Log.e("given name",beanGroupMembers.getGivenName()+" "+beanGroupMembers.getSn());
+
+                        userArrayList.add(new User(beanGroupMembers.getGivenName(), beanGroupMembers.getSn(), beanGroupMembers.getUid(), beanGroupMembers.getPrimaryGroup(), null, beanGroupMembers.getDomain()));
+                    }
+
+                    if (group.getGroupId().equals("teacher")) {
+
+                        stateManager.teachers.addAll(userArrayList);
+                        Log.e("teachers:",stateManager.teachers+"");
+
+                        finishedRetrievingTeachers = true;
+                    } else {
+
+                        stateManager.pupils.put(group.getGroupName().toString(), userArrayList);
+
+
+                        for(Map.Entry<String,ArrayList<User>> entry : stateManager.pupils.entrySet()){
+
+                            Log.e("key: ",entry.getKey()+" ");
+                            Log.e("vlaues: ",entry.getValue()+"  ");
+
+
+                        }
+                        Log.e("pupils: ",stateManager.pupils+"");
+
+                        numberOfClassesToBeRetrieved--;
+                    }
+                    if (finishedRetrievingTeachers && numberOfClassesToBeRetrieved == 0) {
+                        dialogForShare.dismiss();
+                        Intent intent=new Intent(getActivity(),ShareActivityForPerform.class);
+                        startActivity(intent);
+
+                    }
+                }
+            }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError arg0) {
+                }
+            });
+            MyApplication.getInstance().addToRequestQueue(req);
+
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
     }
 }

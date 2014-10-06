@@ -27,6 +27,7 @@ import java.util.Set;
 import wm.com.danteater.R;
 import wm.com.danteater.login.User;
 import wm.com.danteater.model.StateManager;
+import wm.com.danteater.my_plays.ShareActivityForPerform;
 
 public class FragmentPupils extends Fragment {
 //    private Menu menu;
@@ -35,7 +36,7 @@ private ListView listStudents;
     private static final String ARG_CLASS_NAME = "class_name";
     private int position;
     private String className;
-//    private StateManager stateManager = StateManager.getInstance();
+    StateManager stateManager=StateManager.getInstance();
     public static FragmentPupils newInstance(int position,String clName) {
 
         FragmentPupils fragment = new FragmentPupils();
@@ -61,9 +62,11 @@ private ListView listStudents;
         // Inflate the layout for this fragment
         View convertView = inflater.inflate(R.layout.fragment_fragment_pupils, container, false);
         listStudents=(ListView) convertView.findViewById(R.id.listStudentsShare);
-         HashMap<String, ArrayList<User>> pupils=ShareFragment.pupils;
+         HashMap<String, ArrayList<User>> pupils= stateManager.pupils;
+
         Log.e("pupils hashmap",pupils+"");
-        ArrayList<User> pupilsList=pupils.get(className);
+        final ArrayList<User> pupilsList=pupils.get(className);
+        //TODO short list
         Log.e("pupils listview",pupilsList+"");
 
 
@@ -72,17 +75,22 @@ private ListView listStudents;
             studentNameList.add(""+pupilsList.get(i).getFirstName()+" "+pupilsList.get(i).getLastName());
         }
 
-        Collections.sort(studentNameList);
+//        Collections.sort(studentNameList);
         ArrayAdapter adap = new ArrayAdapter(getActivity(),android.R.layout.simple_list_item_multiple_choice,studentNameList);
 
         listStudents.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         listStudents.setAdapter(adap);
-//        listStudents.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        listStudents.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //                enableDisableShareOptions(listStudents.getCheckedItemPositions());
-//            }
-//        });
+                if (ShareFragment.studentSharedList.contains(pupilsList.get(position))) {
+                    ShareFragment.studentSharedList.remove(pupilsList.get(position));
+                } else {
+                    ShareFragment.studentSharedList.add(pupilsList.get(position));
+                }
+            }
+        });
         return convertView;
     }
 

@@ -276,8 +276,8 @@ public class InfoFragment extends Fragment {
                 if (user.checkTeacherOrAdmin(user.getRoles()) == true) {
 
                     // TODO can't add "(lærer)"
-//                    nameToBeSaved = currentUser.getFirstName() + " " + currentUser.getLastName() + " (lærer)";
-                    nameToBeSaved = currentUser.getFirstName() + " " + currentUser.getLastName();
+                    nameToBeSaved = currentUser.getFirstName() + " " + currentUser.getLastName() + " (lærer)";
+//                    nameToBeSaved = currentUser.getFirstName() + " " + currentUser.getLastName();
                 } else {
                     nameToBeSaved = currentUser.getFirstName() + " " + currentUser.getLastName();
                 }

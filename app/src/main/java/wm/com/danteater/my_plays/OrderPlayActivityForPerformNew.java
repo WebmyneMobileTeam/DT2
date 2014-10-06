@@ -533,8 +533,8 @@ if(isFirstdate)
 
                 if (user.checkTeacherOrAdmin(user.getRoles()) == true) {
                     // TODO can't add "(lærer)"
-//                    nameToBeSaved = currentUser.getFirstName() + " " + currentUser.getLastName() + " (lærer)";
-                    nameToBeSaved = currentUser.getFirstName() + " " + currentUser.getLastName();
+                    nameToBeSaved = currentUser.getFirstName() + " " + currentUser.getLastName() + " (lærer)";
+//                    nameToBeSaved = currentUser.getFirstName() + " " + currentUser.getLastName();
                 } else {
                     nameToBeSaved = currentUser.getFirstName() + " " + currentUser.getLastName();
                 }
@@ -551,12 +551,9 @@ if(isFirstdate)
             Log.e("total users: ", shareWithUsersArray + "");
         }
         new AsyncTask<Void, Void, Void>() {
-
             @Override
             protected Void doInBackground(Void... voids) {
-
                 try
-
                 {
                     Reader readerForNone = API.callWebservicePost("http://api.danteater.dk/api/playshare/"+selectedPlay.OrderId, shareWithUsersArray.toString());
                     Log.e("reader", readerForNone + "");

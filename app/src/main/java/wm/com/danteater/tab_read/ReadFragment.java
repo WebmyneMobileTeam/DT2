@@ -175,7 +175,7 @@ public class ReadFragment extends Fragment {
 
                 @Override
                 public void error(VolleyError error) {
-
+                Log.e("error: ",error+"");
 
                 }
             }.start();
