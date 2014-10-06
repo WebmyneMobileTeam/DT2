@@ -22,9 +22,19 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -39,12 +49,14 @@ import wm.com.danteater.Play.Play;
 import wm.com.danteater.Play.PlayLines;
 import wm.com.danteater.Play.TextLines;
 import wm.com.danteater.R;
+import wm.com.danteater.app.MyApplication;
 import wm.com.danteater.customviews.HUD;
 import wm.com.danteater.customviews.PinnedHeaderListView;
 import wm.com.danteater.customviews.SectionedBaseAdapter;
 import wm.com.danteater.customviews.WMEdittext;
 import wm.com.danteater.customviews.WMTextView;
 import wm.com.danteater.login.User;
+import wm.com.danteater.model.API;
 import wm.com.danteater.model.APIDelete;
 import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
@@ -54,6 +66,8 @@ import wm.com.danteater.model.StateManager;
 
 public class ReadFragment extends Fragment {
 
+    public ReadSectionedAdapter readSectionedAdapter;
+    Reader readerForNone;
     public int goToLineNumberFromChatLink = 0;
     public PinnedHeaderListView listRead;
     private Play selectedPlay;
@@ -384,7 +398,8 @@ public class ReadFragment extends Fragment {
              /*   for(int i = 0 ; i<marrPlaySections.size(); i++){
                    Log.i(marrPlaySections.get(i)," count is : "+dicPlayLines.get(marrPlaySections.get(i)).size());
                 }*/
-                listRead.setAdapter(new ReadSectionedAdapter(getActivity()));
+                readSectionedAdapter = new ReadSectionedAdapter(getActivity());
+                listRead.setAdapter(readSectionedAdapter);
 
 
             }
@@ -629,7 +644,7 @@ public class ReadFragment extends Fragment {
         }
 
         @Override
-        public View getItemView(int section, int position, View convertView, ViewGroup parent) {
+        public View getItemView(final int section, final int position, View convertView, ViewGroup parent) {
 
             ViewHolder.HolderRecordPlayRoleCell holderRecordPlayRoleCell = null;
             ViewHolder.HolderEmptyPreviewPlayRoleCell holderEmptyPreviewPlayRoleCell = null;
@@ -646,7 +661,7 @@ public class ReadFragment extends Fragment {
             ViewHolder.HolderReadPlaySongCell holderReadPlaySongCell = null;
             ViewHolder.HolderReadPlaySongLineCell holderReadPlaySongLineCell = null;
 
-            PlayLines playLine = dicPlayLines.get(marrPlaySections.get(section)).get(position);
+            final PlayLines playLine = dicPlayLines.get(marrPlaySections.get(section)).get(position);
             int type = getItemViewType(section,position);
 
             switch (type){
@@ -743,7 +758,6 @@ public class ReadFragment extends Fragment {
 
                 break;
 
-
                 case PreviewPlayPlayLineCell:
                 case ReadPlayPlayLineCell:
                     //
@@ -758,6 +772,17 @@ public class ReadFragment extends Fragment {
                     }
 
                     holderReadPlayPlayLineCell.cellReadPlayPlayLine.setupForPlayLine(playLine,currentState);
+                    holderReadPlayPlayLineCell.cellReadPlayPlayLine.setOnTextLineUpdated(new CellReadPlayPlayLine.OnTextLineUpdated() {
+                        @Override
+                        public void onTextLineUpdated(String newText) {
+                            Log.e("TextLine ",""+section+":"+position);
+
+                           playLine.textLinesList.get(0).alteredLineText = newText;
+                           playLine.textLinesList.get(0).LineText = "";
+                           callServiceForTextLineUpdate(playLine);
+
+                        }
+                    });
 
 
 
@@ -766,7 +791,6 @@ public class ReadFragment extends Fragment {
 
                 case PreviewReadPlayNoteCell:
                 case ReadPlayNoteCell:
-
                     //
                     if(convertView == null){
                         convertView = mInflater.inflate(R.layout.item_read_play_note_cell, parent,false);
@@ -865,6 +889,116 @@ public class ReadFragment extends Fragment {
 
         }
 
+        private void callServiceForTextLineUpdate(PlayLines playLine) {
+
+
+            final JSONObject methodParams = new JSONObject();
+
+            JSONArray arr = new JSONArray();
+
+            for(TextLines textLine : playLine.textLinesList){
+
+                JSONObject requestParams = new JSONObject();
+                try {
+                    requestParams.put("LineType",textLine.LineType);
+                    requestParams.put("LineText",textLine.LineText);
+                    if(textLine.alteredLineText == null || textLine.alteredLineText.equalsIgnoreCase("")){
+                        requestParams.put("AlteredLineText","");
+                    }else{
+                        requestParams.put("AlteredLineText",textLine.alteredLineText);
+                    }
+
+
+                    arr.put(requestParams);
+                } catch (JSONException je) {
+                    je.printStackTrace();
+                }
+
+            }
+
+            try {
+                methodParams.put("LineCount", Integer.parseInt(playLine.LineCount));
+                methodParams.put("LineID",playLine.LineID);
+                methodParams.put("TextLines",arr);
+
+            }catch (Exception e){
+
+                e.printStackTrace();
+
+            }
+
+            Log.e("Method params",""+methodParams.toString());
+
+            final List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+            pairs.add(new BasicNameValuePair("LineCount",""+Integer.parseInt(playLine.LineCount)));
+            pairs.add(new BasicNameValuePair("LineCount",playLine.LineID));
+            pairs.add(new BasicNameValuePair("LineCount",arr.toString()));
+
+            final HUD hud = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
+            hud.title("Gemmer ændringer");
+            hud.show();
+
+            new AsyncTask<Void, Void, Void>() {
+
+                @Override
+                protected Void doInBackground(Void... voids) {
+
+                    try
+
+                    {
+                       // readerForNone = API.callWebservicePostWithNameValue("http://api.danteater.dk/api/PlayUpdate", pairs);
+
+                        readerForNone = API.callWebservicePost("http://api.danteater.dk/api/PlayUpdate",methodParams.toString());
+                     /*   Log.e("reader", readerForNone + "");
+
+                        StringBuffer response = new StringBuffer();
+                        int i = 0;
+                        do {
+                            i = readerForNone.read();
+                            char character = (char) i;
+                            response.append(character);
+
+                        } while (i != -1);
+                        readerForNone.close();
+                        Log.e("response", response + " ");
+*/
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Void aVoid) {
+                    super.onPostExecute(aVoid);
+                    hud.dismiss();
+                    readSectionedAdapter.notifyDataSetChanged();
+
+                    try {
+                        Log.e("reader", readerForNone + "");
+
+                        StringBuffer response = new StringBuffer();
+                        int i = 0;
+                        do {
+                            i = readerForNone.read();
+                            char character = (char) i;
+                            response.append(character);
+
+                        } while (i != -1);
+                        readerForNone.close();
+                        Log.e("response", response + " ");
+
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                }
+            }.execute();
+
+        }
+
         @Override
         public View getSectionHeaderView(int section, View convertView, ViewGroup parent) {
 
@@ -880,5 +1014,7 @@ public class ReadFragment extends Fragment {
         }
 
     }
+
+
 
 }

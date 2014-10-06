@@ -27,6 +27,7 @@ public class CellReadPlayRole {
     private setOnAssignButtonClicked setClicked;
     private User user;
     private Context ctx;
+
     public CellReadPlayRole(View view,Context ctx) {
         this.ctx = ctx;
         tvRoleDescription = (TextView)view.findViewById(R.id.readPlayRoleDescription);
@@ -55,7 +56,6 @@ public class CellReadPlayRole {
         }else{
             btnAssignRole.setVisibility(View.INVISIBLE);
         }
-
 
         if (isEmptyPlayRole == true) {
             tvRoleDescription.setVisibility(View.GONE);
@@ -106,16 +106,12 @@ public class CellReadPlayRole {
 
             TextLines textLine = playLine.textLinesList.get(0);
             lblCharacterName.setText(playLine.RoleName);
-
             // todo for pupil btn
             tvRoleDescription.setText(textLine.LineText);
 
-
         }
 
-
     }
-
 
    public void setAssignClicked(setOnAssignButtonClicked s){
         setClicked = s;
@@ -124,12 +120,6 @@ public class CellReadPlayRole {
     }
 
   interface setOnAssignButtonClicked{
-
     public void onAssignButtonClicked();
-
 }
-
-    
-
-
 

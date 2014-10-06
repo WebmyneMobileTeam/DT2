@@ -18,6 +18,12 @@
         <item name="android:paddingRight">5dp</item>
     </style>
 
+    <style name="my_dialog_theme">
+
+        <item name="android:windowBackground">@drawable/dialogframe</item>
+
+    </style>
+
 
 
 </resources>

@@ -9,7 +9,7 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/readPlayLineMenuMore"
+        android:id="@+id/readPlayLineMenuMoreClose"
         android:layout_centerInParent="true"
         android:layout_gravity="center_vertical"
         android:layout_width="wrap_content"
@@ -23,6 +23,7 @@
         android:layout_height="wrap_content"
         android:text="Ret"
         android:gravity="center"
+        android:layout_marginRight="8dp"
         android:drawableTop="@drawable/ic_assign"
         android:textColor="@android:color/white"
         android:textSize="@dimen/small_text" />
@@ -34,6 +35,7 @@
         android:layout_height="wrap_content"
         android:text="Note"
         android:gravity="center"
+        android:layout_marginRight="8dp"
         android:drawableTop="@drawable/ic_compose"
         android:textColor="@android:color/white"
         android:textSize="@dimen/small_text" />

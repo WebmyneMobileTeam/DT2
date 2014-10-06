@@ -1,6 +1,7 @@
 package wm.com.danteater.tab_read;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -8,10 +9,27 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.androidanimations.library.Techniques;
+import com.androidanimations.library.Webmyne;
+import com.google.gson.GsonBuilder;
+import com.nineoldandroids.animation.Animator;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -23,7 +41,13 @@ import wm.com.danteater.Play.Comments;
 import wm.com.danteater.Play.PlayLines;
 import wm.com.danteater.Play.TextLines;
 import wm.com.danteater.R;
+import wm.com.danteater.app.MyApplication;
+import wm.com.danteater.customviews.HUD;
+import wm.com.danteater.customviews.WMEdittext;
 import wm.com.danteater.customviews.WMTextView;
+import wm.com.danteater.login.BeanGroupMemberInfo;
+import wm.com.danteater.login.BeanGroupMemberResult;
+import wm.com.danteater.login.GroupMembers;
 import wm.com.danteater.login.User;
 import wm.com.danteater.model.AppConstants;
 import wm.com.danteater.model.ComplexPreferences;
@@ -32,7 +56,7 @@ import wm.com.danteater.my_plays.DrawerActivity;
 /**
  * Created by dhruvil on 29-09-2014.
  */
-public class CellReadPlayPlayLine {
+public class CellReadPlayPlayLine implements View.OnClickListener{
 
     private LinearLayout listReadPlayPlaylinecell;
     private WMTextView lblRoleName;
@@ -52,6 +76,19 @@ public class CellReadPlayPlayLine {
     String currentUserName = "";
     String currentUserId = "";
 
+    private PlayLines pl;
+    private int currentState = 0;
+
+    private View viewMenu;
+    private ImageView imgCloseMenu;
+    private WMTextView btnEdit;
+    private WMTextView btnNote;
+    private WMTextView btnMessage;
+
+    private OnTextLineUpdated onTextLineUpdated;
+
+
+
 
     public CellReadPlayPlayLine(View view, Context context) {
 
@@ -63,13 +100,30 @@ public class CellReadPlayPlayLine {
         listReadPlayPlaylinecell = (LinearLayout)view.findViewById(R.id.listReadPlayPlaylinecell);
         lblRoleName.setBold();
 
+        viewMenu = (View)view.findViewById(R.id.cellMenuReadLineTeacher);
+        imgCloseMenu = (ImageView)view.findViewById(R.id.readPlayLineMenuMoreClose);
+        btnEdit = (WMTextView)view.findViewById(R.id.readPlayLineMenuEdit);
+        btnMessage = (WMTextView)view.findViewById(R.id.readPlayLineMenuNote);
+        btnNote = (WMTextView)view.findViewById(R.id.readPlayLineMenuChat);
+
+        btnMenu.setOnClickListener(this);
+        imgCloseMenu.setOnClickListener(this);
+        btnEdit.setOnClickListener(this);
+        btnMessage.setOnClickListener(this);
+        btnNote.setOnClickListener(this);
+
+
     }
 
     public void setupForPlayLine(PlayLines playLine, int current_state) {
 
+
+        viewMenu.setVisibility(View.GONE);
+        this.pl = playLine;
+        this.currentState = current_state;
+
         listReadPlayPlaylinecell.removeAllViews();
         listReadPlayPlaylinecell.invalidate();
-
         if(current_state == STATE_PREVIEW){
             btnMenu.setVisibility(View.INVISIBLE);
         }
@@ -174,7 +228,142 @@ public class CellReadPlayPlayLine {
     }
 
 
+    @Override
+    public void onClick(View v) {
+
+        switch (v.getId()){
+            case R.id.readPlayLineCellMoreImage:
+
+                showMenu();
+
+                break;
+
+            case R.id.readPlayLineMenuMoreClose:
+
+                hideMenu();
+
+
+                break;
+
+            case R.id.readPlayLineMenuEdit:
+
+                hideMenu();
+                showEditOptionsWithFunctionality();
+
+
+                break;
+
+            case R.id.readPlayLineMenuNote:
+
+                break;
+
+            case R.id.readPlayLineMenuChat:
+
+                break;
+
+        }
+
+    }
+
+    private void hideMenu() {
+
+        Webmyne.get(Techniques.SlideOutUp).duration(700).withListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                viewMenu.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        }).startOn(viewMenu);
+
+    }
+
+    private void showMenu() {
+        viewMenu.setVisibility(View.VISIBLE);
+        Webmyne.get(Techniques.SlideInDown).duration(700).withListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        }).startOn(viewMenu);
+
+    }
+
+
+    private void showEditOptionsWithFunctionality() {
+
+        final Dialog dialog = new Dialog(ctx,android.R.style.Theme_Translucent_NoTitleBar);
+        WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
+        lp.dimAmount=0.6f;
+        dialog.getWindow().setAttributes(lp);
+        dialog.setCancelable(true);
+        dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        LayoutInflater mInflater = (LayoutInflater) ctx.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        View view = mInflater.inflate(R.layout.edit_line_view_popup_menu,null);
+
+        dialog.setContentView(view);
+        dialog.show();
+
+        final EditText editLineViewTextArea = (EditText)view.findViewById(R.id.editLineViewTextArea);
+        editLineViewTextArea.setText(pl.textLinesList.get(0).currentText());
+
+        WMTextView saveBtn = (WMTextView)view.findViewById(R.id.editLineViewPopupSave);
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                dialog.dismiss();
+
+                onTextLineUpdated.onTextLineUpdated(editLineViewTextArea.getText().toString());
+
+            }
+        });
 
 
 
+
+
+
+
+    }
+
+    public void setOnTextLineUpdated(OnTextLineUpdated textLineUpdated){
+
+       this.onTextLineUpdated = textLineUpdated;
+
+    }
+
+
+    interface OnTextLineUpdated{
+        public void onTextLineUpdated(String newText);
+    }
 }

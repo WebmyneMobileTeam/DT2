@@ -125,8 +125,6 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
 
             }
         });
-
-
         musicPlay.setOnClickListener(new View.OnClickListener() {
 
             @Override
