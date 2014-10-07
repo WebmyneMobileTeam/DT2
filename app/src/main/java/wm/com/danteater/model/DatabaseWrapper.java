@@ -236,6 +236,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
         cursor.moveToFirst();
         Log.e("Play Id in Database : ",""+cursor.getInt(cursor.getColumnIndex("id_")));
+
         int playID = cursor.getInt(cursor.getColumnIndex("id_"));
 
         SharedPreferences preferences = myContext.getSharedPreferences("Plays", myContext.MODE_PRIVATE);
@@ -295,13 +296,27 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         Cursor cursor = myDataBase.rawQuery(selectQuery, null);
         cursor.moveToFirst();
 
+        int playLineId = -1;
+
+        if(cursor.moveToFirst()){
+            do {
+                playLineId = cursor.getInt(cursor.getColumnIndex("id_"));
+            }while (cursor.moveToNext());
+        }
 
 
-        int playLineId = cursor.getInt(cursor.getColumnIndex("id_"));
+        if(playLineId == -1){
+            return;
+        }
+
         // assigned users
         if(play_line.playLineType() == PlayLines.PlayLType.PlayLineTypeRole){
+
             removeAssignedUsersForPlayLine(play_line,playid);
+
+            Log.e("No of assigned user",""+play_line.assignedUsersList.size());
             for(AssignedUsers assignedUser : play_line.assignedUsersList){
+
                 insertAssignedUser(assignedUser,play_line,playid);
             }
         }
@@ -342,6 +357,9 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
     private void insertComment(Comments comment, int playLineId) {
 
+
+        Log.i("In insert comments ","insert comments for the ");
+
         ContentValues cvLineText = new ContentValues();
         cvLineText.put("playline_id_",playLineId);
         cvLineText.put("username_",comment.userName);
@@ -369,34 +387,39 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
     }
 
     public void insertAssignedUser(AssignedUsers assignedUsers,PlayLines play_line, int playid) {
-
+        String roleName = null;
+        Log.e("PlayID while assign user inserted ",""+playid);
         if(play_line.RoleName == null || play_line.RoleName.equalsIgnoreCase("")){
 
             myDataBase = this.getWritableDatabase();
             String selectQuery = "SELECT role_name_ FROM playlines WHERE play_id_ ="+playid+" AND playline_id_text_ ="+"\""+play_line.LineID.toString().trim()+"\"";
+            Log.e("Query for inserting assigned user",selectQuery);
             Cursor cursor = myDataBase.rawQuery(selectQuery, null);
             cursor.moveToFirst();
-            String roleName = null;
+
             if (cursor.moveToFirst()) {
                 do {
                     roleName = new String();
                     roleName = cursor.getString(cursor.getColumnIndex("role_name_"));
+                    Log.e("RoleNameAfterFetching",roleName);
                     play_line.RoleName = roleName;
                 } while (cursor.moveToNext());
             }
             cursor.close();
 
-            ContentValues cvInsertAssignedUsers = new ContentValues();
-            cvInsertAssignedUsers.put("play_id_",playid);
-            cvInsertAssignedUsers.put("role_name_",roleName);
-            cvInsertAssignedUsers.put("assigned_user_id_",assignedUsers.AssignedUserId);
-            cvInsertAssignedUsers.put("assigned_user_name_",assignedUsers.AssignedUserName);
 
-            myDataBase = this.getWritableDatabase();
-            myDataBase.insert("assigned_users",null,cvInsertAssignedUsers);
-            myDataBase.close();
 
         }
+
+        ContentValues cvInsertAssignedUsers = new ContentValues();
+        cvInsertAssignedUsers.put("play_id_",playid);
+        cvInsertAssignedUsers.put("role_name_",play_line.RoleName);
+        cvInsertAssignedUsers.put("assigned_user_id_",assignedUsers.AssignedUserId);
+        cvInsertAssignedUsers.put("assigned_user_name_",assignedUsers.AssignedUserName);
+
+        myDataBase = this.getWritableDatabase();
+        myDataBase.insert("assigned_users",null,cvInsertAssignedUsers);
+        myDataBase.close();
 
     }
 
@@ -501,7 +524,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
     public void removeAllCommentsForPlayLineId(int playLineID) {
 
         myDataBase = this.getWritableDatabase();
-        myDataBase.delete("comments","WHERE playline_id_" + " = ?",new String[]{""+playLineID});
+        myDataBase.delete("comments","playline_id_" + " = ?",new String[]{""+playLineID});
         myDataBase.close();
 
     }
@@ -577,11 +600,14 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
         ArrayList marrMyCastMatches = new ArrayList();
         myDataBase = this.getWritableDatabase();
-        String rolenameQuery = "SELECT role_name_ FROM assigned_users WHERE play_id_ ="+playID+" AND assigned_user_id_ ="+"\""+userID+"\"";
+        String rolenameQuery = "SELECT role_name_ FROM assigned_users WHERE play_id_ = "+playID+" AND assigned_user_id_ ="+"\""+userID+"\"";
+       Log.e("Role name query database ",rolenameQuery);
         Cursor cursor = myDataBase.rawQuery(rolenameQuery, null);
-
+        cursor.moveToFirst();
         String roleNameForUserId = null;
+
         ArrayList<String> castMatchesStringsArray = new ArrayList<String>();
+
         if (cursor.moveToFirst()) {
             do {
 
@@ -590,24 +616,49 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
                     marrMyCastMatches.add(roleNameForUserId);
                 }
 
-                String castMatchesQuery = "SELECT cast_matches_ FROM playlines WHERE role_name_ =\"+\"\\\"\"+roleNameForUserId+\"\\\"\" AND main_line_type_ ="+"\""+mlt+"\"";
-                System.out.println("castMatces String query : "+castMatchesQuery);
-                Cursor castMatchesCursor = myDataBase.rawQuery(castMatchesQuery, null);
+                myDataBase = this.getWritableDatabase();
+
+
+                       // "role_name_" + " = ? AND " + "main_line_type_" + " = ?"
+
+                String wher = "role_name_" + " = ? AND " + "main_line_type_" + " = ?";
+                String[] FIELDS = { "cast_matches_" };
+
+              //  myDataBase.qu
+              //  String castMatchesQuery = "SELECT cast_matches_ FROM playlines WHERE role_name_ ="+"\""+roleNameForUserId+"\""+"AND main_line_type_ ="+"\""+mlt+"\"";
+              //  System.out.println("castMatces String query : "+castMatchesQuery);
+                //Cursor castMatchesCursor = myDataBase.rawQuery(castMatchesQuery, null);
+                Cursor castMatchesCursor =   myDataBase.query("playlines", FIELDS, wher, new String[]{roleNameForUserId,mlt}, null, null, null);
                 String castMatchesString = null;
+                castMatchesCursor.moveToFirst();
+
                 if (castMatchesCursor.moveToFirst()) {
                     do {
-                        castMatchesString = castMatchesCursor.getString(cursor.getColumnIndex("cast_matches_"));
+                        castMatchesString = castMatchesCursor.getString(castMatchesCursor.getColumnIndex("cast_matches_"));
                         castMatchesStringsArray.add(castMatchesString);
+                        Log.e("!!!!!castMatchesString",castMatchesString);
                     } while (castMatchesCursor.moveToNext());
                 }
 
+
+
             } while (cursor.moveToNext());
+
+            Log.e("MyCastMatch in database ",""+castMatchesStringsArray);
 
             for(String s : castMatchesStringsArray){
 
                 String[] arrMAtchesForRole = s.split(";");
+
                 if(arrMAtchesForRole.length>0){
-                    marrMyCastMatches.addAll(new ArrayList(Arrays.asList(arrMAtchesForRole)));
+
+
+                    for(int z=0;z<arrMAtchesForRole.length;z++){
+                        marrMyCastMatches.add(arrMAtchesForRole[z]);
+                    }
+
+
+                  //  marrMyCastMatches.addAll(new ArrayList(Arrays.asList(arrMAtchesForRole)));
                 }
 
             }

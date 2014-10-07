@@ -570,6 +570,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 //            holder.txtDuration1.setText("Første opførelse: " + formater.format(firstDate));
 //            holder.txtDuration2.setText("Sidste opførelse: " + formater.format(lastDate));
 
+
             if(currentDate.after(lastDate)){
                 holder.imgOrderTrashIcon.setVisibility(View.VISIBLE);
             } else {
@@ -612,8 +613,6 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                     stateManager.pupils.clear();
                     retriveSchoolClasses(session_id, cUser.getDomain());
                     retriveSchoolTeachers(session_id, cUser.getDomain());
-
-
 
 
                 }

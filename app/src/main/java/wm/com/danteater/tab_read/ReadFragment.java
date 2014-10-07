@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 
 import wm.com.danteater.Play.AssignedUsers;
+import wm.com.danteater.Play.Comments;
 import wm.com.danteater.Play.Play;
 import wm.com.danteater.Play.PlayLines;
 import wm.com.danteater.Play.TextLines;
@@ -66,6 +67,7 @@ import wm.com.danteater.model.StateManager;
 
 public class ReadFragment extends Fragment {
 
+    public ArrayList marrMyCastMatches;
     public ReadSectionedAdapter readSectionedAdapter;
     Reader readerForNone;
     public int goToLineNumberFromChatLink = 0;
@@ -150,13 +152,12 @@ public class ReadFragment extends Fragment {
         getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
         ((WMTextView)getActivity().getActionBar().getCustomView()).setGravity(Gravity.LEFT);
 
-        // setup init for read
+   /*     // setup init for read
         DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
-        dbh.getMyCastMatchesForUserId(currentUser.getUserId(),Integer.parseInt(selectedPlay.PlayId));
-        dbh.close();
+        marrMyCastMatches = dbh.getMyCastMatchesForUserId(currentUser.getUserId(),Integer.parseInt(selectedPlay.PlayId));
+        dbh.close();*/
 
-
-
+        Log.e("marrMyCastMatches   -- ",""+marrMyCastMatches);
 
         if(!isPreview){
 
@@ -301,6 +302,12 @@ public class ReadFragment extends Fragment {
 
 
         }
+
+        DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
+        marrMyCastMatches = dbh.getMyCastMatchesForUserId(currentUser.getUserId(),selectedPlay.pID);
+        dbh.close();
+
+       // Log.e("------------------ mycast read:",""+marrMyCastMatches);
 
        System.out.println("-------------   Sections : "+marrPlaySections);
 
@@ -771,8 +778,23 @@ public class ReadFragment extends Fragment {
                         holderReadPlayPlayLineCell = (ViewHolder.HolderReadPlayPlayLineCell)convertView.getTag();
                     }
 
-                    holderReadPlayPlayLineCell.cellReadPlayPlayLine.setupForPlayLine(playLine,currentState);
+                    boolean mark = false;
+
+                    for(int i=0;i<marrMyCastMatches.size();i++){
+                        String sCheck = marrMyCastMatches.get(i).toString();
+                        if(sCheck.equalsIgnoreCase(playLine.RoleName)){
+                            mark = true;
+
+                        }
+                    }
+
+
+
+                    holderReadPlayPlayLineCell.cellReadPlayPlayLine.setupForPlayLine(playLine,currentState,mark);
+
                     holderReadPlayPlayLineCell.cellReadPlayPlayLine.setOnTextLineUpdated(new CellReadPlayPlayLine.OnTextLineUpdated() {
+
+                        // delegate method called after textline changes
                         @Override
                         public void onTextLineUpdated(String newText) {
                             Log.e("TextLine ",""+section+":"+position);
@@ -780,6 +802,25 @@ public class ReadFragment extends Fragment {
                            playLine.textLinesList.get(0).alteredLineText = newText;
                            playLine.textLinesList.get(0).LineText = "";
                            callServiceForTextLineUpdate(playLine);
+
+                        }
+
+                        // delegate method called after comment added
+                        @Override
+                        public void onCommentAdded(String comment,boolean isPrivate) {
+
+                            Comments com = new Comments();
+                            com.commentText = comment;
+                            com.isPrivate = isPrivate;
+                            com.userName = currentUser.getUserId();
+
+                            if(playLine.commentsList == null){
+                                playLine.commentsList = new ArrayList<Comments>();
+                            }
+                            playLine.commentsList.add(com);
+                            callServiceForCommentAdded(playLine);
+
+
 
                         }
                     });
@@ -926,75 +967,8 @@ public class ReadFragment extends Fragment {
 
             }
 
-            Log.e("Method params",""+methodParams.toString());
+            updatePlayUsingMethodParams(methodParams.toString());
 
-            final List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-            pairs.add(new BasicNameValuePair("LineCount",""+Integer.parseInt(playLine.LineCount)));
-            pairs.add(new BasicNameValuePair("LineCount",playLine.LineID));
-            pairs.add(new BasicNameValuePair("LineCount",arr.toString()));
-
-            final HUD hud = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
-            hud.title("Gemmer ændringer");
-            hud.show();
-
-            new AsyncTask<Void, Void, Void>() {
-
-                @Override
-                protected Void doInBackground(Void... voids) {
-
-                    try
-
-                    {
-                       // readerForNone = API.callWebservicePostWithNameValue("http://api.danteater.dk/api/PlayUpdate", pairs);
-
-                        readerForNone = API.callWebservicePost("http://api.danteater.dk/api/PlayUpdate",methodParams.toString());
-                     /*   Log.e("reader", readerForNone + "");
-
-                        StringBuffer response = new StringBuffer();
-                        int i = 0;
-                        do {
-                            i = readerForNone.read();
-                            char character = (char) i;
-                            response.append(character);
-
-                        } while (i != -1);
-                        readerForNone.close();
-                        Log.e("response", response + " ");
-*/
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-
-                    return null;
-                }
-
-                @Override
-                protected void onPostExecute(Void aVoid) {
-                    super.onPostExecute(aVoid);
-                    hud.dismiss();
-                    readSectionedAdapter.notifyDataSetChanged();
-
-                    try {
-                        Log.e("reader", readerForNone + "");
-
-                        StringBuffer response = new StringBuffer();
-                        int i = 0;
-                        do {
-                            i = readerForNone.read();
-                            char character = (char) i;
-                            response.append(character);
-
-                        } while (i != -1);
-                        readerForNone.close();
-                        Log.e("response", response + " ");
-
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-
-                }
-            }.execute();
 
         }
 
@@ -1014,6 +988,100 @@ public class ReadFragment extends Fragment {
 
     }
 
+    private void updatePlayUsingMethodParams(final String s) {
+
+        final HUD hud = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
+        hud.title("Gemmer ændringer");
+        hud.show();
+
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+
+                try
+
+                {
+                    readerForNone = API.callWebservicePost("http://api.danteater.dk/api/PlayUpdate",s);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                hud.dismiss();
+                readSectionedAdapter.notifyDataSetChanged();
+
+                try {
+                    Log.e("reader", readerForNone + "");
+
+                    StringBuffer response = new StringBuffer();
+                    int i = 0;
+                    do {
+                        i = readerForNone.read();
+                        char character = (char) i;
+                        response.append(character);
+
+                    } while (i != -1);
+                    readerForNone.close();
+                    Log.e("response", response + " ");
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        }.execute();
+
+
+
+    }
+
+    private void callServiceForCommentAdded(PlayLines playLine) {
+
+        final JSONObject methodParams = new JSONObject();
+
+        JSONArray arr = new JSONArray();
+
+        for(Comments c : playLine.commentsList){
+
+            String isP = c.isPrivate ? "True" : "False";
+
+            JSONObject requestParams = new JSONObject();
+            try {
+                requestParams.put("UserName",c.userName);
+                requestParams.put("CommentText",c.commentText);
+                requestParams.put("Private",isP);
+
+                arr.put(requestParams);
+            } catch (JSONException je) {
+                je.printStackTrace();
+            }
+
+        }
+
+        try {
+            methodParams.put("LineCount", Integer.parseInt(playLine.LineCount));
+            methodParams.put("LineID",playLine.LineID);
+            methodParams.put("Comments",arr);
+
+        }catch (Exception e){
+
+            e.printStackTrace();
+
+        }
+
+        updatePlayUsingMethodParams(methodParams.toString());
+
+
+
+    }
 
 
 }

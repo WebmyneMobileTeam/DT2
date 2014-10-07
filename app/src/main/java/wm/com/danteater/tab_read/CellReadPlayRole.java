@@ -71,7 +71,6 @@ public class CellReadPlayRole {
 
             lblAssignedName.setText("Ikke tildelt");
 
-
         } else {
 
             if (playLine.assignedUsersList.size() == 1) {
@@ -81,7 +80,6 @@ public class CellReadPlayRole {
                     text = playLine.assignedUsersList.get(0).AssignedUserId;
                 }
                 lblAssignedName.setText(text);
-
 
             } else {
 

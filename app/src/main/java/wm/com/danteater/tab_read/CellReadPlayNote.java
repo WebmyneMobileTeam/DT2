@@ -5,6 +5,10 @@ import android.graphics.Color;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.androidanimations.library.Techniques;
+import com.androidanimations.library.Webmyne;
+import com.nineoldandroids.animation.Animator;
+
 import java.util.ArrayList;
 
 import wm.com.danteater.Play.PlayLines;
@@ -18,7 +22,7 @@ import wm.com.danteater.model.ComplexPreferences;
 /**
  * Created by dhruvil on 30-09-2014.
  */
-public class CellReadPlayNote {
+public class CellReadPlayNote implements View.OnClickListener{
 
     WMTextView tvNote;
     WMTextView lblLineNumber;
@@ -26,6 +30,10 @@ public class CellReadPlayNote {
     ImageView btnMenu;
     User user;
     Context ctx;
+    private View viewMenu;
+    private ImageView imgCloseMenu;
+    private WMTextView btnEdit;
+    private ImageView imgItemReadPLayNoteCompose;
 
     public int STATE_RECORD = 0;
     public int STATE_PREVIEW = 1;
@@ -41,6 +49,17 @@ public class CellReadPlayNote {
         btnMenu = (ImageView)view.findViewById(R.id.readPlayNoteCellMoreImage);
         btnEditLine = (ImageView)view.findViewById(R.id.imgItemReadPLayNoteCompose);
 
+        imgItemReadPLayNoteCompose = (ImageView)view.findViewById(R.id.imgItemReadPLayNoteCompose);
+        imgItemReadPLayNoteCompose.setOnClickListener(this);
+
+        viewMenu = (View)view.findViewById(R.id.cellMenuReadLineTeacherNote);
+        imgCloseMenu = (ImageView)view.findViewById(R.id.readPlayNoteMenuMore);
+        btnEdit = (WMTextView)view.findViewById(R.id.readPlayNoteMenuEdit);
+
+        btnMenu.setOnClickListener(this);
+        imgCloseMenu.setOnClickListener(this);
+        btnEdit.setOnClickListener(this);
+
         this.convertView = view;
 
 
@@ -49,6 +68,7 @@ public class CellReadPlayNote {
 
     public void setupForPlayLine(PlayLines playline,int current_state){
 
+        viewMenu.setVisibility(View.GONE);
         tvNote.setText("");
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(ctx, "user_pref", 0);
         user = complexPreferences.getObject("current_user", User.class);
@@ -118,6 +138,102 @@ public class CellReadPlayNote {
 
 
 
+
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        switch (v.getId()){
+
+            case R.id.imgItemReadPLayNoteCompose:
+
+                break;
+
+
+            // edit called
+            case R.id.readPlayNoteMenuEdit:
+
+                if(imgItemReadPLayNoteCompose.getVisibility() == View.INVISIBLE){
+                    imgItemReadPLayNoteCompose.setVisibility(View.VISIBLE);
+                    hideMenu();
+                }else{
+
+                }
+
+                break;
+
+
+
+            // hide menu
+            case R.id.readPlayNoteMenuMore:
+
+                hideMenu();
+
+                break;
+
+
+
+            // show menu
+            case R.id.readPlayNoteCellMoreImage:
+
+
+                showMenu();
+                break;
+
+        }
+
+
+    }
+
+    private void hideMenu() {
+
+        Webmyne.get(Techniques.SlideOutUp).duration(700).withListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                viewMenu.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        }).startOn(viewMenu);
+
+    }
+
+    private void showMenu() {
+        viewMenu.setVisibility(View.VISIBLE);
+        Webmyne.get(Techniques.SlideInDown).duration(700).withListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        }).startOn(viewMenu);
 
     }
 

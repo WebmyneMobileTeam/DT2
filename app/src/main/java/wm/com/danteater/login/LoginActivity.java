@@ -74,8 +74,22 @@ public class LoginActivity extends BaseActivity {
         // get login value from setting activity
         // true- automatic login
         // false- manual login
+
+
+
+
+
         SharedPreferences preferences = getSharedPreferences("settings", MODE_PRIVATE);
+
         shouldShowLoginView = preferences.getBoolean("shouldShowLoginView", false);
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("showLineNumber",true);
+        editor.commit();
+
+        editor.putBoolean("showComments",true);
+        editor.commit();
+
 
         // automatic login is on
         if (shouldShowLoginView == true) {

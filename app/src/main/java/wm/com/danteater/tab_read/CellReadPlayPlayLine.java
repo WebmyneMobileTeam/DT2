@@ -90,7 +90,6 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
 
 
 
-
     public CellReadPlayPlayLine(View view, Context context) {
 
         this.ctx = context;
@@ -114,10 +113,20 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
         btnNote.setOnClickListener(this);
 
 
+
     }
 
-    public void setupForPlayLine(PlayLines playLine, int current_state) {
 
+
+    public void setupForPlayLine(PlayLines playLine, int current_state,boolean mark) {
+
+       lblRoleName.setBackgroundColor(Color.TRANSPARENT);
+
+
+        Log.e("Mark is ",""+mark);
+        if(mark == true){
+            lblRoleName.setBackgroundColor(Color.YELLOW);
+        }
 
         viewMenu.setVisibility(View.GONE);
         this.pl = playLine;
@@ -283,14 +292,47 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
         dialog.setContentView(view);
         dialog.show();
 
-        SegmentedGroup segmentedGroup = (SegmentedGroup)view.findViewById(R.id.writeCommentPopupSegmentedGroup);
+        final SegmentedGroup segmentedGroup = (SegmentedGroup)view.findViewById(R.id.writeCommentPopupSegmentedGroup);
         if(user.checkPupil(user.getRoles())){
             segmentedGroup.setVisibility(View.INVISIBLE);
         }else{
             segmentedGroup.setVisibility(View.VISIBLE);
         }
 
+        WMTextView writeCommentPopupCancel = (WMTextView)view.findViewById(R.id.writeCommentPopupCancel);
+        writeCommentPopupCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
 
+       final EditText writeCommentPopupTextArea = (EditText)view.findViewById(R.id.writeCommentPopupTextArea);
+
+        WMTextView writeCommentPopupSave = (WMTextView)view.findViewById(R.id.writeCommentPopupSave);
+        writeCommentPopupSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(writeCommentPopupTextArea.getText().toString() == null || writeCommentPopupTextArea.getText().toString().equalsIgnoreCase("")){
+                    dialog.dismiss();
+                }else{
+
+
+                    boolean isprivate = false;
+                    if(segmentedGroup.getCheckedRadioButtonId() == R.id.writeCommentPopupShareWithEveryOne){
+                        isprivate = false;
+                    }else if(segmentedGroup.getCheckedRadioButtonId() == R.id.writeCommentPopupShareWithMe){
+                        isprivate = true;
+                    }else{
+                        isprivate = false;
+                    }
+                    dialog.dismiss();
+                    onTextLineUpdated.onCommentAdded(writeCommentPopupTextArea.getText().toString(),isprivate);
+                }
+
+            }
+        });
 
 
 
@@ -384,10 +426,13 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
 
        this.onTextLineUpdated = textLineUpdated;
 
+
     }
 
 
     interface OnTextLineUpdated{
+
         public void onTextLineUpdated(String newText);
+        public void onCommentAdded(String comment,boolean isPrivate);
     }
 }
