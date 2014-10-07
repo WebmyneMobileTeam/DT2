@@ -2,6 +2,7 @@ package wm.com.danteater.model;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -236,6 +237,11 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         cursor.moveToFirst();
         Log.e("Play Id in Database : ",""+cursor.getInt(cursor.getColumnIndex("id_")));
         int playID = cursor.getInt(cursor.getColumnIndex("id_"));
+
+        SharedPreferences preferences = myContext.getSharedPreferences("Plays", myContext.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt("playid",playID);
+        editor.commit();
         state.playID = playID;
 
 

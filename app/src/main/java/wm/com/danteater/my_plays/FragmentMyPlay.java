@@ -77,6 +77,7 @@ import wm.com.danteater.tab_share.ShareFragment;
 
 public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChangeListener {
 
+    //(int) (System.currentTimeMillis() / 1000L);
     public static int STATE_RECORD = 0;
     public static int STATE_PREVIEW = 1;
     public static int STATE_READ = 2;
@@ -725,12 +726,13 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             SharedPreferences preferences = getActivity().getSharedPreferences("Plays", getActivity().MODE_PRIVATE);
             String k = "PlayLatesteUpdateDate"+play.PlayId;
             //  Toast.makeText(getActivity(),preferences.getString(k,""), Toast.LENGTH_SHORT).show();
-            long unixTime = Long.parseLong(preferences.getString(k,""));
+          //  long unixTime = Long.parseLong(preferences.getString(k,""));
+            long unixTime2 = Long.parseLong(preferences.getString(k,""));
 
-            BigDecimal bigDecimal = new BigDecimal(unixTime);
+           // BigDecimal bigDecimal = new BigDecimal(unixTime);
 
           //  String serverLink = API.link_getPlayUpdateForPlayOrderIdString+play.OrderId+"?unixTimeStamp="+unixTime;
-            String serverLink = API.link_getPlayUpdateForPlayOrderIdString+play.OrderId+"?unixTimeStamp="+1412603939;
+            String serverLink = API.link_getPlayUpdateForPlayOrderIdString+play.OrderId+"?unixTimeStamp="+unixTime2;
             Log.e("update string before update : ",serverLink);
             new CallWebService(serverLink,CallWebService.TYPE_JSONARRAY) {
 
@@ -785,7 +787,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                                 SharedPreferences preferences = getActivity().getSharedPreferences("Plays",getActivity().MODE_PRIVATE);
                                 SharedPreferences.Editor editor = preferences.edit();
                                 String k = "PlayLatesteUpdateDate"+play.PlayId;
-                                editor.putString(k,""+System.currentTimeMillis());
+                                editor.putString(k,""+(long) (System.currentTimeMillis() / 1000));
                                 editor.commit();
                                 gotoNextPage(act_type,play_index);
                             }
@@ -836,7 +838,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                             SharedPreferences preferences = getActivity().getSharedPreferences("Plays",getActivity().MODE_PRIVATE);
                             SharedPreferences.Editor editor = preferences.edit();
                             String k = "PlayLatesteUpdateDate"+play.PlayId;
-                            editor.putString(k,""+System.currentTimeMillis());
+                            editor.putString(k,""+(int) (System.currentTimeMillis() / 1000));
                             editor.commit();
 
                             gotoNextPage(act_type,play_index);
@@ -867,7 +869,10 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             protected String doInBackground(String... params) {
 
                 DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
-                ply = dbh.retrievePlayWithId(state.playID);
+
+                SharedPreferences preferences = getActivity().getSharedPreferences("Plays", getActivity().MODE_PRIVATE);
+                int playid = preferences.getInt("playid",0);
+                ply = dbh.retrievePlayWithId(playid);
                 dbh.close();
 
                 return null;

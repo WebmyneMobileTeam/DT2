@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/DT.iml" filepath="$PROJECT_DIR$/DT.iml" />
       <module fileurl="file://$PROJECT_DIR$/DT2.iml" filepath="$PROJECT_DIR$/DT2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/DT2-NEW.iml" filepath="$PROJECT_DIR$/DT2-NEW.iml" />
       <module fileurl="file://$PROJECT_DIR$/DanTeater.iml" filepath="$PROJECT_DIR$/DanTeater.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
