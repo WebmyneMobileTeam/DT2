@@ -43,6 +43,7 @@ public class ShareActivityForPerform extends BaseActivity {
 
     StateManager stateManager=StateManager.getInstance();
     private HUD dialog;
+    public static boolean isSharedforPerformChanged=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +60,8 @@ public class ShareActivityForPerform extends BaseActivity {
 
 
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

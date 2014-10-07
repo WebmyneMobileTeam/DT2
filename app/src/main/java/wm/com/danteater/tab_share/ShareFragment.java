@@ -81,7 +81,7 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
     private SegmentedGroup segmentedTeachersPupils;
     private RadioButton rbTeacher;
     private RadioButton rbPupils;
-    private Menu menu;
+    static Menu menu;
     private Play selectedPlay;
     ArrayList<String> classNames;
     private StateManager stateManager = StateManager.getInstance();
@@ -103,6 +103,7 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         super.onCreate(savedInstanceState);
         // Important line to enable options menu in fragment
         setHasOptionsMenu(true);
+
         teacherSharedList.clear();
         studentSharedList.clear();
         // Get selected Play from my play list from shared preferences
@@ -184,7 +185,9 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //              enableDisableShareOptions(list_teachers.getCheckedItemPositions());
-
+                ShareActivityForPerform.isSharedforPerformChanged=true;
+                menu.getItem(0).setIcon(getActivity().getResources().getDrawable(R.drawable.ic_action_del_selected));
+                menu.getItem(0).setEnabled(true);
                 User user=teacherList.get(position);
                 ArrayList<String> roles=new ArrayList<String>();
                 roles.add("teacher");
@@ -208,6 +211,8 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         this.menu = menu;
         // inflate share menu
         getActivity().getMenuInflater().inflate(R.menu.menu_share,menu);
+
+
     }
 
     @Override
@@ -220,7 +225,9 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
             // share the play
             case R.id.actionShare:
 //                Toast.makeText(getActivity(), "click on share", Toast.LENGTH_SHORT).show();
-                shareWithTeachersAndStudents();
+                if(ShareActivityForPerform.isSharedforPerformChanged==true) {
+                    shareWithTeachersAndStudents();
+                }
                 break;
         }
         return true;
@@ -244,41 +251,6 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
                 break;
         }
     }
-
-
-    private void enableDisableShareOptions(SparseBooleanArray arr) {
-
-
-        boolean isAbleToShare = false;
-        for(int i = 0; i < list_teachers.getCount() ; i++)
-        {
-            if (arr.valueAt(i))
-            {
-
-                isAbleToShare = true;
-                break;
-
-            }else{
-
-                isAbleToShare = false;
-                continue;
-
-            }
-        }
-
-        if(isAbleToShare == true){
-            menu.getItem(0).setIcon(getActivity().getResources().getDrawable(R.drawable.ic_action_del_selected));
-            menu.getItem(0).setEnabled(true);
-        }else{
-            menu.getItem(0).setIcon(getActivity().getResources().getDrawable(R.drawable.ic_action_del_unselected));
-            menu.getItem(0).setEnabled(false);
-
-        }
-
-    }
-
-
-
 
     public void setupPupils(){
 

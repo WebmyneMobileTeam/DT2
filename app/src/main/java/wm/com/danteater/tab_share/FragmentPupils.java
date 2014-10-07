@@ -50,7 +50,15 @@ private ListView listStudents;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        if(ShareActivityForPerform.isSharedforPerformChanged==true){
+            ShareFragment. menu.getItem(0).getIcon();
+            ShareFragment. menu.getItem(0).isEnabled();
+        }else {
+            ShareFragment.  menu.getItem(0).setIcon(getActivity().getResources().getDrawable(R.drawable.ic_action_del_unselected));
+            ShareFragment. menu.getItem(0).setEnabled(false);
+        }
+//        ShareFragment.menu.getItem(0).setIcon(getActivity().getResources().getDrawable(R.drawable.ic_action_del_unselected));
+//        ShareFragment.menu.getItem(0).setEnabled(false);
         position = getArguments().getInt(ARG_POSITION);
         className= getArguments().getString(ARG_CLASS_NAME);
         Log.e("class name:.................",className+"");
@@ -84,6 +92,10 @@ private ListView listStudents;
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //                enableDisableShareOptions(listStudents.getCheckedItemPositions());
+                ShareActivityForPerform.isSharedforPerformChanged=true;
+                ShareFragment.menu.getItem(0).setIcon(getActivity().getResources().getDrawable(R.drawable.ic_action_del_selected));
+                ShareFragment.menu.getItem(0).setEnabled(true);
+                ShareActivityForPerform.isSharedforPerformChanged=true;
                 if (ShareFragment.studentSharedList.contains(pupilsList.get(position))) {
                     ShareFragment.studentSharedList.remove(pupilsList.get(position));
                 } else {
@@ -93,39 +105,5 @@ private ListView listStudents;
         });
         return convertView;
     }
-
-    private void enableDisableShareOptions(SparseBooleanArray arr) {
-
-
-        boolean isAbleToShare = false;
-        for(int i = 0; i < listStudents.getCount() ; i++)
-        {
-            if (arr.valueAt(i))
-            {
-
-                isAbleToShare = true;
-                break;
-
-            }else{
-
-                isAbleToShare = false;
-                continue;
-
-            }
-        }
-
-//        if(isAbleToShare == true){
-//            menu.getItem(0).setIcon(getActivity().getResources().getDrawable(R.drawable.ic_action_del_selected));
-//            menu.getItem(0).setEnabled(true);
-//        }else{
-//            menu.getItem(0).setIcon(getActivity().getResources().getDrawable(R.drawable.ic_action_del_unselected));
-//            menu.getItem(0).setEnabled(false);
-//
-//        }
-
-    }
-
-
-
 
 }

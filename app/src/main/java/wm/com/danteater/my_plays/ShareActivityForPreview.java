@@ -49,6 +49,7 @@ public class ShareActivityForPreview extends BaseActivity {
     private User currentUser;
     private HUD dialog;
     public ArrayList<SharedUser> sharedTeachers;
+    static boolean isSharedforPreviewChanged=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -77,7 +78,9 @@ public class ShareActivityForPreview extends BaseActivity {
         list_teachers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                isSharedforPreviewChanged=true;
+                menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_action_del_selected));
+                menu.getItem(0).setEnabled(true);
                 User user=teacherList.get(position);
                 ArrayList<String> roles=new ArrayList<String>();
                 roles.add("teacher");
@@ -162,6 +165,8 @@ public class ShareActivityForPreview extends BaseActivity {
 
         // inflate share menu
         getMenuInflater().inflate(R.menu.menu_share, menu);
+        menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_action_del_unselected));
+        menu.getItem(0).setEnabled(false);
         return super.onCreateOptionsMenu(menu);
 
     }
@@ -181,8 +186,11 @@ public class ShareActivityForPreview extends BaseActivity {
 
             // share the play
             case R.id.actionShare:
-                shareWithTeachers();
-                //TODO
+                if(isSharedforPreviewChanged==true){
+                    shareWithTeachers();
+                }
+
+
 
                 break;
 

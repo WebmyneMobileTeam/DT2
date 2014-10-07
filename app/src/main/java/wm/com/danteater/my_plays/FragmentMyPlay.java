@@ -352,13 +352,21 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             holder.btnSharePreview.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(getActivity(), "Share", Toast.LENGTH_SHORT).show();
+                    //TODO
+//
                     ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref",0);
                     complexPreferences.putObject("selected_play",playListForReview.get(position));
                     complexPreferences.commit();
 
-                    Intent i = new Intent(getActivity(), ShareActivityForPreview.class);
-                    startActivity(i);
+                    dialogForShare = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
+                    dialogForShare.title("");
+                    dialogForShare.show();
+                    ComplexPreferences complexPreferencesForUser = ComplexPreferences.getComplexPreferences(getActivity(), "user_pref", 0);
+                    cUser = complexPreferences.getObject("current_user", User.class);
+                    SharedPreferences pre = getActivity().getSharedPreferences("session_id", getActivity().MODE_PRIVATE);
+                    session_id = pre.getString("session_id", "");
+                    stateManager.teachers.clear();
+                    retriveSchoolTeachers(session_id, cUser.getDomain());
 
 
                 }
@@ -1042,12 +1050,23 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
                         numberOfClassesToBeRetrieved--;
                     }
-                    if (finishedRetrievingTeachers && numberOfClassesToBeRetrieved == 0) {
-                        dialogForShare.dismiss();
-                        Intent intent=new Intent(getActivity(),ShareActivityForPerform.class);
-                        startActivity(intent);
+
+                    if(rbGennemsyn.isChecked()) {
+                        if (finishedRetrievingTeachers) {
+                            dialogForShare.dismiss();
+                            Intent i = new Intent(getActivity(), ShareActivityForPreview.class);
+                            startActivity(i);
+                        }
+
+                    } else {
+                        if (finishedRetrievingTeachers && numberOfClassesToBeRetrieved == 0) {
+                            dialogForShare.dismiss();
+                            Intent intent = new Intent(getActivity(), ShareActivityForPerform.class);
+                            startActivity(intent);
+                        }
 
                     }
+
                 }
             }, new Response.ErrorListener() {
 
