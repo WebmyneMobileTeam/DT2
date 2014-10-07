@@ -37,7 +37,7 @@ private ListView listStudents;
     private static final String ARG_CLASS_NAME = "class_name";
     private int position;
     private String className;
-    StateManager stateManager=StateManager.getInstance();
+//    StateManager stateManager=StateManager.getInstance();
     HashMap<String, ArrayList<User>> pupils;
     ArrayList<User> pupilsList;
     public static FragmentPupils newInstance(int position,String clName) {
@@ -59,7 +59,7 @@ private ListView listStudents;
         }
         position = getArguments().getInt(ARG_POSITION);
         className= getArguments().getString(ARG_CLASS_NAME);
-        pupils= stateManager.pupils;
+        pupils= ShareActivityForPerform.pupils;
         pupilsList=pupils.get(className);
         Log.e("class name:.................",className+"");
     }

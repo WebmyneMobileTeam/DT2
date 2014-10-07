@@ -82,7 +82,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     public static int STATE_PREVIEW = 1;
     public static int STATE_READ = 2;
     public static int STATE_CHAT = 3;
-    private StateManager stateManager = StateManager.getInstance();
+//    private StateManager stateManager = StateManager.getInstance();
     Play ply;
     User cUser;
     String session_id;
@@ -366,7 +366,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                     cUser = complexPreferences.getObject("current_user", User.class);
                     SharedPreferences pre = getActivity().getSharedPreferences("session_id", getActivity().MODE_PRIVATE);
                     session_id = pre.getString("session_id", "");
-                    stateManager.teachers.clear();
+                    ShareActivityForPreview.teachers.clear();
                     retriveSchoolTeachers(session_id, cUser.getDomain());
 
 
@@ -600,9 +600,9 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                     cUser = complexPreferences.getObject("current_user", User.class);
                     SharedPreferences pre = getActivity().getSharedPreferences("session_id", getActivity().MODE_PRIVATE);
                     session_id = pre.getString("session_id", "");
-                    stateManager.classes.clear();
-                    stateManager.teachers.clear();
-                    stateManager.pupils.clear();
+                    ShareActivityForPerform.classes.clear();
+                    ShareActivityForPerform.teachers.clear();
+                    ShareActivityForPerform.pupils.clear();
                     retriveSchoolClasses(session_id, cUser.getDomain());
                     retriveSchoolTeachers(session_id, cUser.getDomain());
 
@@ -955,19 +955,19 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                     BeanGroupInfo beanGroupInfo = new GsonBuilder().create().fromJson(res, BeanGroupInfo.class);
                     BeanGroupResult beanGroupResult = beanGroupInfo.getBeanGroupResult();
                     ArrayList<Group> groupArrayList = beanGroupResult.getGroupArrayList();
-                    stateManager.classes.clear();
+                    ShareActivityForPerform.classes.clear();
                     //   pupils.clear();
 
                     for (Group beanGroup : groupArrayList) {
                         if (beanGroup.getGroupType().equals("classtype")) {
-                            stateManager.classes.add(beanGroup);
+                            ShareActivityForPerform.classes.add(beanGroup);
                             Log.e("group domain", beanGroup.getDomain() + "");
                             numberOfClassesToBeRetrieved++;
                             retriveMembers(seesionId, domain, beanGroup);
                         }
                     }
 
-                    Log.e("classes...: ", stateManager.classes + "");
+                    Log.e("classes...: ", ShareActivityForPerform.classes + "");
 
                 }
             }, new Response.ErrorListener() {
@@ -986,7 +986,8 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
     public  void retriveSchoolTeachers(String seesionId, String domain) {
         groupForTeacher.setGroupId("teacher");
-        stateManager.teachers.clear();
+        ShareActivityForPerform.teachers.clear();
+        ShareActivityForPreview.teachers.clear();
         retriveMembers(seesionId, domain, groupForTeacher);
 
     }
@@ -1025,23 +1026,25 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
                     if (group.getGroupId().equals("teacher")) {
 
-                        stateManager.teachers.addAll(userArrayList);
-                        Log.e("teachers:",stateManager.teachers+"");
+                        ShareActivityForPerform.teachers.addAll(userArrayList);
+                        ShareActivityForPreview.teachers.addAll(userArrayList);
+                        Log.e("teachers:",ShareActivityForPerform.teachers+"");
+                        Log.e("teachers:",ShareActivityForPreview.teachers+"");
 
                         finishedRetrievingTeachers = true;
                     } else {
 
-                        stateManager.pupils.put(group.getGroupName().toString(), userArrayList);
+                        ShareActivityForPerform.pupils.put(group.getGroupName().toString(), userArrayList);
 
 
-                        for(Map.Entry<String,ArrayList<User>> entry : stateManager.pupils.entrySet()){
+                        for(Map.Entry<String,ArrayList<User>> entry : ShareActivityForPerform.pupils.entrySet()){
 
                             Log.e("key: ",entry.getKey()+" ");
                             Log.e("vlaues: ",entry.getValue()+"  ");
 
 
                         }
-                        Log.e("pupils: ",stateManager.pupils+"");
+                        Log.e("pupils: ",ShareActivityForPerform.pupils+"");
 
                         numberOfClassesToBeRetrieved--;
                     }

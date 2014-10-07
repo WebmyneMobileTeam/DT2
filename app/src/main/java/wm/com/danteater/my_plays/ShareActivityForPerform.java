@@ -50,11 +50,14 @@ import wm.com.danteater.tab_share.ShareFragment;
  */
 public class ShareActivityForPerform extends BaseActivity {
 
-    StateManager stateManager=StateManager.getInstance();
+//    StateManager stateManager=StateManager.getInstance();
     private HUD dialog;
     public static boolean isSharedforPerformChanged=false;
     public static ArrayList<SharedUser> sharedTeachersAndStudents;
     public static Menu menu;
+    public  static ArrayList<Group> classes = new ArrayList<Group>();
+    public static ArrayList<User> teachers= new ArrayList<User>();
+    public static HashMap<String, ArrayList<User>> pupils=new HashMap<String, ArrayList<User>>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

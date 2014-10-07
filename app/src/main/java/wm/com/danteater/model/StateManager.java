@@ -41,12 +41,12 @@ public class StateManager { //singleton class
     }
 
 //    public static boolean isFinishRetrivingTeachersAndStudents=false;
-    public static boolean finishedRetrievingTeachers = false;
-    public static int numberOfClassesToBeRetrieved = 0;
-    public  static Group groupForTeacher = new Group();
-    public  static ArrayList<Group> classes = new ArrayList<Group>();
-    public static ArrayList<User> teachers= new ArrayList<User>();
-    public static HashMap<String, ArrayList<User>> pupils=new HashMap<String, ArrayList<User>>();
+//    public static boolean finishedRetrievingTeachers = false;
+//    public static int numberOfClassesToBeRetrieved = 0;
+//    public  static Group groupForTeacher = new Group();
+//    public  static ArrayList<Group> classes = new ArrayList<Group>();
+//    public static ArrayList<User> teachers= new ArrayList<User>();
+//    public static HashMap<String, ArrayList<User>> pupils=new HashMap<String, ArrayList<User>>();
 
 
 //    public static void retriveSchoolClasses(final String seesionId, final String domain) {

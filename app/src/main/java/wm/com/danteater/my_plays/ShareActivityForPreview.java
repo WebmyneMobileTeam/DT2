@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import wm.com.danteater.Play.Play;
@@ -34,6 +35,7 @@ import wm.com.danteater.R;
 import wm.com.danteater.app.BaseActivity;
 import wm.com.danteater.customviews.HUD;
 import wm.com.danteater.customviews.WMTextView;
+import wm.com.danteater.login.Group;
 import wm.com.danteater.login.User;
 import wm.com.danteater.model.API;
 import wm.com.danteater.model.CallWebService;
@@ -48,12 +50,15 @@ public class ShareActivityForPreview extends BaseActivity {
     private Play selectedPlay;
     private ListView list_teachers;
     private Menu menu;
-    private StateManager stateManager = StateManager.getInstance();
+    //private StateManager stateManager = StateManager.getInstance();
     private static ArrayList<User> teacherSharedListForPreview=new ArrayList<User>();
     private User currentUser;
     private HUD dialog;
     public static  ArrayList<SharedUser> sharedTeachers;
     static boolean isSharedforPreviewChanged=false;
+
+    public static ArrayList<User> teachers= new ArrayList<User>();
+
    ArrayList<User> teacherList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +74,7 @@ public class ShareActivityForPreview extends BaseActivity {
         ((WMTextView) getActionBar().getCustomView()).setText(selectedPlay.Title);
 
         list_teachers = (ListView) findViewById(R.id.listTeachersShareForPreview);
-        teacherList=stateManager.teachers;
+        teacherList=ShareActivityForPreview.teachers;
 
         // Get Teacher List
         ArrayList<String> teacherNames=new ArrayList<String>();
@@ -116,6 +121,7 @@ public class ShareActivityForPreview extends BaseActivity {
 
 
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

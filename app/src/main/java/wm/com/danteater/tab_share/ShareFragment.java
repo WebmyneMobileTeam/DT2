@@ -87,7 +87,7 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
 
     private Play selectedPlay;
     ArrayList<String> classNames;
-    private StateManager stateManager = StateManager.getInstance();
+//    private StateManager stateManager = StateManager.getInstance();
 
     private HUD dialog;
     private User currentUser;
@@ -110,7 +110,7 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         setHasOptionsMenu(true);
         teacherSharedList.clear();
         studentSharedList.clear();
-        teacherList=stateManager.teachers;
+        teacherList=ShareActivityForPerform.teachers;
         // Get selected Play from my play list from shared preferences
         // Here we use complex preferences to store whole Play class object and retrieve.
        ComplexPreferences complexPreference = ComplexPreferences.getComplexPreferences(getActivity(), "mypref", 0);
@@ -145,7 +145,7 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         super.onResume();
 
         // students list
-        adapter = new MyPagerAdapter(getActivity().getSupportFragmentManager(), stateManager.classes);
+        adapter = new MyPagerAdapter(getActivity().getSupportFragmentManager(), ShareActivityForPerform.classes);
         pager.setAdapter(adapter);
         final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources().getDisplayMetrics());
         pager.setPageMargin(pageMargin);
