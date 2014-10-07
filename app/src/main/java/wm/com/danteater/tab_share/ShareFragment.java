@@ -1,6 +1,8 @@
 package wm.com.danteater.tab_share;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -67,6 +69,7 @@ import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.model.StateManager;
 import wm.com.danteater.my_plays.OrderPlayActivityForPerformNew;
 import wm.com.danteater.my_plays.ShareActivityForPerform;
+import wm.com.danteater.my_plays.ShareActivityForPreview;
 import wm.com.danteater.my_plays.SharedUser;
 
 
@@ -81,23 +84,25 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
     private SegmentedGroup segmentedTeachersPupils;
     private RadioButton rbTeacher;
     private RadioButton rbPupils;
-    static Menu menu;
+
     private Play selectedPlay;
     ArrayList<String> classNames;
     private StateManager stateManager = StateManager.getInstance();
-    public static ArrayList<SharedUser> sharedTeachersAndStudents;
+
     private HUD dialog;
     private User currentUser;
     private static ArrayList<User> teacherSharedList=new ArrayList<User>();
     public static ArrayList<User> studentSharedList= new ArrayList<User>();
-
+    ArrayList<User> teacherList;
     public static ShareFragment newInstance(String param1, String param2) {
         ShareFragment fragment = new ShareFragment();
         return fragment;
     }
+
     public ShareFragment() {
         // Required empty public constructor
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,6 +110,7 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         setHasOptionsMenu(true);
         teacherSharedList.clear();
         studentSharedList.clear();
+        teacherList=stateManager.teachers;
         // Get selected Play from my play list from shared preferences
         // Here we use complex preferences to store whole Play class object and retrieve.
        ComplexPreferences complexPreference = ComplexPreferences.getComplexPreferences(getActivity(), "mypref", 0);
@@ -113,30 +119,7 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         currentUser =complexPreferencesUser.getObject("current_user", User.class);
         ((WMTextView)getActivity().getActionBar().getCustomView()).setText(selectedPlay.Title);
 
-        dialog = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
-        dialog.title("");
-        dialog.show();
-        Log.e("order id:",selectedPlay.OrderId+"");
-        new CallWebService("http://api.danteater.dk/api/PlayShare/" +selectedPlay.OrderId,CallWebService.TYPE_JSONARRAY) {
 
-            @Override
-            public void response(String response) {
-                dialog.dismiss();
-                Type listType = new TypeToken<List<SharedUser>>() {
-                }.getType();
-                sharedTeachersAndStudents = new GsonBuilder().create().fromJson(response,listType);
-                Log.e("sharedTeachersAndStudents: ",""+sharedTeachersAndStudents);
-                for(int i=0;i<sharedTeachersAndStudents.size();i++) {
-                    Log.e("user id: ", sharedTeachersAndStudents.get(i).userId + "");
-                }
-            }
-
-            @Override
-            public void error(VolleyError error) {
-                Log.e("error: ",error+"");
-
-            }
-        }.start();
     }
 
     @Override
@@ -153,13 +136,15 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         rbTeacher = (RadioButton)convertView.findViewById(R.id.rbTeacher);
         segmentedTeachersPupils.setOnCheckedChangeListener(this);
         // show share with pupils tab by default
-        rbTeacher.setChecked(true);
+        rbPupils.setChecked(true);
         return convertView;
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
+        // students list
         adapter = new MyPagerAdapter(getActivity().getSupportFragmentManager(), stateManager.classes);
         pager.setAdapter(adapter);
         final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources().getDisplayMetrics());
@@ -167,35 +152,36 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         tabs.setViewPager(pager);
         tabs.setIndicatorColor(getResources().getColor(R.color.greenTheme));
         tabs.setBackgroundColor(Color.parseColor("#f5f5f5"));
-        final ArrayList<User> teacherList=stateManager.teachers;
-        //TODO sort here
+
+        //teachers list
         ArrayList<String> teacherNames=new ArrayList<String>();
         for(int i=0;i<teacherList.size();i++) {
             teacherNames.add(""+teacherList.get(i).getFirstName()+" "+teacherList.get(i).getLastName());
         }
-//        Collections.sort(teacherNames);
         Log.e("teachers list: ",teacherNames+"");
-
         ArrayAdapter adap = new ArrayAdapter(getActivity(),android.R.layout.simple_list_item_multiple_choice,teacherNames);
         list_teachers.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         list_teachers.setAdapter(adap);
+        for(int i=0;i<teacherList.size();i++){
+            User user=teacherList.get(i);
+            for(SharedUser u: ShareActivityForPerform.sharedTeachersAndStudents){
+                if(u.userId.equalsIgnoreCase(user.getUserId())){
+                    list_teachers.setItemChecked(i,true);
 
-            for (int i = 0; i < teacherList.size(); i++) {
-                for(int j=0;j<sharedTeachersAndStudents.size();j++) {
-                    if(sharedTeachersAndStudents.get(j).userId.contains(teacherList.get(i).getUserId())) {
-                        list_teachers.setItemChecked(i, true);
-                    }
+                    ArrayList<String> roles=new ArrayList<String>();
+                    roles.add("teacher");
+                    user.setRoles(roles);
+                    teacherSharedList.add(user);
                 }
-
             }
-
+        }
         list_teachers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //              enableDisableShareOptions(list_teachers.getCheckedItemPositions());
                 ShareActivityForPerform.isSharedforPerformChanged=true;
-                menu.getItem(0).setIcon(getActivity().getResources().getDrawable(R.drawable.ic_action_del_selected));
-
+                ShareActivityForPerform.menu.getItem(0).setIcon(getActivity().getResources().getDrawable(R.drawable.ic_action_del_selected));
+                ShareActivityForPerform.menu.getItem(0).setEnabled(true);
                 User user=teacherList.get(position);
                 ArrayList<String> roles=new ArrayList<String>();
                 roles.add("teacher");
@@ -217,9 +203,11 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         // retrieve current displayed menu reference.
         // so that we can change menu item icon programaticaly using this new reference anywhere in this class.
         super.onCreateOptionsMenu(menu, inflater);
-        this.menu = menu;
-        // inflate share menu
+        ShareActivityForPerform.menu = menu;
+
         getActivity().getMenuInflater().inflate(R.menu.menu_share,menu);
+        ShareActivityForPerform.menu.getItem(0).setIcon(getActivity().getResources().getDrawable(R.drawable.ic_action_del_unselected));
+        ShareActivityForPerform.menu.getItem(0).setEnabled(false);
     }
 
 
@@ -229,7 +217,31 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         switch (item.getItemId()){
             // going back
             case android.R.id.home:
-                getActivity().finish();
+                if(ShareActivityForPerform.isSharedforPerformChanged==true && ShareActivityForPerform.menu.getItem(0).isEnabled()==true) {
+                    AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+                    alert.setTitle("Gem deling");
+                    alert.setMessage("Vil du gemme dine ændringer?");
+                    alert.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            // TODO share play from here
+                        }
+                    });
+
+                    alert.setNegativeButton("Nej", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            getActivity().finish();
+                        }
+                    });
+
+                    alert.show();
+                } else {
+                    getActivity().finish();
+                }
                 break;
             // share the play
             case R.id.actionShare:
@@ -266,9 +278,7 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         layout_child_tabs.setVisibility(View.VISIBLE);
         list_teachers.setVisibility(View.GONE);
 
-        try {
-            menu.getItem(0).setIcon(getActivity().getResources().getDrawable(R.drawable.ic_action_del_unselected));
-        }catch(Exception e){}
+
     }
 
     private void setupTeachers() {
@@ -314,10 +324,9 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         totalUsers.addAll(teacherSharedList);
         totalUsers.addAll(studentSharedList);
         final JSONArray shareWithUsersArray = new JSONArray();
-
-        if(!totalUsers.contains(currentUser.getUserId())) {
-            totalUsers.add(currentUser);
-        }
+            if(!totalUsers.contains(currentUser)) {
+                totalUsers.add(currentUser);
+            }
 
         if (totalUsers != null || totalUsers.size() != 0) {
             for (User user : totalUsers) {
@@ -344,6 +353,14 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         }
         new AsyncTask<Void, Void, Void>() {
             @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                dialog = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
+                dialog.title("");
+                dialog.show();
+            }
+
+            @Override
             protected Void doInBackground(Void... voids) {
                 try
                 {
@@ -360,6 +377,14 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
                     } while (i != -1);
                     readerForNone.close();
                     Log.e("response", response + " ");
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ShareActivityForPerform.menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_action_del_unselected));
+                            ShareActivityForPerform.menu.getItem(0).setEnabled(false);
+                            dialog.dismissWithStatus(R.drawable.ic_navigation_accept, "Stykker er delt");
+                        }
+                    });
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -372,4 +397,7 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         }.execute();
 
     }
+
+
+
 }

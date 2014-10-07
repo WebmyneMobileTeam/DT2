@@ -1,5 +1,7 @@
 package wm.com.danteater.my_plays;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.google.gson.GsonBuilder;
@@ -49,24 +52,26 @@ public class ShareActivityForPreview extends BaseActivity {
     private static ArrayList<User> teacherSharedListForPreview=new ArrayList<User>();
     private User currentUser;
     private HUD dialog;
-    public ArrayList<SharedUser> sharedTeachers;
+    public static  ArrayList<SharedUser> sharedTeachers;
     static boolean isSharedforPreviewChanged=false;
+   ArrayList<User> teacherList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_share_for_preview);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
         teacherSharedListForPreview.clear();
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(this, "mypref", 0);
         selectedPlay = complexPreferences.getObject("selected_play", Play.class);
         ComplexPreferences complexPreferencesUser = ComplexPreferences.getComplexPreferences(this, "user_pref", 0);
         currentUser =complexPreferencesUser.getObject("current_user", User.class);
+        setContentView(R.layout.activity_share_for_preview);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
         ((WMTextView) getActionBar().getCustomView()).setText(selectedPlay.Title);
+
         list_teachers = (ListView) findViewById(R.id.listTeachersShareForPreview);
-        final ArrayList<User> teacherList=stateManager.teachers;
-        //TODO sort here
+        teacherList=stateManager.teachers;
+
+        // Get Teacher List
         ArrayList<String> teacherNames=new ArrayList<String>();
         for(int i=0;i<teacherList.size();i++) {
             teacherNames.add(""+teacherList.get(i).getFirstName()+" "+teacherList.get(i).getLastName());
@@ -75,10 +80,17 @@ public class ShareActivityForPreview extends BaseActivity {
         ArrayAdapter adap = new ArrayAdapter(ShareActivityForPreview.this,android.R.layout.simple_list_item_multiple_choice,teacherNames);
         list_teachers.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         list_teachers.setAdapter(adap);
-        for(int j=0;j< ShareFragment.sharedTeachersAndStudents.size();j++) {
-            for (int i = 0; i < teacherList.size(); i++) {
-                if (teacherList.get(i).getUserId().contains(ShareFragment.sharedTeachersAndStudents.get(j).userId))
-                    list_teachers.setItemChecked(i, true);
+        for(int i=0;i<teacherList.size();i++){
+            User user=teacherList.get(i);
+            for(SharedUser u: ShareActivityForPreview.sharedTeachers){
+                if(u.userId.equalsIgnoreCase(user.getUserId())){
+                    list_teachers.setItemChecked(i,true);
+
+                    ArrayList<String> roles=new ArrayList<String>();
+                    roles.add("teacher");
+                    user.setRoles(roles);
+                    teacherSharedListForPreview.add(user);
+                }
             }
         }
         list_teachers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -101,64 +113,9 @@ public class ShareActivityForPreview extends BaseActivity {
 
         });
 
-        // Get Selected Teachers
-        dialog = new HUD(ShareActivityForPreview.this,android.R.style.Theme_Translucent_NoTitleBar);
-        dialog.title("");
-        dialog.show();
-        Log.e("order id:",selectedPlay.OrderId+"");
-        new CallWebService("http://api.danteater.dk/api/PlayShare/" +selectedPlay.OrderId,CallWebService.TYPE_JSONARRAY) {
 
-            @Override
-            public void response(String response) {
-                dialog.dismiss();
-                Type listType = new TypeToken<List<SharedUser>>() {
-                }.getType();
-                sharedTeachers = new GsonBuilder().create().fromJson(response,listType);
-                Log.e("sharedTeachersAndStudents: ",""+sharedTeachers);
-                for(int i=0;i<sharedTeachers.size();i++) {
-                    Log.e("user id: ", sharedTeachers.get(i).userId + "");
-                }
-            }
-
-            @Override
-            public void error(VolleyError error) {
-                Log.e("error: ",error+"");
-
-            }
-        }.start();
 
     }
-
-//    private void enableDisableShareOptions(SparseBooleanArray arr) {
-//
-//
-//        boolean isAbleToShare = false;
-//        for (int i = 0; i < list_teachers.getCount(); i++) {
-//            if (arr.valueAt(i)) {
-//
-//                isAbleToShare = true;
-//                break;
-//
-//            } else {
-//
-//                isAbleToShare = false;
-//                continue;
-//
-//            }
-//        }
-//
-//        if (isAbleToShare == true) {
-//            menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_action_del_selected));
-//            menu.getItem(0).setEnabled(true);
-//        } else {
-//            menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_action_del_unselected));
-//            menu.getItem(0).setEnabled(false);
-//
-//        }
-//
-//    }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -185,8 +142,32 @@ public class ShareActivityForPreview extends BaseActivity {
 
             // going back
             case android.R.id.home:
+                if(ShareActivityForPreview.isSharedforPreviewChanged==true && menu.getItem(0).isEnabled()==true) {
+                    AlertDialog.Builder alert = new AlertDialog.Builder(ShareActivityForPreview.this);
+                    alert.setTitle("Gem deling");
+                    alert.setMessage("Vil du gemme dine ændringer?");
+                    alert.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            // TODO share play from here
+                        }
+                    });
 
-                finish();
+                    alert.setNegativeButton("Nej", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            finish();
+                        }
+                    });
+
+                    alert.show();
+                } else {
+                    finish();
+                }
+
 
                 break;
 
@@ -239,6 +220,15 @@ public class ShareActivityForPreview extends BaseActivity {
             Log.e("total users: ", shareWithUsersArray + "");
         }
         new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected void onPreExecute() {
+                dialog = new HUD(ShareActivityForPreview.this,android.R.style.Theme_Translucent_NoTitleBar);
+                dialog.title("");
+                dialog.show();
+
+            }
+
             @Override
             protected Void doInBackground(Void... voids) {
                 try
@@ -256,6 +246,15 @@ public class ShareActivityForPreview extends BaseActivity {
                     } while (i != -1);
                     readerForNone.close();
                     Log.e("response", response + " ");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_action_del_unselected));
+                            menu.getItem(0).setEnabled(false);
+                            dialog.dismissWithStatus(R.drawable.ic_navigation_accept,"Stykker er delt");
+
+                        }
+                    });
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -267,5 +266,32 @@ public class ShareActivityForPreview extends BaseActivity {
 
         }.execute();
 
+    }
+
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+        if(ShareActivityForPreview.isSharedforPreviewChanged==true && menu.getItem(0).isEnabled()==true) {
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setTitle("Gem deling");
+            alert.setMessage("Vil du gemme dine ændringer?");
+            alert.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+
+                }
+            });
+            alert.setNegativeButton("Nej", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    finish();
+                }
+            });
+            alert.show();
+        }else {
+            finish();
+        }
     }
 }

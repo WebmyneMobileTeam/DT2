@@ -86,6 +86,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     Play ply;
     User cUser;
     String session_id;
+    private Play selectedPlay;
     public  boolean finishedRetrievingTeachers = false;
     public  int numberOfClassesToBeRetrieved = 0;
     public   Group groupForTeacher = new Group();
@@ -560,15 +561,6 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             holder.txtDuration1.setText("Første opførelse: " + format.format(firstDate));
             holder.txtDuration2.setText("Sidste opførelse: " + format.format(lastDate));
 
-            //android working
-//            SimpleDateFormat formater = new SimpleDateFormat("dd-MM-yyyy");
-//            Long performDateFirst = Long.parseLong(playOrderDetailList.get(position).PerformDateFirst)/1000;
-//            Long performDateLast = Long.parseLong(playOrderDetailList.get(position).PerformDateLast)/1000;
-//            Date firstDate = new Date(performDateFirst);
-//            Date lastDate = new Date(performDateLast);
-//            Date currentDate=new Date();
-//            holder.txtDuration1.setText("Første opførelse: " + formater.format(firstDate));
-//            holder.txtDuration2.setText("Sidste opførelse: " + formater.format(lastDate));
 
 
             if(currentDate.after(lastDate)){
@@ -1056,16 +1048,52 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
                     if(rbGennemsyn.isChecked()) {
                         if (finishedRetrievingTeachers) {
-                            dialogForShare.dismiss();
-                            Intent i = new Intent(getActivity(), ShareActivityForPreview.class);
-                            startActivity(i);
+
+                            ComplexPreferences complexPreference = ComplexPreferences.getComplexPreferences(getActivity(), "mypref", 0);
+                            selectedPlay = complexPreference.getObject("selected_play",Play.class);
+                            new CallWebService("http://api.danteater.dk/api/PlayShare/" +selectedPlay.OrderId,CallWebService.TYPE_JSONARRAY) {
+                                @Override
+                                public void response(String response) {
+                                    dialogForShare.dismiss();
+                                    Type listType = new TypeToken<List<SharedUser>>() {
+                                    }.getType();
+                                    ShareActivityForPreview.sharedTeachers = new GsonBuilder().create().fromJson(response,listType);
+                                    Intent i = new Intent(getActivity(), ShareActivityForPreview.class);
+                                    startActivity(i);
+                                }
+                                @Override
+                                public void error(VolleyError error) {
+                                    Log.e("error: ",error+"");
+
+                                }
+                            }.start();
+
+
+
                         }
 
                     } else {
                         if (finishedRetrievingTeachers && numberOfClassesToBeRetrieved == 0) {
-                            dialogForShare.dismiss();
-                            Intent intent = new Intent(getActivity(), ShareActivityForPerform.class);
-                            startActivity(intent);
+                            ComplexPreferences complexPreference = ComplexPreferences.getComplexPreferences(getActivity(), "mypref", 0);
+                            selectedPlay = complexPreference.getObject("selected_play",Play.class);
+                            new CallWebService("http://api.danteater.dk/api/PlayShare/" +selectedPlay.OrderId,CallWebService.TYPE_JSONARRAY) {
+                                @Override
+                                public void response(String response) {
+                                    dialogForShare.dismiss();
+                                    Type listType = new TypeToken<List<SharedUser>>() {
+                                    }.getType();
+                                    ShareActivityForPerform.sharedTeachersAndStudents = new GsonBuilder().create().fromJson(response,listType);
+                                    Intent intent = new Intent(getActivity(), ShareActivityForPerform.class);
+                                    startActivity(intent);
+                                }
+                                @Override
+                                public void error(VolleyError error) {
+                                    Log.e("error: ",error+"");
+
+                                }
+                            }.start();
+
+
                         }
 
                     }
