@@ -380,8 +380,8 @@ if(isFirstdate)
             params.put("SchoolId",currentUser.getDomain()+"");
             params.put("NumberOfPerformances",etNumberOfPerformanceValue.getText().toString()+"");
             params.put("NumberOfAuditions",rehersalBool+"");
-            params.put("PerformDateFirst",firstDate.getTime()+"");
-            params.put("PerformDateLast",seocndDate.getTime()+"");
+            params.put("PerformDateFirst",firstDate.getTime()/1000+"");
+            params.put("PerformDateLast",seocndDate.getTime()/1000+"");
             params.put("Comments","");
             Log.e("params: ", params + "");
 

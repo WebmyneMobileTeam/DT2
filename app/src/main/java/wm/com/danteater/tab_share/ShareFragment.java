@@ -85,7 +85,7 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
     private Play selectedPlay;
     ArrayList<String> classNames;
     private StateManager stateManager = StateManager.getInstance();
-    public ArrayList<SharedUser> sharedTeachersAndStudents;
+    public static ArrayList<SharedUser> sharedTeachersAndStudents;
     private HUD dialog;
     private User currentUser;
     private static ArrayList<User> teacherSharedList=new ArrayList<User>();
@@ -103,7 +103,6 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         super.onCreate(savedInstanceState);
         // Important line to enable options menu in fragment
         setHasOptionsMenu(true);
-
         teacherSharedList.clear();
         studentSharedList.clear();
         // Get selected Play from my play list from shared preferences
@@ -154,7 +153,7 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         rbTeacher = (RadioButton)convertView.findViewById(R.id.rbTeacher);
         segmentedTeachersPupils.setOnCheckedChangeListener(this);
         // show share with pupils tab by default
-        rbPupils.setChecked(true);
+        rbTeacher.setChecked(true);
         return convertView;
     }
 
@@ -181,13 +180,22 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         list_teachers.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         list_teachers.setAdapter(adap);
 
+            for (int i = 0; i < teacherList.size(); i++) {
+                for(int j=0;j<sharedTeachersAndStudents.size();j++) {
+                    if(sharedTeachersAndStudents.get(j).userId.contains(teacherList.get(i).getUserId())) {
+                        list_teachers.setItemChecked(i, true);
+                    }
+                }
+
+            }
+
         list_teachers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //              enableDisableShareOptions(list_teachers.getCheckedItemPositions());
                 ShareActivityForPerform.isSharedforPerformChanged=true;
                 menu.getItem(0).setIcon(getActivity().getResources().getDrawable(R.drawable.ic_action_del_selected));
-                menu.getItem(0).setEnabled(true);
+
                 User user=teacherList.get(position);
                 ArrayList<String> roles=new ArrayList<String>();
                 roles.add("teacher");
@@ -208,12 +216,13 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         // super.onCreateOptionsMenu(menu, inflater);
         // retrieve current displayed menu reference.
         // so that we can change menu item icon programaticaly using this new reference anywhere in this class.
+        super.onCreateOptionsMenu(menu, inflater);
         this.menu = menu;
         // inflate share menu
         getActivity().getMenuInflater().inflate(R.menu.menu_share,menu);
-
-
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

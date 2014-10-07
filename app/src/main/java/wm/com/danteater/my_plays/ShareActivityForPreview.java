@@ -36,6 +36,7 @@ import wm.com.danteater.model.API;
 import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.model.StateManager;
+import wm.com.danteater.tab_share.ShareFragment;
 
 /**
  * Created by nirav on 11-09-2014.
@@ -74,7 +75,12 @@ public class ShareActivityForPreview extends BaseActivity {
         ArrayAdapter adap = new ArrayAdapter(ShareActivityForPreview.this,android.R.layout.simple_list_item_multiple_choice,teacherNames);
         list_teachers.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         list_teachers.setAdapter(adap);
-
+        for(int j=0;j< ShareFragment.sharedTeachersAndStudents.size();j++) {
+            for (int i = 0; i < teacherList.size(); i++) {
+                if (teacherList.get(i).getUserId().contains(ShareFragment.sharedTeachersAndStudents.get(j).userId))
+                    list_teachers.setItemChecked(i, true);
+            }
+        }
         list_teachers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

@@ -50,13 +50,11 @@ private ListView listStudents;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(ShareActivityForPerform.isSharedforPerformChanged==true){
-            ShareFragment. menu.getItem(0).getIcon();
-            ShareFragment. menu.getItem(0).isEnabled();
-        }else {
-            ShareFragment.  menu.getItem(0).setIcon(getActivity().getResources().getDrawable(R.drawable.ic_action_del_unselected));
-            ShareFragment. menu.getItem(0).setEnabled(false);
-        }
+
+//        }else {
+//            ShareFragment.  menu.getItem(0).setIcon(getActivity().getResources().getDrawable(R.drawable.ic_action_del_unselected));
+//
+//        }
 //        ShareFragment.menu.getItem(0).setIcon(getActivity().getResources().getDrawable(R.drawable.ic_action_del_unselected));
 //        ShareFragment.menu.getItem(0).setEnabled(false);
         position = getArguments().getInt(ARG_POSITION);
@@ -88,13 +86,20 @@ private ListView listStudents;
 
         listStudents.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         listStudents.setAdapter(adap);
+//        for(int j=0;j<ShareFragment.sharedTeachersAndStudents.size();j++) {
+//            for (int i = 0; i < pupilsList.size(); i++) {
+//                if (pupilsList.get(i).getUserId().contains(ShareFragment.sharedTeachersAndStudents.get(j).userId))
+//                    listStudents.setItemChecked(i, true);
+//            }
+//        }
+
         listStudents.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //                enableDisableShareOptions(listStudents.getCheckedItemPositions());
                 ShareActivityForPerform.isSharedforPerformChanged=true;
                 ShareFragment.menu.getItem(0).setIcon(getActivity().getResources().getDrawable(R.drawable.ic_action_del_selected));
-                ShareFragment.menu.getItem(0).setEnabled(true);
+
                 ShareActivityForPerform.isSharedforPerformChanged=true;
                 if (ShareFragment.studentSharedList.contains(pupilsList.get(position))) {
                     ShareFragment.studentSharedList.remove(pupilsList.get(position));
@@ -106,4 +111,12 @@ private ListView listStudents;
         return convertView;
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if(ShareActivityForPerform.isSharedforPerformChanged==true) {
+            ShareFragment.menu.getItem(0).getIcon();
+        }    }
 }
