@@ -79,10 +79,7 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
     Date firstDate,seocndDate;
     boolean rehersalBool=false;
     static boolean numberOfPerformance=false;
-
     static boolean isValidDate=false;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,9 +110,6 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
         userName.setText(currentUser.getFirstName()+" "+currentUser.getLastName());
         btnPlayOrder.setBackgroundColor(getResources().getColor(R.color.gray_color));
         etNumberOfPerformanceValue.setFocusable(false);
-
-
-
         etNumberOfPerformanceValue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -274,7 +268,6 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
 
     protected void processDate(final boolean isFirstdate) {
 
-
         final Calendar c = Calendar.getInstance();
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH);
@@ -283,14 +276,12 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
         datePickerdialog.setCancelable(true);
         datePickerdialog.setTitle("Select Date");
 
-
         datePickerdialog.setButton(DialogInterface.BUTTON_NEGATIVE,
                 "Cancel	", new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog,
                                         int which) {
-
                         datePickerdialog.dismiss();
                     }
                 });
