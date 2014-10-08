@@ -356,5 +356,6 @@ public class ShareActivityForPreview extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         ShareActivityForPreview.teachers.clear();
+        finish();
     }
 }

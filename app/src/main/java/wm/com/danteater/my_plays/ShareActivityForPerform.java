@@ -132,5 +132,6 @@ public class ShareActivityForPerform extends BaseActivity {
         ShareActivityForPerform.teachers.clear();
         ShareActivityForPerform.classes.clear();
         ShareActivityForPerform.pupils.clear();
+        finish();
     }
 }
