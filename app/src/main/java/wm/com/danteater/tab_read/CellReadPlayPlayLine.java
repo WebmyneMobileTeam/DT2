@@ -121,6 +121,7 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
     public void setupForPlayLine(PlayLines playLine, int current_state,boolean mark) {
 
        lblRoleName.setBackgroundColor(Color.TRANSPARENT);
+       btnEdit.setVisibility(View.VISIBLE);
 
 
         Log.e("Mark is ",""+mark);
@@ -146,7 +147,9 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
         if(user.checkTeacherOrAdmin(user.getRoles())){
             btnMenu.setVisibility(View.VISIBLE);
         }else{
-            btnMenu.setVisibility(View.INVISIBLE);
+
+            btnEdit.setVisibility(View.GONE);
+          //  btnMenu.setVisibility(View.INVISIBLE);
         }
 
         tvPlayLines.setText("");
