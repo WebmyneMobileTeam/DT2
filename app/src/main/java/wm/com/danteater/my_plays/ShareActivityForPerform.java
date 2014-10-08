@@ -3,6 +3,7 @@ package wm.com.danteater.my_plays;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.os.CountDownTimer;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
@@ -58,7 +59,7 @@ public class ShareActivityForPerform extends BaseActivity {
     public  static ArrayList<Group> classes = new ArrayList<Group>();
     public static ArrayList<User> teachers= new ArrayList<User>();
     public static HashMap<String, ArrayList<User>> pupils=new HashMap<String, ArrayList<User>>();
-
+    public static boolean isFinishOnBackPressForPerform=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +93,24 @@ public class ShareActivityForPerform extends BaseActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    ShareFragment fragment = (ShareFragment) fragmentManager.findFragmentByTag("share_perform");
+                    fragment.shareWithTeachersAndStudents();
+                    if(isFinishOnBackPressForPerform==true){
+                        new CountDownTimer(2500, 1000) {
 
+                            @Override
+                            public void onFinish() {
+                                finish();
+
+                            }
+
+                            @Override
+                            public void onTick(long millisUntilFinished) {
+
+                            }
+                        }.start();
+                    }
                 }
             });
             alert.setNegativeButton("Nej", new DialogInterface.OnClickListener() {
@@ -107,7 +125,6 @@ public class ShareActivityForPerform extends BaseActivity {
             finish();
         }
     }
-
 
     @Override
     protected void onDestroy() {

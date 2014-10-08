@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -217,6 +218,7 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         switch (item.getItemId()){
             // going back
             case android.R.id.home:
+                ShareActivityForPerform.isFinishOnBackPressForPerform=true;
                 if(ShareActivityForPerform.isSharedforPerformChanged==true && ShareActivityForPerform.menu.getItem(0).isEnabled()==true) {
                     AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
                     alert.setTitle("Gem deling");
@@ -225,7 +227,22 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            // TODO share play from here
+                            shareWithTeachersAndStudents();
+                            if(ShareActivityForPerform.isFinishOnBackPressForPerform==true){
+                                new CountDownTimer(2500, 1000) {
+
+                                    @Override
+                                    public void onFinish() {
+                                        getActivity().finish();
+
+                                    }
+
+                                    @Override
+                                    public void onTick(long millisUntilFinished) {
+
+                                    }
+                                }.start();
+                            }
                         }
                     });
 
@@ -245,6 +262,7 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
                 break;
             // share the play
             case R.id.actionShare:
+                ShareActivityForPerform.isFinishOnBackPressForPerform=false;
 //                Toast.makeText(getActivity(), "click on share", Toast.LENGTH_SHORT).show();
                 if(ShareActivityForPerform.isSharedforPerformChanged==true) {
                     shareWithTeachersAndStudents();
@@ -319,7 +337,7 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         }
     }
 
-    private void shareWithTeachersAndStudents() {
+    public void shareWithTeachersAndStudents() {
         final ArrayList<User> totalUsers = new ArrayList<User>();
         totalUsers.addAll(teacherSharedList);
         totalUsers.addAll(studentSharedList);
@@ -397,6 +415,7 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         }.execute();
 
     }
+
 
 
 

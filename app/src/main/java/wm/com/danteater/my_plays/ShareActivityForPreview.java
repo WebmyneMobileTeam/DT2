@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Menu;
@@ -56,10 +57,11 @@ public class ShareActivityForPreview extends BaseActivity {
     private HUD dialog;
     public static  ArrayList<SharedUser> sharedTeachers;
     static boolean isSharedforPreviewChanged=false;
+    static boolean isFinishOnBackPress=false;
 
     public static ArrayList<User> teachers= new ArrayList<User>();
 
-   ArrayList<User> teacherList;
+    ArrayList<User> teacherList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -148,6 +150,7 @@ public class ShareActivityForPreview extends BaseActivity {
 
             // going back
             case android.R.id.home:
+                isFinishOnBackPress=true;
                 if(ShareActivityForPreview.isSharedforPreviewChanged==true && menu.getItem(0).isEnabled()==true) {
                     AlertDialog.Builder alert = new AlertDialog.Builder(ShareActivityForPreview.this);
                     alert.setTitle("Gem deling");
@@ -156,7 +159,23 @@ public class ShareActivityForPreview extends BaseActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            // TODO share play from here
+                            shareWithTeachers();
+                            if(isFinishOnBackPress==true){
+                                new CountDownTimer(2500, 1000) {
+
+                                    @Override
+                                    public void onFinish() {
+                                        finish();
+
+                                    }
+
+                                    @Override
+                                    public void onTick(long millisUntilFinished) {
+
+                                    }
+                                }.start();
+                            }
+
                         }
                     });
 
@@ -179,6 +198,7 @@ public class ShareActivityForPreview extends BaseActivity {
 
             // share the play
             case R.id.actionShare:
+                isFinishOnBackPress=false;
                 if(isSharedforPreviewChanged==true){
                     shareWithTeachers();
                 }
@@ -258,7 +278,21 @@ public class ShareActivityForPreview extends BaseActivity {
                             menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_action_del_unselected));
                             menu.getItem(0).setEnabled(false);
                             dialog.dismissWithStatus(R.drawable.ic_navigation_accept,"Stykker er delt");
+                            if(isFinishOnBackPress==true){
+                                new CountDownTimer(2500, 1000) {
 
+                                    @Override
+                                    public void onFinish() {
+                                       finish();
+
+                                    }
+
+                                    @Override
+                                    public void onTick(long millisUntilFinished) {
+
+                                    }
+                                }.start();
+                            }
                         }
                     });
 
@@ -285,6 +319,22 @@ public class ShareActivityForPreview extends BaseActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
+                    shareWithTeachers();
+                    if(isFinishOnBackPress==true){
+                        new CountDownTimer(2500, 1000) {
+
+                            @Override
+                            public void onFinish() {
+                                finish();
+
+                            }
+
+                            @Override
+                            public void onTick(long millisUntilFinished) {
+
+                            }
+                        }.start();
+                    }
 
                 }
             });
