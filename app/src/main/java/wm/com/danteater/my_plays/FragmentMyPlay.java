@@ -82,7 +82,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     public static int STATE_PREVIEW = 1;
     public static int STATE_READ = 2;
     public static int STATE_CHAT = 3;
-//    private StateManager stateManager = StateManager.getInstance();
+    //    private StateManager stateManager = StateManager.getInstance();
     Play ply;
     User cUser;
     String session_id;
@@ -133,6 +133,8 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
         currentUser =complexPreferences.getObject("current_user", User.class);
 
     }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -233,7 +235,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                     if (bean.OrderType.equalsIgnoreCase("Perform")) {
 
                         playListForPerform.add(bean);
-                       playOrderList.add(bean.playOrderDetails);
+                        playOrderList.add(bean.playOrderDetails);
                         //TODO
                     }
 
@@ -274,6 +276,11 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     @Override
     public void onResume() {
         super.onResume();
+
+//        ShareActivityForPreview.teachers.clear();
+//        ShareActivityForPerform.classes.clear();
+//        ShareActivityForPerform.teachers.clear();
+//        ShareActivityForPerform.pupils.clear();
     }
 
     @Override
@@ -366,7 +373,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                     cUser = complexPreferences.getObject("current_user", User.class);
                     SharedPreferences pre = getActivity().getSharedPreferences("session_id", getActivity().MODE_PRIVATE);
                     session_id = pre.getString("session_id", "");
-                    ShareActivityForPreview.teachers.clear();
+                    //ShareActivityForPreview.teachers.clear();
                     retriveSchoolTeachers(session_id, cUser.getDomain());
 
 
@@ -600,9 +607,9 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                     cUser = complexPreferences.getObject("current_user", User.class);
                     SharedPreferences pre = getActivity().getSharedPreferences("session_id", getActivity().MODE_PRIVATE);
                     session_id = pre.getString("session_id", "");
-                    ShareActivityForPerform.classes.clear();
-                    ShareActivityForPerform.teachers.clear();
-                    ShareActivityForPerform.pupils.clear();
+//                    ShareActivityForPerform.classes.clear();
+//                    ShareActivityForPerform.teachers.clear();
+//                    ShareActivityForPerform.pupils.clear();
                     retriveSchoolClasses(session_id, cUser.getDomain());
                     retriveSchoolTeachers(session_id, cUser.getDomain());
 
@@ -729,12 +736,12 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             SharedPreferences preferences = getActivity().getSharedPreferences("Plays", getActivity().MODE_PRIVATE);
             String k = "PlayLatesteUpdateDate"+play.PlayId;
             //  Toast.makeText(getActivity(),preferences.getString(k,""), Toast.LENGTH_SHORT).show();
-          //  long unixTime = Long.parseLong(preferences.getString(k,""));
+            //  long unixTime = Long.parseLong(preferences.getString(k,""));
             long unixTime2 = Long.parseLong(preferences.getString(k,""));
 
-           // BigDecimal bigDecimal = new BigDecimal(unixTime);
+            // BigDecimal bigDecimal = new BigDecimal(unixTime);
 
-          //  String serverLink = API.link_getPlayUpdateForPlayOrderIdString+play.OrderId+"?unixTimeStamp="+unixTime;
+            //  String serverLink = API.link_getPlayUpdateForPlayOrderIdString+play.OrderId+"?unixTimeStamp="+unixTime;
             String serverLink = API.link_getPlayUpdateForPlayOrderIdString+play.OrderId+"?unixTimeStamp="+unixTime2;
             Log.e("update string before update : ",serverLink);
             new CallWebService(serverLink,CallWebService.TYPE_JSONARRAY) {
@@ -775,7 +782,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                                     dbh.close();
 
                                 }catch(Exception e){
-                                        e.printStackTrace();
+                                    e.printStackTrace();
                                 }
 
 
@@ -785,7 +792,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                             @Override
                             protected void onPostExecute(String s) {
                                 super.onPostExecute(s);
-                                 dialog_next.dismiss();
+                                dialog_next.dismiss();
 
                                 SharedPreferences preferences = getActivity().getSharedPreferences("Plays",getActivity().MODE_PRIVATE);
                                 SharedPreferences.Editor editor = preferences.edit();
@@ -963,6 +970,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                             ShareActivityForPerform.classes.add(beanGroup);
                             Log.e("group domain", beanGroup.getDomain() + "");
                             numberOfClassesToBeRetrieved++;
+                            ShareActivityForPerform.pupils.clear();
                             retriveMembers(seesionId, domain, beanGroup);
                         }
                     }
