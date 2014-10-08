@@ -107,4 +107,13 @@ public class ShareActivityForPerform extends BaseActivity {
             finish();
         }
     }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ShareActivityForPerform.teachers.clear();
+        ShareActivityForPerform.classes.clear();
+        ShareActivityForPerform.pupils.clear();
+    }
 }

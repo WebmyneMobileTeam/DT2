@@ -300,4 +300,11 @@ public class ShareActivityForPreview extends BaseActivity {
             finish();
         }
     }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ShareActivityForPreview.teachers.clear();
+    }
 }
