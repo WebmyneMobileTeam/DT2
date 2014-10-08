@@ -160,6 +160,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     }
 
 
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -183,7 +184,6 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
             protected Void doInBackground(Void... voids) {
                 new CallWebService("http://api.danteater.dk/api/MyPlays?UserId="+ currentUser.getUserId(), CallWebService.TYPE_JSONARRAY) {
-
                     @Override
                     public void response(String response) {
                         responseValue=response;
@@ -276,7 +276,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     @Override
     public void onResume() {
         super.onResume();
-
+        Log.e("resume",".........................");
 //        ShareActivityForPreview.teachers.clear();
 //        ShareActivityForPerform.classes.clear();
 //        ShareActivityForPerform.teachers.clear();
@@ -370,7 +370,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                     dialogForShare.title("");
                     dialogForShare.show();
                     ComplexPreferences complexPreferencesForUser = ComplexPreferences.getComplexPreferences(getActivity(), "user_pref", 0);
-                    cUser = complexPreferences.getObject("current_user", User.class);
+                    cUser = complexPreferencesForUser.getObject("current_user", User.class);
                     SharedPreferences pre = getActivity().getSharedPreferences("session_id", getActivity().MODE_PRIVATE);
                     session_id = pre.getString("session_id", "");
                     //ShareActivityForPreview.teachers.clear();

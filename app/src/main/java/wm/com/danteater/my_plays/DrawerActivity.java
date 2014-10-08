@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -61,6 +62,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
         logoutButton = (WMTextView) findViewById(R.id.logoutButton);
         logoutUser = (WMTextView) findViewById(R.id.logoutUser);
 
+
         //Load My Places First
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction ft = manager.beginTransaction();
@@ -71,9 +73,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
                 ft.replace(R.id.main_content, fragmentMyPlayPupil, "my_plays_pupil").commit();
             }
         } else {
-
             FragmentMyPlay fragmentMyPlay = FragmentMyPlay.newInstance("", "");
-
             if (manager.findFragmentByTag("my_plays") == null) {
                 ft.replace(R.id.main_content, fragmentMyPlay, "my_plays").commit();
             }
@@ -81,11 +81,13 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
 
         // header
         txtHeader.setText("Mine Stykker");
-
-
         initFields();
         initDrawer();
-
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e("onResume ","in drawer activty");
     }
 
     private void initFields() {
@@ -109,8 +111,6 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                //TODO clear other data like messages or other records...
                 SharedPreferences preferences = getSharedPreferences("settings",MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.clear();

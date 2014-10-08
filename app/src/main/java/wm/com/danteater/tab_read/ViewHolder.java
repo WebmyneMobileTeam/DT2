@@ -18,7 +18,6 @@ package wm.com.danteater.tab_read;
 
 import android.widget.TextView;
 
-import wm.com.danteater.my_plays.DrawerActivity;
 import wm.com.danteater.tab_music.CellMusicTableView;
 import wm.com.danteater.tab_music.CellScriptTableView;
 
@@ -79,5 +78,6 @@ public class ViewHolder {
     public class ViewHolderForPDF extends ViewHolder {
         public CellScriptTableView cellScriptTableView;
     }
+
 
 }

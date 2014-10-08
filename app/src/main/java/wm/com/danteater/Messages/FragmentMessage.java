@@ -4,21 +4,44 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.VolleyError;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import wm.com.danteater.R;
+import wm.com.danteater.customviews.HUD;
+import wm.com.danteater.customviews.WMTextView;
+import wm.com.danteater.login.User;
+import wm.com.danteater.model.CallWebService;
+import wm.com.danteater.model.ComplexPreferences;
+import wm.com.danteater.my_plays.SharedUser;
 
 public class FragmentMessage extends Fragment {
 
-    private ListView chatUserList;
-    private ArrayList<String> titleList=new ArrayList<String>();
+    private ListView chatUserListView;
+    private User currentUser;
+    private ArrayList<String> chatUserList=new ArrayList<String>();
+    private ArrayList<MessageUnread> messageUnreadArrayList=new ArrayList<MessageUnread>();
+    private ArrayList<MessagesForConversation> messagesForConversationArrayList=new ArrayList<MessagesForConversation>();
+    private HUD dialog;
+    private Timer timer;
+    private MessageAdapter adapter;
     public static FragmentMessage newInstance(String param1, String param2) {
         FragmentMessage fragment = new FragmentMessage();
 
@@ -31,23 +54,87 @@ public class FragmentMessage extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        ((WMTextView) getActivity().getActionBar().getCustomView()).setText("Beskeder");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        View view=inflater.inflate(R.layout.fragment_message, container, false);
-        chatUserList=(ListView)view.findViewById(R.id.chatUserList);
-        titleList.add("teacher1");
-        titleList.add("teacher2");
-        titleList.add("teacher3");
-        titleList.add("pupil1");
-        titleList.add("pupil2");
-        titleList.add("pupil3");
-        chatUserList.setAdapter(new MessageAdapter(getActivity(), titleList));
+        View view=inflater.inflate(R.layout.fragment_conversation_table_view, container, false);
+        chatUserListView =(ListView)view.findViewById(R.id.chatUserList);
         return view;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.e("resume",".........................");
+        //get Current User
+        ComplexPreferences complexPreferencesForUser = ComplexPreferences.getComplexPreferences(getActivity(), "user_pref", 0);
+        currentUser = complexPreferencesForUser.getObject("current_user", User.class);
+        //call API getAllMessageUsers
+        getAllMessageUsers();
+        // call API getAllUnreadMessagesForUser
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                getAllUnreadMessagesForUser();
+            }
+        },0,1000*60*10);
+
+    }
+
+    public void getAllMessageUsers() {
+
+        dialog = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
+        dialog.title("");
+        dialog.show();
+        new CallWebService("http://api.danteater.dk/api/MessageUser/"+currentUser.getUserId(), CallWebService.TYPE_JSONARRAY) {
+
+            @Override
+            public void response(String response) {
+                dialog.dismiss();
+                Type listType = new TypeToken<List<String>>() {
+                }.getType();
+                chatUserList = new GsonBuilder().create().fromJson(response,listType);
+                adapter= new MessageAdapter(getActivity(), chatUserList);
+                chatUserListView.setAdapter(adapter);
+            }
+
+            @Override
+            public void error(VolleyError error) {
+
+                Log.e("error:",error+"");
+
+            }
+        }.start();
+    }
+
+
+    private void getAllUnreadMessagesForUser() {
+
+        new CallWebService("http://api.danteater.dk/api/MessageUnread/"+currentUser.getUserId(), CallWebService.TYPE_JSONARRAY) {
+
+            @Override
+            public void response(String response) {
+            Type listType=new TypeToken<List<MessageUnread>>(){
+            }.getType();
+            messageUnreadArrayList=new GsonBuilder().create().fromJson(response,listType);
+                Log.e("refresh","refresh bubble list");
+                 adapter.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void error(VolleyError error) {
+
+              Log.e("error: ",error+"");
+
+            }
+        }.start();
+    }
+
+
 
 
     public class MessageAdapter extends BaseAdapter {
@@ -56,46 +143,39 @@ public class FragmentMessage extends Fragment {
 
         LayoutInflater inflater;
 
-        ArrayList<String> titleList;
-
-
-        public MessageAdapter(Context context, ArrayList<String> titleList) {
-
+        ArrayList<String> chatUserList;
+        public MessageAdapter(Context context, ArrayList<String> chatUserList) {
             this.context = context;
-            this.titleList = titleList;
-
+            this.chatUserList = chatUserList;
+            Collections.sort(chatUserList);
         }
 
         public int getCount() {
-
-            return titleList.size();
-
+            return chatUserList.size();
         }
 
         public Object getItem(int position) {
-            return titleList.get(position);
+
+            return chatUserList.get(position);
         }
 
         public long getItemId(int position) {
+
             return position;
         }
 
 
         class ViewHolder {
-
-
             TextView txtUsername,txtMessageImage,txtBadgeValue;
-
         }
 
-        public View getView(final int position, View convertView,
-                            ViewGroup parent) {
+        public View getView(final int position, View convertView,ViewGroup parent) {
 
             final ViewHolder holder;
             LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 
             if (convertView == null) {
-                convertView = mInflater.inflate(R.layout.item_message_view, parent, false);
+                convertView = mInflater.inflate(R.layout.item_conversation_table_view_cell, parent, false);
                 holder = new ViewHolder();
                 holder.txtUsername = (TextView) convertView.findViewById(R.id.txtMessageUserName);
                 holder.txtMessageImage = (TextView) convertView.findViewById(R.id.txtMessageImaage);
@@ -105,21 +185,71 @@ public class FragmentMessage extends Fragment {
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            holder.txtUsername.setText(titleList.get(position));
-            holder.txtMessageImage.setText(titleList.get(position).substring(0,2));
-            if(position==2){
-                holder.txtBadgeValue.setVisibility(View.VISIBLE);
-            } else {
-                holder.txtBadgeValue.setVisibility(View.GONE);
+            holder.txtUsername.setText(chatUserList.get(position));
+            holder.txtMessageImage.setText(chatUserList.get(position).substring(0,2));
+            if (messageUnreadArrayList.size() > 0) {
+                for (int i = 0; i < messageUnreadArrayList.size(); i++) {
+//                    Log.e("unread id:",messageUnreadArrayList.get(i).FromUserId+"");
+//                    Log.e("read id:",chatUserList.get(position)+"");
+                    if (messageUnreadArrayList.get(i).FromUserId.equalsIgnoreCase(chatUserList.get(position))) {
+                        holder.txtBadgeValue.setVisibility(View.VISIBLE);
+//                        Log.e("count value: ", messageUnreadArrayList.get(i).unreadMessageCount.toString() + "");
+                        holder.txtBadgeValue.setText(messageUnreadArrayList.get(i).unreadMessageCount.toString());
+                    }
+//                    } else {
+//                        holder.txtBadgeValue.setVisibility(View.GONE);
+//                    }
+
+                }
+                notifyDataSetChanged();
             }
+
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    getAllMessagesForConversation(position);
+                }
+            });
             return convertView;
 
         }
 
     }
 
+    private void getAllMessagesForConversation(int position) {
+        dialog = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
+        dialog.title("");
+        dialog.show();
+        Log.e("generated url: ","http://api.danteater.dk/api/Message/"+currentUser.getUserId()+"?recipient="+chatUserList.get(position));
+        new CallWebService("http://api.danteater.dk/api/Message/"+currentUser.getUserId()+"?recipient="+chatUserList.get(position), CallWebService.TYPE_JSONARRAY) {
 
+            @Override
+            public void response(String response) {
+                dialog.dismiss();
+                Type listType=new TypeToken<List<MessagesForConversation>>(){
+                }.getType();
+                messagesForConversationArrayList=new GsonBuilder().create().fromJson(response,listType);
 
+                for(int i=0;i<messagesForConversationArrayList.size();i++){
+                    Log.e("Id",messagesForConversationArrayList.get(i).Id+"");
+                    Log.e("OrderId",messagesForConversationArrayList.get(i).OrderId+"");
+                    Log.e("LineId",messagesForConversationArrayList.get(i).LineId+"");
+                    Log.e("FromUserId",messagesForConversationArrayList.get(i).FromUserId+"");
+                    Log.e("ToUserId",messagesForConversationArrayList.get(i).ToUserId+"");
+                    Log.e("MessageText",messagesForConversationArrayList.get(i).MessageText+"");
+                    Log.e("postedTimeStamp",messagesForConversationArrayList.get(i).postedTimeStamp+"");
+                    Log.e("isRead",messagesForConversationArrayList.get(i).isRead+"");
+                }
+            }
 
+            @Override
+            public void error(VolleyError error) {
+
+                Log.e("error: ",error+"");
+
+            }
+        }.start();
+    }
 
 }

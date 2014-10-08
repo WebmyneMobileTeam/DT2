@@ -74,11 +74,6 @@ public class LoginActivity extends BaseActivity {
         // get login value from setting activity
         // true- automatic login
         // false- manual login
-
-
-
-
-
         SharedPreferences preferences = getSharedPreferences("settings", MODE_PRIVATE);
 
         shouldShowLoginView = preferences.getBoolean("shouldShowLoginView", false);
@@ -152,7 +147,7 @@ public class LoginActivity extends BaseActivity {
 
                 // no internet connection
                 // shows no network view
-                //TODO open from database (Last visited play)
+
 
                 txtTryAgain.setOnClickListener(new View.OnClickListener() {
                     @Override

@@ -451,8 +451,6 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
         } else {
             tv.setText(value);
         }
-
-
     }
 }
 

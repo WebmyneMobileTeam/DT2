@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -103,8 +104,8 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
         viewMenu = (View)view.findViewById(R.id.cellMenuReadLineTeacher);
         imgCloseMenu = (ImageView)view.findViewById(R.id.readPlayLineMenuMoreClose);
         btnEdit = (WMTextView)view.findViewById(R.id.readPlayLineMenuEdit);
-        btnMessage = (WMTextView)view.findViewById(R.id.readPlayLineMenuNote);
-        btnNote = (WMTextView)view.findViewById(R.id.readPlayLineMenuChat);
+        btnNote = (WMTextView)view.findViewById(R.id.readPlayLineMenuNote);
+        btnMessage   = (WMTextView)view.findViewById(R.id.readPlayLineMenuChat);
 
         btnMenu.setOnClickListener(this);
         imgCloseMenu.setOnClickListener(this);
@@ -273,7 +274,10 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
                 break;
 
             case R.id.readPlayLineMenuChat:
+                hideMenu();
+                //TODO
 
+               Log.e("message","click on message");
                 break;
 
         }
