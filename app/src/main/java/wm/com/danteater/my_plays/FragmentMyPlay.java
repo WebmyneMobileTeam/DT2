@@ -544,7 +544,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 holder.txtNumberOfPerformance = (WMTextView) convertView.findViewById(R.id.txtOrderNumberOfPerformance);
                 holder.btnOrdering = (WMTextView) convertView.findViewById(R.id.btnOrdering);
                 holder.btnShareOrder = (WMTextView) convertView.findViewById(R.id.btnShareOrder);
-//                holder.btnReadOrder = (WMTextView) convertView.findViewById(R.id.btnReadOrder);
+
                 holder.imgOrderTrashIcon=(ImageView)convertView.findViewById(R.id.imgOrderTrashIcon);
                 convertView.setTag(holder);
             } else {
@@ -584,8 +584,9 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                     ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref",0);
                     complexPreferences.putObject("selected_play",playListForPerform.get(position));
                     complexPreferences.commit();
-
+                    //TODO
                     Intent intent=new Intent(getActivity(),OrderPlayActivityForPerformNew.class);
+                    intent.putExtra("isAlreadyOrdered",true);
                     startActivity(intent);
                 }
             });

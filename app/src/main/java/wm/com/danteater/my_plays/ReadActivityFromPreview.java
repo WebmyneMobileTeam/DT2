@@ -52,7 +52,9 @@ public class ReadActivityFromPreview extends BaseActivity {
         btnPlayOrderIdForPerformance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //TODO
                 Intent i=new Intent(ReadActivityFromPreview.this,OrderPlayActivityForPerformNew.class);
+                i.putExtra("isAlreadyOrdered",false);
                 startActivity(i);
             }
         });

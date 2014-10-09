@@ -80,12 +80,15 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
     boolean rehersalBool=false;
     static boolean numberOfPerformance=false;
     static boolean isValidDate=false;
+    boolean isAlreadyOrdered;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_play_new);
         getActionBar().setDisplayHomeAsUpEnabled(true);
+        Intent i=getIntent();
+        isAlreadyOrdered=i.getBooleanExtra("isAlreadyOrdered",false);
         relativeNumberOfPerformance=(RelativeLayout)findViewById(R.id.relativeNumberOfPerformance);
         relativeFirstDate=(RelativeLayout)findViewById(R.id.relativeFirstDate);
         relativeSecondDate=(RelativeLayout)findViewById(R.id.relativeSecondDate);
@@ -262,7 +265,30 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
             }
         });
 
+        if(isAlreadyOrdered==true){
+            isValidDate=true;
+            numberOfPerformance=true;
+            etNumberOfPerformanceValue.setText(selectedPlay.getPlayOrderDetails().getNumberOfPerformances());
+            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+            float performDateFirst = Float.parseFloat(selectedPlay.getPlayOrderDetails().getPerformDateFirst());
+            float performDateLast = Float.parseFloat(selectedPlay.getPlayOrderDetails().getPerformDateLast());
+            Date firstDate = float2Date(performDateFirst);
+            Date lastDate = float2Date(performDateLast);
+            txtFirstDateValue.setText(format.format(firstDate));
+            txtSecondDateValue.setText(format.format(lastDate));
+            if(selectedPlay.getPlayOrderDetails().getNumberOfAuditions().equalsIgnoreCase("false")){
+                orderPlaySwitch.setChecked(false);
+            } else {
+                orderPlaySwitch.setChecked(true);
+            }
 
+            btnPlayOrder.setText("Ret Bestilling");
+
+            Log.e("isAlreadyOrdered","come from perform");
+        }else {
+            btnPlayOrder.setText("Bestil");
+            Log.e("isAlreadyOrdered","come from preview");
+        }
     }
 
 
@@ -326,13 +352,13 @@ if(isFirstdate)
                                     }
                                 } else {
                                     isValidDate=true;
-                                    if(isFirstdate) {
+//                                    if(isFirstdate) {
                                         txtFirstDateValue.setTextColor(getResources().getColor(android.R.color.black));
 
-                                    } else {
+//                                    } else {
                                         txtSecondDateValue.setTextColor(getResources().getColor(android.R.color.black));
 
-                                    }
+//                                    }
 
 
 
@@ -599,6 +625,17 @@ if(isFirstdate)
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public static java.util.Date float2Date(float nbSeconds) {
+        java.util.Date date_origine;
+        java.util.Calendar date = java.util.Calendar.getInstance();
+        java.util.Calendar origine = java.util.Calendar.getInstance();
+        origine.set(1970, Calendar.JANUARY, 1);
+        date_origine = origine.getTime();
+        date.setTime(date_origine);
+        date.add(java.util.Calendar.SECOND, (int) nbSeconds);
+        return date.getTime();
     }
 
 }
