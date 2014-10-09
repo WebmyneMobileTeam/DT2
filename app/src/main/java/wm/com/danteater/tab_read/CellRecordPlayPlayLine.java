@@ -77,7 +77,7 @@ public class CellRecordPlayPlayLine {
         if(user.checkTeacherOrAdmin(user.getRoles())){
             btnOpTag.setVisibility(View.VISIBLE);
         }else{
-            btnOpTag.setVisibility(View.INVISIBLE);
+           // btnOpTag.setVisibility(View.INVISIBLE);
         }
 
         SharedPreferences preferences = ctx.getSharedPreferences("settings", ctx.MODE_PRIVATE);

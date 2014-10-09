@@ -2,6 +2,7 @@ package wm.com.danteater.Messages;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -38,7 +39,7 @@ public class FragmentMessage extends Fragment {
     private User currentUser;
     private ArrayList<String> chatUserList=new ArrayList<String>();
     private ArrayList<MessageUnread> messageUnreadArrayList=new ArrayList<MessageUnread>();
-    private ArrayList<MessagesForConversation> messagesForConversationArrayList=new ArrayList<MessagesForConversation>();
+
     private HUD dialog;
     private Timer timer;
     private MessageAdapter adapter;
@@ -150,6 +151,7 @@ public class FragmentMessage extends Fragment {
             Collections.sort(chatUserList);
         }
 
+
         public int getCount() {
             return chatUserList.size();
         }
@@ -217,7 +219,7 @@ public class FragmentMessage extends Fragment {
 
     }
 
-    private void getAllMessagesForConversation(int position) {
+    private void getAllMessagesForConversation(final int position) {
         dialog = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
         dialog.title("");
         dialog.show();
@@ -227,20 +229,13 @@ public class FragmentMessage extends Fragment {
             @Override
             public void response(String response) {
                 dialog.dismiss();
-                Type listType=new TypeToken<List<MessagesForConversation>>(){
-                }.getType();
-                messagesForConversationArrayList=new GsonBuilder().create().fromJson(response,listType);
 
-                for(int i=0;i<messagesForConversationArrayList.size();i++){
-                    Log.e("Id",messagesForConversationArrayList.get(i).Id+"");
-                    Log.e("OrderId",messagesForConversationArrayList.get(i).OrderId+"");
-                    Log.e("LineId",messagesForConversationArrayList.get(i).LineId+"");
-                    Log.e("FromUserId",messagesForConversationArrayList.get(i).FromUserId+"");
-                    Log.e("ToUserId",messagesForConversationArrayList.get(i).ToUserId+"");
-                    Log.e("MessageText",messagesForConversationArrayList.get(i).MessageText+"");
-                    Log.e("postedTimeStamp",messagesForConversationArrayList.get(i).postedTimeStamp+"");
-                    Log.e("isRead",messagesForConversationArrayList.get(i).isRead+"");
-                }
+
+                Intent i = new Intent(getActivity(),ChatViewActivity.class);
+                i.putExtra("messages",response);
+                i.putExtra("fromUser",chatUserList.get(position));
+                startActivity(i);
+
             }
 
             @Override

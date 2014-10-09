@@ -13,10 +13,9 @@
     <string name="action_share">Del</string>
     <string name="title_activity_guide_startup">GuideStartup</string>
     <string name="title_activity_read_activity_from_preview">ReadActivityFromPreview</string>
-
     <string name="menu_line_number">Line Number</string>
     <string name="menu_section">Section</string>
     <string name="link"><a href="https://www.mv-nordic.com/dk/produkter/teater-aftale">her</a></string>
-
+    <string name="title_activity_chat_view">ChatViewActivity</string>
 
 </resources>

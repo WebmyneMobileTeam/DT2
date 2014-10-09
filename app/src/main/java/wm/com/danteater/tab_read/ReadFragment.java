@@ -548,7 +548,7 @@ public class ReadFragment extends Fragment {
         @Override
         public int getItemViewType(int section, int position) {
 
-           PlayLines playLine = dicPlayLines.get(marrPlaySections.get(section)).get(position);
+          PlayLines playLine = dicPlayLines.get(marrPlaySections.get(section)).get(position);
 
           Log.e("GetItemViewType  :  Type : ","pos : "+position+" "+playLine.playLineType());
 
