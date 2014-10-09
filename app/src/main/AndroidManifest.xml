@@ -31,11 +31,7 @@
             android:label="@string/title_activity_play_tab"
             android:windowSoftInputMode="adjustPan" >
         </activity>
-        <activity
-            android:name=".my_plays.OrderPlayActivityForPerform"
-            android:label="@string/title_activity_play_tab"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
+
         <activity
             android:name=".my_plays.OrderPlayActivityForPerformNew"
             android:label="@string/title_activity_play_tab"
@@ -76,7 +72,8 @@
         </activity>
         <activity
             android:name=".Messages.ChatViewActivity"
-            android:label="@string/title_activity_chat_view" >
+            android:label="@string/title_activity_chat_view"
+            android:windowSoftInputMode="adjustPan">
         </activity>
     </application>
 

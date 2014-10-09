@@ -43,11 +43,24 @@ public class API {
 
             HttpClient client = new DefaultHttpClient();
             HttpPost post = new HttpPost(SERVER_URL);
-            post.setHeader("Accept", "application/json");
-            post.setHeader("Content-type", "application/json");
+            // parse without any json body parameters
+            if(jsonString.equalsIgnoreCase("")) {
+                post.setHeader("Accept", "application/text");
+                post.setHeader("Content-type", "application/text");
+            } else { // with json body parameters
+                post.setHeader("Accept", "application/json");
+                post.setHeader("Content-type", "application/json");
+            }
 
             StringEntity e = new StringEntity(jsonString.toString(), HTTP.UTF_8);
-            e.setContentType("application/json");
+            // parse without any json body parameters
+            if(jsonString.equalsIgnoreCase("")) {
+                e.setContentType("application/text");
+            } else { // with json body parameters
+                e.setContentType("application/json");
+            }
+
+
             post.setEntity(e);
 
             HttpResponse response = client.execute(post);

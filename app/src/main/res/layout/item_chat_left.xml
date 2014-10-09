@@ -4,6 +4,7 @@
     android:orientation="horizontal"
     android:paddingLeft="8dp"
     android:paddingTop="8dp"
+    android:paddingBottom="8dp"
     android:layout_height="wrap_content">
 
     <wm.com.danteater.customviews.WMTextView

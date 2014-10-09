@@ -37,6 +37,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -228,7 +229,7 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
                             protected void onPreExecute() {
                                 super.onPreExecute();
                                 dialog_next = new HUD(OrderPlayActivityForPerformNew.this,android.R.style.Theme_Translucent_NoTitleBar);
-                                dialog_next.title("Stykker bestilt");
+                                dialog_next.title("");
                                 dialog_next.show();
 
                             }
@@ -272,14 +273,22 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
             SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
             float performDateFirst = Float.parseFloat(selectedPlay.getPlayOrderDetails().getPerformDateFirst());
             float performDateLast = Float.parseFloat(selectedPlay.getPlayOrderDetails().getPerformDateLast());
-            Date firstDate = float2Date(performDateFirst);
-            Date lastDate = float2Date(performDateLast);
-            txtFirstDateValue.setText(format.format(firstDate));
-            txtSecondDateValue.setText(format.format(lastDate));
+            Date firstOneDate = float2Date(performDateFirst);
+            Date lastOneDate = float2Date(performDateLast);
+            txtFirstDateValue.setText(format.format(firstOneDate));
+            txtSecondDateValue.setText(format.format(lastOneDate));
+            try {
+                firstDate = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH).parse(txtFirstDateValue.getText().toString());
+                seocndDate = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH).parse(txtSecondDateValue.getText().toString());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             if(selectedPlay.getPlayOrderDetails().getNumberOfAuditions().equalsIgnoreCase("false")){
                 orderPlaySwitch.setChecked(false);
+                rehersalBool=false;
             } else {
                 orderPlaySwitch.setChecked(true);
+                rehersalBool=true;
             }
 
             btnPlayOrder.setText("Ret Bestilling");
