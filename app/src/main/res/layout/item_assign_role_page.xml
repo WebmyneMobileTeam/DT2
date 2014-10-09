@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="#fff"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="#d5d5d5">
+
+
+        <wm.com.danteater.customviews.WMTextView
+            android:id="@+id/txtBackAssignRole"
+            android:text="Annuler"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/apptheme_color"
+            android:textSize="18sp" />
+
+        <wm.com.danteater.customviews.WMTextView
+
+            android:text="Tildel rolle"
+            android:layout_gravity="center"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000"
+            android:textSize="18sp" />
+
+        <wm.com.danteater.customviews.WMTextView
+            android:id="@+id/btnAssignUserTildel"
+            android:text="Tildel"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginRight="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#313131"
+            android:textSize="18sp" />
+
+
+    </FrameLayout>
+
+    <ListView
+        android:id="@+id/listAssignRoles"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:dividerHeight="1dp" />
+
+
+</LinearLayout>

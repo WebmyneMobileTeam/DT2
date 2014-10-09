@@ -77,6 +77,7 @@ import wm.com.danteater.tab_share.ShareFragment;
 
 public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChangeListener {
 
+    int playid = 0;
     //(int) (System.currentTimeMillis() / 1000L);
     public static int STATE_RECORD = 0;
     public static int STATE_PREVIEW = 1;
@@ -754,6 +755,8 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
                     if(response == null || response.equalsIgnoreCase("")){
 
+
+
                     }else{
 
                         new AsyncTask<String,Integer,String>(){
@@ -777,10 +780,10 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
                                     }
 
-                                    DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
-                                    plyIDAfterUpdate = dbh.getPlayIdFromDBForOrderId(play.OrderId);
-                                    state.playID = plyIDAfterUpdate;
-                                    dbh.close();
+
+
+                                  //  state.playID = plyIDAfterUpdate;
+
 
                                 }catch(Exception e){
                                     e.printStackTrace();
@@ -794,6 +797,15 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                             protected void onPostExecute(String s) {
                                 super.onPostExecute(s);
                                 dialog_next.dismiss();
+
+                                DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
+                                plyIDAfterUpdate = dbh.getPlayIdFromDBForOrderId(play.OrderId);
+                                dbh.close();
+                                SharedPreferences pre = getActivity().getSharedPreferences("Plays", getActivity().MODE_PRIVATE);
+                                SharedPreferences.Editor edi = pre.edit();
+                                edi.putInt("playid",plyIDAfterUpdate);
+                                edi.commit();
+
 
                                 SharedPreferences preferences = getActivity().getSharedPreferences("Plays",getActivity().MODE_PRIVATE);
                                 SharedPreferences.Editor editor = preferences.edit();
@@ -877,12 +889,18 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
         new AsyncTask<String,Integer,String>(){
 
             @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                SharedPreferences preferences = getActivity().getSharedPreferences("Plays", getActivity().MODE_PRIVATE);
+                playid = preferences.getInt("playid",0);
+
+            }
+
+            @Override
             protected String doInBackground(String... params) {
 
                 DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
 
-                SharedPreferences preferences = getActivity().getSharedPreferences("Plays", getActivity().MODE_PRIVATE);
-                int playid = preferences.getInt("playid",0);
                 ply = dbh.retrievePlayWithId(playid);
                 dbh.close();
 

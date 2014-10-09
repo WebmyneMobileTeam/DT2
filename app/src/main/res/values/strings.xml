@@ -17,5 +17,6 @@
     <string name="menu_section">Section</string>
     <string name="link"><a href="https://www.mv-nordic.com/dk/produkter/teater-aftale">her</a></string>
     <string name="title_activity_chat_view">ChatViewActivity</string>
+    <string name="title_activity_assign_role">AssignRoleActivity</string>
 
 </resources>

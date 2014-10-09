@@ -16,7 +16,7 @@
         android:textColor="#000"
         android:background="@drawable/bubble_right"
         android:padding="16dp"
-        android:textSize="18sp" />
+        android:textSize="14sp" />
 
 
     <wm.com.danteater.customviews.WMTextView

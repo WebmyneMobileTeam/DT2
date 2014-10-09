@@ -3,12 +3,18 @@ package wm.com.danteater.tab_read;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,7 +22,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -41,6 +50,7 @@ import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -63,6 +73,7 @@ import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.model.DatabaseWrapper;
 import wm.com.danteater.model.StateManager;
+import wm.com.danteater.my_plays.SharedUser;
 
 
 public class ReadFragment extends Fragment {
@@ -96,7 +107,8 @@ public class ReadFragment extends Fragment {
     public boolean isPreview = false;
     private StateManager stateManager = StateManager.getInstance();
 
-    public ArrayList<AssignedUsers> _marrSharedWithUsers;
+    public ArrayList<SharedUser> _marrSharedWithUsers;
+    public String _marrSharedWithUsersString;
     public ArrayList<String> marrPlayLines;
     public ArrayList<String> marrPlaySections;
     public HashMap<String,ArrayList<PlayLines>> dicPlayLines;
@@ -162,14 +174,16 @@ public class ReadFragment extends Fragment {
         if(!isPreview){
 
             //TODO fetch sharing details
-
+/*
             new CallWebService("http://api.danteater.dk/api/PlayShare/" +selectedPlay.OrderId,CallWebService.TYPE_JSONARRAY) {
 
                 @Override
                 public void response(String response) {
 
-                    Type listType = new TypeToken<List<AssignedUsers>>() {
+                    Type listType = new TypeToken<List<SharedUser>>() {
                     }.getType();
+                    _marrSharedWithUsersString = response;
+                    _marrSharedWithUsers = new ArrayList<SharedUser>();
                     _marrSharedWithUsers = new GsonBuilder().create().fromJson(response,listType);
                     Log.e("_maarSharedWithUsers ",""+_marrSharedWithUsers);
                 }
@@ -179,13 +193,35 @@ public class ReadFragment extends Fragment {
                 Log.e("error: ",error+"");
 
                 }
-            }.start();
+            }.start();*/
 
         }
 
     }
 
     public void updatePlaySpecificData() {
+
+
+
+        new CallWebService("http://api.danteater.dk/api/PlayShare/" +selectedPlay.OrderId,CallWebService.TYPE_JSONARRAY) {
+
+            @Override
+            public void response(String response) {
+
+                Type listType = new TypeToken<List<SharedUser>>() {
+                }.getType();
+                _marrSharedWithUsersString = response;
+                _marrSharedWithUsers = new ArrayList<SharedUser>();
+                _marrSharedWithUsers = new GsonBuilder().create().fromJson(response,listType);
+                Log.e("_maarSharedWithUsers ",""+_marrSharedWithUsers);
+            }
+
+            @Override
+            public void error(VolleyError error) {
+                Log.e("error: ",error+"");
+            }
+        }.start();
+
 
         if(marrPlayLines == null){
             marrPlayLines = new ArrayList<String>();
@@ -213,8 +249,8 @@ public class ReadFragment extends Fragment {
 
         // TODO implement dictionaries for y positions if nessasary
 
-        if(_marrSharedWithUsers == null){
-            _marrSharedWithUsers = new ArrayList<AssignedUsers>();
+       if(_marrSharedWithUsers == null){
+            _marrSharedWithUsers = new ArrayList<SharedUser>();
         }else{
             _marrSharedWithUsers.clear();
         }
@@ -741,7 +777,9 @@ public class ReadFragment extends Fragment {
                         @Override
                         public void onAssignButtonClicked() {
 
-                            Toast.makeText(getActivity(), "Assign clicked", Toast.LENGTH_SHORT).show();
+
+                            gotoAssignUserList(playLine);
+
 
                         }
                     });
@@ -988,6 +1026,127 @@ public class ReadFragment extends Fragment {
 
     }
 
+    private void gotoAssignUserList(PlayLines playLine) {
+
+        Log.e("Size of shared people is ",""+_marrSharedWithUsers.size());
+        boolean pupilsFound = false;
+        if(_marrSharedWithUsers.size()<0){
+            pupilsFound = false;
+        }else{
+            for(SharedUser au : _marrSharedWithUsers){
+
+                String check = "lærer";
+                if(!au.userName.contains(check.toString())){
+                    pupilsFound = true;
+                }
+            }
+
+            if(pupilsFound){
+
+                showUsersAndAssignRole(playLine);
+
+            }else{
+
+
+
+            }
+
+
+
+
+
+        }
+
+
+    }
+
+    private void showUsersAndAssignRole(PlayLines playLine) {
+
+        final ArrayList<SharedUser> alreadyAssignedUsers = new ArrayList<SharedUser>();
+
+        if(playLine.assignedUsersList.size()>0){
+
+            for(AssignedUsers user : playLine.assignedUsersList){
+                SharedUser u = new SharedUser();
+                u.userName = user.AssignedUserName;
+                u.userId = user.AssignedUserId;
+                alreadyAssignedUsers.add(u);
+            }
+        }
+
+        ArrayList<String> arrSharedUsers = new ArrayList<String>();
+        for(SharedUser au : _marrSharedWithUsers){
+            arrSharedUsers.add(au.userName);
+
+        }
+
+        final Dialog dialog = new Dialog(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        LayoutInflater mInflater = (LayoutInflater) getActivity().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        View view = mInflater.inflate(R.layout.item_assign_role_page,null);
+        dialog.setContentView(view);
+        dialog.show();
+
+        final WMTextView btnAssignUserTildel = (WMTextView)view.findViewById(R.id.btnAssignUserTildel);
+
+        btnAssignUserTildel.setTextColor(Color.parseColor("#313131"));
+        btnAssignUserTildel.setEnabled(false);
+
+        final ListView lstAssignRole = (ListView)view.findViewById(R.id.listAssignRoles);
+        lstAssignRole.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        final ArrayAdapter adap = new ArrayAdapter(getActivity(),android.R.layout.simple_list_item_multiple_choice,arrSharedUsers);
+        lstAssignRole.setAdapter(adap);
+
+        for(int i=0;i<arrSharedUsers.size();i++){
+
+           for(SharedUser su : alreadyAssignedUsers){
+
+               if(su.userName.equalsIgnoreCase(arrSharedUsers.get(i))){
+                   lstAssignRole.setItemChecked(i,true);
+               }
+           }
+        }
+
+        lstAssignRole.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                if(btnAssignUserTildel.isEnabled() == false){
+                    btnAssignUserTildel.setEnabled(true);
+                    btnAssignUserTildel.setTextColor(getResources().getColor(R.color.apptheme_color));
+                }
+
+            }
+        });
+
+
+        btnAssignUserTildel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                alreadyAssignedUsers.clear();
+
+                SparseBooleanArray boolarry = lstAssignRole.getCheckedItemPositions();
+
+                for(int i=0;i<_marrSharedWithUsers.size();i++){
+
+                    if(boolarry.get(i)){
+                        alreadyAssignedUsers.add(_marrSharedWithUsers.get(i));
+                    }
+
+                }
+
+                for(SharedUser st : alreadyAssignedUsers){
+                    Log.e("name ",st.userName);
+                }
+
+            }
+        });
+
+    }
+
     private void updatePlayUsingMethodParams(final String s) {
 
         final HUD hud = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
@@ -998,7 +1157,6 @@ public class ReadFragment extends Fragment {
 
             @Override
             protected Void doInBackground(Void... voids) {
-
                 try
 
                 {
@@ -1065,7 +1223,6 @@ public class ReadFragment extends Fragment {
             }
 
         }
-
         try {
             methodParams.put("LineCount", Integer.parseInt(playLine.LineCount));
             methodParams.put("LineID",playLine.LineID);
@@ -1076,10 +1233,7 @@ public class ReadFragment extends Fragment {
             e.printStackTrace();
 
         }
-
         updatePlayUsingMethodParams(methodParams.toString());
-
-
 
     }
 

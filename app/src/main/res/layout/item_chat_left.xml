@@ -26,7 +26,7 @@
         android:textColor="#fff"
         android:background="@drawable/bubble_left"
         android:padding="16dp"
-        android:textSize="18sp" />
+        android:textSize="14sp" />
 
 
 </LinearLayout>
