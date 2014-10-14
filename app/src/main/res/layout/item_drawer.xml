@@ -1,21 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
 
-    android:orientation="vertical">
+    android:orientation="horizontal">
 
     <wm.com.danteater.customviews.WMTextView
+        android:layout_gravity="left|center_vertical"
         android:paddingBottom="8dp"
         android:paddingTop="8dp"
         android:paddingLeft="@dimen/activity_margin"
         android:paddingRight="@dimen/activity_margin"
         android:id="@+id/txtDrawerItem"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/normalText">
 
     </wm.com.danteater.customviews.WMTextView>
 
-</LinearLayout>
+    <wm.com.danteater.customviews.WMTextView
+        android:layout_gravity="center_vertical|right"
+        android:id="@+id/notification_count_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="32dp"
+        android:minHeight="32dp"
+        android:background="@drawable/circle_shape_red"
+        android:text=""
+        android:layout_marginRight="8dp"
+        android:textSize="16sp"
+        android:visibility="gone"
+        android:textColor="@android:color/white"
+        android:gravity="center"
+        android:padding="2dp"
+        android:singleLine="true"/>
+
+</FrameLayout>

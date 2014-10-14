@@ -39,7 +39,8 @@ import wm.com.danteater.settings.SettingsFragment;
  * Created by nirav on 25-08-2014.
  */
 public class DrawerActivity extends BaseActivity implements AdapterView.OnItemClickListener {
-
+    NavigationDrawerAdapter navigationDrawerAdapterForStudent;
+    NavigationDrawerAdapter navigationDrawerAdapterForTeacher;
     private DrawerLayout drawer;
     private ListView leftDrawerList;
     private ActionBarDrawerToggle actionBarDrawerToggle;
@@ -93,10 +94,12 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
     private void initFields() {
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         leftDrawerList = (ListView) findViewById(R.id.left_drawer);
+        navigationDrawerAdapterForStudent=new NavigationDrawerAdapter(DrawerActivity.this, leftSliderDataForStudent);
+       navigationDrawerAdapterForTeacher=new NavigationDrawerAdapter(DrawerActivity.this, leftSliderDataForTeacher);
         if (isPupil) {
-            leftDrawerList.setAdapter(new NavigationDrawerAdapter(DrawerActivity.this, leftSliderDataForStudent));
+            leftDrawerList.setAdapter(navigationDrawerAdapterForStudent);
         } else {
-            leftDrawerList.setAdapter(new NavigationDrawerAdapter(DrawerActivity.this, leftSliderDataForTeacher));
+            leftDrawerList.setAdapter(navigationDrawerAdapterForTeacher);
         }
 
         leftDrawerList.setOnItemClickListener(this);
@@ -134,7 +137,11 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
             }
 
             public void onDrawerOpened(View drawerView) {
-
+                if (isPupil) {
+                    navigationDrawerAdapterForStudent.notifyDataSetChanged();
+                } else {
+                    navigationDrawerAdapterForTeacher.notifyDataSetChanged();
+                }
             }
 
         };
@@ -288,7 +295,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
         }
 
         public class ViewHolder {
-            WMTextView txtDrawerItem;
+            WMTextView txtDrawerItem,badgeValue;
         }
 
 
@@ -302,15 +309,43 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
                 convertView = mInflater.inflate(R.layout.item_drawer, parent, false);
                 holder = new ViewHolder();
                 holder.txtDrawerItem = (WMTextView) convertView.findViewById(R.id.txtDrawerItem);
+                holder.badgeValue = (WMTextView) convertView.findViewById(R.id.notification_count_value);
+
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
             holder.txtDrawerItem.setText(leftSliderData[position]);
+           SharedPreferences preferencesBadgeValue = getSharedPreferences("badge_value",MODE_PRIVATE);
+            if(isPupil) { // student view
+                if(position==1){
+                    String badgeValue=preferencesBadgeValue.getString("badge_count","0");
+                    if(badgeValue.equalsIgnoreCase("0")){
+                        holder.badgeValue.setVisibility(View.GONE);
+                    } else {
+                        holder.badgeValue.setVisibility(View.VISIBLE);
+                        holder.badgeValue.setText(badgeValue);
+                    }
+                }else {
+                    holder.badgeValue.setVisibility(View.GONE);
+                }
+            } else { //teacher view
+              if(position==2){
+                  String badgeValue=preferencesBadgeValue.getString("badge_count","0");
+                  if(badgeValue.equalsIgnoreCase("0")){
+                      holder.badgeValue.setVisibility(View.GONE);
+                  } else {
+                      holder.badgeValue.setVisibility(View.VISIBLE);
+                      holder.badgeValue.setText(badgeValue);
+                  }
+              }else {
+                  holder.badgeValue.setVisibility(View.GONE);
+              }
+            }
+
             return convertView;
 
         }
-
     }
     //</editor-fold>
 
@@ -318,6 +353,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        return super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.badge_value,menu);
+        return false;
     }
 }

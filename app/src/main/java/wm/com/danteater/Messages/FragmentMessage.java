@@ -74,14 +74,16 @@ public class FragmentMessage extends Fragment {
         currentUser = complexPreferencesForUser.getObject("current_user", User.class);
         //call API getAllMessageUsers
         getAllMessageUsers();
-        // call API getAllUnreadMessagesForUser
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                getAllUnreadMessagesForUser();
-            }
-        },0,1000*60*10);
+
+
+
+//        timer = new Timer();
+//        timer.scheduleAtFixedRate(new TimerTask() {
+//            @Override
+//            public void run() {
+//
+//            }
+//        },0,1000*60*10);
 
     }
 
@@ -100,6 +102,8 @@ public class FragmentMessage extends Fragment {
                 chatUserList = new GsonBuilder().create().fromJson(response,listType);
                 adapter= new MessageAdapter(getActivity(), chatUserList);
                 chatUserListView.setAdapter(adapter);
+                // call API getAllUnreadMessagesForUser
+                getAllUnreadMessagesForUser();
             }
 
             @Override
@@ -120,10 +124,10 @@ public class FragmentMessage extends Fragment {
             public void response(String response) {
             Type listType=new TypeToken<List<MessageUnread>>(){
             }.getType();
-            messageUnreadArrayList=new GsonBuilder().create().fromJson(response,listType);
-                Log.e("refresh","refresh bubble list");
-                 adapter.notifyDataSetChanged();
-
+                if(response !=null) {
+                    messageUnreadArrayList = new GsonBuilder().create().fromJson(response, listType);
+                    adapter.notifyDataSetChanged();
+                }
             }
 
             @Override

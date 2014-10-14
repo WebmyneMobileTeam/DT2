@@ -3,6 +3,7 @@ package wm.com.danteater.search;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,8 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -20,6 +23,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
@@ -31,20 +35,31 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import wm.com.danteater.Messages.MessageUnread;
 import wm.com.danteater.R;
 import wm.com.danteater.customviews.HUD;
 import wm.com.danteater.customviews.ListDialog;
 import wm.com.danteater.customviews.WMEdittext;
 import wm.com.danteater.customviews.WMTextView;
+import wm.com.danteater.login.User;
 import wm.com.danteater.model.API;
+import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.tab_info.PlayInfoActivity;
 
 public class FragmentSearch extends Fragment implements AdapterView.OnItemClickListener, ListDialog.setSelectedListner {
 
+    private ArrayList<MessageUnread> messageUnreadArrayList=new ArrayList<MessageUnread>();
+    MessageUnread messageUnread=new MessageUnread();
+    public String badgeValue;
+    private Menu menu;
+    private User currentUser;
     private static int CLICKED_POSITION = 0;
     private HUD dialog;
+
     private TextView btnSearch;
     private ListView filterCategoryList;
     private ArrayList<Integer> imageList = new ArrayList<Integer>();
@@ -77,16 +92,86 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        setHasOptionsMenu(true);
 
+        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "user_pref", 0);
+        currentUser =complexPreferences.getObject("current_user", User.class);
         listSubItems = new SparseArray();
-
         listSubItems.put(0, new ArrayList<String>(Arrays.asList(MEDVIRKENDE)));
         listSubItems.put(1, new ArrayList<String>(Arrays.asList(ALDER)));
         listSubItems.put(2, new ArrayList<String>(Arrays.asList(MUSIK)));
         listSubItems.put(3, new ArrayList<String>(Arrays.asList(VARIGHED)));
+          Timer  timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                getAllUnreadMessagesForUser();
+            }
+        },0,1000*60*10);
 
     }
 
+
+    private void getAllUnreadMessagesForUser() {
+
+        new CallWebService("http://api.danteater.dk/api/MessageUnread/"+currentUser.getUserId(), CallWebService.TYPE_JSONARRAY) {
+
+            @Override
+            public void response(String response) {
+                Type listType=new TypeToken<List<MessageUnread>>(){
+                }.getType();
+                if(response !=null) {
+                    messageUnreadArrayList = new GsonBuilder().create().fromJson(response, listType);
+                    if (getActivity() != null) {
+                        SharedPreferences preferencesBadgeValue = getActivity().getSharedPreferences("badge_value", getActivity().MODE_PRIVATE);
+                        SharedPreferences.Editor editor = preferencesBadgeValue.edit();
+                        if (messageUnreadArrayList.size() > 0) {
+                            messageUnread = messageUnreadArrayList.get(messageUnreadArrayList.size() - 1);
+                            editor.putString("badge_count", messageUnread.unreadMessageCount.toString().trim());
+                            editor.commit();
+                        } else {
+                            editor.putString("badge_count", "0");
+                            editor.commit();
+                        }
+
+                        badgeValue = preferencesBadgeValue.getString("badge_count", "0");
+
+
+                        if (badgeValue.equalsIgnoreCase("0")) {
+                            setHasOptionsMenu(false);
+//                        View count = menu.findItem(R.id.badge).getActionView();
+//                        Log.e("badge value",badgeValue);
+//                        count.setVisibility(View.GONE);
+                        } else {
+
+                            setHasOptionsMenu(true);
+                            if (menu != null) {
+                                View count = menu.findItem(R.id.badge).getActionView();
+                                count.setVisibility(View.VISIBLE);
+                                TextView notifCount = (TextView) count.findViewById(R.id.notif_count);
+                                notifCount.setText(String.valueOf(badgeValue));
+
+                            }
+                        }
+
+
+                    }
+                }
+            }
+
+            @Override
+            public void error(VolleyError error) {
+
+                Log.e("error: ",error+"");
+
+            }
+        }.start();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        this.menu=menu;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);

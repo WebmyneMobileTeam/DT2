@@ -13,10 +13,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
@@ -33,7 +36,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import wm.com.danteater.Messages.MessageUnread;
 import wm.com.danteater.Play.Play;
 import wm.com.danteater.Play.PlayLines;
 import wm.com.danteater.Play.PlayOrderDetails;
@@ -52,6 +58,11 @@ import wm.com.danteater.model.StateManager;
  * Created by nirav on 16-09-2014.
  */
 public class FragmentMyPlayPupil extends Fragment {
+
+    private ArrayList<MessageUnread> messageUnreadArrayList=new ArrayList<MessageUnread>();
+    MessageUnread messageUnread=new MessageUnread();
+    public String badgeValue;
+    private Menu menu;
 
     public static int STATE_RECORD = 0;
     public static int STATE_PREVIEW = 1;
@@ -89,6 +100,13 @@ public class FragmentMyPlayPupil extends Fragment {
         super.onCreate(savedInstanceState);
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "user_pref", 0);
         user = complexPreferences.getObject("current_user", User.class);
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                getAllUnreadMessagesForUser();
+            }
+        }, 0, 1000 * 60*10);
     }
 
     @Override
@@ -98,6 +116,61 @@ public class FragmentMyPlayPupil extends Fragment {
         return convertView;
     }
 
+    private void getAllUnreadMessagesForUser() {
+
+        new CallWebService("http://api.danteater.dk/api/MessageUnread/"+user.getUserId(), CallWebService.TYPE_JSONARRAY) {
+
+            @Override
+            public void response(String response) {
+                Type listType=new TypeToken<List<MessageUnread>>(){
+                }.getType();
+                if(response !=null) {
+                    Log.e("refresh","badge value refresh");
+
+                    messageUnreadArrayList = new GsonBuilder().create().fromJson(response, listType);
+                    if (getActivity() != null) {
+                        SharedPreferences preferencesBadgeValue = getActivity().getSharedPreferences("badge_value", getActivity().MODE_PRIVATE);
+                        SharedPreferences.Editor editor = preferencesBadgeValue.edit();
+                        if (messageUnreadArrayList.size() > 0) {
+                            messageUnread = messageUnreadArrayList.get(messageUnreadArrayList.size() - 1);
+                            editor.putString("badge_count", messageUnread.unreadMessageCount.toString().trim());
+                            editor.commit();
+                        } else {
+                            editor.putString("badge_count", "0");
+                            editor.commit();
+                        }
+
+                        badgeValue = preferencesBadgeValue.getString("badge_count", "0");
+                        if (badgeValue.equalsIgnoreCase("0")) {
+                            setHasOptionsMenu(false);
+                        } else {
+                            setHasOptionsMenu(true);
+                            if (menu != null) {
+                                View count = menu.findItem(R.id.badge).getActionView();
+                                count.setVisibility(View.VISIBLE);
+                                TextView notifCount = (TextView) count.findViewById(R.id.notif_count);
+                                notifCount.setText(String.valueOf(badgeValue));
+                            }
+                        }
+
+
+                    }
+                }
+            }
+
+            @Override
+            public void error(VolleyError error) {
+
+                Log.e("error: ",error+"");
+
+            }
+        }.start();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        this.menu=menu;
+    }
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);

@@ -14,13 +14,17 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -46,7 +50,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import wm.com.danteater.Messages.MessageUnread;
+import wm.com.danteater.Messages.MessagesForConversation;
 import wm.com.danteater.Play.Play;
 import wm.com.danteater.Play.PlayLines;
 import wm.com.danteater.Play.PlayOrderDetails;
@@ -77,6 +85,10 @@ import wm.com.danteater.tab_share.ShareFragment;
 
 public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChangeListener {
 
+    private ArrayList<MessageUnread> messageUnreadArrayList=new ArrayList<MessageUnread>();
+    MessageUnread messageUnread=new MessageUnread();
+    public String badgeValue;
+    private Menu menu;
     int playid = 0;
     //(int) (System.currentTimeMillis() / 1000L);
     public static int STATE_RECORD = 0;
@@ -130,12 +142,75 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "user_pref", 0);
         currentUser =complexPreferences.getObject("current_user", User.class);
-
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                getAllUnreadMessagesForUser();
+            }
+        }, 0, 1000 * 60 *10);
     }
 
+    private void getAllUnreadMessagesForUser() {
+        Log.e("refresh","badge value refresh");
+        new CallWebService("http://api.danteater.dk/api/MessageUnread/"+currentUser.getUserId(), CallWebService.TYPE_JSONARRAY) {
 
+            @Override
+            public void response(String response) {
+                Type listType=new TypeToken<List<MessageUnread>>(){
+                }.getType();
+                if(response !=null) {
+
+                    messageUnreadArrayList = new GsonBuilder().create().fromJson(response, listType);
+                    if (getActivity() != null) {
+                        SharedPreferences preferencesBadgeValue = getActivity().getSharedPreferences("badge_value", getActivity().MODE_PRIVATE);
+                        SharedPreferences.Editor editor = preferencesBadgeValue.edit();
+                        if (messageUnreadArrayList.size() > 0) {
+                            messageUnread = messageUnreadArrayList.get(messageUnreadArrayList.size() - 1);
+                            editor.putString("badge_count", messageUnread.unreadMessageCount.toString().trim());
+                            editor.commit();
+                        } else {
+                            editor.putString("badge_count", "0");
+                            editor.commit();
+                        }
+
+                        badgeValue = preferencesBadgeValue.getString("badge_count", "0");
+
+
+                        if (badgeValue.equalsIgnoreCase("0")) {
+                            setHasOptionsMenu(false);
+                        } else {
+                            setHasOptionsMenu(true);
+                            if (menu != null) {
+                                View count = menu.findItem(R.id.badge).getActionView();
+                                count.setVisibility(View.VISIBLE);
+                                TextView notifCount = (TextView) count.findViewById(R.id.notif_count);
+                                notifCount.setText(String.valueOf(badgeValue));
+
+                            }
+                        }
+
+
+                    }
+                }
+            }
+
+            @Override
+            public void error(VolleyError error) {
+
+                Log.e("error: ",error+"");
+
+            }
+        }.start();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    this.menu=menu;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -782,7 +857,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
 
 
-                                  //  state.playID = plyIDAfterUpdate;
+                                    //  state.playID = plyIDAfterUpdate;
 
 
                                 }catch(Exception e){

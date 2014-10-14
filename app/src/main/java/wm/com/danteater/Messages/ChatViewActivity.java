@@ -1,6 +1,8 @@
 package wm.com.danteater.Messages;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,11 +14,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -28,27 +32,40 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
+import wm.com.danteater.Play.Play;
+import wm.com.danteater.Play.PlayLines;
 import wm.com.danteater.R;
 import wm.com.danteater.app.BaseActivity;
+import wm.com.danteater.app.PlayTabActivity;
+import wm.com.danteater.customviews.HUD;
 import wm.com.danteater.customviews.WMTextView;
 import wm.com.danteater.login.User;
 import wm.com.danteater.model.API;
 import wm.com.danteater.model.AdvancedSpannableString;
 import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
+import wm.com.danteater.model.DatabaseWrapper;
+import wm.com.danteater.my_plays.ReadActivityFromPreview;
+import wm.com.danteater.my_plays.ShareActivityForPerform;
 
 public class ChatViewActivity extends BaseActivity {
 
     private ArrayList<MessagesForConversation> messagesForConversationArrayList=new ArrayList<MessagesForConversation>();
-    private String response;
+    MessagesForConversation messagesForConversationLastObject;
+    private String response,toUserId;
     static final int ITEM_TYPE_ME = 0;
     static final int ITEM_TYPE_SENDER = 1;
+    public static int STATE_CHAT = 3;
     private User currentUser;
     ListView listChat;
     private WMTextView btnSendMessage;
     private EditText etMessageValue;
-
-
+    private HUD dialog;
+    private HUD dialog_next;
+    private ChatAdapter chatAdapter;
+    int plyIDAfterUpdate = 0;
+    int playid = 0;
+    Play ply;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,13 +76,16 @@ public class ChatViewActivity extends BaseActivity {
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(this,"user_pref", 0);
         currentUser = complexPreferences.getObject("current_user", User.class);
         response = getIntent().getExtras().getString("messages");
-
-        txtHeader.setText(getIntent().getStringExtra("fromUser"));
+        toUserId=getIntent().getStringExtra("fromUser");
+        txtHeader.setText(toUserId);
         getActionBar().setDisplayHomeAsUpEnabled(true);
         btnSendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // call API sendMessageToUser
+
+                listChat.setSelection(messagesForConversationArrayList.size()-1);
+                sendMessageToUser();
             }
         });
         new AsyncTask<Void,Void,Void>() {
@@ -84,8 +104,8 @@ public class ChatViewActivity extends BaseActivity {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-
-               listChat.setAdapter(new ChatAdapter(ChatViewActivity.this));
+                chatAdapter=new ChatAdapter(ChatViewActivity.this);
+                listChat.setAdapter(chatAdapter);
                 listChat.setSelection(messagesForConversationArrayList.size()-1);
 
             }
@@ -97,35 +117,63 @@ public class ChatViewActivity extends BaseActivity {
 
     private void sendMessageToUser() {
 
-        // Get Last Message Object
-        MessagesForConversation messagesForConversationLastObject=messagesForConversationArrayList.get(messagesForConversationArrayList.size()-1);
 
-        JSONObject requestParams=new JSONObject();
+
+        final JSONObject requestParams=new JSONObject();
         try {
             requestParams.put("OrderId", messagesForConversationLastObject.OrderId+"");
             requestParams.put("LineId", messagesForConversationLastObject.LineId+"");
             requestParams.put("FromUserId", currentUser.getUserId()+"");
-            requestParams.put("ToUserId", "");
+            requestParams.put("ToUserId", toUserId+"");
             requestParams.put("MessageText", etMessageValue.getText().toString().trim()+"");
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        //TODO
-        new CallWebService("http://api.danteater.dk/api/Message", CallWebService.TYPE_JSONARRAY) {
 
+        new AsyncTask<Void, Void, Void>() {
             @Override
-            public void response(String response) {
-
-
+            protected void onPreExecute() {
+                super.onPreExecute();
+                dialog = new HUD(ChatViewActivity.this,android.R.style.Theme_Translucent_NoTitleBar);
+                dialog.title("");
+                dialog.show();
             }
 
             @Override
-            public void error(VolleyError error) {
+            protected Void doInBackground(Void... voids) {
+                try
+                {
+                    Reader readerForNone = API.callWebservicePost("http://api.danteater.dk/api/Message", requestParams.toString());
+                    Log.e("reader", readerForNone + "");
 
-               Log.e("error:",error+"");
+                    StringBuffer response = new StringBuffer();
+                    int i = 0;
+                    do {
+                        i = readerForNone.read();
+                        char character = (char) i;
+                        response.append(character);
 
+                    } while (i != -1);
+                    readerForNone.close();
+                    Log.e("response", response + " ");
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                return null;
             }
-        }.start();
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                dialog.dismiss();
+                messagesForConversationArrayList.add(new MessagesForConversation("","","",currentUser.getUserId(),"",etMessageValue.getText().toString().trim(),"",""));
+                etMessageValue.setText("");
+                chatAdapter.notifyDataSetChanged();
+                listChat.setSelection(messagesForConversationArrayList.size()-1);
+            }
+        }.execute();
     }
     private void initForDisplayingData() {
 
@@ -133,7 +181,9 @@ public class ChatViewActivity extends BaseActivity {
         }.getType();
 
         messagesForConversationArrayList=new GsonBuilder().create().fromJson(response,listType);
+        // Get Last Message Object
         Collections.reverse(messagesForConversationArrayList);
+        messagesForConversationLastObject=messagesForConversationArrayList.get(messagesForConversationArrayList.size()-1);
         setupReceivedMessages(messagesForConversationArrayList);
 
 
@@ -199,16 +249,14 @@ public class ChatViewActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+
+        switch (item.getItemId()){
+            case android.R.id.home:
+                finish();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
-
 
     public static java.util.Date float2Date(float nbSeconds) {
         java.util.Date date_origine;
@@ -269,7 +317,7 @@ public class ChatViewActivity extends BaseActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
 
             int type = getItemViewType(position);
-            MessagesForConversation msg = messagesForConversationArrayList.get(position);
+            final MessagesForConversation msg = messagesForConversationArrayList.get(position);
 
             switch (type){
 
@@ -287,7 +335,19 @@ public class ChatViewActivity extends BaseActivity {
                     spannableString.setUnderLine(msg.LineId);
 
                     txtChatData.setText(spannableString);
+                    txtChatData.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Log.e("line id: ",msg.LineId.substring(0,msg.LineId.lastIndexOf("-"))+"");
+                            Play play=new Play();
+                            play.OrderId=msg.LineId.substring(0,msg.LineId.lastIndexOf("-"));
+                            dialog_next = new HUD(ChatViewActivity.this,android.R.style.Theme_Translucent_NoTitleBar);
+                            dialog_next.title("Henter");
+                            dialog_next.show();
+                            gotoSpecificPage(play);
 
+                        }
+                    });
                     break;
 
                 case ITEM_TYPE_ME:
@@ -296,11 +356,21 @@ public class ChatViewActivity extends BaseActivity {
 
                     WMTextView txtChatD = (WMTextView)convertView.findViewById(R.id.txtChatData);
 
-                    AdvancedSpannableString spannableStrin = new AdvancedSpannableString(msg.LineId+"\n"+msg.MessageText);
+                    final AdvancedSpannableString spannableStrin = new AdvancedSpannableString(msg.LineId+"\n"+msg.MessageText);
                     spannableStrin.setUnderLine(msg.LineId);
-
                     txtChatD.setText(spannableStrin);
-
+                    txtChatD.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Log.e("line id: ",msg.LineId.substring(0,msg.LineId.lastIndexOf("-"))+"");
+                            Play play=new Play();
+                            play.OrderId=msg.LineId.substring(0,msg.LineId.lastIndexOf("-"));
+                            dialog_next = new HUD(ChatViewActivity.this,android.R.style.Theme_Translucent_NoTitleBar);
+                            dialog_next.title("Henter");
+                            dialog_next.show();
+                            gotoSpecificPage(play);
+                        }
+                    });
                     break;
 
             }
@@ -311,5 +381,119 @@ public class ChatViewActivity extends BaseActivity {
 
     }
 
+    private void gotoSpecificPage(final Play play){
 
+
+        DatabaseWrapper dbh = new DatabaseWrapper(ChatViewActivity.this);
+        boolean hasPlay = dbh.hasPlayWithPlayOrderIdText(play.OrderId);
+        dbh.close();
+
+        if(hasPlay == true){
+            plyIDAfterUpdate = dbh.getPlayIdFromDBForOrderId(play.OrderId);
+            dbh.close();
+            SharedPreferences pre = getSharedPreferences("Plays", MODE_PRIVATE);
+            SharedPreferences.Editor edi = pre.edit();
+            edi.putInt("playid",plyIDAfterUpdate);
+            edi.commit();
+            gotoNextPage();
+        }
+        else{
+            Log.i("hasplay","false");
+            // insert new play to db
+
+            new CallWebService(API.link_retrievePlayContentsForPlayOrderId +play.OrderId,CallWebService.TYPE_JSONOBJECT) {
+
+                @Override
+                public void response(final String response) {
+
+                    Log.i("Response full play : ",""+response);
+                    new AsyncTask<String,Integer,String>(){
+
+                        @Override
+                        protected String doInBackground(String... params) {
+
+                            Play receivedPlay = new GsonBuilder().create().fromJson(response, Play.class);
+                            DatabaseWrapper db = new DatabaseWrapper(ChatViewActivity.this);
+                            db.insertPlay(receivedPlay, false);
+                            db.close();
+
+                            return null;
+                        }
+
+                        @Override
+                        protected void onPostExecute(String s) {
+                            super.onPostExecute(s);
+
+
+                            SharedPreferences preferences = getSharedPreferences("Plays", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = preferences.edit();
+                            String k = "PlayLatesteUpdateDate"+play.PlayId;
+                            editor.putString(k,""+(int) (System.currentTimeMillis() / 1000));
+                            editor.commit();
+
+                            gotoNextPage();
+
+                        }
+                    }.execute();
+
+                }
+
+                @Override
+                public void error(VolleyError error) {
+                    dialog_next.dismiss();
+
+                    Toast.makeText(ChatViewActivity.this,error.getMessage(), Toast.LENGTH_SHORT).show();
+
+                }
+            }.start();
+
+        }
+
+    }
+
+    private void gotoNextPage() {
+
+        new AsyncTask<String,Integer,String>(){
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                SharedPreferences preferences = getSharedPreferences("Plays", MODE_PRIVATE);
+                playid = preferences.getInt("playid",0);
+
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+
+                DatabaseWrapper dbh = new DatabaseWrapper(ChatViewActivity.this);
+
+                ply = dbh.retrievePlayWithId(playid);
+                dbh.close();
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+                ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(ChatViewActivity.this, "mypref",0);
+                complexPreferences.putObject("selected_play",ply);
+                complexPreferences.commit();
+
+                dialog_next.dismiss();
+                        Intent i1 = new Intent(ChatViewActivity.this, ReadActivityForChat.class);
+                        i1.putExtra("currentState",STATE_CHAT);
+
+                        startActivity(i1);
+
+
+
+
+            }
+        }.execute();
+
+
+    }
 }

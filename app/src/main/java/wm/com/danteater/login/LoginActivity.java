@@ -188,18 +188,13 @@ public class LoginActivity extends BaseActivity {
                 });
 
                 showDialog("Intet netværk", "Login-serveren kunne ikke kontaktes. Tjek venligst dine netværksindstillinger, og prøv at logge ind igen.");
-
-
                 loginView.setVisibility(View.GONE);
                 noAccessView.setVisibility(View.GONE);
                 noNetworkView.setVisibility(View.VISIBLE);
             } else {
-
                 loginView.setVisibility(View.VISIBLE);
                 noAccessView.setVisibility(View.GONE);
                 noNetworkView.setVisibility(View.GONE);
-
-
                 // save session id in shared preferences
                 SharedPreferences preferences = getSharedPreferences("session_id", MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
