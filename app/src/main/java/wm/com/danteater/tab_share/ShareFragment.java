@@ -191,8 +191,6 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         ShareActivityForPerform.menu.getItem(0).setEnabled(false);
     }
 
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){

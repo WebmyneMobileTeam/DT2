@@ -131,14 +131,6 @@ public class CellReadPlayNote implements View.OnClickListener{
             }
         }
 
-
-
-
-
-
-
-
-
     }
 
     @Override
