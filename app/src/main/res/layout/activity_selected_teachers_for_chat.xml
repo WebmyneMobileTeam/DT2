@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@android:color/white"
+    android:layout_height="match_parent">
+
+    <ListView
+        android:layout_alignParentTop="true"
+
+        android:id="@+id/selectedTeacherListForChat"
+        android:layout_width="match_parent"
+        android:dividerHeight="1dp"
+
+        android:divider="@color/light_gray"
+        android:layout_above="@+id/divider"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

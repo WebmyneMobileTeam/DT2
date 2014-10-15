@@ -3,8 +3,10 @@ package wm.com.danteater.tab_read;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -66,6 +68,7 @@ import wm.com.danteater.customviews.PinnedHeaderListView;
 import wm.com.danteater.customviews.SectionedBaseAdapter;
 import wm.com.danteater.customviews.WMEdittext;
 import wm.com.danteater.customviews.WMTextView;
+import wm.com.danteater.login.LoginActivity;
 import wm.com.danteater.login.User;
 import wm.com.danteater.model.API;
 import wm.com.danteater.model.APIDelete;
@@ -73,6 +76,8 @@ import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.model.DatabaseWrapper;
 import wm.com.danteater.model.StateManager;
+import wm.com.danteater.my_plays.ChatViewFromRead;
+import wm.com.danteater.my_plays.SelectTeacherForChat;
 import wm.com.danteater.my_plays.SharedUser;
 
 
@@ -1054,11 +1059,43 @@ public class ReadFragment extends Fragment {
     private void proceedMessage(PlayLines playLine) {
 
         if(currentUser.checkPupil(currentUser.getRoles())){
-
+            ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "selected_playline", 0);
+            complexPreferences.putObject("current_playline", playLine);
+            complexPreferences.commit();
             Toast.makeText(getActivity(), "Pupil", Toast.LENGTH_SHORT).show();
-        }else{
+           Intent i=new Intent(getActivity(), SelectTeacherForChat.class);
+            startActivity(i);
 
-            Toast.makeText(getActivity(), "Teacher", Toast.LENGTH_SHORT).show();
+        }else{
+            if (playLine.assignedUsersList.size() > 0) {
+
+                ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "selected_playline", 0);
+                complexPreferences.putObject("current_playline", playLine);
+                complexPreferences.commit();
+
+                Intent i=new Intent(getActivity(), ChatViewFromRead.class);
+                startActivity(i);
+
+            } else {
+
+                AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+                alert.setTitle("Tildel rolle");
+                alert.setMessage("Der er ikke tildelt nogle elever til denne rolle");
+                alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+
+
+                    }
+                });
+
+
+                alert.show();
+
+            }
+
         }
 
 

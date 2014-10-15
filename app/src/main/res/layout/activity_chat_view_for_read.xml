@@ -1,0 +1,55 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    >
+
+    <ListView
+        android:layout_alignParentTop="true"
+
+        android:id="@+id/listViewChatForRead"
+        android:layout_width="match_parent"
+        android:dividerHeight="0dp"
+
+        android:divider="@android:color/transparent"
+        android:layout_above="@+id/dividerForRead"
+        android:layout_height="match_parent"/>
+
+
+    <View
+        android:id="@+id/dividerForRead"
+        android:layout_above="@+id/chatBoxLayoutForRead"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/light_gray"></View>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/chatBoxLayoutForRead"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:background="#f9f9f9"
+        android:padding="8dp"
+        android:gravity="right"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/etChatMessageForRead"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:hint="Ny besked"
+            android:singleLine="true"
+            android:padding="8dp"
+            android:background="@drawable/ed_rounded"
+            android:textColor="@android:color/black"
+            android:layout_marginRight="8dp"
+            android:textSize="@dimen/normalText"
+            android:layout_height="wrap_content" />
+        <wm.com.danteater.customviews.WMTextView
+            android:id="@+id/btnSendMessageForRead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#ababab"
+            android:text="Send"
+            android:textSize="@dimen/normalText"/>
+    </LinearLayout>
+
+</RelativeLayout>
