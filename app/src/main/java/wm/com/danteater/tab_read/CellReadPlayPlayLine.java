@@ -422,6 +422,16 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
         final EditText editLineViewTextArea = (EditText)view.findViewById(R.id.editLineViewTextArea);
         editLineViewTextArea.setText(pl.textLinesList.get(0).currentText());
 
+        WMTextView editLineViewPopupCancel = (WMTextView)view.findViewById(R.id.editLineViewPopupCancel);
+        editLineViewPopupCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+
+
         WMTextView saveBtn = (WMTextView)view.findViewById(R.id.editLineViewPopupSave);
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override

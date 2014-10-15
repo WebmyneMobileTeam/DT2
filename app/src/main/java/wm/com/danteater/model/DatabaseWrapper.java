@@ -495,6 +495,9 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
             }
         }
 
+        if(play_line.songFilesList != null && play_line.songFilesList.size()>0){
+            removeAllSongsForPlayLineId(playLineID);
+        }
 
         //song file
         for(SongFiles songFile : play_line.songFilesList){
@@ -515,6 +518,12 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         myDataBase.close();
     }
 
+    private void removeAllSongsForPlayLineId(int playLineID) {
+
+        myDataBase = this.getWritableDatabase();
+        myDataBase.delete("songfiles","playline_id_" + " = ?",new String[]{""+playLineID});
+        myDataBase.close();
+    }
 
 
     public String getPlayLineTypeForLineId(String lineID) {

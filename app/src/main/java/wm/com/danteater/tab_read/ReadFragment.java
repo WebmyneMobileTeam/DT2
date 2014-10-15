@@ -17,6 +17,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.util.SparseBooleanArray;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,6 +29,8 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -83,6 +86,8 @@ import wm.com.danteater.my_plays.SharedUser;
 
 public class ReadFragment extends Fragment {
 
+
+    int mSubtractionCount = 0;
     public ArrayList<String> marrMyCastMatches;
     public ReadSectionedAdapter readSectionedAdapter;
     Reader readerForNone;
@@ -209,8 +214,6 @@ public class ReadFragment extends Fragment {
 
     public void updatePlaySpecificData() {
 
-
-
         new CallWebService("http://api.danteater.dk/api/PlayShare/" +selectedPlay.OrderId,CallWebService.TYPE_JSONARRAY) {
 
             @Override
@@ -255,16 +258,12 @@ public class ReadFragment extends Fragment {
             dicPlayLines.clear();
         }
 
-        // TODO implement dictionaries for y positions if nessasary
 
        if(_marrSharedWithUsers == null){
             _marrSharedWithUsers = new ArrayList<SharedUser>();
         }else{
             _marrSharedWithUsers.clear();
         }
-
-        // TODO implement dictionary for picture
-
         //
         goToLineNumberFromChatLink = 0;
 
@@ -320,9 +319,9 @@ public class ReadFragment extends Fragment {
                 if(section.contains("Personerne") || section.contains("Personer")){
 
                     toDelete.add(section);
+                    mSubtractionCount = dicPlayLines.get(section).size() + 1;
                     dicPlayLines.remove(section);
                     indexForFirstScene--;
-
 
                     for(String title : mdictSongIndexPaths.keySet()){
 
@@ -331,10 +330,7 @@ public class ReadFragment extends Fragment {
                         int r = Integer.parseInt(indexPath.split(",")[1]);
                         mdictSongIndexPaths.put(title,s-1+","+r);
 
-
                     }
-
-
 
                 }
             }
@@ -502,13 +498,173 @@ public class ReadFragment extends Fragment {
 
             case R.id.action_line_number:
 
-                menu.getItem(0).setEnabled(false);
-                enableDisableLineLayout();
+
+                    menu.getItem(0).setEnabled(false);
+                    enableDisableLineLayout();
+
+
+
+                break;
+
+            case R.id.action_section:
+
+                    viewSectionsView();
+
+
 
                 break;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void viewSectionsView() {
+
+
+        final Dialog dialog = new Dialog(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        LayoutInflater mInflater = (LayoutInflater) getActivity().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        View view = mInflater.inflate(R.layout.item_assign_role_page,null);
+        dialog.setContentView(view);
+        dialog.show();
+        final WMTextView btnAssignUserTildel = (WMTextView)view.findViewById(R.id.btnAssignUserTildel);
+        btnAssignUserTildel.setVisibility(View.INVISIBLE);
+        WMTextView tildelRolle = (WMTextView)view.findViewById(R.id.tildelRolle);
+        tildelRolle.setText("Sektioner");
+        final WMTextView txtBackAssignRole = (WMTextView)view.findViewById(R.id.txtBackAssignRole);
+
+        txtBackAssignRole.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btnAssignUserTildel.setTextColor(Color.parseColor("#313131"));
+        btnAssignUserTildel.setEnabled(false);
+
+        final ListView lstAssignRole = (ListView)view.findViewById(R.id.listAssignRoles);
+
+
+        final ArrayList<String> msections = new ArrayList<String>();
+
+        HashMap<String,String> mDict = new HashMap<String, String>();
+
+        for(PlayLines pl : selectedPlay.playLinesList){
+
+            if(pl.playLineType() == PlayLines.PlayLType.PlayLineTypeAct){
+
+                    msections.add(pl.textLinesList.get(0).LineText);
+                    mDict.put(pl.textLinesList.get(0).LineText,"Akt");
+
+
+            }else if(pl.playLineType() == PlayLines.PlayLType.PlayLineTypeSong){
+                msections.add(pl.textLinesList.get(0).LineText);
+                mDict.put(pl.textLinesList.get(0).LineText,"Sang");
+            }
+
+        }
+
+        lstAssignRole.setAdapter(new GoToSectionAdapter(getActivity(),msections,mDict));
+        lstAssignRole.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                dialog.dismiss();
+                String selectedString = msections.get(position);
+
+
+
+
+
+
+               for(int i=0;i<selectedPlay.playLinesList.size();i++){
+                    PlayLines pl = selectedPlay.playLinesList.get(i);
+                    for(TextLines tl : pl.textLinesList){
+
+                        if(tl.LineText.equalsIgnoreCase(selectedString)){
+
+                            if(currentState == STATE_READ){
+                                listRead.setSelection(i);
+                            }else if(currentState == STATE_RECORD){
+
+                                listRead.setSelection(i-mSubtractionCount);
+                            }
+
+                            break;
+                        }
+                    }
+
+
+                }
+
+
+            }
+        });
+
+
+    }
+
+    public class GoToSectionAdapter extends BaseAdapter{
+
+        private Context ctx;
+        private ArrayList<String> marSections;
+        private HashMap<String,String> map;
+
+      public  GoToSectionAdapter(Context ctx,ArrayList<String> vals,HashMap<String,String> map){
+
+          this.marSections = vals;
+          this.map = map;
+          this.ctx = ctx;
+
+      }
+
+
+
+        @Override
+        public int getCount() {
+            return marSections.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return position;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+
+            if(convertView == null){
+                convertView = LayoutInflater.from(parent.getContext()).inflate(
+                        R.layout.item_gotosection, null);
+            }
+
+            WMTextView tv = (WMTextView)convertView.findViewById(R.id.txtGoToSectionList);
+            ImageView img = (ImageView)convertView.findViewById(R.id.imgGoToSectionList);
+            String text = marSections.get(position);
+            tv.setText(text);
+
+            if(map.get(text).equalsIgnoreCase("Akt")){
+                img.setVisibility(View.GONE);
+            }else if(map.get(text).equalsIgnoreCase("Sang")){
+                    img.setVisibility(View.VISIBLE);
+            }
+
+
+
+
+
+            return convertView;
+        }
+
+
     }
 
     public void enableDisableLineLayout() {
@@ -886,7 +1042,7 @@ public class ReadFragment extends Fragment {
                         @Override
                         public void onChatClicked() {
 
-                            //todo
+
                             proceedMessage(playLine);
 
 

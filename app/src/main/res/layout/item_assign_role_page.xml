@@ -25,7 +25,7 @@
 
             android:text="Tildel rolle"
             android:layout_gravity="center"
-
+            android:id="@+id/tildelRolle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#000"
