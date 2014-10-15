@@ -38,6 +38,7 @@ import wm.com.danteater.Play.TextLines;
  *
  * TODO - getPlaysForReview
  *
+ *
  * TOD - retrievePlayLinesForPlay [Play]
  *
  * TOD - retrieveAssignedUsers [playLine, playId]
@@ -425,6 +426,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
     public void removeAssignedUsersForPlayLine(PlayLines play_line,int playID) {
 
+        Log.e("---------------------------------------------","In delete");
         if(play_line.RoleName == null || play_line.RoleName.equalsIgnoreCase("")){
 
             myDataBase = this.getWritableDatabase();
@@ -441,11 +443,12 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
                 } while (cursor.moveToNext());
             }
             cursor.close();
-
+            Log.e("---------------------------------------------","Before delete");
             // delete query
             myDataBase = this.getWritableDatabase();
             myDataBase.delete("assigned_users","play_id_" + " = ? AND " + "role_name_" + " = ?",new String[]{""+playID,roleName});
             myDataBase.close();
+            Log.e("---------------------------------------------","After delete");
 
         }
     }
@@ -471,17 +474,27 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         }
 
         int index = 0;
-        for(TextLines textLine : play_line.textLinesList){
-            updateTextLine(textLine,playLineID,index);
+
+        try{
+            for(TextLines textLine : play_line.textLinesList){
+                updateTextLine(textLine,playLineID,index);
+            }
+
+        }catch(Exception e){
+            e.printStackTrace();
         }
+
 
         if(play_line.commentsList != null && play_line.commentsList.size()>0){
             removeAllCommentsForPlayLineId(playLineID);
         }
 
-        for(Comments comment : play_line.commentsList){
-            insertComment(comment,playLineID);
+        if(play_line.commentsList != null && play_line.commentsList.size()>0){
+            for(Comments comment : play_line.commentsList){
+                insertComment(comment,playLineID);
+            }
         }
+
 
         //song file
         for(SongFiles songFile : play_line.songFilesList){
@@ -735,6 +748,12 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
                 playlineModelObject.MainLineType = cursor.getString(cursor.getColumnIndex("main_line_type_"));
                 playlineModelObject.RoleName = cursor.getString(cursor.getColumnIndex("role_name_"));
 
+                playlineModelObject.castMatchesString = cursor.getString(cursor.getColumnIndex("cast_matches_"));
+
+                String[] ar = playlineModelObject.castMatchesString.split(";");
+                playlineModelObject.castMatchesList = new ArrayList<String>(Arrays.asList(ar));
+
+
                 if(cursor.getInt(cursor.getColumnIndex("show_role_highlight_")) == 0){
                     playlineModelObject.showRoleHighlight = false;
                 }else{
@@ -781,6 +800,9 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
                 }else{
                     playlineModelObject.isLastSongLine = true;
                 }
+
+
+
 
                 // 1
                 retrieveAssignedUsers(playlineModelObject,play.pID);
@@ -958,6 +980,50 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
 
 
+
+    }
+
+    public ArrayList<String> getMyCastMatchesForRoleNames(ArrayList<String> rolenames,int playid){
+        myDataBase = this.getWritableDatabase();
+        String mlt = "Rolle";
+        ArrayList<String> marrMyCastMatches = new ArrayList<String>();
+
+        ArrayList<String> castMatchesStringArray = new ArrayList<String>();
+
+        for(String roleName : rolenames){
+
+            String wher = "role_name_" + " = ? AND " + "main_line_type_" + " = ?";
+            String[] FIELDS = { "cast_matches_" };
+            Cursor castMatchesCursor =   myDataBase.query("playlines", FIELDS, wher, new String[]{roleName,mlt}, null, null, null);
+            String castMatchesString = null;
+            castMatchesCursor.moveToFirst();
+
+            if (castMatchesCursor.moveToFirst()) {
+                do {
+                    castMatchesString = castMatchesCursor.getString(castMatchesCursor.getColumnIndex("cast_matches_"));
+                    castMatchesStringArray.add(castMatchesString);
+                    Log.e("!!!!!castMatchesString",castMatchesString);
+                } while (castMatchesCursor.moveToNext());
+            }
+
+        }
+
+
+        for(String s : castMatchesStringArray){
+
+            String[] arrMAtchesForRole = s.split(";");
+
+            if(arrMAtchesForRole.length>0){
+
+                for(int z=0;z<arrMAtchesForRole.length;z++){
+                    marrMyCastMatches.add(arrMAtchesForRole[z]);
+                }
+
+            }
+
+        }
+
+        return  marrMyCastMatches;
 
     }
 

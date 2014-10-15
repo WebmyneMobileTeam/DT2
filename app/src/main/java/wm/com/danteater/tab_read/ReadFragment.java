@@ -78,7 +78,7 @@ import wm.com.danteater.my_plays.SharedUser;
 
 public class ReadFragment extends Fragment {
 
-    public ArrayList marrMyCastMatches;
+    public ArrayList<String> marrMyCastMatches;
     public ReadSectionedAdapter readSectionedAdapter;
     Reader readerForNone;
     public int goToLineNumberFromChatLink = 0;
@@ -338,15 +338,14 @@ public class ReadFragment extends Fragment {
                 marrPlaySections.remove(sec);
             }
 
-
-
         }
+
 
         DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
         marrMyCastMatches = dbh.getMyCastMatchesForUserId(currentUser.getUserId(),selectedPlay.pID);
         dbh.close();
 
-       // Log.e("------------------ mycast read:",""+marrMyCastMatches);
+        Log.e("------------------ mycast read:",""+marrMyCastMatches);
 
        System.out.println("-------------   Sections : "+marrPlaySections);
 
@@ -389,7 +388,10 @@ public class ReadFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+
+
                 final String lineNo = edGotoLine.getText().toString();
+
                 if(lineNo == null || lineNo.equalsIgnoreCase("")){
 
                 }else{
@@ -497,9 +499,6 @@ public class ReadFragment extends Fragment {
 
                 menu.getItem(0).setEnabled(false);
                 enableDisableLineLayout();
-
-
-
 
                 break;
         }
@@ -769,6 +768,9 @@ public class ReadFragment extends Fragment {
                     }else{
                         holderReadPlayRoleCell = (ViewHolder.HolderReadPlayRoleCell)convertView.getTag();
                     }
+
+
+
                     boolean isEmpty = false;
                     if(type == ReadPlayRoleCell){
 
@@ -777,14 +779,23 @@ public class ReadFragment extends Fragment {
                         isEmpty = true;
                     }
 
-                    holderReadPlayRoleCell.cellReadPlayRole.setupForPlayLine(playLine,currentState,convertView,isEmpty);
+                    boolean mark = false;
+
+
+                    for(int i=0;i<marrMyCastMatches.size();i++){
+                        String sCheck = marrMyCastMatches.get(i).toString();
+                        if(sCheck.equalsIgnoreCase(playLine.RoleName)){
+                            mark = true;
+
+                        }
+                    }
+
+                    holderReadPlayRoleCell.cellReadPlayRole.setupForPlayLine(playLine,currentState,convertView,isEmpty,mark);
+
                     holderReadPlayRoleCell.cellReadPlayRole.setAssignClicked(new setOnAssignButtonClicked() {
                         @Override
                         public void onAssignButtonClicked() {
-
-
-                            gotoAssignUserList(playLine);
-
+                         gotoAssignUserList(playLine);
 
                         }
                     });
@@ -821,19 +832,19 @@ public class ReadFragment extends Fragment {
                         holderReadPlayPlayLineCell = (ViewHolder.HolderReadPlayPlayLineCell)convertView.getTag();
                     }
 
-                    boolean mark = false;
+                    boolean mark2 = false;
 
                     for(int i=0;i<marrMyCastMatches.size();i++){
                         String sCheck = marrMyCastMatches.get(i).toString();
                         if(sCheck.equalsIgnoreCase(playLine.RoleName)){
-                            mark = true;
+                            mark2 = true;
 
                         }
                     }
 
 
 
-                    holderReadPlayPlayLineCell.cellReadPlayPlayLine.setupForPlayLine(playLine,currentState,mark);
+                    holderReadPlayPlayLineCell.cellReadPlayPlayLine.setupForPlayLine(playLine,currentState,mark2);
 
                     holderReadPlayPlayLineCell.cellReadPlayPlayLine.setOnTextLineUpdated(new CellReadPlayPlayLine.OnTextLineUpdated() {
 
@@ -863,6 +874,15 @@ public class ReadFragment extends Fragment {
                             playLine.commentsList.add(com);
                             callServiceForCommentAdded(playLine);
 
+
+
+                        }
+
+                        @Override
+                        public void onChatClicked() {
+
+                            //todo
+                            proceedMessage(playLine);
 
 
                         }
@@ -1031,6 +1051,19 @@ public class ReadFragment extends Fragment {
 
     }
 
+    private void proceedMessage(PlayLines playLine) {
+
+        if(currentUser.checkPupil(currentUser.getRoles())){
+
+            Toast.makeText(getActivity(), "Pupil", Toast.LENGTH_SHORT).show();
+        }else{
+
+            Toast.makeText(getActivity(), "Teacher", Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+
     private void gotoAssignUserList(PlayLines playLine) {
 
         Log.e("Size of shared people is ",""+_marrSharedWithUsers.size());
@@ -1038,6 +1071,7 @@ public class ReadFragment extends Fragment {
         if(_marrSharedWithUsers.size()<0){
             pupilsFound = false;
         }else{
+
             for(SharedUser au : _marrSharedWithUsers){
 
                 String check = "lærer";
@@ -1051,21 +1085,14 @@ public class ReadFragment extends Fragment {
                 showUsersAndAssignRole(playLine);
 
             }else{
-
-
-
             }
-
-
-
-
 
         }
 
 
     }
 
-    private void showUsersAndAssignRole(PlayLines playLine) {
+    private void showUsersAndAssignRole(final PlayLines playLine) {
 
         final ArrayList<SharedUser> alreadyAssignedUsers = new ArrayList<SharedUser>();
 
@@ -1095,6 +1122,13 @@ public class ReadFragment extends Fragment {
         dialog.show();
 
         final WMTextView btnAssignUserTildel = (WMTextView)view.findViewById(R.id.btnAssignUserTildel);
+        final WMTextView txtBackAssignRole = (WMTextView)view.findViewById(R.id.txtBackAssignRole);
+        txtBackAssignRole.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
 
         btnAssignUserTildel.setTextColor(Color.parseColor("#313131"));
         btnAssignUserTildel.setEnabled(false);
@@ -1131,6 +1165,8 @@ public class ReadFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+
+                dialog.dismiss();
                 alreadyAssignedUsers.clear();
 
                 SparseBooleanArray boolarry = lstAssignRole.getCheckedItemPositions();
@@ -1143,12 +1179,190 @@ public class ReadFragment extends Fragment {
 
                 }
 
+
+
+                ArrayList<AssignedUsers> faul = new ArrayList<AssignedUsers>();
+
                 for(SharedUser st : alreadyAssignedUsers){
                     Log.e("name ",st.userName);
+
+                    AssignedUsers u = new AssignedUsers();
+                    u.AssignedUserName = st.userName;
+                    u.AssignedUserId = st.userId;
+                    faul.add(u);
+
+
                 }
+
+
+                playLine.assignedUsersList.clear();
+                playLine.assignedUsersList.addAll(faul);
+                callServiceForAssignedUserAdded(playLine,faul);
+
 
             }
         });
+
+    }
+
+    private void callServiceForAssignedUserAdded(PlayLines playLine,ArrayList<AssignedUsers> aus) {
+
+
+            final JSONObject methodParams = new JSONObject();
+
+            JSONArray arr = new JSONArray();
+
+            for(AssignedUsers u : aus){
+
+                JSONObject requestParams = new JSONObject();
+                try {
+                    requestParams.put("AssignedUserName",u.AssignedUserName);
+                    requestParams.put("AssignedUserId",u.AssignedUserId);
+
+                    arr.put(requestParams);
+                } catch (JSONException je) {
+                    je.printStackTrace();
+                }
+
+            }
+            try {
+                methodParams.put("LineCount", Integer.parseInt(playLine.LineCount));
+                methodParams.put("LineID",playLine.LineID);
+                methodParams.put("AssignedUsers",arr);
+
+            }catch (Exception e){
+
+                e.printStackTrace();
+
+            }
+
+          assignRoleUsingMethodParams(methodParams.toString(), aus, playLine);
+
+    }
+
+    private void assignRoleUsingMethodParams(final String s, final ArrayList<AssignedUsers> aus, final PlayLines playLine) {
+
+    //   Log.e("RRRRRROOOOLLLEEE ",playLine.castMatchesString);
+
+       final HUD hud = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
+        hud.title("Rollen er tildelt");
+        hud.show();
+
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                try
+
+                {
+                    readerForNone = API.callWebservicePost("http://api.danteater.dk/api/PlayUpdate",s);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                hud.dismiss();
+                try {
+                    Log.e("reader", readerForNone + "");
+
+                    StringBuffer response = new StringBuffer();
+                    int i = 0;
+                    do {
+                        i = readerForNone.read();
+                        char character = (char) i;
+                        response.append(character);
+
+                    } while (i != -1);
+                    readerForNone.close();
+                    Log.e("response---aus", response + " ");
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+                playLine.assignedUsersList = aus;
+
+                for(PlayLines pl : selectedPlay.playLinesList){
+
+                    String rn = pl.RoleName;
+
+                    if(playLine.RoleName.equalsIgnoreCase(pl.RoleName)){
+                        pl.assignedUsersList = aus;
+                    }
+
+
+                    Log.e("----------CastMatches String",playLine.castMatchesString);
+
+                    try {
+                        for (String cm : playLine.castMatchesList) {
+                            if (rn.equalsIgnoreCase(cm)) {
+                                pl.assignedUsersList = aus;
+                            }
+                        }
+                    } catch(NullPointerException ez){ez.printStackTrace();}
+
+                }
+
+              final ArrayList<String> myRoles = new ArrayList<String>();
+                String currentUserId = currentUser.getUserId();
+
+                for(PlayLines pl : selectedPlay.playLinesList){
+
+                    if(pl.playLineType() == PlayLines.PlayLType.PlayLineTypeRole){
+
+                        for(AssignedUsers au : pl.assignedUsersList){
+
+                            if(au.AssignedUserId.equalsIgnoreCase(currentUserId)){
+
+                                if(pl.RoleName != null && !pl.RoleName.equalsIgnoreCase("")){
+                                    myRoles.add(pl.RoleName);
+                                }
+                            }
+                        }
+
+                    }else{
+                        continue;
+                    }
+                }
+
+
+                new AsyncTask<Void, Void, Void>() {
+
+                    @Override
+                    protected Void doInBackground(Void... voids) {
+                        DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
+                        Log.e("Play ID before inserting assigned users ",""+selectedPlay.pID);
+                        Log.e("Play ID before inserting assigned users my roles",""+myRoles);
+
+                        marrMyCastMatches = dbh.getMyCastMatchesForRoleNames(myRoles,selectedPlay.pID);
+                        dbh.close();
+
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Void aVoid) {
+                        super.onPostExecute(aVoid);
+                        readSectionedAdapter.notifyDataSetChanged();
+                    }
+                }.execute();
+
+
+
+
+
+
+            }
+        }.execute();
+
+
 
     }
 

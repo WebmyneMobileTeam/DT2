@@ -1,6 +1,8 @@
 package wm.com.danteater.tab_read;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,6 +31,7 @@ public class CellReadPlayRole {
     private Context ctx;
 
     public CellReadPlayRole(View view,Context ctx) {
+
         this.ctx = ctx;
         tvRoleDescription = (TextView)view.findViewById(R.id.readPlayRoleDescription);
         lblAssignedName = (TextView)view.findViewById(R.id.readPlayRoleNotAssigned);
@@ -43,11 +46,19 @@ public class CellReadPlayRole {
         });
         lblCharacterName.setBold();
 
+        int w = ctx.getResources().getDisplayMetrics().widthPixels;
+        lblAssignedName.setMaxWidth(w - (int)(w/2.75));
+        lblAssignedName.setSingleLine(true);
+
+
     }
 
-    public void setupForPlayLine(PlayLines playLine,int current_state,View view,boolean isEmptyPlayRole) {
+    public void setupForPlayLine(PlayLines playLine,int current_state,View view,boolean isEmptyPlayRole,boolean mark) {
 
-
+        lblCharacterName.setBackgroundColor(Color.TRANSPARENT);
+        if(mark == true){
+            lblCharacterName.setBackgroundColor(Color.YELLOW);
+        }
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(ctx, "user_pref", 0);
         user = complexPreferences.getObject("current_user", User.class);
 

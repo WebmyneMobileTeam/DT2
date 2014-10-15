@@ -846,7 +846,9 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
                                         DatabaseWrapper dbWrap = new DatabaseWrapper(getActivity());
                                         Log.e("Before update playId ",play.PlayId);
-                                        dbWrap.updatePlayLine(playLine,Integer.parseInt(play.PlayId));
+                                        SharedPreferences pre = getActivity().getSharedPreferences("Plays", getActivity().MODE_PRIVATE);
+
+                                        dbWrap.updatePlayLine(playLine,pre.getInt("playid",0));
                                         dbWrap.close();
 
 

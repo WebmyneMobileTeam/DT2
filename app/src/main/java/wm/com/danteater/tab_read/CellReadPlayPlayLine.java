@@ -281,6 +281,7 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
 
             case R.id.readPlayLineMenuChat:
                 hideMenu();
+                onTextLineUpdated.onChatClicked();
                 //TODO
 
                Log.e("message","click on message");
@@ -447,5 +448,6 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
 
         public void onTextLineUpdated(String newText);
         public void onCommentAdded(String comment,boolean isPrivate);
+        public void onChatClicked();
     }
 }

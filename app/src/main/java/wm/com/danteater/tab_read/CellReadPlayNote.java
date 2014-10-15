@@ -128,9 +128,6 @@ public class CellReadPlayNote implements View.OnClickListener{
                     }
                     tvNote.setTextColor(Color.parseColor(AppConstants.noteTextColor));
                 }
-
-
-
             }
         }
 
