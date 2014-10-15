@@ -11,6 +11,7 @@ import com.nineoldandroids.animation.Animator;
 
 import java.util.ArrayList;
 
+import wm.com.danteater.Messages.ReadActivityForChat;
 import wm.com.danteater.Play.PlayLines;
 import wm.com.danteater.Play.TextLines;
 import wm.com.danteater.R;
@@ -61,13 +62,15 @@ public class CellReadPlayNote implements View.OnClickListener{
         btnEdit.setOnClickListener(this);
 
         this.convertView = view;
-
-
-
     }
 
     public void setupForPlayLine(PlayLines playline,int current_state){
-
+        convertView.setBackgroundColor(Color.TRANSPARENT);
+        if(current_state==STATE_CHAT){
+            if(Integer.parseInt(playline.LineCount)== ReadActivityForChat.lineNumber) {
+                convertView.setBackgroundColor(Color.parseColor("#f6f6d6"));
+            }
+        }
         viewMenu.setVisibility(View.GONE);
         tvNote.setText("");
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(ctx, "user_pref", 0);
