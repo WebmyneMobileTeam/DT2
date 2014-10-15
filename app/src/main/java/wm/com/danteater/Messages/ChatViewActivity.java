@@ -52,6 +52,7 @@ public class ChatViewActivity extends BaseActivity {
 
     private ArrayList<MessagesForConversation> messagesForConversationArrayList=new ArrayList<MessagesForConversation>();
     MessagesForConversation messagesForConversationLastObject;
+    private int lineNumber;
     private String response,toUserId;
     static final int ITEM_TYPE_ME = 0;
     static final int ITEM_TYPE_SENDER = 1;
@@ -339,8 +340,11 @@ public class ChatViewActivity extends BaseActivity {
                         @Override
                         public void onClick(View v) {
                             Log.e("line id: ",msg.LineId.substring(0,msg.LineId.lastIndexOf("-"))+"");
+                            lineNumber=Integer.parseInt(msg.LineId.substring(msg.LineId.lastIndexOf("-")+1));
+                            Log.e("line number in chat activity",lineNumber+" ");
                             Play play=new Play();
                             play.OrderId=msg.LineId.substring(0,msg.LineId.lastIndexOf("-"));
+
                             dialog_next = new HUD(ChatViewActivity.this,android.R.style.Theme_Translucent_NoTitleBar);
                             dialog_next.title("Henter");
                             dialog_next.show();
@@ -363,6 +367,8 @@ public class ChatViewActivity extends BaseActivity {
                         @Override
                         public void onClick(View v) {
                             Log.e("line id: ",msg.LineId.substring(0,msg.LineId.lastIndexOf("-"))+"");
+                            lineNumber=Integer.parseInt(msg.LineId.substring(msg.LineId.lastIndexOf("-")+1));
+                            Log.e("line number in chat activity",lineNumber+" ");
                             Play play=new Play();
                             play.OrderId=msg.LineId.substring(0,msg.LineId.lastIndexOf("-"));
                             dialog_next = new HUD(ChatViewActivity.this,android.R.style.Theme_Translucent_NoTitleBar);
@@ -485,7 +491,7 @@ public class ChatViewActivity extends BaseActivity {
                 dialog_next.dismiss();
                         Intent i1 = new Intent(ChatViewActivity.this, ReadActivityForChat.class);
                         i1.putExtra("currentState",STATE_CHAT);
-
+                        i1.putExtra("line_number",lineNumber);
                         startActivity(i1);
 
 

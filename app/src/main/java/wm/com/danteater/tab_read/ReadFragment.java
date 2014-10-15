@@ -103,7 +103,7 @@ public class ReadFragment extends Fragment {
     public static int STATE_CHAT = 3;
 
     public int currentState = 0;
-
+    private int lineNumber=0;
     public boolean isPreview = false;
     private StateManager stateManager = StateManager.getInstance();
 
@@ -156,6 +156,9 @@ public class ReadFragment extends Fragment {
          // setup actionbar methods
          ((WMTextView) getActivity().getActionBar().getCustomView()).setText(selectedPlay.Title);
          currentState = getArguments().getInt("currentState");
+         lineNumber=   getArguments().getInt("line_number");
+
+         Log.e("lineNumber:",lineNumber+"");
 
         if(currentState == STATE_READ || currentState == STATE_RECORD) {
             setHasOptionsMenu(true);
@@ -443,7 +446,9 @@ public class ReadFragment extends Fragment {
                 }*/
                 readSectionedAdapter = new ReadSectionedAdapter(getActivity());
                 listRead.setAdapter(readSectionedAdapter);
-
+                if(lineNumber !=0) {
+                    listRead.setSelection(lineNumber - 1);
+                }
 
             }
         }.execute();

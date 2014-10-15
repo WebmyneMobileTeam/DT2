@@ -863,8 +863,6 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                                 }catch(Exception e){
                                     e.printStackTrace();
                                 }
-
-
                                 return null;
                             }
 
@@ -1205,7 +1203,6 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
                 }
             }, new Response.ErrorListener() {
-
                 @Override
                 public void onErrorResponse(VolleyError arg0) {
                 }

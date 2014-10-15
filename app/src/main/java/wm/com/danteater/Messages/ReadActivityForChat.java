@@ -26,11 +26,13 @@ import wm.com.danteater.tab_read.ReadFragment;
 public class ReadActivityForChat extends BaseActivity {
     int currentState = 3;
     private Play play;
+    private int lineNumber;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read_for_chat);
         currentState = getIntent().getExtras().getInt("currentState");
+        lineNumber= getIntent().getExtras().getInt("line_number");
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(ReadActivityForChat.this, "mypref", 0);
         play = complexPreferences.getObject("selected_play", Play.class);
         setUpCurrentActionBar();
@@ -39,6 +41,7 @@ public class ReadActivityForChat extends BaseActivity {
 
         Bundle args = new Bundle();
         args.putInt("currentState",currentState);
+        args.putInt("line_number",lineNumber);
         ReadFragment readFragment = ReadFragment.newInstance("","");
         readFragment.setArguments(args);
 
