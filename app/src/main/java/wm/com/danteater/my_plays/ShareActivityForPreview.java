@@ -6,19 +6,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
-
-import com.android.volley.VolleyError;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,23 +19,17 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import wm.com.danteater.Play.Play;
 import wm.com.danteater.R;
 import wm.com.danteater.app.BaseActivity;
 import wm.com.danteater.customviews.HUD;
 import wm.com.danteater.customviews.WMTextView;
-import wm.com.danteater.login.Group;
 import wm.com.danteater.login.User;
 import wm.com.danteater.model.API;
-import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
-import wm.com.danteater.model.StateManager;
-import wm.com.danteater.tab_share.ShareFragment;
+import wm.com.danteater.model.SharedPreferenceTeachers;
 
 /**
  * Created by nirav on 11-09-2014.
@@ -51,6 +38,7 @@ public class ShareActivityForPreview extends BaseActivity {
     private Play selectedPlay;
     private ListView list_teachers;
     private Menu menu;
+    private SharedPreferenceTeachers sharedPreferenceTeachers;
     //private StateManager stateManager = StateManager.getInstance();
     private static ArrayList<User> teacherSharedListForPreview=new ArrayList<User>();
     private User currentUser;
@@ -59,7 +47,7 @@ public class ShareActivityForPreview extends BaseActivity {
     static boolean isSharedforPreviewChanged=false;
     static boolean isFinishOnBackPress=false;
 
-    public static ArrayList<User> teachers= new ArrayList<User>();
+//    public static ArrayList<User> teachers= new ArrayList<User>();
 
     ArrayList<User> teacherList;
     @Override
@@ -67,6 +55,7 @@ public class ShareActivityForPreview extends BaseActivity {
 
         super.onCreate(savedInstanceState);
         teacherSharedListForPreview.clear();
+        sharedPreferenceTeachers = new SharedPreferenceTeachers();
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(this, "mypref", 0);
         selectedPlay = complexPreferences.getObject("selected_play", Play.class);
         ComplexPreferences complexPreferencesUser = ComplexPreferences.getComplexPreferences(this, "user_pref", 0);
@@ -76,7 +65,7 @@ public class ShareActivityForPreview extends BaseActivity {
         ((WMTextView) getActionBar().getCustomView()).setText(selectedPlay.Title);
 
         list_teachers = (ListView) findViewById(R.id.listTeachersShareForPreview);
-        teacherList=ShareActivityForPreview.teachers;
+        teacherList= sharedPreferenceTeachers.loadTeacher(ShareActivityForPreview.this);
 
         // Get Teacher List
         ArrayList<String> teacherNames=new ArrayList<String>();
@@ -355,7 +344,7 @@ public class ShareActivityForPreview extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ShareActivityForPreview.teachers.clear();
+//        teachers.clear();
         finish();
     }
 }

@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -19,7 +18,6 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -40,10 +38,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.Reader;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -54,7 +50,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import wm.com.danteater.Messages.MessageUnread;
-import wm.com.danteater.Messages.MessagesForConversation;
 import wm.com.danteater.Play.Play;
 import wm.com.danteater.Play.PlayLines;
 import wm.com.danteater.Play.PlayOrderDetails;
@@ -70,21 +65,23 @@ import wm.com.danteater.login.BeanGroupMemberResult;
 import wm.com.danteater.login.BeanGroupResult;
 import wm.com.danteater.login.Group;
 import wm.com.danteater.login.GroupMembers;
-import wm.com.danteater.login.LoginActivity;
 import wm.com.danteater.login.User;
 import wm.com.danteater.model.API;
 import wm.com.danteater.model.APIDelete;
 import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.model.DatabaseWrapper;
-import wm.com.danteater.model.Prefs;
+import wm.com.danteater.model.SharedPreferenceClasses;
+import wm.com.danteater.model.SharedPreferenceTeachers;
 import wm.com.danteater.model.StateManager;
 import wm.com.danteater.search.FragmentSearch;
-import wm.com.danteater.tab_share.ShareFragment;
 
 
 public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChangeListener {
-
+    public  ArrayList<Group> classes = new ArrayList<Group>();
+    public  ArrayList<User> teachers= new ArrayList<User>();
+    private SharedPreferenceTeachers sharedPreferenceTeachers;
+    private SharedPreferenceClasses sharedPreferenceClasses;
     private ArrayList<MessageUnread> messageUnreadArrayList=new ArrayList<MessageUnread>();
     MessageUnread messageUnread=new MessageUnread();
     public String badgeValue;
@@ -141,8 +138,8 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
+        sharedPreferenceClasses=new SharedPreferenceClasses();
+        sharedPreferenceTeachers = new SharedPreferenceTeachers();
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "user_pref", 0);
         currentUser =complexPreferences.getObject("current_user", User.class);
         Timer timer = new Timer();
@@ -1054,12 +1051,12 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                     BeanGroupInfo beanGroupInfo = new GsonBuilder().create().fromJson(res, BeanGroupInfo.class);
                     BeanGroupResult beanGroupResult = beanGroupInfo.getBeanGroupResult();
                     ArrayList<Group> groupArrayList = beanGroupResult.getGroupArrayList();
-                    ShareActivityForPerform.classes.clear();
+                    classes.clear();
                     //   pupils.clear();
 
                     for (Group beanGroup : groupArrayList) {
                         if (beanGroup.getGroupType().equals("classtype")) {
-                            ShareActivityForPerform.classes.add(beanGroup);
+                            classes.add(beanGroup);
                             Log.e("group domain", beanGroup.getDomain() + "");
                             numberOfClassesToBeRetrieved++;
                             ShareActivityForPerform.pupils.clear();
@@ -1067,7 +1064,11 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                         }
                     }
 
-                    Log.e("classes...: ", ShareActivityForPerform.classes + "");
+                    Log.e("classes...: ", classes + "");
+                    sharedPreferenceClasses.clearClass(getActivity());
+                    for(int i=0;i<classes.size();i++){
+                        sharedPreferenceClasses.saveClass(getActivity(), classes.get(i));
+                    }
 
                 }
             }, new Response.ErrorListener() {
@@ -1086,8 +1087,8 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
     public  void retriveSchoolTeachers(String seesionId, String domain) {
         groupForTeacher.setGroupId("teacher");
-        ShareActivityForPerform.teachers.clear();
-        ShareActivityForPreview.teachers.clear();
+        teachers.clear();
+
         retriveMembers(seesionId, domain, groupForTeacher);
 
     }
@@ -1126,10 +1127,14 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
                     if (group.getGroupId().equals("teacher")) {
 
-                        ShareActivityForPerform.teachers.addAll(userArrayList);
-                        ShareActivityForPreview.teachers.addAll(userArrayList);
-                        Log.e("teachers:",ShareActivityForPerform.teachers+"");
-                        Log.e("teachers:",ShareActivityForPreview.teachers+"");
+
+                        teachers.addAll(userArrayList);
+                        Log.e("teachers:",teachers+"");
+                        sharedPreferenceTeachers.clearTeacher(getActivity());
+                        for(int i=0;i<teachers.size();i++){
+                            sharedPreferenceTeachers.saveTeacher(getActivity(), teachers.get(i));
+                        }
+
 
                         finishedRetrievingTeachers = true;
                     } else {

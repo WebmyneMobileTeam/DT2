@@ -56,8 +56,8 @@ public class ShareActivityForPerform extends BaseActivity {
     public static boolean isSharedforPerformChanged=false;
     public static ArrayList<SharedUser> sharedTeachersAndStudents;
     public static Menu menu;
-    public  static ArrayList<Group> classes = new ArrayList<Group>();
-    public static ArrayList<User> teachers= new ArrayList<User>();
+//    public  static ArrayList<Group> classes = new ArrayList<Group>();
+//    public static ArrayList<User> teachers= new ArrayList<User>();
     public static HashMap<String, ArrayList<User>> pupils=new HashMap<String, ArrayList<User>>();
     public static boolean isFinishOnBackPressForPerform=false;
     @Override
@@ -129,8 +129,8 @@ public class ShareActivityForPerform extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ShareActivityForPerform.teachers.clear();
-        ShareActivityForPerform.classes.clear();
+//        teachers.clear();
+//        classes.clear();
         ShareActivityForPerform.pupils.clear();
         finish();
     }

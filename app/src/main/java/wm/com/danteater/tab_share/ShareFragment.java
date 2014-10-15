@@ -1,9 +1,7 @@
 package wm.com.danteater.tab_share;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,7 +11,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,14 +24,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
-
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,40 +31,28 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import wm.com.danteater.Play.AssignedUsers;
 import wm.com.danteater.Play.Play;
 import wm.com.danteater.R;
-import wm.com.danteater.app.MyApplication;
 import wm.com.danteater.customviews.HUD;
 import wm.com.danteater.customviews.PagerSlidingTabStrip;
 import wm.com.danteater.customviews.SegmentedGroup;
 import wm.com.danteater.customviews.WMTextView;
-import wm.com.danteater.login.BeanGroupInfo;
-import wm.com.danteater.login.BeanGroupMemberInfo;
-import wm.com.danteater.login.BeanGroupMemberResult;
-import wm.com.danteater.login.BeanGroupResult;
 import wm.com.danteater.login.Group;
-import wm.com.danteater.login.GroupMembers;
 import wm.com.danteater.login.User;
 import wm.com.danteater.model.API;
-import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
-import wm.com.danteater.model.StateManager;
-import wm.com.danteater.my_plays.OrderPlayActivityForPerformNew;
+import wm.com.danteater.model.SharedPreferenceClasses;
+import wm.com.danteater.model.SharedPreferenceTeachers;
 import wm.com.danteater.my_plays.ShareActivityForPerform;
-import wm.com.danteater.my_plays.ShareActivityForPreview;
 import wm.com.danteater.my_plays.SharedUser;
 
 
 public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChangeListener{
-
+    private SharedPreferenceTeachers sharedPreferenceTeachers;
+    private SharedPreferenceClasses sharedPreferenceClasses;
     private PagerSlidingTabStrip tabs;
     private ViewPager pager;
     private MyPagerAdapter adapter;
@@ -95,6 +72,7 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
     private static ArrayList<User> teacherSharedList=new ArrayList<User>();
     public static ArrayList<User> studentSharedList= new ArrayList<User>();
     ArrayList<User> teacherList;
+    ArrayList<Group> classList;
     public static ShareFragment newInstance(String param1, String param2) {
         ShareFragment fragment = new ShareFragment();
         return fragment;
@@ -111,7 +89,10 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         setHasOptionsMenu(true);
         teacherSharedList.clear();
         studentSharedList.clear();
-        teacherList=ShareActivityForPerform.teachers;
+        sharedPreferenceTeachers = new SharedPreferenceTeachers();
+        sharedPreferenceClasses=new SharedPreferenceClasses();
+        teacherList= sharedPreferenceTeachers.loadTeacher(getActivity());
+        classList= sharedPreferenceClasses.loadClass(getActivity());
         // Get selected Play from my play list from shared preferences
         // Here we use complex preferences to store whole Play class object and retrieve.
        ComplexPreferences complexPreference = ComplexPreferences.getComplexPreferences(getActivity(), "mypref", 0);
@@ -137,7 +118,7 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         rbTeacher = (RadioButton)convertView.findViewById(R.id.rbTeacher);
         segmentedTeachersPupils.setOnCheckedChangeListener(this);
         // show share with pupils tab by default
-        rbPupils.setChecked(true);
+        rbTeacher.setChecked(true);
         return convertView;
     }
 
@@ -146,7 +127,7 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         super.onResume();
 
         // students list
-        adapter = new MyPagerAdapter(getActivity().getSupportFragmentManager(), ShareActivityForPerform.classes);
+        adapter = new MyPagerAdapter(getActivity().getSupportFragmentManager(), classList);
         pager.setAdapter(adapter);
         final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources().getDisplayMetrics());
         pager.setPageMargin(pageMargin);
