@@ -101,7 +101,6 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         currentUser =complexPreferencesUser.getObject("current_user", User.class);
         ((WMTextView)getActivity().getActionBar().getCustomView()).setText(selectedPlay.Title);
 
-
     }
 
     @Override

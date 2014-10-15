@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import wm.com.danteater.Messages.ReadActivityForChat;
 import wm.com.danteater.Play.Comments;
 import wm.com.danteater.Play.PlayLines;
 import wm.com.danteater.Play.TextLines;
@@ -88,11 +89,11 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
     private WMTextView btnMessage;
 
     private OnTextLineUpdated onTextLineUpdated;
-
+    private View convertView;
 
 
     public CellReadPlayPlayLine(View view, Context context) {
-
+        this.convertView=view;
         this.ctx = context;
         lblLineNumber = (WMTextView) view.findViewById(R.id.readPlayLineCellLineNumber);
         lblRoleName = (WMTextView) view.findViewById(R.id.readPlayLineCellRollName);
@@ -123,7 +124,12 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
 
        lblRoleName.setBackgroundColor(Color.TRANSPARENT);
        btnEdit.setVisibility(View.VISIBLE);
-
+        convertView.setBackgroundColor(Color.TRANSPARENT);
+        if(current_state==STATE_CHAT){
+            if(Integer.parseInt(playLine.LineCount)== ReadActivityForChat.lineNumber) {
+                convertView.setBackgroundColor(Color.parseColor("#f6f6d6"));
+            }
+        }
 
         Log.e("Mark is ",""+mark);
         if(mark == true){

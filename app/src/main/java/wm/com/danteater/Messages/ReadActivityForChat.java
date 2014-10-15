@@ -26,7 +26,7 @@ import wm.com.danteater.tab_read.ReadFragment;
 public class ReadActivityForChat extends BaseActivity {
     int currentState = 3;
     private Play play;
-    private int lineNumber;
+    public static int lineNumber;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

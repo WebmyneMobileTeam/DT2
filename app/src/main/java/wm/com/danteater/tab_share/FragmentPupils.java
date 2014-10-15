@@ -59,9 +59,7 @@ private ListView listStudents;
         }
         position = getArguments().getInt(ARG_POSITION);
         className= getArguments().getString(ARG_CLASS_NAME);
-        pupils= ShareActivityForPerform.pupils;
-        pupilsList=pupils.get(className);
-        Log.e("class name:.................",className+"");
+
     }
 
     @Override
@@ -77,38 +75,43 @@ private ListView listStudents;
     @Override
     public void onResume() {
         super.onResume();
+        pupils = ShareActivityForPerform.pupils;
+        if (pupils != null) {
+            pupilsList = pupils.get(className);
 
-        ArrayList<String> studentNameList=new ArrayList<String>();
-        for(int i=0;i<pupilsList.size();i++) {
-            studentNameList.add(""+pupilsList.get(i).getFirstName()+" "+pupilsList.get(i).getLastName());
-            Log.e("student id:",pupilsList.get(i).getUserId()+"");
-        }
-        ArrayAdapter adap = new ArrayAdapter(getActivity(),android.R.layout.simple_list_item_multiple_choice,studentNameList);
-        listStudents.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        listStudents.setAdapter(adap);
-        for(int i=0;i<pupilsList.size();i++){
-            User user=pupilsList.get(i);
-            for(SharedUser u: ShareActivityForPerform.sharedTeachersAndStudents){
-                if(u.userId.equalsIgnoreCase(user.getUserId())){
-                    listStudents.setItemChecked(i,true);
-                    ShareFragment.studentSharedList.add(user);
+            Log.e("class name:.................", className + "");
+            ArrayList<String> studentNameList = new ArrayList<String>();
+            for (int i = 0; i < pupilsList.size(); i++) {
+                studentNameList.add("" + pupilsList.get(i).getFirstName() + " " + pupilsList.get(i).getLastName());
+                Log.e("student id:", pupilsList.get(i).getUserId() + "");
+            }
+            ArrayAdapter adap = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_multiple_choice, studentNameList);
+            listStudents.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+            listStudents.setAdapter(adap);
+            for (int i = 0; i < pupilsList.size(); i++) {
+                User user = pupilsList.get(i);
+                for (SharedUser u : ShareActivityForPerform.sharedTeachersAndStudents) {
+                    if (u.userId.equalsIgnoreCase(user.getUserId())) {
+                        listStudents.setItemChecked(i, true);
+                        ShareFragment.studentSharedList.add(user);
+                    }
                 }
             }
-        }
-        listStudents.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            listStudents.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //                enableDisableShareOptions(listStudents.getCheckedItemPositions());
-                ShareActivityForPerform.isSharedforPerformChanged=true;
-                ShareActivityForPerform.menu.getItem(0).setIcon(getActivity().getResources().getDrawable(R.drawable.ic_action_del_selected));
-                ShareActivityForPerform.menu.getItem(0).setEnabled(true);
-                ShareActivityForPerform.isSharedforPerformChanged=true;
-                if (ShareFragment.studentSharedList.contains(pupilsList.get(position))) {
-                    ShareFragment.studentSharedList.remove(pupilsList.get(position));
-                } else {
-                    ShareFragment.studentSharedList.add(pupilsList.get(position));
+                    ShareActivityForPerform.isSharedforPerformChanged = true;
+                    ShareActivityForPerform.menu.getItem(0).setIcon(getActivity().getResources().getDrawable(R.drawable.ic_action_del_selected));
+                    ShareActivityForPerform.menu.getItem(0).setEnabled(true);
+                    ShareActivityForPerform.isSharedforPerformChanged = true;
+                    if (ShareFragment.studentSharedList.contains(pupilsList.get(position))) {
+                        ShareFragment.studentSharedList.remove(pupilsList.get(position));
+                    } else {
+                        ShareFragment.studentSharedList.add(pupilsList.get(position));
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 }
