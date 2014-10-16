@@ -60,6 +60,7 @@ public class ChatViewFromRead extends BaseActivity{
     private WMTextView btnSendMessage;
     private EditText etMessageValue;
     private HUD dialog;
+    private String teacherName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,15 +70,20 @@ public class ChatViewFromRead extends BaseActivity{
         getActionBar().setDisplayHomeAsUpEnabled(true);
         ComplexPreferences complexPreferencesForPlayLine = ComplexPreferences.getComplexPreferences(ChatViewFromRead.this, "selected_playline", 0);
         currentPlayLine = complexPreferencesForPlayLine.getObject("current_playline", PlayLines.class);
-        StringBuffer stringBuffer=new StringBuffer();
-        for(AssignedUsers assignedUsers:currentPlayLine.assignedUsersList) {
-            stringBuffer.append(assignedUsers.AssignedUserName+", ");
-        }
-        txtHeader.setText(stringBuffer.toString());
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(this,"user_pref", 0);
         currentUser = complexPreferences.getObject("current_user", User.class);
         ComplexPreferences complexPreference = ComplexPreferences.getComplexPreferences(this, "mypref", 0);
         selectedPlay = complexPreference.getObject("selected_play",Play.class);
+        if(currentUser.checkPupil(currentUser.getRoles())) {
+            teacherName=getIntent().getStringExtra("to_user_id");
+            txtHeader.setText(teacherName);
+        }else {
+            StringBuffer stringBuffer=new StringBuffer();
+            for(AssignedUsers assignedUsers:currentPlayLine.assignedUsersList) {
+                stringBuffer.append(assignedUsers.AssignedUserName+", ");
+            }
+            txtHeader.setText(stringBuffer.toString());
+        }
 
         listChat = (ListView)findViewById(R.id.listViewChatForRead);
         btnSendMessage=(WMTextView)findViewById(R.id.btnSendMessageForRead);
@@ -88,13 +94,77 @@ public class ChatViewFromRead extends BaseActivity{
                messagesForConversationArrayList.add(new MessagesForConversation("",selectedPlay.OrderId,currentPlayLine.LineID,currentUser.getUserId(),"",etMessageValue.getText().toString().trim(),"",""));
                 chatAdapter=new ChatAdapter(ChatViewFromRead.this);
                 listChat.setAdapter(chatAdapter);
-                // call API createNewMessageAndSendToUser
-                for(AssignedUsers assignedUsers: currentPlayLine.assignedUsersList) {
-                    createNewMessageAndSendToUser(assignedUsers);
+
+                if(currentUser.checkPupil(currentUser.getRoles())) {
+                    // For Student
+                    // call API createNewMessageAndSendToUser
+                    createNewMessageAndSendToUser();
+                } else {
+                    //For Teacher
+                    // call API createNewMessageAndSendToUser
+                    for(AssignedUsers assignedUsers: currentPlayLine.assignedUsersList) {
+                        createNewMessageAndSendToUser(assignedUsers);
+                    }
                 }
+
                 etMessageValue.setText("");
             }
         });
+    }
+
+
+    private void createNewMessageAndSendToUser() {
+
+        final JSONObject requestParams=new JSONObject();
+        try {
+            requestParams.put("OrderId", selectedPlay.OrderId+"");
+            requestParams.put("LineId", currentPlayLine.LineID+"");
+            requestParams.put("FromUserId", currentUser.getUserId()+"");
+            requestParams.put("ToUserId", teacherName+"");
+            requestParams.put("MessageText", etMessageValue.getText().toString().trim()+"");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+            }
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                try
+                {
+                    Reader readerForNone = API.callWebservicePost("http://api.danteater.dk/api/Message", requestParams.toString());
+                    Log.e("reader", readerForNone + "");
+
+                    StringBuffer response = new StringBuffer();
+                    int i = 0;
+                    do {
+                        i = readerForNone.read();
+                        char character = (char) i;
+                        response.append(character);
+
+                    } while (i != -1);
+                    readerForNone.close();
+                    Log.e("response", response + " ");
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+
+
+            }
+        }.execute();
     }
 
 
