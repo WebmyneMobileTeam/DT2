@@ -45,8 +45,6 @@ public class SelectTeacherForChat extends BaseActivity implements AdapterView.On
         teacherListView.setOnItemClickListener(this);
         ArrayAdapter adap = new ArrayAdapter(SelectTeacherForChat.this,android.R.layout.simple_list_item_1,teacherList);
         teacherListView.setAdapter(adap);
-
-
     }
 
     @Override

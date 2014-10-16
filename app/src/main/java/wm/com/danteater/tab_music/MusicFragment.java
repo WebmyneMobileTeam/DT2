@@ -10,6 +10,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -23,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -74,21 +76,18 @@ public class MusicFragment extends Fragment {
     static MusicFragment fragment;
     public static MusicFragment newInstance(String param1, String param2) {
        fragment= new MusicFragment();
-
         return fragment;
     }
 
     public MusicFragment() {
         // Required empty public constructor
     }
-
     public static ArrayList<String> playingMusic = new ArrayList<String>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(false);
-
+        setHasOptionsMenu(true);
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref", 0);
         selectedPlay = complexPreferences.getObject("selected_play", Play.class);
         playLineses=selectedPlay.playLinesList;
@@ -108,8 +107,6 @@ public class MusicFragment extends Fragment {
         Log.e("Sections with contents:",marrSectionsWithContent+"");
         Log.e("section titles:",marrSectionTitles+"");
         Log.e("Song files:",marrSongFilesMP3+"");
-
-
     }
 
     @Override
@@ -126,9 +123,42 @@ public class MusicFragment extends Fragment {
         listMusic = (PinnedHeaderListView)convertView.findViewById(R.id.listViewMusic);
         listMusic.addHeaderView(listHeaderView);
         listMusic.setAdapter(musicSectionedAdapter);
+        imgDownloadAllMusic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
+                dialog.title("Henter alle sange. De vil blive vist løbende.");
+                dialog.setCancelable(true);
+                dialog.show();
+                ArrayList<SongFiles> songFilesArrayList=new ArrayList<SongFiles>();
+                for(SongFiles songFile:marrSongFilesMP3) {
+                    FileDescriptor fd = null;
+                    File fileDir = new File(Environment.getExternalStorageDirectory() + "/danteater");
+                    String audioPath = fileDir.getAbsolutePath() +"/"+songFile.SongMp3Url.substring(songFile.SongMp3Url.lastIndexOf("/")+1);
+                    if(!(new File(audioPath).exists())) {
+                        songFilesArrayList.add(songFile);
+                    }
+                }
+                for(SongFiles songFiles: songFilesArrayList) {
+                downloadAllMusic(songFiles);
+                }
+                new CountDownTimer(1500, 1000) {
+
+                    @Override
+                    public void onFinish() {
+                        dialog.dismissWithStatus(R.drawable.ic_navigation_accept, "Henter alle sange. De vil blive vist løbende.");
+
+                    }
+
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+
+                    }
+                }.start();
 
 
-
+            }
+        });
         if(marrSectionTitles.size()==0 && marrSongFilesMP3.size()==0) {
             noMusicView.setVisibility(View.VISIBLE);
             listMusic.setVisibility(View.GONE);
@@ -151,9 +181,15 @@ public class MusicFragment extends Fragment {
             txtDownloadAllMusic.setText("");
             txtDownloadAllMusic.setVisibility(View.GONE);
             imgDownloadAllMusic.setVisibility(View.GONE);
-
             musicSectionedAdapter.notifyDataSetChanged();
-        } else  { // TODO else if condition for all download
+        } else if(songFilesMP3ToBeDownloaded().size()==0) {
+            noMusicView.setVisibility(View.GONE);
+            listMusic.setVisibility(View.VISIBLE);
+            txtDownloadAllMusic.setText("Al musik er hentet");
+            imgDownloadAllMusic.setVisibility(View.GONE);
+            txtDownloadAllMusic.setVisibility(View.VISIBLE);
+            musicSectionedAdapter.notifyDataSetChanged();
+        }else  {
             noMusicView.setVisibility(View.GONE);
             listMusic.setVisibility(View.VISIBLE);
             txtDownloadAllMusic.setText("Hent al musik");
@@ -302,7 +338,7 @@ public class MusicFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // super.onCreateOptionsMenu(menu, inflater);
 
-        getActivity().getMenuInflater().inflate(R.menu.menu_read,menu);
+//        getActivity().getMenuInflater().inflate(R.menu.menu_read,menu);
 
     }
 
@@ -320,13 +356,13 @@ public class MusicFragment extends Fragment {
 
         }
 
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         if(mediaPlayer !=null && mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
             playingMusic.clear();
@@ -336,7 +372,90 @@ public class MusicFragment extends Fragment {
 
 
 
+    public ArrayList<SongFiles> songFilesMP3ToBeDownloaded() {
+        FileDescriptor fd = null;
+        File fileDir = new File(Environment.getExternalStorageDirectory() + "/danteater");
 
+        ArrayList<SongFiles> songFilesArrayList=new ArrayList<SongFiles>();
+        for(SongFiles songFile:marrSongFilesMP3) {
+            String audioPath = fileDir.getAbsolutePath() +"/"+songFile.SongMp3Url.substring(songFile.SongMp3Url.lastIndexOf("/")+1);
+            if(!(new File(audioPath).exists())) {
+                songFilesArrayList.add(songFile);
+            }
+        }
+        return songFilesArrayList;
+    }
+
+    public void downloadAllMusic(final SongFiles songFiles) {
+
+        new AsyncTask<Void,Integer,Void>(){
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                int count;
+                try {
+                    URL url = new URL(songFiles.SongMp3Url.replace(" ","%20"));
+                    HttpURLConnection conexion = (HttpURLConnection) url.openConnection();
+                    conexion.connect();
+                    int lenghtOfFile = conexion.getContentLength();
+                    Log.e("lenghtOfFile: ", lenghtOfFile + "");
+                    File fileDir=new File(Environment.getExternalStorageDirectory()+"/danteater");
+                    if(!fileDir.exists()) {
+                        fileDir.mkdir();
+                        Log.e("directory:","created");
+                    } else {
+                        Log.e("directory:","already exist");
+                    }
+                    File file = new File(fileDir,songFiles.SongMp3Url.substring(songFiles.SongMp3Url.lastIndexOf("/")+1));
+                    FileOutputStream output = new FileOutputStream(file);
+                    InputStream input = conexion.getInputStream();
+                    byte data[] = new byte[1024];
+                    long total = 0;
+                    while ((count = input.read(data)) != -1) {
+                        total += count;
+                        publishProgress((int)(total*100/lenghtOfFile));
+                        output.write(data, 0, count);
+                    }
+                    output.flush();
+                    output.close();
+                    input.close();
+//                    updateViewAfterDownLoad(position);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e("error:",e+"");
+                }
+                return null;
+            }
+
+            @Override
+            protected void onProgressUpdate(Integer... values) {
+                super.onProgressUpdate(values);
+                Log.e("progress: ",values[0].toString()+"");
+                if(values[0].toString().equalsIgnoreCase("100")) {
+                    musicSectionedAdapter.notifyDataSetChanged();
+                    if (songFilesMP3ToBeDownloaded().size() == 0) {
+                        noMusicView.setVisibility(View.GONE);
+                        listMusic.setVisibility(View.VISIBLE);
+                        txtDownloadAllMusic.setText("Al musik er hentet");
+                        imgDownloadAllMusic.setVisibility(View.GONE);
+                        txtDownloadAllMusic.setVisibility(View.VISIBLE);
+//                        dialog.dismissWithStatus(R.drawable.ic_navigation_accept, "Henter alle sange. De vil blive vist løbende.");
+                        musicSectionedAdapter.notifyDataSetChanged();
+                    }
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+            }
+        }.execute();
+
+    }
 
 
 }

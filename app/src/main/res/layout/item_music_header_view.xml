@@ -9,6 +9,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:background="@color/apptheme_color"
+        android:padding="8dp"
         android:layout_height="wrap_content">
         <wm.com.danteater.customviews.WMTextView
             android:id="@+id/txtDownloadAllMusic"
@@ -27,7 +28,7 @@
         <ImageView
             android:id="@+id/imgDownloadAllMusic"
             android:layout_width="wrap_content"
-            android:layout_marginRight="@dimen/activity_margin"
+            android:layout_marginRight="8dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_gravity="right|center_vertical"

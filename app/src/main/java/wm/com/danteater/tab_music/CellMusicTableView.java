@@ -1,11 +1,13 @@
 package wm.com.danteater.tab_music;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
@@ -48,6 +50,8 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
     private setOnReload setOnReloading;
     private SetStopMusic setStopMusicSong;
     private String currentSongPosition;
+    public  DownLoadMusicTask downLoadMusicTask;
+    public String musicUrl;
 
     public CellMusicTableView(View convertView,final Context context) {
 
@@ -73,13 +77,9 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
             }
             FileDescriptor fd = null;
             File fileDir = new File(Environment.getExternalStorageDirectory() + "/danteater");
+            Log.e("fetched url path: ",fileDir.getAbsolutePath() +"/"+songFile.SongMp3Url.substring(songFile.SongMp3Url.lastIndexOf("/")+1));
+            String audioPath = fileDir.getAbsolutePath() +"/"+songFile.SongMp3Url.substring(songFile.SongMp3Url.lastIndexOf("/")+1);
 
-            String audioPath = fileDir.getAbsolutePath() +"/_"+playTitle+"_"+sectionTitle+"_"+section+"_"+position+"_.mp3";
-            String segments[] = audioPath.split("_");
-            Log.e("segments[0]",segments[0]+"");
-            Log.e("segments[1]",segments[1]+"");
-            Log.e("segments[2]",segments[2]+"");
-            Log.e("segments[3]",segments[3]+"");
 
             if(new File(audioPath).exists()
                  ) {
@@ -121,8 +121,14 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
         musicDownload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                downloadMusic(songFile.SongMp3Url,sectionTitle,section,position,playTitle);
-
+                FileDescriptor fd = null;
+                File fileDir = new File(Environment.getExternalStorageDirectory() + "/danteater");
+                Log.e("fetched url path: ", fileDir.getAbsolutePath() + "/" + songFile.SongMp3Url.substring(songFile.SongMp3Url.lastIndexOf("/") + 1));
+                String audioPath = fileDir.getAbsolutePath() + "/" + songFile.SongMp3Url.substring(songFile.SongMp3Url.lastIndexOf("/") + 1);
+                if (!(new File(audioPath).exists())) {
+                    musicUrl=songFile.SongMp3Url.toString();
+                    downloadMusic();
+                }
             }
         });
         musicPlay.setOnClickListener(new View.OnClickListener() {
@@ -145,8 +151,6 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
                     });
                     alert.show();
                 }else{
-
-
                     if(mediaPlayer.isPlaying()){
                         if(mediaPlayer!=null){
                             MusicFragment.isAnySongPlayed=false;
@@ -167,8 +171,6 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
                             updateProgressBar();
                         }
                     }
-
-
                 }
 
             }
@@ -176,75 +178,18 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
         });
     }
 
-    public void downloadMusic(final String musicUrl,final String songFileName,final int section,final int position, final String playTitleName) {
+    private void downloadMusic() {
 
-        new AsyncTask<Void,Integer,Void>(){
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                dialog = new HUD(context, android.R.style.Theme_Translucent_NoTitleBar);
-                dialog.title("Loading...");
-                dialog.show();
-            }
+       downLoadMusicTask=new DownLoadMusicTask();
+        StartAsyncTaskInParallel(downLoadMusicTask);
+    }
 
-            @Override
-            protected Void doInBackground(Void... voids) {
-                int count;
-                try {
-                    URL url = new URL(musicUrl.replace(" ","%20"));
-                    HttpURLConnection conexion = (HttpURLConnection) url.openConnection();
-                    conexion.connect();
-                    int lenghtOfFile = conexion.getContentLength();
-                    Log.e("lenghtOfFile: ", lenghtOfFile + "");
-                    File fileDir=new File(Environment.getExternalStorageDirectory()+"/danteater");
-                    if(!fileDir.exists()) {
-                        fileDir.mkdir();
-                        Log.e("directory:","created");
-                    } else {
-                        Log.e("directory:","already exist");
-                    }
-                    Log.e("file path",playTitleName+"_"+songFileName+"_"+section+"_"+position+".mp3");
-                    File file = new File(fileDir,"_"+playTitleName+"_"+songFileName+"_"+section+"_"+position+"_.mp3");
-                    FileOutputStream output = new FileOutputStream(file);
-                    InputStream input = conexion.getInputStream();
-                    byte data[] = new byte[1024];
-                    long total = 0;
-                    while ((count = input.read(data)) != -1) {
-                        total += count;
-                        publishProgress((int)(total*100/lenghtOfFile));
-                        output.write(data, 0, count);
-                    }
-                    output.flush();
-                    output.close();
-                    input.close();
-//                    updateViewAfterDownLoad(position);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.e("error:",e+"");
-                }
-                return null;
-            }
-
-            @Override
-            protected void onProgressUpdate(Integer... values) {
-                super.onProgressUpdate(values);
-                Log.e("progress: ",values[0].toString()+"");
-                if(values[0].toString().equalsIgnoreCase("100")) {
-                    musicDownload.setVisibility(View.GONE);
-                    musicPlay.setVisibility(View.VISIBLE);
-                    playerView.setVisibility(View.VISIBLE);
-                    convertView.invalidate();
-                    setOnReloading.onReload();
-                }
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                dialog.dismiss();
-            }
-        }.execute();
-
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private void StartAsyncTaskInParallel(DownLoadMusicTask task) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        else
+            task.execute();
     }
 
     private Runnable mUpdateTimeTask = new Runnable() {
@@ -369,6 +314,74 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
     public void setMusicSongStopClicked(SetStopMusic m){
         setStopMusicSong=m;
     }
+
+    public class DownLoadMusicTask extends  AsyncTask<Void,Integer,Void> {
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog = new HUD(context, android.R.style.Theme_Translucent_NoTitleBar);
+            dialog.title("Loading...");
+            dialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            int count;
+            try {
+                URL url = new URL(musicUrl.replace(" ","%20"));
+                HttpURLConnection conexion = (HttpURLConnection) url.openConnection();
+                conexion.connect();
+                int lenghtOfFile = conexion.getContentLength();
+                Log.e("lenghtOfFile: ", lenghtOfFile + "");
+                File fileDir=new File(Environment.getExternalStorageDirectory()+"/danteater");
+                if(!fileDir.exists()) {
+                    fileDir.mkdir();
+                    Log.e("directory:","created");
+                } else {
+                    Log.e("directory:","already exist");
+                }
+                Log.e("file path",musicUrl.substring(musicUrl.lastIndexOf("/")+1));
+                File file = new File(fileDir,musicUrl.substring(musicUrl.lastIndexOf("/")+1));
+                FileOutputStream output = new FileOutputStream(file);
+                InputStream input = conexion.getInputStream();
+                byte data[] = new byte[1024];
+                long total = 0;
+                while ((count = input.read(data)) != -1) {
+                    total += count;
+                    publishProgress((int)(total*100/lenghtOfFile));
+                    output.write(data, 0, count);
+                }
+                output.flush();
+                output.close();
+                input.close();
+//                    updateViewAfterDownLoad(position);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("error:",e+"");
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            Log.e("progress for single: ",values[0].toString()+"");
+            if(values[0].toString().equalsIgnoreCase("100")) {
+                musicDownload.setVisibility(View.GONE);
+                musicPlay.setVisibility(View.VISIBLE);
+                playerView.setVisibility(View.VISIBLE);
+                dialog.dismiss();
+                convertView.invalidate();
+                setOnReloading.onReload();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+        }
+    }
+
 }
 
 

@@ -127,6 +127,12 @@ public class ShareActivityForPerform extends BaseActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        finish();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
 //        teachers.clear();

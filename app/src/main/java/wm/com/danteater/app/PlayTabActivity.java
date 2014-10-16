@@ -186,4 +186,11 @@ public class PlayTabActivity extends BaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+
+    }
 }
