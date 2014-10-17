@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -82,6 +83,7 @@ import wm.com.danteater.model.StateManager;
 import wm.com.danteater.my_plays.ChatViewFromRead;
 import wm.com.danteater.my_plays.SelectTeacherForChat;
 import wm.com.danteater.my_plays.SharedUser;
+import wm.com.danteater.tab_music.MusicFragment;
 
 
 public class ReadFragment extends Fragment {
@@ -159,6 +161,7 @@ public class ReadFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        MusicFragment.mediaPlayer = new MediaPlayer();
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref", 0);
         selectedPlay = complexPreferences.getObject("selected_play", Play.class);
         currentUser = complexPreferences.getObject("current_user", User.class);
@@ -491,6 +494,12 @@ public class ReadFragment extends Fragment {
 
             case android.R.id.home:
 
+                if(MusicFragment.mediaPlayer !=null && MusicFragment.mediaPlayer.isPlaying()) {
+                    MusicFragment.mediaPlayer.pause();
+                    MusicFragment.mediaPlayer.stop();
+
+
+                }
                 getActivity().finish();
 
                 break;
@@ -1065,7 +1074,17 @@ public class ReadFragment extends Fragment {
                     }else{
                         holderReadPlayNoteCell = (ViewHolder.HolderReadPlayNoteCell)convertView.getTag();
                     }
+
                     holderReadPlayNoteCell.cellReadPlayNote.setupForPlayLine(playLine,currentState);
+                    holderReadPlayNoteCell.cellReadPlayNote.setOnTextLineUpdated(new CellReadPlayNote.OnTextLineUpdated() {
+                        @Override
+                        public void onTextLineUpdated(String newText) {
+
+                            playLine.textLinesList.get(0).alteredLineText = newText;
+                            playLine.textLinesList.get(0).LineText = "";
+                            callServiceForTextLineUpdate(playLine);
+                        }
+                    });
 
                 break;
 
@@ -1115,7 +1134,14 @@ public class ReadFragment extends Fragment {
                     }else{
                         holderReadPlaySongCell = (ViewHolder.HolderReadPlaySongCell)convertView.getTag();
                     }
-                    holderReadPlaySongCell.cellReadPlaySong.setUpForPlayLine(playLine);
+                    holderReadPlaySongCell.cellReadPlaySong.setUpForPlayLine(playLine,position,section);
+                    holderReadPlaySongCell.cellReadPlaySong.setReloadClicked(new CellReadPlaySong.setOnReload() {
+                        @Override
+                        public void onReload() {
+                            readSectionedAdapter.notifyDataSetChanged();
+                        }
+                    });
+
                 break;
 
 

@@ -188,8 +188,28 @@ public class PlayTabActivity extends BaseActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+
+        if(MusicFragment.mediaPlayer !=null && MusicFragment.mediaPlayer.isPlaying()){
+
+            MusicFragment.mediaPlayer.pause();
+            MusicFragment.mediaPlayer.stop();
+            finish();
+        }
+
+    }
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
+
+        if(MusicFragment.mediaPlayer !=null && MusicFragment.mediaPlayer.isPlaying()) {
+            MusicFragment.mediaPlayer.pause();
+            MusicFragment.mediaPlayer.stop();
+
+
+        }
 
 
     }

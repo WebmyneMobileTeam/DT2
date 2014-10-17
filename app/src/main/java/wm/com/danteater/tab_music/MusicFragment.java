@@ -72,7 +72,13 @@ public class MusicFragment extends Fragment {
     private HUD dialog;
     public static int MP3_FILE = 0;
     public static int PDF_FILE = 1;
-    MediaPlayer mediaPlayer;
+
+
+    public static MediaPlayer mediaPlayer = null;
+     public static int CURRENT_PLAYING_POSITION = -1;
+    public static int CURRENT_PLAYING_SECTION = -1;
+
+
     static MusicFragment fragment;
     public static MusicFragment newInstance(String param1, String param2) {
        fragment= new MusicFragment();
@@ -87,6 +93,7 @@ public class MusicFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mediaPlayer = new MediaPlayer();
         setHasOptionsMenu(true);
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref", 0);
         selectedPlay = complexPreferences.getObject("selected_play", Play.class);
@@ -282,10 +289,8 @@ public class MusicFragment extends Fragment {
 
             ViewHolder.ViewHolderForMusic viewHolderForMusic=null;
             ViewHolder.ViewHolderForPDF viewHolderForPDF=null;
-
             int type=getItemViewType(section,position);
-
-            final ArrayList<SongFiles>  songFileses=marrSectionsWithContent.get(section);
+            final SongFiles songFile = marrSectionsWithContent.get(section).get(position);
             Log.e("type:",type+"");
             if(type==MP3_FILE) {
 
@@ -298,9 +303,32 @@ public class MusicFragment extends Fragment {
                 }else{
                     viewHolderForMusic = (ViewHolder.ViewHolderForMusic)convertView.getTag();
                 }
-                viewHolderForMusic.cellMusicTableView.setUpSongFile(songFileses.get(position),marrSectionTitles.get(section),getActivity(),section,position,selectedPlay.Title);
 
-                viewHolderForMusic.cellMusicTableView.setReloadClicked(new setOnReload() {
+
+
+                File fileDir = new File(Environment.getExternalStorageDirectory() + "/danteater");
+                final  String audioPath = fileDir.getAbsolutePath() +"/"+songFile.SongMp3Url.substring(songFile.SongMp3Url.lastIndexOf("/")+1);
+                int fCount = 0;
+                int cCount = 0;
+                if(new File(audioPath).exists()){
+                    try {
+                        FileInputStream fis = new FileInputStream(audioPath);
+                        FileDescriptor fd = fis.getFD();
+                        MediaPlayer mp = new MediaPlayer();
+                        mp.setDataSource(fd);
+                        mp.prepare();
+                        fCount = mp.getDuration();
+                        cCount = mp.getCurrentPosition();
+                    }catch(FileNotFoundException e){}
+                    catch (IOException e){}
+                }else{
+                }
+
+                viewHolderForMusic.cellMusicTableView.setCurrentPlayingPosition(CURRENT_PLAYING_POSITION,CURRENT_PLAYING_SECTION);
+                viewHolderForMusic.cellMusicTableView.setCounts(cCount,fCount);
+                viewHolderForMusic.cellMusicTableView.setUpSongFile(songFile,getActivity(),section,position,selectedPlay.Title);
+
+                viewHolderForMusic.cellMusicTableView.setReloadClicked(new CellMusicTableView.setOnReload() {
                     @Override
                     public void onReload() {
                         musicSectionedAdapter.notifyDataSetChanged();
@@ -310,7 +338,38 @@ public class MusicFragment extends Fragment {
                 viewHolderForMusic.cellMusicTableView.setMusicSongStopClicked(new SetStopMusic() {
                     @Override
                     public void onStopMusic(MediaPlayer media) {
-                        mediaPlayer=media;
+                        mediaPlayer = media;
+                    }
+                });
+
+
+
+                viewHolderForMusic.cellMusicTableView.setOnClick(new CellMusicTableView.setOnPlayClick() {
+                    @Override
+                    public void onPlayClicked() {
+
+                        if(mediaPlayer != null && mediaPlayer.isPlaying()){
+                            //mediaPlayer.stop();
+                            mediaPlayer.pause();
+                        }else{
+
+
+                            CURRENT_PLAYING_POSITION = position;
+                            CURRENT_PLAYING_SECTION = section;
+                            try {
+                                FileInputStream fis = new FileInputStream(audioPath);
+                                FileDescriptor fd = fis.getFD();
+                                mediaPlayer.reset();
+                                mediaPlayer.setDataSource(fd);
+                                mediaPlayer.prepare();
+                                mediaPlayer.start();
+
+
+                            }catch(FileNotFoundException e){}
+                            catch (IOException e){}
+
+                        }
+                        musicSectionedAdapter.notifyDataSetChanged();
                     }
                 });
 
@@ -325,7 +384,7 @@ public class MusicFragment extends Fragment {
                 }else{
                     viewHolderForPDF = (ViewHolder.ViewHolderForPDF)convertView.getTag();
                 }
-                viewHolderForPDF.cellScriptTableView.setUpScriptFile(songFileses.get(position),marrSectionTitles.get(section),getActivity());
+                viewHolderForPDF.cellScriptTableView.setUpScriptFile(songFile,marrSectionTitles.get(section),getActivity());
             }
 
             return convertView;
@@ -342,6 +401,9 @@ public class MusicFragment extends Fragment {
 
     }
 
+
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -349,7 +411,14 @@ public class MusicFragment extends Fragment {
 
             case android.R.id.home:
 
+             if(mediaPlayer !=null && mediaPlayer.isPlaying()) {
+                  mediaPlayer.pause();
+                  mediaPlayer.stop();
+                 MusicFragment.mediaPlayer = null;
+                  }
+
                 getActivity().finish();
+
 
                 break;
 
@@ -360,14 +429,19 @@ public class MusicFragment extends Fragment {
     }
 
 
+
     @Override
     public void onPause() {
         super.onPause();
-        if(mediaPlayer !=null && mediaPlayer.isPlaying()) {
+
+       /* if(mediaPlayer !=null && mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
             mediaPlayer.stop();
-            playingMusic.clear();
-            mediaPlayer = null;
-        }
+            mediaPlayer.release();
+
+
+        }*/
+
     }
 
 

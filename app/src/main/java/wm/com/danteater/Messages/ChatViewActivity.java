@@ -220,6 +220,7 @@ public class ChatViewActivity extends BaseActivity {
                     StringBuffer response = new StringBuffer();
                     int i = 0;
                     do {
+
                         i = readerForNone.read();
                         char character = (char) i;
                         response.append(character);

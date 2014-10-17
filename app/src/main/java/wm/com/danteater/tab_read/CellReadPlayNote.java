@@ -1,8 +1,13 @@
 package wm.com.danteater.tab_read;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.androidanimations.library.Techniques;
@@ -40,6 +45,8 @@ public class CellReadPlayNote implements View.OnClickListener{
     public int STATE_PREVIEW = 1;
     public int STATE_READ = 2;
     public int STATE_CHAT = 3;
+    private PlayLines pl;
+    private OnTextLineUpdated onTextLineUpdated;
 
     View convertView;
 
@@ -65,6 +72,7 @@ public class CellReadPlayNote implements View.OnClickListener{
     }
 
     public void setupForPlayLine(PlayLines playline,int current_state){
+        this.pl = playline;
         convertView.setBackgroundColor(Color.TRANSPARENT);
         if(current_state==STATE_CHAT){
             if(Integer.parseInt(playline.LineCount)== ReadActivityForChat.lineNumber) {
@@ -140,10 +148,7 @@ public class CellReadPlayNote implements View.OnClickListener{
 
             case R.id.imgItemReadPLayNoteCompose:
 
-
-
-
-
+                showEditOptionsWithFunctionality();
 
                 break;
 
@@ -208,6 +213,48 @@ public class CellReadPlayNote implements View.OnClickListener{
 
     }
 
+
+    private void showEditOptionsWithFunctionality() {
+
+        final Dialog dialog = new Dialog(ctx,android.R.style.Theme_Translucent_NoTitleBar);
+        WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
+        lp.dimAmount=0.6f;
+        dialog.getWindow().setAttributes(lp);
+        dialog.setCancelable(true);
+        dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        LayoutInflater mInflater = (LayoutInflater) ctx.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        View view = mInflater.inflate(R.layout.edit_line_view_popup_menu,null);
+        dialog.setContentView(view);
+        dialog.show();
+
+        final EditText editLineViewTextArea = (EditText)view.findViewById(R.id.editLineViewTextArea);
+        editLineViewTextArea.setText(pl.textLinesList.get(0).currentText());
+
+        WMTextView editLineViewPopupCancel = (WMTextView)view.findViewById(R.id.editLineViewPopupCancel);
+        editLineViewPopupCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+
+
+        WMTextView saveBtn = (WMTextView)view.findViewById(R.id.editLineViewPopupSave);
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                dialog.dismiss();
+                onTextLineUpdated.onTextLineUpdated(editLineViewTextArea.getText().toString());
+
+            }
+        });
+
+    }
+
     private void showMenu() {
         viewMenu.setVisibility(View.VISIBLE);
         Webmyne.get(Techniques.SlideInDown).duration(700).withListener(new Animator.AnimatorListener() {
@@ -231,6 +278,18 @@ public class CellReadPlayNote implements View.OnClickListener{
 
             }
         }).startOn(viewMenu);
+
+    }
+
+    public void setOnTextLineUpdated(OnTextLineUpdated textLineUpdated){
+
+        this.onTextLineUpdated = textLineUpdated;
+
+
+    }
+
+    interface OnTextLineUpdated{
+        public void onTextLineUpdated(String newText);
 
     }
 

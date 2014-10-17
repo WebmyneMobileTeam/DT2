@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -45,16 +46,23 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
     Context context;
     private SeekBar songProgressBar;
     Handler mHandler;
-    MediaPlayer mediaPlayer=null;
     View convertView;
     private setOnReload setOnReloading;
     private SetStopMusic setStopMusicSong;
     private String currentSongPosition;
     public  DownLoadMusicTask downLoadMusicTask;
     public String musicUrl;
+    private int finalCount = 0;
+    private int currentCount = 0;
+    private setOnPlayClick setOnPlayClick;
+    private String audioPath = null;
+    public int mCurrentPlayingPosition;
+    public int mCurrentPlayingSection;
+    private int sec;
+    private int pos;
+
 
     public CellMusicTableView(View convertView,final Context context) {
-
         this.convertView=convertView;
         this.context=context;
         musicText=(WMTextView)convertView.findViewById(R.id.music_table_view_cell_title);
@@ -68,59 +76,69 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
         songProgressBar.setOnSeekBarChangeListener(this);
     }
 
-    public void setUpSongFile(final SongFiles songFile,final String sectionTitle,final Context context,final int section,final int position, final String playTitle) {
-        try {
+    public void setCounts(int cc,int fc){
+        this.currentCount = cc;
+        this.finalCount = fc;
+    }
+
+    public void setCurrentPlayingPosition(int pos,int sec){
+        this.mCurrentPlayingPosition = pos;
+        this.mCurrentPlayingSection = sec;
+    }
+
+    public void setUpSongFile(final SongFiles songFile,
+                              final Context context,final int section,final int position,
+                              final String playTitle) {
+
+        this.sec = section;
+        this.pos = position;
+        songProgressBar.setProgress(0);
+        startTime.setText("");
+        endTime.setText("");
+
             if(position%2==0) {
                 musicCellLayout.setBackgroundColor(Color.parseColor(AppConstants.songFileOddColor));
             } else {
                 musicCellLayout.setBackgroundColor(Color.parseColor(AppConstants.songFileEvenColor));
             }
-            FileDescriptor fd = null;
-            File fileDir = new File(Environment.getExternalStorageDirectory() + "/danteater");
-            Log.e("fetched url path: ",fileDir.getAbsolutePath() +"/"+songFile.SongMp3Url.substring(songFile.SongMp3Url.lastIndexOf("/")+1));
-            String audioPath = fileDir.getAbsolutePath() +"/"+songFile.SongMp3Url.substring(songFile.SongMp3Url.lastIndexOf("/")+1);
+
+        if (finalCount > 0) {
+            musicDownload.setVisibility(View.GONE);
+            musicPlay.setVisibility(View.VISIBLE);
+            playerView.setVisibility(View.VISIBLE);
+            mHandler = new Handler();
+            musicPlay.setImageResource(R.drawable.ic_play);
+            startTime.setText("" + milliSecondsToTimer(0));
+            endTime.setText("" + milliSecondsToTimer(finalCount));
+
+        } else {
+            musicDownload.setVisibility(View.VISIBLE);
+            musicPlay.setVisibility(View.GONE);
+            playerView.setVisibility(View.GONE);
+        }
+
+        if(!MusicFragment.mediaPlayer.isPlaying()) {
+            musicPlay.setImageResource(R.drawable.ic_play);
 
 
-            if(new File(audioPath).exists()
-                 ) {
-                FileInputStream fis = new FileInputStream(audioPath);
-                fd = fis.getFD();
+        }else{
 
-                if(mediaPlayer==null) {
-                    mHandler= new Handler();
-                    mediaPlayer = new MediaPlayer();
-                    mediaPlayer.setDataSource(fd);
-                    mediaPlayer.prepare();
-                    musicPlay.setImageResource(R.drawable.ic_play);
-                    startTime.setText(milliSecondsToTimer(mediaPlayer.getCurrentPosition()));
-                    endTime.setText(milliSecondsToTimer(mediaPlayer.getDuration()));
+            startTime.setText("" + milliSecondsToTimer(0));
+            endTime.setText("" + milliSecondsToTimer(finalCount));
+            if(mCurrentPlayingPosition == position && mCurrentPlayingSection == section){
+                musicPlay.setImageResource(R.drawable.ic_pause);
+                updateProgressBar();
+            }else{
 
-                } else {
-                    if (mediaPlayer.isPlaying()) {
-                        musicPlay.setImageResource(R.drawable.ic_pause);
-                        updateProgressBar();
-                    } else {
-                        musicPlay.setImageResource(R.drawable.ic_play);
-                    }
-                }
-                musicDownload.setVisibility(View.GONE);
-                musicPlay.setVisibility(View.VISIBLE);
-                playerView.setVisibility(View.VISIBLE);
-            } else {
-                musicDownload.setVisibility(View.VISIBLE);
-                musicPlay.setVisibility(View.GONE);
-                playerView.setVisibility(View.GONE);
+                musicPlay.setImageResource(R.drawable.ic_play);
             }
-        } catch (FileNotFoundException e){
-            e.printStackTrace();
-        } catch (IOException e){
-            e.printStackTrace();
         }
 
         musicText.setText("Instrumental");
         musicDownload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 FileDescriptor fd = null;
                 File fileDir = new File(Environment.getExternalStorageDirectory() + "/danteater");
                 Log.e("fetched url path: ", fileDir.getAbsolutePath() + "/" + songFile.SongMp3Url.substring(songFile.SongMp3Url.lastIndexOf("/") + 1));
@@ -135,43 +153,18 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
 
             @Override
             public void onClick(View view) {
-                // check for already playing
-                String sCheck = section+"*"+position;
-                if(MusicFragment.playingMusic.size()>0 && !MusicFragment.playingMusic.get(0).equalsIgnoreCase(section+""+position)){
+              //  setOnPlayClick.onPlayClicked();
 
-                    AlertDialog.Builder alert = new AlertDialog.Builder(context);
-                    alert.setTitle("Afspiller");
-                    alert.setMessage("Afspiller en anden sang. Venligst sæt den på pause, før du afspiller en ny. ");
-                    alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                setOnPlayClick.onPlayClicked();
+                setOnReloading.onReload();
 
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                    alert.show();
+                if(MusicFragment.mediaPlayer != null && MusicFragment.mediaPlayer.isPlaying()){
+                    musicPlay.setImageResource(R.drawable.ic_pause);
+                    updateProgressBar();
                 }else{
-                    if(mediaPlayer.isPlaying()){
-                        if(mediaPlayer!=null){
-                            MusicFragment.isAnySongPlayed=false;
-                            mediaPlayer.pause();
-                            // Changing button image to play button
-                            musicPlay.setImageResource(R.drawable.ic_play);
-                            MusicFragment.playingMusic.remove(section+""+position);
-
-                        }
-                    }else{
-                        // Resume song
-                        if(mediaPlayer!=null){
-                            mediaPlayer.start();
-                            setStopMusicSong.onStopMusic(mediaPlayer);
-                            // Changing button image to pause button
-                            musicPlay.setImageResource(R.drawable.ic_pause);
-                            MusicFragment.playingMusic.add(section+""+position);
-                            updateProgressBar();
-                        }
-                    }
+                    musicPlay.setImageResource(R.drawable.ic_play);
                 }
+
 
             }
 
@@ -179,8 +172,7 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
     }
 
     private void downloadMusic() {
-
-       downLoadMusicTask=new DownLoadMusicTask();
+        downLoadMusicTask=new DownLoadMusicTask();
         StartAsyncTaskInParallel(downLoadMusicTask);
     }
 
@@ -194,28 +186,31 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
 
     private Runnable mUpdateTimeTask = new Runnable() {
         public void run() {
-            long totalDuration = mediaPlayer.getDuration();
-            long currentDuration = mediaPlayer.getCurrentPosition();
 
+            if(mCurrentPlayingSection == sec && mCurrentPlayingPosition == pos){
+
+            long totalDuration = MusicFragment.mediaPlayer.getDuration();
+            long currentDuration = MusicFragment.mediaPlayer.getCurrentPosition();
             // Displaying Total Duration time
             endTime.setText(""+milliSecondsToTimer(totalDuration));
             // Displaying time completed playing
             startTime.setText(""+milliSecondsToTimer(currentDuration));
-
             // Updating progress bar
             int progress = (int)(getProgressPercentage(currentDuration, totalDuration));
             //Log.d("Progress", ""+progress);
             songProgressBar.setProgress(progress);
-
             // Running this thread after 100 milliseconds
             mHandler.postDelayed(this, 1);
         }
 
+        }
     };
+
 
     public void updateProgressBar() {
         mHandler.postDelayed(mUpdateTimeTask, 1);
     }
+
 
 
     /**
@@ -263,23 +258,26 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
      * When user starts moving the progress handler
      * */
     @Override
+
     public void onStartTrackingTouch(SeekBar seekBar) {
         // remove message Handler from updating progress bar
         mHandler.removeCallbacks(mUpdateTimeTask);
     }
 
+
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         mHandler.removeCallbacks(mUpdateTimeTask);
-        int totalDuration = mediaPlayer.getDuration();
+        int totalDuration = MusicFragment.mediaPlayer.getDuration();
         int currentPosition = progressToTimer(seekBar.getProgress(), totalDuration);
         Log.e("current duration: ",currentPosition+"");
         // forward or backward to certain seconds
-        mediaPlayer.seekTo(currentPosition);
+        MusicFragment.mediaPlayer.seekTo(currentPosition);
 
         // update timer progress again
         updateProgressBar();
     }
+
 
     public String milliSecondsToTimer(long milliseconds){
         String finalTimerString = "";
@@ -314,6 +312,12 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
     public void setMusicSongStopClicked(SetStopMusic m){
         setStopMusicSong=m;
     }
+
+    public void setOnClick(setOnPlayClick setOnPlayClick){
+        this.setOnPlayClick = setOnPlayClick;
+    }
+
+
 
     public class DownLoadMusicTask extends  AsyncTask<Void,Integer,Void> {
         protected void onPreExecute() {
@@ -382,17 +386,24 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
         }
     }
 
+    public interface setOnPlayClick{
+        public void onPlayClicked();
+    }
+
+    public interface setOnReload{
+
+        public void onReload();
+
+    }
+
+
 }
 
 
-interface setOnReload{
-
-    public void onReload();
-
-}
 
 interface SetStopMusic {
 
     public void onStopMusic(MediaPlayer mediaPlayer);
 }
+
 

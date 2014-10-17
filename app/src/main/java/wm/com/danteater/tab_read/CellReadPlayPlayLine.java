@@ -455,7 +455,6 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
 
 
     interface OnTextLineUpdated{
-
         public void onTextLineUpdated(String newText);
         public void onCommentAdded(String comment,boolean isPrivate);
         public void onChatClicked();
