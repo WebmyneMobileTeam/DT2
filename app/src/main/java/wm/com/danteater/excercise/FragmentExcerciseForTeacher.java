@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -151,7 +152,7 @@ public class FragmentExcerciseForTeacher extends Fragment {
             holder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Log.e("video path file",videoList.get(position)+"");
+//                    Log.e("video path file", videoList.get(position) + "");
                     Intent intent=new Intent(getActivity(),VideoPlay.class);
                     intent.putExtra("video_path",videoList.get(position).toString());
                     startActivity(intent);

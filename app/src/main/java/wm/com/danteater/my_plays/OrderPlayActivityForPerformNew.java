@@ -162,7 +162,7 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
                         }else {
                             btnPlayOrder.setBackgroundColor(getResources().getColor(R.color.gray_color));
                         }
-                        Log.e("",numberOfPerformance+" "+isValidDate);
+//                        Log.e("",numberOfPerformance+" "+isValidDate);
                     }
 
                     return true;
@@ -293,10 +293,10 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
 
             btnPlayOrder.setText("Ret Bestilling");
 
-            Log.e("isAlreadyOrdered","come from perform");
+//            Log.e("isAlreadyOrdered","come from perform");
         }else {
             btnPlayOrder.setText("Bestil");
-            Log.e("isAlreadyOrdered","come from preview");
+//            Log.e("isAlreadyOrdered","come from preview");
         }
     }
 
@@ -378,7 +378,7 @@ if(isFirstdate)
                                     }else {
                                         btnPlayOrder.setBackgroundColor(getResources().getColor(R.color.gray_color));
                                     }
-                                    Log.e("",numberOfPerformance+" "+isValidDate);
+//                                    Log.e("",numberOfPerformance+" "+isValidDate);
                                 }
 
 
@@ -409,7 +409,7 @@ if(isFirstdate)
             params.put("PerformDateFirst",firstDate.getTime()/1000+"");
             params.put("PerformDateLast",seocndDate.getTime()/1000+"");
             params.put("Comments","");
-            Log.e("params: ", params + "");
+//            Log.e("params: ", params + "");
 
             boolean hasBeenOrderedForReviewBefore = (selectedPlay.getOrderId() != null) && (!selectedPlay.getOrderId().equals(""));
             if (hasBeenOrderedForReviewBefore) {
@@ -421,7 +421,7 @@ if(isFirstdate)
                 @Override
                 public void onResponse(JSONObject jobj) {
                     String res = jobj.toString();
-                    Log.e("response: ", res + "");
+//                    Log.e("response: ", res + "");
                     beanOrderPlayReview = new GsonBuilder()
                             .create().fromJson(res, BeanOrderPlayReview.class);
 
@@ -431,7 +431,7 @@ if(isFirstdate)
                     if(dbHelper.hasPlayWithPlayOrderIdText(selectedPlay.OrderId)) {
                         selectedPlay.OrderType = "Perform";
                         dbHelper.updatePlayInfo(selectedPlay);
-                        Log.e("update","updated successfully");
+//                        Log.e("update","updated successfully");
                     } else {
                         retrievePlayContentsForPlayOrderId();
                     }
@@ -460,7 +460,7 @@ if(isFirstdate)
             @Override
             public void response(final String response) {
 
-                Log.e("Response play full:", response + "");
+//                Log.e("Response play full:", response + "");
                 Play receivedPlay = new GsonBuilder().create().fromJson(response, Play.class);
                 DatabaseWrapper db = new DatabaseWrapper(OrderPlayActivityForPerformNew.this);
                 db.insertPlay(receivedPlay, false);
@@ -504,7 +504,7 @@ if(isFirstdate)
 
                 shareWithUsersArrayN.put(userDict);
             }
-            Log.e("total users: ", shareWithUsersArrayN + "");
+//            Log.e("total users: ", shareWithUsersArrayN + "");
 
         }
 
@@ -517,7 +517,7 @@ if(isFirstdate)
 
                 {
                     Reader readerForNone = API.callWebservicePost("http://api.danteater.dk/api/playshare/" + selectedPlay.OrderId, shareWithUsersArrayN.toString());
-                    Log.e("reader", readerForNone + "");
+//                    Log.e("reader", readerForNone + "");
 
                     StringBuffer response = new StringBuffer();
                     int i = 0;
@@ -528,7 +528,7 @@ if(isFirstdate)
 
                     } while (i != -1);
                     readerForNone.close();
-                    Log.e("response", response + " ");
+//                    Log.e("response", response + " ");
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -574,7 +574,7 @@ if(isFirstdate)
 
                 shareWithUsersArray.put(userDict);
             }
-            Log.e("total users: ", shareWithUsersArray + "");
+//            Log.e("total users: ", shareWithUsersArray + "");
         }
         new AsyncTask<Void, Void, Void>() {
             @Override
@@ -582,7 +582,7 @@ if(isFirstdate)
                 try
                 {
                     Reader readerForNone = API.callWebservicePost("http://api.danteater.dk/api/playshare/"+selectedPlay.OrderId, shareWithUsersArray.toString());
-                    Log.e("reader", readerForNone + "");
+//                    Log.e("reader", readerForNone + "");
 
                     StringBuffer response = new StringBuffer();
                     int i = 0;
@@ -593,7 +593,7 @@ if(isFirstdate)
 
                     } while (i != -1);
                     readerForNone.close();
-                    Log.e("response", response + " ");
+//                    Log.e("response", response + " ");
 
                 } catch (IOException e) {
                     e.printStackTrace();

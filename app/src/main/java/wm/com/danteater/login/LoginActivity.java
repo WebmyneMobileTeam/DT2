@@ -88,15 +88,15 @@ public class LoginActivity extends BaseActivity {
 
         // automatic login is on
         if (shouldShowLoginView == true) {
-            Log.i("Login Flow : ","Already LoggedIn goto next page");
+//            Log.i("Login Flow : ","Already LoggedIn goto next page");
 
-            Log.e("state manager","called ....... ");
+//            Log.e("state manager","called ....... ");
             Intent i = new Intent(LoginActivity.this, DrawerActivity.class);
             startActivity(i);
             finish();
 
         } else {
-            Log.i("Login Flow : ","Fresh Login");
+//            Log.i("Login Flow : ","Fresh Login");
             // automatic login is off
             proceedLogin();
         }
@@ -167,7 +167,7 @@ public class LoginActivity extends BaseActivity {
                             ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(LoginActivity.this, "mypref", 0);
                             selectedPlay = complexPreferences.getObject("selected_play", Play.class);
                             if (selectedPlay == null) {
-                                Log.e("selected play", "false");
+//                                Log.e("selected play", "false");
                                 AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
                                 alert.setTitle("Fejl");
                                 alert.setMessage("Stykket kunne ikke findes på det device. ");
@@ -232,7 +232,7 @@ public class LoginActivity extends BaseActivity {
                 @Override
                 public void onResponse(JSONObject jobj) {
                     String res = jobj.toString();
-                    Log.e("response: ", res + "");
+//                    Log.e("response: ", res + "");
                     handlePostsList(res, mvid_response);
                 }
             }, new Response.ErrorListener() {
@@ -262,12 +262,12 @@ public class LoginActivity extends BaseActivity {
                     BeanUserInfo beanUserInfo = beanCustomerInfo.getBeanUserResult();
                     user = beanUserInfo.getUser();
 
-                    Log.e("user_id: ", user.getUserId() + "");
-                    Log.e("first_name: ", user.getFirstName() + "");
-                    Log.e("last_name: ", user.getLastName() + "");
-                    Log.e("primary_group: ", user.getPrimaryGroup() + "");
-                    Log.e("roles: ", user.getRoles() + "");
-                    Log.e("domain: ", user.getDomain() + "");
+//                    Log.e("user_id: ", user.getUserId() + "");
+//                    Log.e("first_name: ", user.getFirstName() + "");
+//                    Log.e("last_name: ", user.getLastName() + "");
+//                    Log.e("primary_group: ", user.getPrimaryGroup() + "");
+//                    Log.e("roles: ", user.getRoles() + "");
+//                    Log.e("domain: ", user.getDomain() + "");
                     isTeacherOrAdmin = user.checkTeacherOrAdmin(user.getRoles());
 
                 } catch (JsonSyntaxException e) {
@@ -356,7 +356,7 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onResponse(JSONObject jobj) {
                 String res = jobj.toString();
-                Log.e("response continue: ", res + "");
+//                Log.e("response continue: ", res + "");
 
             }
         }, new Response.ErrorListener() {

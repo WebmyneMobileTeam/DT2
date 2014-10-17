@@ -316,7 +316,7 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
                     params.put("Duration", durationString);
 
 
-                    Log.e("params", params + "");
+//                    Log.e("params", params + "");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -327,7 +327,7 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
                 }.getType();
                 beanSearchList = new GsonBuilder()
                         .create().fromJson(reader, listType);
-                Log.e("search result size: ",beanSearchList.size()+"");
+//                Log.e("search result size: ",beanSearchList.size()+"");
 
                 handleSearchResultData(beanSearchList);
 
@@ -354,7 +354,7 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
 //                searchBox.setFocusable(false);
                 searchBox.clearFocus();
 
-                Log.e("search result size: ",beanSearchList.size()+"");
+//                Log.e("search result size: ",beanSearchList.size()+"");
                 if(beanSearchList.size()>0) {
                     searchFilterView.setVisibility(View.GONE);
                     searchResultList.setVisibility(View.VISIBLE);

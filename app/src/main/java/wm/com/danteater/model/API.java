@@ -64,8 +64,8 @@ public class API {
             post.setEntity(e);
 
             HttpResponse response = client.execute(post);
-            Log.e("jsonString:",jsonString+"");
-            Log.e("response:",response+"");
+//            Log.e("jsonString:",jsonString+"");
+//            Log.e("response:",response+"");
             StatusLine statusLine = response.getStatusLine();
             if (statusLine.getStatusCode() == 200) {
                 HttpEntity entity = response.getEntity();
@@ -73,7 +73,7 @@ public class API {
                 reader = new InputStreamReader(is);
             } else {
 
-                Log.e("Error", +statusLine.getStatusCode()+""+statusLine.getReasonPhrase());
+//                Log.e("Error", +statusLine.getStatusCode()+""+statusLine.getReasonPhrase());
             }
         }catch (JsonSyntaxException e) {
             Log.e("Error: ",e+"");
@@ -115,7 +115,7 @@ public class API {
             post.setEntity(e);
             HttpResponse response = client.execute(post);
 
-            Log.e("response:",response+"");
+//            Log.e("response:",response+"");
             StatusLine statusLine = response.getStatusLine();
             if (statusLine.getStatusCode() == 200) {
                 HttpEntity entity = response.getEntity();
@@ -123,7 +123,7 @@ public class API {
                 reader = new InputStreamReader(is);
             } else {
 
-                Log.e("Error", +statusLine.getStatusCode()+""+statusLine.getReasonPhrase());
+//                Log.e("Error", +statusLine.getStatusCode()+""+statusLine.getReasonPhrase());
             }
         }catch (JsonSyntaxException e) {
             Log.e("Error: ",e+"");

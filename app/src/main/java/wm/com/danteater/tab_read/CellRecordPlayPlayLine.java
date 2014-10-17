@@ -124,7 +124,7 @@ public class CellRecordPlayPlayLine {
         if (showComments == true) {
 
             ArrayList<Comments> comments = playLine.commentsList;
-            Log.e("SSSIIIEEEZZZEEE ",""+comments.size());
+//            Log.e("SSSIIIEEEZZZEEE ",""+comments.size());
             ArrayList<Comments> finalComments = new ArrayList<Comments>();
 
             for(Comments comment : comments){

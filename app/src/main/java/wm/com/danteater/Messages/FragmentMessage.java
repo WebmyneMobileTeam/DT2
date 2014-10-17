@@ -68,7 +68,7 @@ public class FragmentMessage extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.e("resume",".........................");
+//        Log.e("resume",".........................");
         //get Current User
         ComplexPreferences complexPreferencesForUser = ComplexPreferences.getComplexPreferences(getActivity(), "user_pref", 0);
         currentUser = complexPreferencesForUser.getObject("current_user", User.class);
@@ -227,7 +227,7 @@ public class FragmentMessage extends Fragment {
         dialog = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
         dialog.title("");
         dialog.show();
-        Log.e("generated url: ","http://api.danteater.dk/api/Message/"+currentUser.getUserId()+"?recipient="+chatUserList.get(position));
+//        Log.e("generated url: ","http://api.danteater.dk/api/Message/"+currentUser.getUserId()+"?recipient="+chatUserList.get(position));
         new CallWebService("http://api.danteater.dk/api/Message/"+currentUser.getUserId()+"?recipient="+chatUserList.get(position), CallWebService.TYPE_JSONARRAY) {
 
             @Override

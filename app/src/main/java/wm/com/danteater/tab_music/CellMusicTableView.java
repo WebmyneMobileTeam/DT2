@@ -141,7 +141,7 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
 
                 FileDescriptor fd = null;
                 File fileDir = new File(Environment.getExternalStorageDirectory() + "/danteater");
-                Log.e("fetched url path: ", fileDir.getAbsolutePath() + "/" + songFile.SongMp3Url.substring(songFile.SongMp3Url.lastIndexOf("/") + 1));
+//                Log.e("fetched url path: ", fileDir.getAbsolutePath() + "/" + songFile.SongMp3Url.substring(songFile.SongMp3Url.lastIndexOf("/") + 1));
                 String audioPath = fileDir.getAbsolutePath() + "/" + songFile.SongMp3Url.substring(songFile.SongMp3Url.lastIndexOf("/") + 1);
                 if (!(new File(audioPath).exists())) {
                     musicUrl=songFile.SongMp3Url.toString();
@@ -270,7 +270,7 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
         mHandler.removeCallbacks(mUpdateTimeTask);
         int totalDuration = MusicFragment.mediaPlayer.getDuration();
         int currentPosition = progressToTimer(seekBar.getProgress(), totalDuration);
-        Log.e("current duration: ",currentPosition+"");
+//        Log.e("current duration: ",currentPosition+"");
         // forward or backward to certain seconds
         MusicFragment.mediaPlayer.seekTo(currentPosition);
 
@@ -335,15 +335,15 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
                 HttpURLConnection conexion = (HttpURLConnection) url.openConnection();
                 conexion.connect();
                 int lenghtOfFile = conexion.getContentLength();
-                Log.e("lenghtOfFile: ", lenghtOfFile + "");
+//                Log.e("lenghtOfFile: ", lenghtOfFile + "");
                 File fileDir=new File(Environment.getExternalStorageDirectory()+"/danteater");
                 if(!fileDir.exists()) {
                     fileDir.mkdir();
-                    Log.e("directory:","created");
+//                    Log.e("directory:","created");
                 } else {
-                    Log.e("directory:","already exist");
+//                    Log.e("directory:","already exist");
                 }
-                Log.e("file path",musicUrl.substring(musicUrl.lastIndexOf("/")+1));
+//                Log.e("file path",musicUrl.substring(musicUrl.lastIndexOf("/")+1));
                 File file = new File(fileDir,musicUrl.substring(musicUrl.lastIndexOf("/")+1));
                 FileOutputStream output = new FileOutputStream(file);
                 InputStream input = conexion.getInputStream();
@@ -360,7 +360,7 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
 //                    updateViewAfterDownLoad(position);
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.e("error:",e+"");
+//                Log.e("error:",e+"");
             }
             return null;
         }
@@ -368,7 +368,7 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
-            Log.e("progress for single: ",values[0].toString()+"");
+//            Log.e("progress for single: ",values[0].toString()+"");
             if(values[0].toString().equalsIgnoreCase("100")) {
                 musicDownload.setVisibility(View.GONE);
                 musicPlay.setVisibility(View.VISIBLE);

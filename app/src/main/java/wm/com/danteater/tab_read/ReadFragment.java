@@ -171,7 +171,7 @@ public class ReadFragment extends Fragment {
          currentState = getArguments().getInt("currentState");
          lineNumber=   getArguments().getInt("line_number");
 
-         Log.e("lineNumber:",lineNumber+"");
+//         Log.e("lineNumber:",lineNumber+"");
 
         if(currentState == STATE_READ || currentState == STATE_RECORD) {
             setHasOptionsMenu(true);
@@ -185,7 +185,7 @@ public class ReadFragment extends Fragment {
         marrMyCastMatches = dbh.getMyCastMatchesForUserId(currentUser.getUserId(),Integer.parseInt(selectedPlay.PlayId));
         dbh.close();*/
 
-        Log.e("marrMyCastMatches   -- ",""+marrMyCastMatches);
+//        Log.e("marrMyCastMatches   -- ",""+marrMyCastMatches);
 
         if(!isPreview){
 
@@ -227,7 +227,7 @@ public class ReadFragment extends Fragment {
                 _marrSharedWithUsersString = response;
                 _marrSharedWithUsers = new ArrayList<SharedUser>();
                 _marrSharedWithUsers = new GsonBuilder().create().fromJson(response,listType);
-                Log.e("_maarSharedWithUsers ",""+_marrSharedWithUsers);
+//                Log.e("_maarSharedWithUsers ",""+_marrSharedWithUsers);
             }
 
             @Override
@@ -349,9 +349,9 @@ public class ReadFragment extends Fragment {
         marrMyCastMatches = dbh.getMyCastMatchesForUserId(currentUser.getUserId(),selectedPlay.pID);
         dbh.close();
 
-        Log.e("------------------ mycast read:",""+marrMyCastMatches);
+//        Log.e("------------------ mycast read:",""+marrMyCastMatches);
 
-       System.out.println("-------------   Sections : "+marrPlaySections);
+//       System.out.println("-------------   Sections : "+marrPlaySections);
 
     }
 
@@ -760,7 +760,7 @@ public class ReadFragment extends Fragment {
 
           PlayLines playLine = dicPlayLines.get(marrPlaySections.get(section)).get(position);
 
-          Log.e("GetItemViewType  :  Type : ","pos : "+position+" "+playLine.playLineType());
+//          Log.e("GetItemViewType  :  Type : ","pos : "+position+" "+playLine.playLineType());
 
             if(playLine.playLineType() == PlayLines.PlayLType.PlayLineTypeRole){
 
@@ -1021,7 +1021,7 @@ public class ReadFragment extends Fragment {
                         // delegate method called after textline changes
                         @Override
                         public void onTextLineUpdated(String newText) {
-                            Log.e("TextLine ",""+section+":"+position);
+//                            Log.e("TextLine ",""+section+":"+position);
 
                            playLine.textLinesList.get(0).alteredLineText = newText;
                            playLine.textLinesList.get(0).LineText = "";
@@ -1285,7 +1285,7 @@ public class ReadFragment extends Fragment {
 
     private void gotoAssignUserList(PlayLines playLine) {
 
-        Log.e("Size of shared people is ",""+_marrSharedWithUsers.size());
+//        Log.e("Size of shared people is ",""+_marrSharedWithUsers.size());
         boolean pupilsFound = false;
         if(_marrSharedWithUsers.size()<0){
             pupilsFound = false;
@@ -1403,7 +1403,7 @@ public class ReadFragment extends Fragment {
                 ArrayList<AssignedUsers> faul = new ArrayList<AssignedUsers>();
 
                 for(SharedUser st : alreadyAssignedUsers){
-                    Log.e("name ",st.userName);
+//                    Log.e("name ",st.userName);
 
                     AssignedUsers u = new AssignedUsers();
                     u.AssignedUserName = st.userName;
@@ -1489,7 +1489,7 @@ public class ReadFragment extends Fragment {
                 super.onPostExecute(aVoid);
                 hud.dismiss();
                 try {
-                    Log.e("reader", readerForNone + "");
+//                    Log.e("reader", readerForNone + "");
 
                     StringBuffer response = new StringBuffer();
                     int i = 0;
@@ -1500,7 +1500,7 @@ public class ReadFragment extends Fragment {
 
                     } while (i != -1);
                     readerForNone.close();
-                    Log.e("response---aus", response + " ");
+//                    Log.e("response---aus", response + " ");
 
                 }catch (Exception e){
                     e.printStackTrace();
@@ -1517,7 +1517,7 @@ public class ReadFragment extends Fragment {
                     }
 
 
-                    Log.e("----------CastMatches String",playLine.castMatchesString);
+//                    Log.e("----------CastMatches String",playLine.castMatchesString);
 
                     try {
                         for (String cm : playLine.castMatchesList) {
@@ -1557,8 +1557,8 @@ public class ReadFragment extends Fragment {
                     @Override
                     protected Void doInBackground(Void... voids) {
                         DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
-                        Log.e("Play ID before inserting assigned users ",""+selectedPlay.pID);
-                        Log.e("Play ID before inserting assigned users my roles",""+myRoles);
+//                        Log.e("Play ID before inserting assigned users ",""+selectedPlay.pID);
+//                        Log.e("Play ID before inserting assigned users my roles",""+myRoles);
 
                         marrMyCastMatches = dbh.getMyCastMatchesForRoleNames(myRoles,selectedPlay.pID);
                         dbh.close();
@@ -1615,7 +1615,7 @@ public class ReadFragment extends Fragment {
                 readSectionedAdapter.notifyDataSetChanged();
 
                 try {
-                    Log.e("reader", readerForNone + "");
+//                    Log.e("reader", readerForNone + "");
 
                     StringBuffer response = new StringBuffer();
                     int i = 0;
@@ -1626,7 +1626,7 @@ public class ReadFragment extends Fragment {
 
                     } while (i != -1);
                     readerForNone.close();
-                    Log.e("response", response + " ");
+//                    Log.e("response", response + " ");
 
                 }catch (Exception e){
                     e.printStackTrace();

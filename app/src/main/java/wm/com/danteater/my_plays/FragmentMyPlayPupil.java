@@ -125,7 +125,7 @@ public class FragmentMyPlayPupil extends Fragment {
                 Type listType=new TypeToken<List<MessageUnread>>(){
                 }.getType();
                 if(response !=null) {
-                    Log.e("refresh","badge value refresh");
+//                    Log.e("refresh","badge value refresh");
 
                     messageUnreadArrayList = new GsonBuilder().create().fromJson(response, listType);
                     if (getActivity() != null) {
@@ -232,11 +232,11 @@ public class FragmentMyPlayPupil extends Fragment {
                 for (int i = 0; i < playOrderList.size(); i++) {
                     if (playOrderList.get(i) != null) {
                         PlayOrderDetails bean = playOrderList.get(i);
-                        Log.i("PlayOrderId", bean.PlayOrderId + "");
+//                        Log.i("PlayOrderId", bean.PlayOrderId + "");
                     }
                 }
-                Log.e("adapter", "before adapter call");
-                Log.e("adapter size", playList.size()+"");
+//                Log.e("adapter", "before adapter call");
+//                Log.e("adapter size", playList.size()+"");
 
                 if(playList.size()==0){
                     FragmentManager manager = getActivity().getSupportFragmentManager();
@@ -250,7 +250,7 @@ public class FragmentMyPlayPupil extends Fragment {
                 } else {
                     listPlay.setVisibility(View.VISIBLE);
                     listPlay.setAdapter(new ListPlayAdapterForPerform(getActivity(), playListForPerform, playOrderList));
-                    Log.e("adapter", "after adapter call");
+//                    Log.e("adapter", "after adapter call");
                 }
 
             }
@@ -270,14 +270,14 @@ public class FragmentMyPlayPupil extends Fragment {
         ArrayList<PlayOrderDetails> playOrderDetailListPupil;
 
         public ListPlayAdapterForPerform(Context context, ArrayList<Play> playList, ArrayList<PlayOrderDetails> playOrderDetailList) {
-            Log.e("adapter", "inside adapter");
+//            Log.e("adapter", "inside adapter");
             this.context = context;
             this.playListPupil = playList;
             this.playOrderDetailListPupil = playOrderDetailList;
         }
 
         public int getCount() {
-            Log.e("size", playListPupil.size() + "");
+//            Log.e("size", playListPupil.size() + "");
             return playListPupil.size();
         }
 
@@ -298,7 +298,7 @@ public class FragmentMyPlayPupil extends Fragment {
 
         public View getView(final int position, View convertView,
                             ViewGroup parent) {
-            Log.e("get view", "inside getview");
+//            Log.e("get view", "inside getview");
             final ViewHolder holder;
             LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 
@@ -345,7 +345,7 @@ public class FragmentMyPlayPupil extends Fragment {
                 }
             });
 
-            Log.e("get view", "end of getview");
+//            Log.e("get view", "end of getview");
             return convertView;
 
 
@@ -361,8 +361,8 @@ public class FragmentMyPlayPupil extends Fragment {
 
             if(hasPlay == true){
 
-                Log.i("hasplay","true");
-                Log.i("Order Id",play.OrderId);
+//                Log.i("hasplay","true");
+//                Log.i("Order Id",play.OrderId);
                 SharedPreferences preferences = getActivity().getSharedPreferences("Plays", getActivity().MODE_PRIVATE);
                 String k = "PlayLatesteUpdateDate"+play.PlayId;
                 //  Toast.makeText(getActivity(),preferences.getString(k,""), Toast.LENGTH_SHORT).show();
@@ -375,7 +375,7 @@ public class FragmentMyPlayPupil extends Fragment {
                     @Override
                     public void response(final String response) {
 
-                        Log.i("Response update play : ",""+response);
+//                        Log.i("Response update play : ",""+response);
 
                         if(response == null || response.equalsIgnoreCase("")){
 
@@ -442,7 +442,7 @@ public class FragmentMyPlayPupil extends Fragment {
                 }.start();
 
             }else{
-                Log.i("hasplay","false");
+//                Log.i("hasplay","false");
                 // insert new play to db
 
                 new CallWebService(API.link_retrievePlayContentsForPlayOrderId +play.OrderId,CallWebService.TYPE_JSONOBJECT) {
@@ -450,7 +450,7 @@ public class FragmentMyPlayPupil extends Fragment {
                     @Override
                     public void response(final String response) {
 
-                        Log.i("Response full play : ",""+response);
+//                        Log.i("Response full play : ",""+response);
                         new AsyncTask<String,Integer,String>(){
 
                             @Override

@@ -72,7 +72,7 @@ public class ShareActivityForPreview extends BaseActivity {
         for(int i=0;i<teacherList.size();i++) {
             teacherNames.add(""+teacherList.get(i).getFirstName()+" "+teacherList.get(i).getLastName());
         }
-        Log.e("teachers list: ", teacherNames + "");
+//        Log.e("teachers list: ", teacherNames + "");
         ArrayAdapter adap = new ArrayAdapter(ShareActivityForPreview.this,android.R.layout.simple_list_item_multiple_choice,teacherNames);
         list_teachers.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         list_teachers.setAdapter(adap);
@@ -104,7 +104,7 @@ public class ShareActivityForPreview extends BaseActivity {
                 } else {
                     teacherSharedListForPreview.add(user);
                 }
-                Log.e("teacherSharedList:",teacherSharedListForPreview.size()+"");
+//                Log.e("teacherSharedList:",teacherSharedListForPreview.size()+"");
             }
 
         });
@@ -232,7 +232,7 @@ public class ShareActivityForPreview extends BaseActivity {
 
                 shareWithUsersArray.put(userDict);
             }
-            Log.e("total users: ", shareWithUsersArray + "");
+//            Log.e("total users: ", shareWithUsersArray + "");
         }
         new AsyncTask<Void, Void, Void>() {
 
@@ -249,7 +249,7 @@ public class ShareActivityForPreview extends BaseActivity {
                 try
                 {
                     Reader readerForNone = API.callWebservicePost("http://api.danteater.dk/api/playshare/" + selectedPlay.OrderId, shareWithUsersArray.toString());
-                    Log.e("reader", readerForNone + "");
+//                    Log.e("reader", readerForNone + "");
 
                     StringBuffer response = new StringBuffer();
                     int i = 0;
@@ -260,7 +260,7 @@ public class ShareActivityForPreview extends BaseActivity {
 
                     } while (i != -1);
                     readerForNone.close();
-                    Log.e("response", response + " ");
+//                    Log.e("response", response + " ");
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

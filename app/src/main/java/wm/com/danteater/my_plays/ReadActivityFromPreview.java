@@ -41,7 +41,7 @@ public class ReadActivityFromPreview extends BaseActivity {
         isFromLogin= getIntent().getExtras().getBoolean("isFromLogin");
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(ReadActivityFromPreview.this, "mypref", 0);
         play = complexPreferences.getObject("selected_play", Play.class);
-        Log.e("Count : ",""+play.playLinesList.size());
+//        Log.e("Count : ",""+play.playLinesList.size());
         btnPlayOrderIdForPerformance=(FrameLayout)findViewById(R.id.btnPlayOrderIdForPerformance);
         if(isFromLogin==true) {
             btnPlayOrderIdForPerformance.setVisibility(View.GONE);

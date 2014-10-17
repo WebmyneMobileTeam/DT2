@@ -139,7 +139,7 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         for(int i=0;i<teacherList.size();i++) {
             teacherNames.add(""+teacherList.get(i).getFirstName()+" "+teacherList.get(i).getLastName());
         }
-        Log.e("teachers list: ",teacherNames+"");
+//        Log.e("teachers list: ",teacherNames+"");
         ArrayAdapter adap = new ArrayAdapter(getActivity(),android.R.layout.simple_list_item_multiple_choice,teacherNames);
         list_teachers.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         list_teachers.setAdapter(adap);
@@ -172,7 +172,7 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
                 } else {
                     teacherSharedList.add(user);
                 }
-                Log.e("teacherSharedList:",teacherSharedList.size()+"");
+//                Log.e("teacherSharedList:",teacherSharedList.size()+"");
             }
 
         });
@@ -345,7 +345,7 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
 
                 shareWithUsersArray.put(userDict);
             }
-            Log.e("total users: ", shareWithUsersArray + "");
+//            Log.e("total users: ", shareWithUsersArray + "");
         }
         new AsyncTask<Void, Void, Void>() {
             @Override
@@ -361,7 +361,7 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
                 try
                 {
                     Reader readerForNone = API.callWebservicePost("http://api.danteater.dk/api/playshare/" + selectedPlay.OrderId, shareWithUsersArray.toString());
-                    Log.e("reader", readerForNone + "");
+//                    Log.e("reader", readerForNone + "");
 
                     StringBuffer response = new StringBuffer();
                     int i = 0;
@@ -372,7 +372,7 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
 
                     } while (i != -1);
                     readerForNone.close();
-                    Log.e("response", response + " ");
+//                    Log.e("response", response + " ");
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

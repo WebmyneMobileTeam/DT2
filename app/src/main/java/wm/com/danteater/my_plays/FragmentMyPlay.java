@@ -152,7 +152,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     }
 
     private void getAllUnreadMessagesForUser() {
-        Log.e("refresh","badge value refresh");
+//        Log.e("refresh","badge value refresh");
         new CallWebService("http://api.danteater.dk/api/MessageUnread/"+currentUser.getUserId(), CallWebService.TYPE_JSONARRAY) {
 
             @Override
@@ -317,7 +317,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 for (int i = 0; i < playOrderList.size(); i++) {
                     if (playOrderList.get(i) != null) {
                         PlayOrderDetails bean = playOrderList.get(i);
-                        Log.i("PlayOrderId", bean.PlayOrderId + "");
+//                        Log.i("PlayOrderId", bean.PlayOrderId + "");
                     }
                 }
                 if(playListForPerform.size()==0 && playListForReview.size()==0){
@@ -349,7 +349,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     @Override
     public void onResume() {
         super.onResume();
-        Log.e("resume",".........................");
+//        Log.e("resume",".........................");
 //        ShareActivityForPreview.teachers.clear();
 //        ShareActivityForPerform.classes.clear();
 //        ShareActivityForPerform.teachers.clear();
@@ -516,7 +516,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
 
     public void removePlayForReview() {
-        Log.e("removePlayForReview: ", "inside removePlayForReview");
+//        Log.e("removePlayForReview: ", "inside removePlayForReview");
         new AsyncTask<Void,Void,Void>(){
 
             @Override
@@ -533,7 +533,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
                     } while (i != -1);
                     reader.close();
-                    Log.e("response after deleted: ", response + " ");
+//                    Log.e("response after deleted: ", response + " ");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -749,7 +749,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
 
     public void removePlayForPerform() {
-        Log.e("removePlayForPerform: ", "inside removePlayForPerform");
+//        Log.e("removePlayForPerform: ", "inside removePlayForPerform");
         new AsyncTask<Void,Void,Void>(){
 
             @Override
@@ -766,7 +766,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
                     } while (i != -1);
                     reader.close();
-                    Log.e("response after deleted: ", response + " ");
+//                    Log.e("response after deleted: ", response + " ");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -805,8 +805,8 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
         if(hasPlay == true){
 
-            Log.i("hasplay","true");
-            Log.i("Order Id",play.OrderId);
+//            Log.i("hasplay","true");
+//            Log.i("Order Id",play.OrderId);
             SharedPreferences preferences = getActivity().getSharedPreferences("Plays", getActivity().MODE_PRIVATE);
             String k = "PlayLatesteUpdateDate"+play.PlayId;
             //  Toast.makeText(getActivity(),preferences.getString(k,""), Toast.LENGTH_SHORT).show();
@@ -817,13 +817,13 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
             //  String serverLink = API.link_getPlayUpdateForPlayOrderIdString+play.OrderId+"?unixTimeStamp="+unixTime;
             String serverLink = API.link_getPlayUpdateForPlayOrderIdString+play.OrderId+"?unixTimeStamp="+unixTime2;
-            Log.e("update string before update : ",serverLink);
+//            Log.e("update string before update : ",serverLink);
             new CallWebService(serverLink,CallWebService.TYPE_JSONARRAY) {
 
                 @Override
                 public void response(final String response) {
 
-                    Log.i("Response update play : ",""+response);
+//                    Log.i("Response update play : ",""+response);
 
                     if(response == null || response.equalsIgnoreCase("")){
 
@@ -845,7 +845,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                                         PlayLines playLine = new GsonBuilder().create().fromJson(jsonObject.toString(),PlayLines.class);
 
                                         DatabaseWrapper dbWrap = new DatabaseWrapper(getActivity());
-                                        Log.e("Before update playId ",play.PlayId);
+//                                        Log.e("Before update playId ",play.PlayId);
                                         SharedPreferences pre = getActivity().getSharedPreferences("Plays", getActivity().MODE_PRIVATE);
 
                                         dbWrap.updatePlayLine(playLine,pre.getInt("playid",0));
@@ -903,7 +903,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             }.start();
 
         }else{
-            Log.i("hasplay","false");
+//            Log.i("hasplay","false");
             // insert new play to db
 
             new CallWebService(API.link_retrievePlayContentsForPlayOrderId +play.OrderId,CallWebService.TYPE_JSONOBJECT) {
@@ -911,7 +911,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 @Override
                 public void response(final String response) {
 
-                    Log.i("Response full play : ",""+response);
+//                    Log.i("Response full play : ",""+response);
                     new AsyncTask<String,Integer,String>(){
 
                         @Override
@@ -1059,14 +1059,14 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                     for (Group beanGroup : groupArrayList) {
                         if (beanGroup.getGroupType().equals("classtype")) {
                             classes.add(beanGroup);
-                            Log.e("group domain", beanGroup.getDomain() + "");
+//                            Log.e("group domain", beanGroup.getDomain() + "");
                             numberOfClassesToBeRetrieved++;
                             ShareActivityForPerform.pupils.clear();
                             retriveMembers(seesionId, domain, beanGroup);
                         }
                     }
 
-                    Log.e("classes...: ", classes + "");
+//                    Log.e("classes...: ", classes + "");
                     sharedPreferenceClasses.clearClass(getActivity());
                     for(int i=0;i<classes.size();i++){
                         sharedPreferenceClasses.saveClass(getActivity(), classes.get(i));
@@ -1131,7 +1131,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
 
                         teachers.addAll(userArrayList);
-                        Log.e("teachers:",teachers+"");
+//                        Log.e("teachers:",teachers+"");
                         sharedPreferenceTeachers.clearTeacher(getActivity());
                         for(int i=0;i<teachers.size();i++){
                             sharedPreferenceTeachers.saveTeacher(getActivity(), teachers.get(i));
@@ -1146,12 +1146,12 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
                         for(Map.Entry<String,ArrayList<User>> entry : ShareActivityForPerform.pupils.entrySet()){
 
-                            Log.e("key: ",entry.getKey()+" ");
-                            Log.e("vlaues: ",entry.getValue()+"  ");
+//                            Log.e("key: ",entry.getKey()+" ");
+//                            Log.e("vlaues: ",entry.getValue()+"  ");
 
 
                         }
-                        Log.e("pupils: ",ShareActivityForPerform.pupils+"");
+//                        Log.e("pupils: ",ShareActivityForPerform.pupils+"");
 
                         numberOfClassesToBeRetrieved--;
                     }

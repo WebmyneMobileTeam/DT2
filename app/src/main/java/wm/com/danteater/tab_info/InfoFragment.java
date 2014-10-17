@@ -139,7 +139,7 @@ public class InfoFragment extends Fragment {
         try {
             params.put("PlayId", beanSearch.PlayId);
             params.put("UserId", currentUser.getUserId());
-            Log.e("params: ", params + "");
+//            Log.e("params: ", params + "");
             reader = API.callWebservicePost("http://api.danteater.dk/api/PlayOrderReview", params.toString());
 //            Type listType = new TypeToken<List<BeanSearch>>() {
 //            }.getType();
@@ -170,7 +170,7 @@ public class InfoFragment extends Fragment {
             @Override
             public void response(final String response) {
 
-                Log.e("Response play full:", response + "");
+//                Log.e("Response play full:", response + "");
 
 
                 Play receivedPlay = new GsonBuilder().create().fromJson(response, Play.class);
@@ -221,7 +221,7 @@ public class InfoFragment extends Fragment {
 
                 shareWithUsersArrayN.put(userDict);
             }
-            Log.e("total users: ", shareWithUsersArrayN + "");
+//            Log.e("total users: ", shareWithUsersArrayN + "");
 
         }
 
@@ -233,7 +233,7 @@ public class InfoFragment extends Fragment {
                 try
                 {
                     Reader readerForNone = API.callWebservicePost("http://api.danteater.dk/api/playshare/" + beanSearch.OrderId, shareWithUsersArrayN.toString());
-                    Log.e("reader", readerForNone + "");
+//                    Log.e("reader", readerForNone + "");
 
                     StringBuffer response = new StringBuffer();
                     int i = 0;
@@ -244,7 +244,7 @@ public class InfoFragment extends Fragment {
 
                     } while (i != -1);
                     readerForNone.close();
-                    Log.e("response", response + " ");
+//                    Log.e("response", response + " ");
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -291,7 +291,7 @@ public class InfoFragment extends Fragment {
 
                 shareWithUsersArray.put(userDict);
             }
-            Log.e("total users: ", shareWithUsersArray + "");
+//            Log.e("total users: ", shareWithUsersArray + "");
         }
         new AsyncTask<Void, Void, Void>() {
 
@@ -302,7 +302,7 @@ public class InfoFragment extends Fragment {
 
                 {
                     Reader readerForNone = API.callWebservicePost("http://api.danteater.dk/api/playshare/"+beanSearch.OrderId, shareWithUsersArray.toString());
-                    Log.e("reader", readerForNone + "");
+//                    Log.e("reader", readerForNone + "");
 
                     StringBuffer response = new StringBuffer();
                     int i = 0;
@@ -313,7 +313,7 @@ public class InfoFragment extends Fragment {
 
                     } while (i != -1);
                     readerForNone.close();
-                    Log.e("response", response + " ");
+//                    Log.e("response", response + " ");
 
                 } catch (IOException e) {
                     e.printStackTrace();

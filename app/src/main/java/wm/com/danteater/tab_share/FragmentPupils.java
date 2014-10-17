@@ -79,11 +79,11 @@ private ListView listStudents;
         if (pupils != null) {
             pupilsList = pupils.get(className);
 
-            Log.e("class name:.................", className + "");
+//            Log.e("class name:.................", className + "");
             ArrayList<String> studentNameList = new ArrayList<String>();
             for (int i = 0; i < pupilsList.size(); i++) {
                 studentNameList.add("" + pupilsList.get(i).getFirstName() + " " + pupilsList.get(i).getLastName());
-                Log.e("student id:", pupilsList.get(i).getUserId() + "");
+//                Log.e("student id:", pupilsList.get(i).getUserId() + "");
             }
             ArrayAdapter adap = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_multiple_choice, studentNameList);
             listStudents.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);

@@ -111,9 +111,9 @@ public class MusicFragment extends Fragment {
                 }
             }
         }
-        Log.e("Sections with contents:",marrSectionsWithContent+"");
-        Log.e("section titles:",marrSectionTitles+"");
-        Log.e("Song files:",marrSongFilesMP3+"");
+//        Log.e("Sections with contents:",marrSectionsWithContent+"");
+//        Log.e("section titles:",marrSectionTitles+"");
+//        Log.e("Song files:",marrSongFilesMP3+"");
     }
 
     @Override
@@ -213,7 +213,7 @@ public class MusicFragment extends Fragment {
         private LayoutInflater mInflater;
 
         public MusicSectionedAdapter(Context context) {
-            Log.e("inside adapter","yahooo");
+//            Log.e("inside adapter","yahooo");
             mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
@@ -231,7 +231,7 @@ public class MusicFragment extends Fragment {
 
         @Override
         public int getSectionCount() {
-            Log.e("section count: ",marrSectionsWithContent.size()+"");
+//            Log.e("section count: ",marrSectionsWithContent.size()+"");
             return marrSectionsWithContent.size();
         }
 
@@ -239,7 +239,7 @@ public class MusicFragment extends Fragment {
         public int getCountForSection(int section) {
 
             ArrayList<SongFiles> songFileses=marrSectionsWithContent.get(section);
-            Log.e("child for section count: ",songFileses.size()+"");
+//            Log.e("child for section count: ",songFileses.size()+"");
             return songFileses.size();
 
         }
@@ -291,7 +291,7 @@ public class MusicFragment extends Fragment {
             ViewHolder.ViewHolderForPDF viewHolderForPDF=null;
             int type=getItemViewType(section,position);
             final SongFiles songFile = marrSectionsWithContent.get(section).get(position);
-            Log.e("type:",type+"");
+//            Log.e("type:",type+"");
             if(type==MP3_FILE) {
 
                 if(convertView == null){
@@ -476,13 +476,13 @@ public class MusicFragment extends Fragment {
                     HttpURLConnection conexion = (HttpURLConnection) url.openConnection();
                     conexion.connect();
                     int lenghtOfFile = conexion.getContentLength();
-                    Log.e("lenghtOfFile: ", lenghtOfFile + "");
+//                    Log.e("lenghtOfFile: ", lenghtOfFile + "");
                     File fileDir=new File(Environment.getExternalStorageDirectory()+"/danteater");
                     if(!fileDir.exists()) {
                         fileDir.mkdir();
-                        Log.e("directory:","created");
+//                        Log.e("directory:","created");
                     } else {
-                        Log.e("directory:","already exist");
+//                        Log.e("directory:","already exist");
                     }
                     File file = new File(fileDir,songFiles.SongMp3Url.substring(songFiles.SongMp3Url.lastIndexOf("/")+1));
                     FileOutputStream output = new FileOutputStream(file);
@@ -500,7 +500,7 @@ public class MusicFragment extends Fragment {
 //                    updateViewAfterDownLoad(position);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.e("error:",e+"");
+//                    Log.e("error:",e+"");
                 }
                 return null;
             }
@@ -508,7 +508,7 @@ public class MusicFragment extends Fragment {
             @Override
             protected void onProgressUpdate(Integer... values) {
                 super.onProgressUpdate(values);
-                Log.e("progress: ",values[0].toString()+"");
+//                Log.e("progress: ",values[0].toString()+"");
                 if(values[0].toString().equalsIgnoreCase("100")) {
                     musicSectionedAdapter.notifyDataSetChanged();
                     if (songFilesMP3ToBeDownloaded().size() == 0) {

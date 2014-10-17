@@ -29,7 +29,7 @@ public class APIDelete {
 				InputStream content = entity.getContent();
 				reader = new InputStreamReader(content);
 			} else {
-				Log.e("error:", "Server responded with status code: "+ statusLine.getStatusCode());
+//				Log.e("error:", "Server responded with status code: "+ statusLine.getStatusCode());
 
 			}
 		} catch (ClientProtocolException e) {

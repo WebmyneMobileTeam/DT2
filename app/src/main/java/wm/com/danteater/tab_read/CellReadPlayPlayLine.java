@@ -131,7 +131,7 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
             }
         }
 
-        Log.e("Mark is ",""+mark);
+//        Log.e("Mark is ",""+mark);
         if(mark == true){
             lblRoleName.setBackgroundColor(Color.YELLOW);
         }
@@ -205,7 +205,7 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
         if (showComments == true) {
 
             ArrayList<Comments> comments = playLine.commentsList;
-            Log.e("SSSIIIEEEZZZEEE ",""+comments.size());
+//            Log.e("SSSIIIEEEZZZEEE ",""+comments.size());
             ArrayList<Comments> finalComments = new ArrayList<Comments>();
 
             for(Comments comment : comments){
@@ -284,7 +284,7 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
                 onTextLineUpdated.onChatClicked();
                 //TODO
 
-               Log.e("message","click on message");
+//               Log.e("message","click on message");
                 break;
 
         }

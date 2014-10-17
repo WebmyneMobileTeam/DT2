@@ -113,9 +113,9 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
         boolean dbExist = checkDataBase();
         if(dbExist){
-            Log.v("log_tag", "database does exist");
+//            Log.v("log_tag", "database does exist");
         }else{
-            Log.v("log_tag", "database does not exist");
+//            Log.v("log_tag", "database does not exist");
             this.getReadableDatabase();
             try {
                 copyDataBase();
@@ -236,7 +236,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         Cursor cursor = myDataBase.rawQuery(selectQuery, null);
 
         cursor.moveToFirst();
-        Log.e("Play Id in Database : ",""+cursor.getInt(cursor.getColumnIndex("id_")));
+//        Log.e("Play Id in Database : ",""+cursor.getInt(cursor.getColumnIndex("id_")));
 
         int playID = cursor.getInt(cursor.getColumnIndex("id_"));
 
@@ -257,11 +257,11 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
 
         StringBuffer castMatchesString = new StringBuffer("");
-        Log.i("Cast Main list ",""+play_line.castMatchesList);
+//        Log.i("Cast Main list ",""+play_line.castMatchesList);
         for(int i=0;i<play_line.castMatchesList.size();i++){
 
             String s = play_line.castMatchesList.get(i).toString();
-            Log.i("Cast child  ",s);
+//            Log.i("Cast child  ",s);
             if(i== play_line.castMatchesList.size()-1){
                 castMatchesString.append(s.toString());
             }else{
@@ -270,7 +270,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         }
 
         play_line.castMatchesString = castMatchesString.toString();
-        Log.i("Cast matches string  ",castMatchesString.toString());
+//        Log.i("Cast matches string  ",castMatchesString.toString());
         //
         ContentValues cvPlays = new ContentValues();
         cvPlays.put("line_number_",play_line.LineCount);
@@ -315,7 +315,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
             removeAssignedUsersForPlayLine(play_line,playid);
 
-            Log.e("No of assigned user",""+play_line.assignedUsersList.size());
+//            Log.e("No of assigned user",""+play_line.assignedUsersList.size());
             for(AssignedUsers assignedUser : play_line.assignedUsersList){
 
                 insertAssignedUser(assignedUser,play_line,playid);
@@ -359,7 +359,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
     private void insertComment(Comments comment, int playLineId) {
 
 
-        Log.i("In insert comments ","insert comments for the ");
+//        Log.i("In insert comments ","insert comments for the ");
 
         ContentValues cvLineText = new ContentValues();
         cvLineText.put("playline_id_",playLineId);
@@ -389,12 +389,12 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
     public void insertAssignedUser(AssignedUsers assignedUsers,PlayLines play_line, int playid) {
         String roleName = null;
-        Log.e("PlayID while assign user inserted ",""+playid);
+//        Log.e("PlayID while assign user inserted ",""+playid);
         if(play_line.RoleName == null || play_line.RoleName.equalsIgnoreCase("")){
 
             myDataBase = this.getWritableDatabase();
             String selectQuery = "SELECT role_name_ FROM playlines WHERE play_id_ ="+playid+" AND playline_id_text_ ="+"\""+play_line.LineID.toString().trim()+"\"";
-            Log.e("Query for inserting assigned user",selectQuery);
+//            Log.e("Query for inserting assigned user",selectQuery);
             Cursor cursor = myDataBase.rawQuery(selectQuery, null);
             cursor.moveToFirst();
 
@@ -402,7 +402,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
                 do {
                     roleName = new String();
                     roleName = cursor.getString(cursor.getColumnIndex("role_name_"));
-                    Log.e("RoleNameAfterFetching",roleName);
+//                    Log.e("RoleNameAfterFetching",roleName);
                     play_line.RoleName = roleName;
                 } while (cursor.moveToNext());
             }
@@ -426,7 +426,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
     public void removeAssignedUsersForPlayLine(PlayLines play_line,int playID) {
 
-        Log.e("---------------------------------------------","In delete");
+//        Log.e("---------------------------------------------","In delete");
         if(play_line.RoleName == null || play_line.RoleName.equalsIgnoreCase("")){
 
             myDataBase = this.getWritableDatabase();
@@ -443,12 +443,12 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
                 } while (cursor.moveToNext());
             }
             cursor.close();
-            Log.e("---------------------------------------------","Before delete");
+//            Log.e("---------------------------------------------","Before delete");
             // delete query
             myDataBase = this.getWritableDatabase();
             myDataBase.delete("assigned_users","play_id_" + " = ? AND " + "role_name_" + " = ?",new String[]{""+playID,roleName});
             myDataBase.close();
-            Log.e("---------------------------------------------","After delete");
+//            Log.e("---------------------------------------------","After delete");
 
         }
     }
@@ -464,7 +464,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         if (cursor.moveToFirst()) {
             do {
                 playLineID = cursor.getInt(cursor.getColumnIndex("id_"));
-                Log.e("playLineID for update ",""+playLineID);
+//                Log.e("playLineID for update ",""+playLineID);
             } while (cursor.moveToNext());
         }
 
@@ -587,7 +587,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
     public int getPlayIdFromDBForOrderId(String orderId) {
 
-        Log.e("Database ","getPlayIdFromDBForOrderId");
+//        Log.e("Database ","getPlayIdFromDBForOrderId");
         myDataBase = this.getWritableDatabase();
         String selectQuery = "SELECT id_ FROM plays WHERE play_order_id_text_ ="+"\""+orderId+"\"";
         Cursor cursor = myDataBase.rawQuery(selectQuery, null);
@@ -623,7 +623,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         ArrayList marrMyCastMatches = new ArrayList();
         myDataBase = this.getWritableDatabase();
         String rolenameQuery = "SELECT role_name_ FROM assigned_users WHERE play_id_ = "+playID+" AND assigned_user_id_ ="+"\""+userID+"\"";
-       Log.e("Role name query database ",rolenameQuery);
+//       Log.e("Role name query database ",rolenameQuery);
         Cursor cursor = myDataBase.rawQuery(rolenameQuery, null);
         cursor.moveToFirst();
         String roleNameForUserId = null;
@@ -658,7 +658,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
                     do {
                         castMatchesString = castMatchesCursor.getString(castMatchesCursor.getColumnIndex("cast_matches_"));
                         castMatchesStringsArray.add(castMatchesString);
-                        Log.e("!!!!!castMatchesString",castMatchesString);
+//                        Log.e("!!!!!castMatchesString",castMatchesString);
                     } while (castMatchesCursor.moveToNext());
                 }
 
@@ -666,7 +666,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
             } while (cursor.moveToNext());
 
-            Log.e("MyCastMatch in database ",""+castMatchesStringsArray);
+//            Log.e("MyCastMatch in database ",""+castMatchesStringsArray);
 
             for(String s : castMatchesStringsArray){
 
@@ -696,7 +696,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         String selectQuery = "SELECT * FROM plays WHERE id_ = "+playID;
         Cursor cursor = myDataBase.rawQuery(selectQuery, null);
         cursor.moveToFirst();
-        Log.e("Count for play is : ",""+cursor.getCount());
+//        Log.e("Count for play is : ",""+cursor.getCount());
 
         Play ply = new Play();
 
@@ -1011,7 +1011,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
                 do {
                     castMatchesString = castMatchesCursor.getString(castMatchesCursor.getColumnIndex("cast_matches_"));
                     castMatchesStringArray.add(castMatchesString);
-                    Log.e("!!!!!castMatchesString",castMatchesString);
+//                    Log.e("!!!!!castMatchesString",castMatchesString);
                 } while (castMatchesCursor.moveToNext());
             }
 

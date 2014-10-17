@@ -29,7 +29,7 @@ public class ReadChord extends BaseActivity {
         txtHeader.setText("Noder");
         Intent i=getIntent();
         filePath=i.getStringExtra("file_url");
-        Log.e("file path: ",filePath+"");
+//        Log.e("file path: ",filePath+"");
         webview=(WebView)findViewById(R.id.read_chord_view);
         WebSettings settings = webview.getSettings();
         settings.setJavaScriptEnabled(true);

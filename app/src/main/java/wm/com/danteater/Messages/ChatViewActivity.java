@@ -145,7 +145,7 @@ public class ChatViewActivity extends BaseActivity {
                 try
                 {
                     Reader readerForNone = API.callWebservicePost("http://api.danteater.dk/api/Message", requestParams.toString());
-                    Log.e("reader", readerForNone + "");
+//                    Log.e("reader", readerForNone + "");
 
                     StringBuffer response = new StringBuffer();
                     int i = 0;
@@ -156,7 +156,7 @@ public class ChatViewActivity extends BaseActivity {
 
                     } while (i != -1);
                     readerForNone.close();
-                    Log.e("response", response + " ");
+//                    Log.e("response", response + " ");
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -196,7 +196,7 @@ public class ChatViewActivity extends BaseActivity {
         for(MessagesForConversation message: messagesForConversationArrayList){
             if(message.isRead.equalsIgnoreCase("false")){
                 // call API markMessageAsRead
-                Log.e("unread message","found");
+//                Log.e("unread message","found");
                 markMessageAsRead(message);
             }
         }
@@ -215,7 +215,7 @@ public class ChatViewActivity extends BaseActivity {
                 try
                 {
                     Reader readerForNone = API.callWebservicePost("http://api.danteater.dk/api/Message?msgID=" + messagesForConversation.Id, "");
-                    Log.e("reader", readerForNone + "");
+//                    Log.e("reader", readerForNone + "");
 
                     StringBuffer response = new StringBuffer();
                     int i = 0;
@@ -227,7 +227,7 @@ public class ChatViewActivity extends BaseActivity {
 
                     } while (i != -1);
                     readerForNone.close();
-                    Log.e("response", response + " ");
+//                    Log.e("response", response + " ");
 
 
                 } catch (IOException e) {
@@ -341,9 +341,9 @@ public class ChatViewActivity extends BaseActivity {
                     txtChatData.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Log.e("line id: ",msg.LineId.substring(0,msg.LineId.lastIndexOf("-"))+"");
+//                            Log.e("line id: ",msg.LineId.substring(0,msg.LineId.lastIndexOf("-"))+"");
                             lineNumber=Integer.parseInt(msg.LineId.substring(msg.LineId.lastIndexOf("-")+1));
-                            Log.e("line number in chat activity",lineNumber+" ");
+//                            Log.e("line number in chat activity",lineNumber+" ");
                             Play play=new Play();
                             play.OrderId=msg.LineId.substring(0,msg.LineId.lastIndexOf("-"));
 
@@ -368,9 +368,9 @@ public class ChatViewActivity extends BaseActivity {
                     txtChatD.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Log.e("line id: ",msg.LineId.substring(0,msg.LineId.lastIndexOf("-"))+"");
+//                            Log.e("line id: ",msg.LineId.substring(0,msg.LineId.lastIndexOf("-"))+"");
                             lineNumber=Integer.parseInt(msg.LineId.substring(msg.LineId.lastIndexOf("-")+1));
-                            Log.e("line number in chat activity",lineNumber+" ");
+//                            Log.e("line number in chat activity",lineNumber+" ");
                             Play play=new Play();
                             play.OrderId=msg.LineId.substring(0,msg.LineId.lastIndexOf("-"));
                             dialog_next = new HUD(ChatViewActivity.this,android.R.style.Theme_Translucent_NoTitleBar);
@@ -406,7 +406,7 @@ public class ChatViewActivity extends BaseActivity {
             gotoNextPage();
         }
         else{
-            Log.i("hasplay","false");
+//            Log.i("hasplay","false");
             // insert new play to db
 
             new CallWebService(API.link_retrievePlayContentsForPlayOrderId +play.OrderId,CallWebService.TYPE_JSONOBJECT) {
@@ -414,7 +414,7 @@ public class ChatViewActivity extends BaseActivity {
                 @Override
                 public void response(final String response) {
 
-                    Log.i("Response full play : ",""+response);
+//                    Log.i("Response full play : ",""+response);
                     new AsyncTask<String,Integer,String>(){
 
                         @Override
