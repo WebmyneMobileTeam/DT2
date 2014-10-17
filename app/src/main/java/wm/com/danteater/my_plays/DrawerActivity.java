@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
+
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -23,9 +23,12 @@ import android.widget.ListView;
 import com.mvnordic.mviddeviceconnector.DeviceSecurity;
 
 import wm.com.danteater.Messages.FragmentMessage;
+
 import wm.com.danteater.R;
 import wm.com.danteater.app.BaseActivity;
 import wm.com.danteater.customviews.WMTextView;
+import wm.com.danteater.drawer.ActionBarDrawerToggle;
+import wm.com.danteater.drawer.DrawerArrowDrawable;
 import wm.com.danteater.excercise.FragmentExcerciseForStudent;
 import wm.com.danteater.guide.FragmentGuide;
 import wm.com.danteater.excercise.FragmentExcerciseForTeacher;
@@ -43,7 +46,9 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
     NavigationDrawerAdapter navigationDrawerAdapterForTeacher;
     private DrawerLayout drawer;
     private ListView leftDrawerList;
-    private ActionBarDrawerToggle actionBarDrawerToggle;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private DrawerArrowDrawable drawerArrow;
+//    private ActionBarDrawerToggle actionBarDrawerToggle;
     private User user;
     private String[] leftSliderDataForTeacher = {"Søg", "Mine stykker", "Beskeder", "Dramaøvelser", "Indstillinger", "Hjælp"};
     private String[] leftSliderDataForStudent = {"Mine stykker", "Beskeder", "Dramaøvelser", "Indstillinger",};
@@ -130,22 +135,49 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
         drawer.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         getActionBar().setHomeButtonEnabled(true);
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        actionBarDrawerToggle = new ActionBarDrawerToggle(DrawerActivity.this, drawer, R.drawable.ic_drawer, R.string.open_drawer, R.string.close_drawer) {
+//        actionBarDrawerToggle = new ActionBarDrawerToggle(DrawerActivity.this, drawer, R.drawable.ic_drawer, R.string.open_drawer, R.string.close_drawer) {
+//
+//            public void onDrawerClosed(View view) {
+//
+//            }
+//
+//            public void onDrawerOpened(View drawerView) {
+//                if (isPupil) {
+//                    navigationDrawerAdapterForStudent.notifyDataSetChanged();
+//                } else {
+//                    navigationDrawerAdapterForTeacher.notifyDataSetChanged();
+//                }
+//            }
+//
+//        };
+        drawerArrow = new DrawerArrowDrawable(this) {
+            @Override
+            public boolean isLayoutRtl() {
+                return false;
+            }
+        };
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, drawer,drawerArrow, R.string.drawer_open,R.string.drawer_close) {
 
             public void onDrawerClosed(View view) {
-
+                super.onDrawerClosed(view);
+//                invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
-                if (isPupil) {
+                super.onDrawerOpened(drawerView);
+                                if (isPupil) {
                     navigationDrawerAdapterForStudent.notifyDataSetChanged();
                 } else {
                     navigationDrawerAdapterForTeacher.notifyDataSetChanged();
                 }
+//                invalidateOptionsMenu();
             }
-
         };
-        drawer.setDrawerListener(actionBarDrawerToggle);
+        drawer.setDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
+
+
     }
 
     @Override
@@ -252,7 +284,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                actionBarDrawerToggle.onOptionsItemSelected(item);
+                mDrawerToggle.onOptionsItemSelected(item);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -261,7 +293,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        actionBarDrawerToggle.syncState();
+        mDrawerToggle.syncState();
 
 
     }

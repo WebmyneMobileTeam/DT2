@@ -19,4 +19,5 @@
     <color name="music_table_view_cell_first_color">#ffd692</color>
     <color name="music_table_view_cell_second_color">#ffba4a</color>
     <color name="read_play_cell">#d9e7f2</color>
+    <color name="ldrawer_color">#000000</color>
 </resources>
