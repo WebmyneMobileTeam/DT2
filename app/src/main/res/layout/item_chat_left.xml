@@ -21,6 +21,7 @@
     <wm.com.danteater.customviews.WMTextView
         android:id="@+id/txtChatData"
         android:text="@string/hello_world"
+        android:maxWidth="250dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#fff"

@@ -15,7 +15,6 @@
         android:layout_above="@+id/dividerForRead"
         android:layout_height="match_parent"/>
 
-
     <View
         android:id="@+id/dividerForRead"
         android:layout_above="@+id/chatBoxLayoutForRead"

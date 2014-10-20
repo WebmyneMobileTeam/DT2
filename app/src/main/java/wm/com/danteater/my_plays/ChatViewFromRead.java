@@ -91,7 +91,7 @@ public class ChatViewFromRead extends BaseActivity{
         btnSendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               messagesForConversationArrayList.add(new MessagesForConversation("",selectedPlay.OrderId,currentPlayLine.LineID,currentUser.getUserId(),"",etMessageValue.getText().toString().trim(),"",""));
+               messagesForConversationArrayList.add(new MessagesForConversation("",selectedPlay.OrderId,currentPlayLine.LineID,currentUser.getUserId(),"",selectedPlay.Title.replace(" ","_")+"-"+currentPlayLine.RoleName+"-"+currentPlayLine.LineID.substring(currentPlayLine.LineID.lastIndexOf("-")+1)+"\n"+etMessageValue.getText().toString().trim()+"","",""));
                 chatAdapter=new ChatAdapter(ChatViewFromRead.this);
                 listChat.setAdapter(chatAdapter);
 
@@ -113,7 +113,7 @@ public class ChatViewFromRead extends BaseActivity{
     }
 
 
-    private void createNewMessageAndSendToUser() {
+    private void createNewMessageAndSendToUser() { // For Pupil
 
         final JSONObject requestParams=new JSONObject();
         try {
@@ -121,7 +121,7 @@ public class ChatViewFromRead extends BaseActivity{
             requestParams.put("LineId", currentPlayLine.LineID+"");
             requestParams.put("FromUserId", currentUser.getUserId()+"");
             requestParams.put("ToUserId", teacherName+"");
-            requestParams.put("MessageText", etMessageValue.getText().toString().trim()+"");
+            requestParams.put("MessageText", selectedPlay.Title.replace(" ","_")+"-"+currentPlayLine.RoleName+"-"+currentPlayLine.LineID.substring(currentPlayLine.LineID.lastIndexOf("-"+1))+"\n"+etMessageValue.getText().toString().trim()+"");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -168,7 +168,7 @@ public class ChatViewFromRead extends BaseActivity{
     }
 
 
-    private void createNewMessageAndSendToUser(AssignedUsers assignedUsers) {
+    private void createNewMessageAndSendToUser(AssignedUsers assignedUsers) { // For Teacher
 
         final JSONObject requestParams=new JSONObject();
         try {
@@ -176,7 +176,7 @@ public class ChatViewFromRead extends BaseActivity{
             requestParams.put("LineId", currentPlayLine.LineID+"");
             requestParams.put("FromUserId", currentUser.getUserId()+"");
             requestParams.put("ToUserId", assignedUsers.getAssignedUserId()+"");
-            requestParams.put("MessageText", etMessageValue.getText().toString().trim()+"");
+            requestParams.put("MessageText", selectedPlay.Title.replace(" ","_")+"-"+currentPlayLine.RoleName+"-"+currentPlayLine.LineID.substring(currentPlayLine.LineID.lastIndexOf("-")+1)+"\n"+etMessageValue.getText().toString().trim()+"");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -284,8 +284,10 @@ public class ChatViewFromRead extends BaseActivity{
 
                     WMTextView txtChatData = (WMTextView)convertView.findViewById(R.id.txtChatData);
 
-                    AdvancedSpannableString spannableString = new AdvancedSpannableString(msg.LineId+"\n"+msg.MessageText);
-                    spannableString.setUnderLine(msg.LineId);
+                    AdvancedSpannableString spannableString = new AdvancedSpannableString(msg.MessageText);
+                    String[] line = msg.MessageText.split(System.getProperty("line.separator"));
+                    String firstLineData = line[0];
+                    spannableString.setUnderLine(firstLineData);
 
                     txtChatData.setText(spannableString);
                     txtChatData.setOnClickListener(new View.OnClickListener() {
@@ -302,8 +304,10 @@ public class ChatViewFromRead extends BaseActivity{
 
                     WMTextView txtChatD = (WMTextView)convertView.findViewById(R.id.txtChatData);
 
-                    final AdvancedSpannableString spannableStrin = new AdvancedSpannableString(msg.LineId+"\n"+msg.MessageText);
-                    spannableStrin.setUnderLine(msg.LineId);
+                    final AdvancedSpannableString spannableStrin = new AdvancedSpannableString(msg.MessageText);
+                    String[] lines = msg.MessageText.split(System.getProperty("line.separator"));
+                    String firstLine= lines[0];
+                    spannableStrin.setUnderLine(firstLine);
                     txtChatD.setText(spannableStrin);
                     txtChatD.setOnClickListener(new View.OnClickListener() {
                         @Override

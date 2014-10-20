@@ -161,7 +161,11 @@ public class ChatViewActivity extends BaseActivity {
             requestParams.put("LineId", messagesForConversationLastObject.LineId+"");
             requestParams.put("FromUserId", currentUser.getUserId()+"");
             requestParams.put("ToUserId", toUserId+"");
-            requestParams.put("MessageText", etMessageValue.getText().toString().trim()+"");
+            //TODO
+            String[] lines = messagesForConversationLastObject.MessageText.split(System.getProperty("line.separator"));
+            String firstLine = lines[0];
+
+            requestParams.put("MessageText", firstLine+"\n"+etMessageValue.getText().toString().trim()+"");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -369,8 +373,10 @@ public class ChatViewActivity extends BaseActivity {
 
                     WMTextView txtChatData = (WMTextView)convertView.findViewById(R.id.txtChatData);
 
-                    AdvancedSpannableString spannableString = new AdvancedSpannableString(msg.LineId+"\n"+msg.MessageText);
-                    spannableString.setUnderLine(msg.LineId);
+                    AdvancedSpannableString spannableString = new AdvancedSpannableString(msg.MessageText);
+                    String[] lines = msg.MessageText.split(System.getProperty("line.separator"));
+                    String firstLine = lines[0];
+                    spannableString.setUnderLine(firstLine);
 
                     txtChatData.setText(spannableString);
                     txtChatData.setOnClickListener(new View.OnClickListener() {
@@ -397,8 +403,10 @@ public class ChatViewActivity extends BaseActivity {
 
                     WMTextView txtChatD = (WMTextView)convertView.findViewById(R.id.txtChatData);
 
-                    final AdvancedSpannableString spannableStrin = new AdvancedSpannableString(msg.LineId+"\n"+msg.MessageText);
-                    spannableStrin.setUnderLine(msg.LineId);
+                    final AdvancedSpannableString spannableStrin = new AdvancedSpannableString(msg.MessageText);
+                    String[] line = msg.MessageText.split(System.getProperty("line.separator"));
+                    String firstLineData = line[0];
+                    spannableStrin.setUnderLine(firstLineData);
                     txtChatD.setText(spannableStrin);
                     txtChatD.setOnClickListener(new View.OnClickListener() {
                         @Override
