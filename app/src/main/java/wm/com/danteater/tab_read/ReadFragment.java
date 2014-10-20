@@ -1287,26 +1287,43 @@ public class ReadFragment extends Fragment {
 
 //        Log.e("Size of shared people is ",""+_marrSharedWithUsers.size());
         boolean pupilsFound = false;
-        if(_marrSharedWithUsers.size()<0){
-            pupilsFound = false;
-        }else{
 
+        if(_marrSharedWithUsers == null || _marrSharedWithUsers.isEmpty() || _marrSharedWithUsers.size()<0){
+            pupilsFound = false;
+
+        }else{
             for(SharedUser au : _marrSharedWithUsers){
 
                 String check = "lærer";
-                if(!au.userName.contains(check.toString())){
+
+                if(au.userName != null && !au.userName.contains(check.toString())){
                     pupilsFound = true;
                 }
             }
 
+        }
             if(pupilsFound){
 
                 showUsersAndAssignRole(playLine);
 
             }else{
+
+                AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+                alert.setTitle("");
+                alert.setMessage("Du kan ikke dele stykket med elever, hvis stykket ikke er bestilt til opførelse. Bestil stykket til opførelse først.");
+                alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+
+                alert.show();
+
             }
 
-        }
+
 
 
     }
