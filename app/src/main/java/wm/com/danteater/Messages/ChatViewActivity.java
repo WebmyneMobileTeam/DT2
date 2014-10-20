@@ -3,8 +3,11 @@ package wm.com.danteater.Messages;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -45,6 +48,7 @@ import wm.com.danteater.model.AdvancedSpannableString;
 import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.model.DatabaseWrapper;
+import wm.com.danteater.model.TextWatcherAdapter;
 import wm.com.danteater.my_plays.ReadActivityFromPreview;
 import wm.com.danteater.my_plays.ShareActivityForPerform;
 
@@ -73,6 +77,37 @@ public class ChatViewActivity extends BaseActivity {
         setContentView(R.layout.activity_chat_view);
         btnSendMessage=(WMTextView)findViewById(R.id.btnSendMessage);
         etMessageValue=(EditText)findViewById(R.id.etChatMessage);
+
+        etMessageValue.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                String string = s.toString();
+                if(string.length() == 0 || string.isEmpty()){
+
+                    btnSendMessage.setTextColor(Color.parseColor("#ababab"));
+
+                }else{
+                    btnSendMessage.setTextColor(getResources().getColor(R.color.apptheme_color));
+                }
+
+
+
+            }
+        });
+
+
+
         listChat = (ListView)findViewById(R.id.listViewChat);
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(this,"user_pref", 0);
         currentUser = complexPreferences.getObject("current_user", User.class);

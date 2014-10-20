@@ -414,7 +414,8 @@ public class MusicFragment extends Fragment {
              if(mediaPlayer !=null && mediaPlayer.isPlaying()) {
                   mediaPlayer.pause();
                   mediaPlayer.stop();
-                 MusicFragment.mediaPlayer = null;
+                    mediaPlayer = null;
+
                   }
 
                 getActivity().finish();

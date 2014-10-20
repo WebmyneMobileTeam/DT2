@@ -321,15 +321,17 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
                     e.printStackTrace();
                 }
 
-
                 reader = API.callWebservicePost("http://api.danteater.dk/api/PlaySearch", params.toString());
-                Type listType = new TypeToken<List<BeanSearch>>() {
-                }.getType();
-                beanSearchList = new GsonBuilder()
-                        .create().fromJson(reader, listType);
+
+                try{
+                    Type listType = new TypeToken<List<BeanSearch>>() {
+                    }.getType();
+                    beanSearchList = new GsonBuilder()
+                            .create().fromJson(reader, listType);
 //                Log.e("search result size: ",beanSearchList.size()+"");
 
-                handleSearchResultData(beanSearchList);
+                    handleSearchResultData(beanSearchList);
+                }catch(Exception e){}
 
                 return null;
             }
@@ -337,7 +339,7 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                dialog.dismiss();
+                    dialog.dismiss();
             }
 
         }.execute();
@@ -437,8 +439,6 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
                     ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "search_result_play",0);
                     complexPreferences.putObject("searched_play",beanSearchList.get(position));
                     complexPreferences.commit();
-
-
                     Intent i=new Intent(getActivity(), PlayInfoActivity.class);
                     startActivity(i);
 

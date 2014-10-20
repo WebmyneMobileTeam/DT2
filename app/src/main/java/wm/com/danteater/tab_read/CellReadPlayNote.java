@@ -257,7 +257,7 @@ public class CellReadPlayNote implements View.OnClickListener{
 
     private void showMenu() {
         viewMenu.setVisibility(View.VISIBLE);
-        Webmyne.get(Techniques.SlideInDown).duration(700).withListener(new Animator.AnimatorListener() {
+        Webmyne.get(Techniques.SlideInDown).duration(100).withListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
 

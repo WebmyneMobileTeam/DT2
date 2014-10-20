@@ -265,8 +265,8 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                     }
                     @Override
                     public void error(VolleyError error) {
-                        dialog.dismissWithStatus(R.drawable.ic_navigation_cancel, "Error");
-                        Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                        dialog.dismissWithStatus(R.drawable.ic_navigation_cancel, "Sync Error");
+
                     }
                 }.start();
 
@@ -896,8 +896,8 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 @Override
                 public void error(VolleyError error) {
 
-                    dialog_next.dismiss();
-                    Toast.makeText(getActivity(),error.getMessage(), Toast.LENGTH_SHORT).show();
+                    dialog_next.dismissWithStatus(R.drawable.ic_navigation_cancel,"Sync Error");
+
 
                 }
             }.start();
@@ -947,7 +947,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 public void error(VolleyError error) {
                     dialog_next.dismiss();
 
-                    Toast.makeText(getActivity(),error.getMessage(), Toast.LENGTH_SHORT).show();
+                    dialog_next.dismissWithStatus(R.drawable.ic_navigation_cancel,"Sync Error");
 
                 }
             }.start();

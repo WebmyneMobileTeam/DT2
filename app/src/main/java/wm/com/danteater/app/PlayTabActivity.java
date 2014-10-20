@@ -192,12 +192,10 @@ public class PlayTabActivity extends BaseActivity {
         super.onPause();
 
         if(MusicFragment.mediaPlayer !=null && MusicFragment.mediaPlayer.isPlaying()){
-
             MusicFragment.mediaPlayer.pause();
             MusicFragment.mediaPlayer.stop();
             finish();
         }
-
     }
 
     @Override
@@ -207,10 +205,6 @@ public class PlayTabActivity extends BaseActivity {
         if(MusicFragment.mediaPlayer !=null && MusicFragment.mediaPlayer.isPlaying()) {
             MusicFragment.mediaPlayer.pause();
             MusicFragment.mediaPlayer.stop();
-
-
         }
-
-
     }
 }

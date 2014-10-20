@@ -349,7 +349,6 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
         });
 
 
-
     }
 
     private void hideMenu() {
@@ -378,8 +377,8 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
     }
 
     private void showMenu() {
-        viewMenu.setVisibility(View.VISIBLE);
-        Webmyne.get(Techniques.SlideInDown).duration(700).withListener(new Animator.AnimatorListener() {
+
+       Webmyne.get(Techniques.SlideInDown).duration(100).withListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
 
@@ -400,6 +399,8 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
 
             }
         }).startOn(viewMenu);
+
+        viewMenu.setVisibility(View.VISIBLE);
 
     }
 
@@ -422,6 +423,10 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
         final EditText editLineViewTextArea = (EditText)view.findViewById(R.id.editLineViewTextArea);
         editLineViewTextArea.setText(pl.textLinesList.get(0).currentText());
 
+
+
+
+
         WMTextView editLineViewPopupCancel = (WMTextView)view.findViewById(R.id.editLineViewPopupCancel);
         editLineViewPopupCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -429,8 +434,6 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
                 dialog.dismiss();
             }
         });
-
-
 
         WMTextView saveBtn = (WMTextView)view.findViewById(R.id.editLineViewPopupSave);
         saveBtn.setOnClickListener(new View.OnClickListener() {
@@ -447,9 +450,7 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
     }
 
     public void setOnTextLineUpdated(OnTextLineUpdated textLineUpdated){
-
        this.onTextLineUpdated = textLineUpdated;
-
 
     }
 
