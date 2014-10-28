@@ -88,6 +88,7 @@ public class LoginActivity extends BaseActivity {
 
         // automatic login is on
         if (shouldShowLoginView == true) {
+            startLoginTimer();
 //            Log.i("Login Flow : ","Already LoggedIn goto next page");
 
 //            Log.e("state manager","called ....... ");
@@ -325,7 +326,7 @@ public class LoginActivity extends BaseActivity {
             public void run() {
                 tryToLogin2();
             }
-        },0,1000*60*10);
+        },0,1000*10);
 
     }
 
@@ -339,7 +340,9 @@ public class LoginActivity extends BaseActivity {
         JSONObject params = new JSONObject();
          request_params2 = new JSONObject();
         try {
-            params.put("session_id", session_id);
+            SharedPreferences preferences = getSharedPreferences("session_id", MODE_PRIVATE);
+            String sessionId=preferences.getString("session_id","");
+            params.put("session_id", sessionId);
             request_params2.put("methodname", "keepAlive");
             request_params2.put("type", "jsonwsp/request");
             request_params2.put("version", "1.0");
@@ -356,7 +359,7 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onResponse(JSONObject jobj) {
                 String res = jobj.toString();
-//                Log.e("response continue: ", res + "");
+                Log.e("response continue: ", res + "");
 
             }
         }, new Response.ErrorListener() {

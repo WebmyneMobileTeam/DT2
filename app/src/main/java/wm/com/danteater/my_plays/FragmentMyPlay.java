@@ -686,6 +686,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 //                    ShareActivityForPerform.pupils.clear();
 //                    sharedPreferenceClasses.clearClass(getActivity());
 //                    sharedPreferenceTeachers.clearTeacher(getActivity());
+                    Log.e("session id",session_id+"");
                     retriveSchoolClasses(session_id, cUser.getDomain());
                     retriveSchoolTeachers(session_id, cUser.getDomain());
 
@@ -1135,6 +1136,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                         teachers.addAll(userArrayList);
 //                        Log.e("teachers:",teachers+"");
                         sharedPreferenceTeachers.clearTeacher(getActivity());
+
                         for(int i=0;i<teachers.size();i++){
                             sharedPreferenceTeachers.saveTeacher(getActivity(), teachers.get(i));
                         }
