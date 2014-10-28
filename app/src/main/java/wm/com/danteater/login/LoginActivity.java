@@ -326,7 +326,7 @@ public class LoginActivity extends BaseActivity {
             public void run() {
                 tryToLogin2();
             }
-        },0,1000*10);
+        },0,1000*60*10);
 
     }
 
