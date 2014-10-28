@@ -1,11 +1,10 @@
 package wm.com.danteater.tab_music;
 
-import android.app.Activity;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.media.Image;
+
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -286,7 +285,6 @@ public class MusicFragment extends Fragment {
 
         @Override
         public View getItemView(final int section, final int position, View convertView, ViewGroup parent) {
-
             ViewHolder.ViewHolderForMusic viewHolderForMusic=null;
             ViewHolder.ViewHolderForPDF viewHolderForPDF=null;
             int type=getItemViewType(section,position);
@@ -342,8 +340,6 @@ public class MusicFragment extends Fragment {
                     }
                 });
 
-
-
                 viewHolderForMusic.cellMusicTableView.setOnClick(new CellMusicTableView.setOnPlayClick() {
                     @Override
                     public void onPlayClicked() {
@@ -372,8 +368,6 @@ public class MusicFragment extends Fragment {
                         musicSectionedAdapter.notifyDataSetChanged();
                     }
                 });
-
-
 
             } else {
                 if(convertView == null){

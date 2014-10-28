@@ -8,6 +8,7 @@ import java.util.List;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.util.Log;
 
 import com.google.gson.Gson;
 
@@ -48,6 +49,7 @@ public class SharedPreferenceTeachers {
         Gson gson = new Gson();
         String jsonFavorites = gson.toJson(teachers);
         editor.putString(PREF_VALUE, jsonFavorites);
+        Log.e("teacher list:",jsonFavorites+"");
         editor.commit();
     }
 
@@ -60,10 +62,9 @@ public class SharedPreferenceTeachers {
         String jsonFavorites = sharePref.getString(PREF_VALUE, null);
         Gson gson = new Gson();
         User[] favoriteItems = gson.fromJson(jsonFavorites,User[].class);
-        productList = Arrays.asList(favoriteItems);
-        productList = new ArrayList<User>(productList);
 
-
+        productList = new ArrayList<User>(Arrays.asList(favoriteItems));
+        Log.e("teacher array",productList+"");
         return (ArrayList<User>) productList;
     }
 

@@ -76,7 +76,6 @@ import wm.com.danteater.model.SharedPreferenceTeachers;
 import wm.com.danteater.model.StateManager;
 import wm.com.danteater.search.FragmentSearch;
 
-
 public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChangeListener {
     public  ArrayList<Group> classes = new ArrayList<Group>();
     public  ArrayList<User> teachers= new ArrayList<User>();
@@ -447,6 +446,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                     SharedPreferences pre = getActivity().getSharedPreferences("session_id", getActivity().MODE_PRIVATE);
                     session_id = pre.getString("session_id", "");
                     //ShareActivityForPreview.teachers.clear();
+//                    sharedPreferenceTeachers.clearTeacher(getActivity());
                     retriveSchoolTeachers(session_id, cUser.getDomain());
 
 
@@ -684,6 +684,8 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 //                    ShareActivityForPerform.classes.clear();
 //                    ShareActivityForPerform.teachers.clear();
 //                    ShareActivityForPerform.pupils.clear();
+//                    sharedPreferenceClasses.clearClass(getActivity());
+//                    sharedPreferenceTeachers.clearTeacher(getActivity());
                     retriveSchoolClasses(session_id, cUser.getDomain());
                     retriveSchoolTeachers(session_id, cUser.getDomain());
 
