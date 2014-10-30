@@ -68,6 +68,4 @@ public class SharedPreferenceTeachers {
         return (ArrayList<User>) productList;
     }
 
-
-
 }

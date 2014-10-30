@@ -90,7 +90,7 @@ public class InfoFragment extends Fragment {
                     protected void onPreExecute() {
                         super.onPreExecute();
                         dialog = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
-                        dialog.title("Søger");
+                        dialog.title("Gemmer til Mine stykker");
                         dialog.show();
                     }
 

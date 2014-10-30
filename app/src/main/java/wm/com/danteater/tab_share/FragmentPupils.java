@@ -78,7 +78,7 @@ private ListView listStudents;
         pupils = ShareActivityForPerform.pupils;
         if (pupils != null) {
             pupilsList = pupils.get(className);
-
+            Collections.sort(pupilsList,User.nameComparator);
 //            Log.e("class name:.................", className + "");
             ArrayList<String> studentNameList = new ArrayList<String>();
             for (int i = 0; i < pupilsList.size(); i++) {

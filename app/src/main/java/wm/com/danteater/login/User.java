@@ -3,11 +3,12 @@ package wm.com.danteater.login;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 /**
  * Created by nirav on 12-09-2014.
  */
-public class User {
+public class User  {
 
     // Dhruvil
 
@@ -124,4 +125,15 @@ public class User {
         return isPupil;
     }
 
+    /*Comparator for sorting the list by  Name*/
+    public static Comparator<User> nameComparator = new Comparator<User>() {
+
+        public int compare(User u1, User u2) {
+            String name1 = u1.getFirstName().toUpperCase()+" "+u1.getLastName().toUpperCase();
+            String name2 = u2.getFirstName().toUpperCase()+" "+u2.getLastName().toUpperCase();
+
+            //ascending order
+            return name1.compareTo(name2);
+
+        }};
 }

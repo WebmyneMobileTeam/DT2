@@ -291,7 +291,7 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
                 rehersalBool=true;
             }
 
-            btnPlayOrder.setText("Ret Bestilling");
+            btnPlayOrder.setText("Ret bestilling");
 
 //            Log.e("isAlreadyOrdered","come from perform");
         }else {

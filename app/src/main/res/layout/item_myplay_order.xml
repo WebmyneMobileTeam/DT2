@@ -87,7 +87,7 @@
             android:textColor="@drawable/selector_view"
             android:gravity="center_vertical"
             android:layout_marginLeft="-8dp"
-            android:text="Ret Bestilling"
+            android:text="Ret bestilling"
 
             android:textSize="@dimen/fragment_my_play_button_text" />
 
