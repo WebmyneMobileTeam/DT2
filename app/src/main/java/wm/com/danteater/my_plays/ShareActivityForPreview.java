@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import wm.com.danteater.Play.Play;
 import wm.com.danteater.R;
@@ -56,6 +57,7 @@ public class ShareActivityForPreview extends BaseActivity {
         super.onCreate(savedInstanceState);
         teacherSharedListForPreview.clear();
         sharedPreferenceTeachers = new SharedPreferenceTeachers();
+
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(this, "mypref", 0);
         selectedPlay = complexPreferences.getObject("selected_play", Play.class);
         ComplexPreferences complexPreferencesUser = ComplexPreferences.getComplexPreferences(this, "user_pref", 0);
@@ -66,7 +68,7 @@ public class ShareActivityForPreview extends BaseActivity {
 
         list_teachers = (ListView) findViewById(R.id.listTeachersShareForPreview);
         teacherList= sharedPreferenceTeachers.loadTeacher(ShareActivityForPreview.this);
-
+        Collections.sort(teacherList, User.nameComparator);
         // Get Teacher List
         ArrayList<String> teacherNames=new ArrayList<String>();
         for(int i=0;i<teacherList.size();i++) {

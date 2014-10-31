@@ -198,7 +198,7 @@
                 android:src="@drawable/ic_navigation_next_item" />
         </RelativeLayout>
         <View
-
+            android:id="@+id/lastDivider"
             android:layout_width="match_parent"
             android:background="@color/apptheme_color"
             android:layout_height="1dp">

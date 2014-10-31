@@ -77,19 +77,22 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
     private Play selectedPlay;
     private BeanOrderPlayReview beanOrderPlayReview;
     String stringDate;
-    Date firstDate,seocndDate;
+    Date firstDate;
+    Date seocndDate;
     boolean rehersalBool=false;
     static boolean numberOfPerformance=false;
     static boolean isValidDate=false;
     boolean isAlreadyOrdered;
-
+    private View lastDivider;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_play_new);
         getActionBar().setDisplayHomeAsUpEnabled(true);
         Intent i=getIntent();
+
         isAlreadyOrdered=i.getBooleanExtra("isAlreadyOrdered",false);
+        lastDivider= findViewById(R.id.lastDivider);
         relativeNumberOfPerformance=(RelativeLayout)findViewById(R.id.relativeNumberOfPerformance);
         relativeFirstDate=(RelativeLayout)findViewById(R.id.relativeFirstDate);
         relativeSecondDate=(RelativeLayout)findViewById(R.id.relativeSecondDate);
@@ -121,9 +124,21 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
                 etNumberOfPerformanceValue.setFocusableInTouchMode(true);
                 etNumberOfPerformanceValue.setFocusable(true);
                 ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-
             }
         });
+        //TODO
+//        etNumberOfPerformanceValue.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                if(hasFocus==false ){
+//                    if(Integer.parseInt(etNumberOfPerformanceValue.getText().toString().trim())==1) {
+//                        txtSecondDateValue.setText(txtFirstDateValue.getText().toString());
+//                        seocndDate=firstDate;
+//                        isValidDate=true;
+//                    }
+//                }
+//            }
+//        });
 
         etNumberOfPerformanceValue.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -131,9 +146,9 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
 
                 if (i == EditorInfo.IME_ACTION_DONE) {
 
-                    if(Integer.parseInt(etNumberOfPerformanceValue.getText().toString().trim())>4 || Integer.parseInt(etNumberOfPerformanceValue.getText().toString().trim())<1){
-                        ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(etNumberOfPerformanceValue.getWindowToken(), 0);
-                        numberOfPerformance=false;
+                    if (Integer.parseInt(etNumberOfPerformanceValue.getText().toString().trim()) > 4 || Integer.parseInt(etNumberOfPerformanceValue.getText().toString().trim()) < 1) {
+                        ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(etNumberOfPerformanceValue.getWindowToken(), 0);
+                        numberOfPerformance = false;
                         AlertDialog.Builder alert = new AlertDialog.Builder(OrderPlayActivityForPerformNew.this);
                         alert.setTitle("Antal opførelser");
                         alert.setMessage("Du kan bestille mellem 1 og 4 opførelser.");
@@ -150,16 +165,32 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
                         alert.show();
 
 
-                    } else {
-                        numberOfPerformance=true;
+                    } else if (Integer.parseInt(etNumberOfPerformanceValue.getText().toString().trim()) == 1) {
+                        //TODO hide second date
+                        lastDivider.setVisibility(View.INVISIBLE);
+                        relativeSecondDate.setVisibility(View.INVISIBLE);
+                        numberOfPerformance = true;
                         etNumberOfPerformanceValue.setFocusable(false);
-                        ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(etNumberOfPerformanceValue.getWindowToken(), 0);
+                        ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(etNumberOfPerformanceValue.getWindowToken(), 0);
+                        txtSecondDateValue.setText(txtFirstDateValue.getText().toString());
+                        seocndDate=firstDate;
+                        if(!(txtFirstDateValue.getText().toString() == null || txtFirstDateValue.getText().toString() == "" || txtFirstDateValue.getText().toString().isEmpty()) ){
+                            isValidDate=true;
+                        }
+
+                    } else {
+                       // TODO show second date
+                        lastDivider.setVisibility(View.VISIBLE);
+                        relativeSecondDate.setVisibility(View.VISIBLE);
+                        numberOfPerformance = true;
+                        etNumberOfPerformanceValue.setFocusable(false);
+                        ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(etNumberOfPerformanceValue.getWindowToken(), 0);
 
                     }
                     if (!((etNumberOfPerformanceValue.getText().toString() == null || etNumberOfPerformanceValue.getText().toString() == "" || etNumberOfPerformanceValue.getText().toString().isEmpty()) || (txtFirstDateValue.getText().toString() == null || txtFirstDateValue.getText().toString() == "" || txtFirstDateValue.getText().toString().isEmpty()) || (txtSecondDateValue.getText().toString() == null || txtSecondDateValue.getText().toString() == "" || txtSecondDateValue.getText().toString().isEmpty()))) {
-                        if(numberOfPerformance==true && isValidDate==true ) {
+                        if (numberOfPerformance == true && isValidDate == true) {
                             btnPlayOrder.setBackgroundColor(getResources().getColor(R.color.apptheme_color));
-                        }else {
+                        } else {
                             btnPlayOrder.setBackgroundColor(getResources().getColor(R.color.gray_color));
                         }
 //                        Log.e("",numberOfPerformance+" "+isValidDate);
@@ -169,7 +200,7 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
                 }
                 return false;
             }
-        } );
+        });
 
         relativeFirstDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -270,12 +301,17 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
             isValidDate=true;
             numberOfPerformance=true;
             etNumberOfPerformanceValue.setText(selectedPlay.getPlayOrderDetails().getNumberOfPerformances());
+            if(Integer.parseInt(etNumberOfPerformanceValue.getText().toString())==1) {
+                lastDivider.setVisibility(View.INVISIBLE);
+                relativeSecondDate.setVisibility(View.INVISIBLE);
+            }
             SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
             float performDateFirst = Float.parseFloat(selectedPlay.getPlayOrderDetails().getPerformDateFirst());
             float performDateLast = Float.parseFloat(selectedPlay.getPlayOrderDetails().getPerformDateLast());
             Date firstOneDate = float2Date(performDateFirst);
             Date lastOneDate = float2Date(performDateLast);
             txtFirstDateValue.setText(format.format(firstOneDate));
+
             txtSecondDateValue.setText(format.format(lastOneDate));
             try {
                 firstDate = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH).parse(txtFirstDateValue.getText().toString());
@@ -337,55 +373,66 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
                                 .getYear();
 
 
-if(isFirstdate)
-{
-    txtFirstDateValue.setText(stringDate);
-} else {
-    txtSecondDateValue.setText(stringDate);
-}
-
-
-
+                        if(isFirstdate)
+                        {
+                            txtFirstDateValue.setText(stringDate);
+                            //TODO
                             try {
-                                firstDate = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH).parse(txtFirstDateValue.getText().toString());
-                                seocndDate = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH).parse(txtSecondDateValue.getText().toString());
-                                System.out.println(firstDate);
-                                System.out.println(seocndDate);
-                                if (firstDate.after(seocndDate) || firstDate.equals(seocndDate)) {
-                                    isValidDate=false;
-                                    if(isFirstdate) {
+                                if (Integer.parseInt(etNumberOfPerformanceValue.getText().toString()) == 1) {
+                                    txtSecondDateValue.setText(stringDate);
+                                }
+                            } catch (NumberFormatException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
 
-                                        txtFirstDateValue.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-                                    } else {
-                                        txtSecondDateValue.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-                                    }
+                            txtSecondDateValue.setText(stringDate);
+
+
+                        }
+
+
+
+                        try {
+                            firstDate = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH).parse(txtFirstDateValue.getText().toString());
+                            seocndDate = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH).parse(txtSecondDateValue.getText().toString());
+                            System.out.println(firstDate);
+                            System.out.println(seocndDate);
+                            if (firstDate.after(seocndDate) ) {
+                                isValidDate=false;
+                                if(isFirstdate) {
+
+                                    txtFirstDateValue.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
                                 } else {
-                                    isValidDate=true;
+                                    txtSecondDateValue.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+                                }
+                            } else {
+                                isValidDate=true;
 //                                    if(isFirstdate) {
-                                        txtFirstDateValue.setTextColor(getResources().getColor(android.R.color.black));
+                                txtFirstDateValue.setTextColor(getResources().getColor(android.R.color.black));
 
 //                                    } else {
-                                        txtSecondDateValue.setTextColor(getResources().getColor(android.R.color.black));
+                                txtSecondDateValue.setTextColor(getResources().getColor(android.R.color.black));
 
 //                                    }
 
 
 
-                                }
-                                if (!((etNumberOfPerformanceValue.getText().toString() == null || etNumberOfPerformanceValue.getText().toString() == "" || etNumberOfPerformanceValue.getText().toString().isEmpty()) || (txtFirstDateValue.getText().toString() == null || txtFirstDateValue.getText().toString() == "" || txtFirstDateValue.getText().toString().isEmpty()) || (txtSecondDateValue.getText().toString() == null || txtSecondDateValue.getText().toString() == "" || txtSecondDateValue.getText().toString().isEmpty()))) {
-                                    if(numberOfPerformance==true && isValidDate==true ) {
-                                        btnPlayOrder.setBackgroundColor(getResources().getColor(R.color.apptheme_color));
-                                    }else {
-                                        btnPlayOrder.setBackgroundColor(getResources().getColor(R.color.gray_color));
-                                    }
-//                                    Log.e("",numberOfPerformance+" "+isValidDate);
-                                }
-
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
                             }
+                            if (!((etNumberOfPerformanceValue.getText().toString() == null || etNumberOfPerformanceValue.getText().toString() == "" || etNumberOfPerformanceValue.getText().toString().isEmpty()) || (txtFirstDateValue.getText().toString() == null || txtFirstDateValue.getText().toString() == "" || txtFirstDateValue.getText().toString().isEmpty()) || (txtSecondDateValue.getText().toString() == null || txtSecondDateValue.getText().toString() == "" || txtSecondDateValue.getText().toString().isEmpty()))) {
+                                if(numberOfPerformance==true && isValidDate==true ) {
+                                    btnPlayOrder.setBackgroundColor(getResources().getColor(R.color.apptheme_color));
+                                }else {
+                                    btnPlayOrder.setBackgroundColor(getResources().getColor(R.color.gray_color));
+                                }
+//                                    Log.e("",numberOfPerformance+" "+isValidDate);
+                            }
+
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
+                    }
 
 
 
@@ -558,7 +605,7 @@ if(isFirstdate)
                 String nameToBeSaved;
 
                 if (user.checkTeacherOrAdmin(user.getRoles()) == true) {
-                    // TODO can't add "(lærer)"
+
                     nameToBeSaved = currentUser.getFirstName() + " " + currentUser.getLastName() + " (lærer)";
 //                    nameToBeSaved = currentUser.getFirstName() + " " + currentUser.getLastName();
                 } else {

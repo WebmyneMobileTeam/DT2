@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:paddingTop="10dp"
+
+    android:layout_height="wrap_content">
+
+    <wm.com.danteater.customviews.WMTextView
+        android:layout_width="match_parent"
+        android:layout_toLeftOf="@+id/cbSelectWholeClass"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/normalText"
+        android:text="Hele klassen"
+        android:paddingLeft="8dp"
+        android:singleLine="true"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_height="wrap_content" />
+
+    <CheckBox
+
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:id="@+id/cbSelectWholeClass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:paddingTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/cbSelectWholeClass"
+        android:background="@color/light_gray"></View>
+</RelativeLayout>

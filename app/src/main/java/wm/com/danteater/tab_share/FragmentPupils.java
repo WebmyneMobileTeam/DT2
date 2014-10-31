@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -31,13 +32,13 @@ import wm.com.danteater.my_plays.ShareActivityForPerform;
 import wm.com.danteater.my_plays.SharedUser;
 
 public class FragmentPupils extends Fragment {
-//    private Menu menu;
-private ListView listStudents;
+    //    private Menu menu;
+    private ListView listStudents;
     private static final String ARG_POSITION = "position";
     private static final String ARG_CLASS_NAME = "class_name";
     private int position;
     private String className;
-//    StateManager stateManager=StateManager.getInstance();
+    //    StateManager stateManager=StateManager.getInstance();
     HashMap<String, ArrayList<User>> pupils;
     ArrayList<User> pupilsList;
     public static FragmentPupils newInstance(int position,String clName) {
@@ -87,12 +88,37 @@ private ListView listStudents;
             }
             ArrayAdapter adap = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_multiple_choice, studentNameList);
             listStudents.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            View header = (ViewGroup)inflater.inflate(R.layout.item_select_whole_class, listStudents, false);
+            final CheckBox cbSelectAll=(CheckBox)header.findViewById(R.id.cbSelectWholeClass);
+            if(studentNameList.size()>0) {
+                listStudents.addHeaderView(header, null, false);
+//                cbSelectAll.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        if(cbSelectAll.isChecked()) {
+//                            for (int i = 0; i <= pupilsList.size(); i++) {
+//                                User user = pupilsList.get(i);
+//                                        listStudents.setItemChecked((i), true);
+//                                ShareFragment.studentSharedList.add(user);
+//                            }
+//
+//                        } else {
+//                            for (int i = 0; i <= pupilsList.size()+1; i++) {
+//                                User user = pupilsList.get(i);
+//                                        listStudents.setItemChecked((i), false);
+//                                ShareFragment.studentSharedList.remove(user);
+//                            }
+//                        }
+//                    }
+//                });
+            }
             listStudents.setAdapter(adap);
             for (int i = 0; i < pupilsList.size(); i++) {
                 User user = pupilsList.get(i);
                 for (SharedUser u : ShareActivityForPerform.sharedTeachersAndStudents) {
                     if (u.userId.equalsIgnoreCase(user.getUserId())) {
-                        listStudents.setItemChecked(i, true);
+                        listStudents.setItemChecked((i), true);
                         ShareFragment.studentSharedList.add(user);
                     }
                 }
