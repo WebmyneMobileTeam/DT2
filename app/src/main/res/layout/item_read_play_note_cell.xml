@@ -15,18 +15,32 @@
     android:layout_height="wrap_content">
 
     <RelativeLayout
+        android:paddingRight="@dimen/activity_margin"
+        android:paddingLeft="@dimen/activity_margin"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-       >
+        android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/readPlayNoteCellMoreImage"
-            android:layout_margin="4dp"
             android:layout_alignParentRight="true"
+            android:id="@+id/readPlayNoteCellMoreImage"
+            android:layout_marginRight="28dp"
             android:layout_centerVertical="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/ic_more" />
+
+        <wm.com.danteater.customviews.WMTextView
+            android:layout_alignParentRight="true"
+            android:id="@+id/linennn"
+            android:padding="4dp"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/darker_gray"
+            android:text="32"
+            android:visibility="invisible"
+            android:textSize="@dimen/small_text" />
+
 
     </RelativeLayout>
 

@@ -57,10 +57,11 @@ public class SharedPreferenceTeachers {
         SharedPreferences sharePref;
         List<User> productList;
 
-        sharePref = context.getSharedPreferences(PREF_NAME,Context.MODE_PRIVATE);
+        sharePref = context.getSharedPreferences(PREF_NAME,context.MODE_PRIVATE);
 
         String jsonFavorites = sharePref.getString(PREF_VALUE, null);
         Gson gson = new Gson();
+
         User[] favoriteItems = gson.fromJson(jsonFavorites,User[].class);
 
         productList = new ArrayList<User>(Arrays.asList(favoriteItems));

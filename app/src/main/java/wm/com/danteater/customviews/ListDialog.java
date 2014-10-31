@@ -61,9 +61,6 @@ public  class ListDialog extends Dialog{
     }
 
 
-
-
-
     public void title(String title){
 
         txtTitle.setText(title);

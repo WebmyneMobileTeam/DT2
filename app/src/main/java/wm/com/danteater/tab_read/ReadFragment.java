@@ -147,6 +147,7 @@ public class ReadFragment extends Fragment {
    private WMEdittext edGotoLine;
    private WMTextView txtGotoLine;
 
+
     public static ReadFragment newInstance(String param1, String param2) {
         ReadFragment fragment = new ReadFragment();
 
@@ -316,16 +317,14 @@ public class ReadFragment extends Fragment {
         if(currentState == STATE_RECORD){
 
             ArrayList<String> toDelete = new ArrayList<String>();
-
             for(String section : marrPlaySections){
 
                 if(section.contains("Personerne") || section.contains("Personer")){
-
                     toDelete.add(section);
+
                     mSubtractionCount = dicPlayLines.get(section).size() + 1;
                     dicPlayLines.remove(section);
                     indexForFirstScene--;
-
                     for(String title : mdictSongIndexPaths.keySet()){
 
                         String indexPath = mdictSongIndexPaths.get(title);
@@ -334,7 +333,6 @@ public class ReadFragment extends Fragment {
                         mdictSongIndexPaths.put(title,s-1+","+r);
 
                     }
-
                 }
             }
 
@@ -343,7 +341,6 @@ public class ReadFragment extends Fragment {
             }
 
         }
-
 
         DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
         marrMyCastMatches = dbh.getMyCastMatchesForUserId(currentUser.getUserId(),selectedPlay.pID);
@@ -391,8 +388,6 @@ public class ReadFragment extends Fragment {
         txtGotoLine.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
 
                 final String lineNo = edGotoLine.getText().toString();
 
@@ -583,11 +578,6 @@ public class ReadFragment extends Fragment {
 
                 dialog.dismiss();
                 String selectedString = msections.get(position);
-
-
-
-
-
 
                for(int i=0;i<selectedPlay.playLinesList.size();i++){
                     PlayLines pl = selectedPlay.playLinesList.get(i);
@@ -1014,7 +1004,7 @@ public class ReadFragment extends Fragment {
 
 
 
-                    holderReadPlayPlayLineCell.cellReadPlayPlayLine.setupForPlayLine(playLine,currentState,mark2);
+                    holderReadPlayPlayLineCell.cellReadPlayPlayLine.setupForPlayLine(section,playLine,currentState,mark2);
 
                     holderReadPlayPlayLineCell.cellReadPlayPlayLine.setOnTextLineUpdated(new CellReadPlayPlayLine.OnTextLineUpdated() {
 
@@ -1075,7 +1065,8 @@ public class ReadFragment extends Fragment {
                         holderReadPlayNoteCell = (ViewHolder.HolderReadPlayNoteCell)convertView.getTag();
                     }
 
-                    holderReadPlayNoteCell.cellReadPlayNote.setupForPlayLine(playLine,currentState);
+                    holderReadPlayNoteCell.cellReadPlayNote.setupForPlayLine(section,playLine,currentState);
+
                     holderReadPlayNoteCell.cellReadPlayNote.setOnTextLineUpdated(new CellReadPlayNote.OnTextLineUpdated() {
                         @Override
                         public void onTextLineUpdated(String newText) {
@@ -1100,7 +1091,7 @@ public class ReadFragment extends Fragment {
                     }else{
                         holderReadPlayInfoCell = (ViewHolder.HolderReadPlayInfoCell)convertView.getTag();
                     }
-                    holderReadPlayInfoCell.cellReadPlayInfo.setupForPlayLine(playLine,currentState);
+                    holderReadPlayInfoCell.cellReadPlayInfo.setupForPlayLine(section,playLine,currentState);
 
                 break;
 

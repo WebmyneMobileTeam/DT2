@@ -19,20 +19,21 @@
         android:layout_height="wrap_content">
 
         <wm.com.danteater.customviews.WMTextView
-            android:id="@+id/readPlayLineCellRollName"
-            android:layout_alignParentLeft="true"
-            android:layout_marginTop="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            android:textStyle="bold"
-            android:text="Role name"
-            android:textSize="@dimen/normalText" />
+        android:id="@+id/readPlayLineCellRollName"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:text="Role name"
+        android:textSize="@dimen/normalText" />
 
         <ImageView
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="28dp"
             android:id="@+id/readPlayLineCellMoreImage"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/readPlayLineCellLineNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/ic_more" />
@@ -90,10 +91,12 @@
     </LinearLayout>
 
     <include
+
         android:id="@+id/cellMenuReadLineTeacher"
         layout="@layout/readplay_playline_menu"
         android:layout_gravity="right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         />
 </FrameLayout>

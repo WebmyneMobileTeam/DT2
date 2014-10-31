@@ -120,7 +120,7 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
 
 
 
-    public void setupForPlayLine(PlayLines playLine, int current_state,boolean mark) {
+    public void setupForPlayLine(int section,PlayLines playLine, int current_state,boolean mark) {
 
        lblRoleName.setBackgroundColor(Color.TRANSPARENT);
        btnEdit.setVisibility(View.VISIBLE);
@@ -130,6 +130,14 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
                 convertView.setBackgroundColor(Color.parseColor("#f6f6d6"));
             }
         }
+
+        String currentKey = playLine.textLinesList.get(0).LineText;
+
+        if(section == 0 && current_state != STATE_RECORD){
+
+            convertView.setBackgroundColor(ctx.getResources().getColor(R.color.read_play_cell));
+        }
+
 
 //        Log.e("Mark is ",""+mark);
         if(mark == true){
@@ -142,9 +150,8 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
 
         listReadPlayPlaylinecell.removeAllViews();
         listReadPlayPlaylinecell.invalidate();
-        if(current_state == STATE_PREVIEW){
-            btnMenu.setVisibility(View.INVISIBLE);
-        }
+
+
 
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(ctx, "user_pref", 0);
         user = complexPreferences.getObject("current_user", User.class);
@@ -154,9 +161,12 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
         if(user.checkTeacherOrAdmin(user.getRoles())){
             btnMenu.setVisibility(View.VISIBLE);
         }else{
-
-            btnEdit.setVisibility(View.GONE);
+            btnMenu.setVisibility(View.GONE);
           //  btnMenu.setVisibility(View.INVISIBLE);
+        }
+
+        if(current_state == STATE_PREVIEW){
+            btnMenu.setVisibility(View.INVISIBLE);
         }
 
         tvPlayLines.setText("");
@@ -171,7 +181,12 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
             lblLineNumber.setText("");
         }
 
-        lblRoleName.setText(playLine.RoleName + ":");
+        if(playLine.RoleName == null){
+            lblRoleName.setText("");
+        }else{
+            lblRoleName.setText(playLine.RoleName + ":");
+        }
+
 
         ArrayList<TextLines> textLines = playLine.textLinesList;
 

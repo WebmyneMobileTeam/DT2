@@ -30,6 +30,10 @@ public class WMTextView extends TextView{
         setTypeface(typeFace,Typeface.BOLD);
     }
 
+    public void setItalic(){
+        setTypeface(typeFace,Typeface.ITALIC);
+    }
+
     public WMTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
         createAndSet(context);
