@@ -88,11 +88,11 @@ public class FragmentPupils extends Fragment {
             }
             ArrayAdapter adap = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_multiple_choice, studentNameList);
             listStudents.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-            LayoutInflater inflater = getActivity().getLayoutInflater();
-            View header = (ViewGroup)inflater.inflate(R.layout.item_select_whole_class, listStudents, false);
-            final CheckBox cbSelectAll=(CheckBox)header.findViewById(R.id.cbSelectWholeClass);
-            if(studentNameList.size()>0) {
-                listStudents.addHeaderView(header, null, false);
+//            LayoutInflater inflater = getActivity().getLayoutInflater();
+//            View header = (ViewGroup)inflater.inflate(R.layout.item_select_whole_class, listStudents, false);
+//            final CheckBox cbSelectAll=(CheckBox)header.findViewById(R.id.cbSelectWholeClass);
+//            if(studentNameList.size()>0) {
+//                listStudents.addHeaderView(header, null, false);
 //                cbSelectAll.setOnClickListener(new View.OnClickListener() {
 //                    @Override
 //                    public void onClick(View v) {
@@ -112,7 +112,7 @@ public class FragmentPupils extends Fragment {
 //                        }
 //                    }
 //                });
-            }
+//            }
             listStudents.setAdapter(adap);
             for (int i = 0; i < pupilsList.size(); i++) {
                 User user = pupilsList.get(i);
