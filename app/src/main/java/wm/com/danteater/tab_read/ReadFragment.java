@@ -401,6 +401,7 @@ public class ReadFragment extends Fragment {
                     final int gotoL = 0;
 
                     try {
+
 /*                        new AsyncTask<Void,Void,Void>(){
 
                             @Override
@@ -982,7 +983,29 @@ public class ReadFragment extends Fragment {
                     }else{
                         holderRecordPlayPlayLineCell = (ViewHolder.HolderRecordPlayPlayLineCell)convertView.getTag();
                     }
-                    holderRecordPlayPlayLineCell.cellRecordPlayPlayLine.setupForPlayLine(playLine,currentState);
+
+                    boolean mark2 = false;
+                    for(int i=0;i<marrMyCastMatches.size();i++){
+                        String sCheck = marrMyCastMatches.get(i).toString();
+                        if(sCheck.equalsIgnoreCase(playLine.RoleName)){
+                            mark2 = true;
+
+                        }
+                    }
+                    holderRecordPlayPlayLineCell.cellRecordPlayPlayLine.setupForPlayLine(playLine,currentState,mark2);
+
+                    holderRecordPlayPlayLineCell.cellRecordPlayPlayLine.setRecordDelegates(new CellRecordPlayPlayLine.RecordDelegates() {
+                        @Override
+                        public void onPlayClicked(PlayLines playLine) {
+                          
+                            downloadAndPlayRecordTextToSpeech(playLine);
+                            
+                        }
+                    });
+
+
+
+
 
 
                 break;
@@ -1000,19 +1023,19 @@ public class ReadFragment extends Fragment {
                         holderReadPlayPlayLineCell = (ViewHolder.HolderReadPlayPlayLineCell)convertView.getTag();
                     }
 
-                    boolean mark2 = false;
+                    boolean mark22 = false;
 
                     for(int i=0;i<marrMyCastMatches.size();i++){
                         String sCheck = marrMyCastMatches.get(i).toString();
                         if(sCheck.equalsIgnoreCase(playLine.RoleName)){
-                            mark2 = true;
+                            mark22 = true;
 
                         }
                     }
 
 
 
-                    holderReadPlayPlayLineCell.cellReadPlayPlayLine.setupForPlayLine(section,playLine,currentState,mark2);
+                    holderReadPlayPlayLineCell.cellReadPlayPlayLine.setupForPlayLine(section,playLine,currentState,mark22);
 
                     holderReadPlayPlayLineCell.cellReadPlayPlayLine.setOnTextLineUpdated(new CellReadPlayPlayLine.OnTextLineUpdated() {
 
@@ -1236,6 +1259,29 @@ public class ReadFragment extends Fragment {
         }
 
     }
+
+    private void downloadAndPlayRecordTextToSpeech(PlayLines playLine) {
+
+        ArrayList<TextLines> arrTxt = playLine.textLinesList;
+
+        if(arrTxt != null && arrTxt.size()>0){
+
+            String text = new String();
+            for(TextLines line : arrTxt){
+                text.concat(line.currentText());
+                text.concat(" ");
+            }
+
+
+
+
+
+
+        }
+
+
+    }
+
 
     private void proceedMessage(PlayLines playLine) {
 

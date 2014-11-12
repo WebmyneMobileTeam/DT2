@@ -2,8 +2,12 @@ package wm.com.danteater.tab_inspiration;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -29,7 +33,27 @@ import com.kbeanie.imagechooser.api.ChosenImage;
 import com.kbeanie.imagechooser.api.ImageChooserListener;
 import com.kbeanie.imagechooser.api.ImageChooserManager;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.FormBodyPart;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.CoreProtocolPNames;
+import org.apache.http.util.EntityUtils;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.lang.reflect.Type;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,8 +99,6 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
 
     public static FragmnentInspiration newInstance(String param1, String param2) {
         FragmnentInspiration fragment = new FragmnentInspiration();
-
-
         return fragment;
     }
 
@@ -194,18 +216,12 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
 
         }
 
-    private void fetchAndDisplayInspirations() {
+    public void fetchAndDisplayInspirations() {
 
+           inspirations = new ArrayList<Inspiration>();
+           inspirations.clear();
 
-
-            inspirations = new ArrayList<Inspiration>();
-            inspirations.clear();
-
-
-        gridInspiration.removeAllViews();
-
-
-
+           gridInspiration.removeAllViews();
 
             int w = getResources().getDisplayMetrics().widthPixels;
             GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(new ViewGroup.MarginLayoutParams(w / 2, w / 4));
@@ -245,15 +261,9 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
                 Type listType = new TypeToken<List<Inspiration>>() {}.getType();
                 inspirations = new GsonBuilder().create().fromJson(response,listType);
                 dialog.dismiss();
-
                 fillInspirations();
 
-
-
             }
-
-
-
             @Override
             public void error(VolleyError error) {
                 error.printStackTrace();
@@ -261,12 +271,6 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
 
             }
         }.start();
-
-
-
-
-
-
 
     }
 
@@ -281,7 +285,7 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
             GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(new ViewGroup.MarginLayoutParams(w / 2, w / 4));
             final ImageView ivi = new ImageView(getActivity());
             ivi.setScaleType(ImageView.ScaleType.CENTER);
-            ivi.setImageResource(R.drawable.camerax);
+             ivi.setImageResource(R.drawable.camerax);
             gridInspiration.addView(ivi,layoutParams);
 
             ivi.setOnClickListener(new View.OnClickListener() {
@@ -292,10 +296,6 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
                     inspView.setTypeView();
                     inspView.setupExistingInspiration(inspirations.get(showInsp));
                     inspView.show();
-
-
-
-
                 }
             });
         }
@@ -402,23 +402,102 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
             @Override
             public void run() {
 
-
                 InspirationDetailsView inspirationView = new InspirationDetailsView(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
-
                 String userName = currentUser.getFirstName()+" "+currentUser.getLastName();
                 inspirationView.setupAfterImageChoose(chosenImage,userName+","+currentUser.getDomain());
+                inspirationView.setSelectedListner(new InspirationDetailsView.setSelectedListner() {
+                    @Override
+                    public void selected(final String filePath, final String message) {
+
+
+
+                        new AsyncTask<Void,Void,Void>(){
+
+                            HUD hud;
+
+                            @Override
+                            protected void onPreExecute() {
+                                super.onPreExecute();
+
+                                hud = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
+                                hud.title("Sending...");
+                                hud.show();
+
+                            }
+
+                            @Override
+                            protected Void doInBackground(Void... voids) {
+
+                                try {
+                                    uploadtoServer(filePath,message);
+
+                                }catch(Exception e){}
+
+
+
+
+                                return null;
+                            }
+
+                            @Override
+                            protected void onPostExecute(Void aVoid) {
+                                super.onPostExecute(aVoid);
+
+                                hud.dismiss();
+                                fetchAndDisplayInspirations();
+
+                            }
+                        }.execute();
+
+                    }
+                });
                 inspirationView.show();
 
             }
         });
+    }
 
+
+    private void uploadtoServer(String filePath, String message) throws Exception{
+
+        HttpClient httpclient = new DefaultHttpClient();
+        httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+        HttpPost httppost = new HttpPost("http://api.danteater.dk/api/Inspiration");
+        String boundary = "--"+"62cd4a08872da000cf5892ad65f1ebe6";
+        httppost.setHeader("Content-type","multipart/form-data; boundary="+boundary);
+
+        Bitmap b = BitmapFactory.decodeFile(filePath);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        b.compress(Bitmap.CompressFormat.JPEG,85, baos);
+        byte[] imageBytes = baos.toByteArray();
+        ByteArrayBody bab = new ByteArrayBody(imageBytes,new File(filePath).getName()+".jpg");
+
+
+        HttpEntity entity = MultipartEntityBuilder.create()
+                .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
+                .setBoundary(boundary)
+                .addPart("PlayId",new StringBody(URLEncoder.encode(selectedPlay.PlayId,"UTF-8")))
+                .addPart("UserName",new StringBody(currentUser.getFirstName()+" "+currentUser.getLastName()))
+                .addPart("UserId",new StringBody(URLEncoder.encode(currentUser.getUserId(),"UTF-8")))
+                .addPart("SchoolId",new StringBody(URLEncoder.encode(currentUser.getDomain(),"UTF-8")))
+                .addPart("SchoolName",new StringBody(URLEncoder.encode(currentUser.getDomain(),"UTF-8")))
+                .addPart("MessageText",new StringBody(message))
+                .addPart("userfile",bab)
+                .build();
+
+        httppost.setEntity(entity);
+        try {
+            HttpResponse response = httpclient.execute(httppost);
+
+        }catch(Exception e){
+
+        }
 
 
     }
 
     @Override
     public void onError(String s) {
-
 
 
     }

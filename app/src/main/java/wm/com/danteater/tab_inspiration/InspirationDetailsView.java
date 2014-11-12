@@ -32,7 +32,6 @@ public class InspirationDetailsView extends Dialog{
     private View convertView;
     private Context ctx;
     private FrameLayout parentDialog;
-
     private ImageView iv;
     private EditText tvComment;
     private TextView tvName;
@@ -40,6 +39,7 @@ public class InspirationDetailsView extends Dialog{
     ImageLoader loader;
 
     public InspirationDetailsView(Context context, int theme) {
+
         super(context, theme);
         this.ctx = context;
         ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(ctx).build();
@@ -93,16 +93,12 @@ public class InspirationDetailsView extends Dialog{
                 public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 
                     iv.setImageBitmap(loadedImage);
-
                 }
             });
-
         }
-
-
     }
 
-    public void setupAfterImageChoose(ChosenImage image,String name){
+    public void setupAfterImageChoose(final ChosenImage image,String name){
         //imgProfilePic.setImageURI(Uri.parse(new File(image
         //        .getFileThumbnail()).toString()));
         iv.setImageURI(Uri.parse(new File(image.getFilePathOriginal()).toString()));
@@ -112,7 +108,16 @@ public class InspirationDetailsView extends Dialog{
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(ctx, "Clicked GEM", Toast.LENGTH_SHORT).show();
+                String message = "";
+
+                message = tvComment.getText().toString();
+
+              //  Toast.makeText(ctx,image.getExtension(), Toast.LENGTH_SHORT).show();
+
+               listner.selected(image.getFilePathOriginal(),message);
+                dismiss();
+
+
 
             }
         });
@@ -126,6 +131,6 @@ public class InspirationDetailsView extends Dialog{
 
     public static interface setSelectedListner{
 
-        public void selected(String value);
+        public void selected(String filePath,String message);
     }
 }

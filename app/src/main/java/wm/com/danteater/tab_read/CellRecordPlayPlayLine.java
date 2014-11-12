@@ -47,6 +47,10 @@ public class CellRecordPlayPlayLine {
     User user;
     String currentUserName = "";
     String currentUserId = "";
+    PlayLines playLine;
+    RecordDelegates delegate;
+
+
 
 
     public CellRecordPlayPlayLine(View view, Context context) {
@@ -61,10 +65,15 @@ public class CellRecordPlayPlayLine {
         listReadPlayPlaylinecell = (LinearLayout)view.findViewById(R.id.listReadPlayPlaylinecell);
         lblRoleName.setBold();
 
+
+
+
+
     }
 
-    public void setupForPlayLine(PlayLines playLine, int current_state) {
+    public void setupForPlayLine(final PlayLines playLine, int current_state,boolean mark) {
 
+        this.playLine = playLine;
         listReadPlayPlaylinecell.removeAllViews();
         listReadPlayPlaylinecell.invalidate();
 
@@ -91,6 +100,12 @@ public class CellRecordPlayPlayLine {
         }
 
         lblRoleName.setText(playLine.RoleName + ":");
+
+        if(mark == true){
+            lblRoleName.setBackgroundColor(Color.YELLOW);
+        }
+
+
 
         ArrayList<TextLines> textLines = playLine.textLinesList;
 
@@ -150,6 +165,13 @@ public class CellRecordPlayPlayLine {
 
         }
 
+        imgPLay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                delegate.onPlayClicked(playLine);
+            }
+        });
+
     }
 
     private String colorForLineType(TextLines.TextLineType textLineType) {
@@ -163,9 +185,19 @@ public class CellRecordPlayPlayLine {
         }else{
             return "#000000";
         }
+
+    }
+
+    public void setRecordDelegates(RecordDelegates delegates){
+        this.delegate = delegates;
     }
 
 
+    public interface RecordDelegates{
+
+        public void onPlayClicked(PlayLines playLine);
+
+    }
 
 
 
