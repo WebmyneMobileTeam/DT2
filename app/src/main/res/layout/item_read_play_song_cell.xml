@@ -23,13 +23,22 @@
         android:textColor="@android:color/white"
         android:textSize="@dimen/normalText"/>
 
-    <LinearLayout
+  <!--  <LinearLayout
         android:id="@+id/linearSongCell"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-    </LinearLayout>
+    </LinearLayout>-->
+
+    <ListView
+        android:id="@+id/listViewReadMusic"
+        android:layout_width="match_parent"
+        android:dividerHeight="1dp"
+        android:divider="#d1d1d1"
+        android:layout_height="200dp"/>
+
+
 
 
 </LinearLayout>

@@ -57,7 +57,7 @@ public class FragmentExcerciseForTeacher extends Fragment {
         tViewOne=(GridView)view.findViewById(R.id.videos_one_teacherview);
         tViewTwo=(GridView)view.findViewById(R.id.videos_two_teacherview);
         sView=(GridView)view.findViewById(R.id.videos_studentview);
-        tViewOneList.add("Intro");
+   /*     tViewOneList.add("Intro");
         tViewOneList.add("Intro");
         tViewOneList.add("Intro");
         tVideoViewOneList.add(R.raw.one);
@@ -86,7 +86,7 @@ public class FragmentExcerciseForTeacher extends Fragment {
         } else {
             sView.setAdapter(new GridAdapter(getActivity(), sViewList,sVideoViewList));
         }
-
+*/
         return view;
     }
 
@@ -141,8 +141,8 @@ public class FragmentExcerciseForTeacher extends Fragment {
             holder.txtVideoName.setText(list.get(position));
 
 
-            Uri  videoURI = Uri.parse("android.resource://" + getActivity().getPackageName() +"/"
-                    +R.raw.intro);
+           Uri  videoURI = Uri.parse("android.resource://" + getActivity().getPackageName() +"/"
+                    +R.raw.intro_converted);
             MediaMetadataRetriever retriever = new MediaMetadataRetriever();
             retriever.setDataSource(getActivity(), videoURI);
             Bitmap bitmap = retriever

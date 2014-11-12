@@ -6,8 +6,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import wm.com.danteater.BuildConfig;
 import wm.com.danteater.R;
 
 public class SettingsFragment extends Fragment {
@@ -15,6 +17,7 @@ public class SettingsFragment extends Fragment {
     private ToggleButton toggleAutomaticLogin;
     private ToggleButton toggleShowLineNumber;
     private ToggleButton toggleShowCommentsForUserId;
+    private TextView txtVersionNo;
 
     public static SettingsFragment newInstance(String param1, String param2) {
         SettingsFragment fragment = new SettingsFragment();
@@ -40,6 +43,11 @@ public class SettingsFragment extends Fragment {
         boolean shouldShowLoginView = preferences.getBoolean("shouldShowLoginView", false);
         boolean shouldShowLineNumbers = preferences.getBoolean("showLineNumber", false);
         boolean shouldShowComments= preferences.getBoolean("showComments", false);
+
+
+        txtVersionNo = (TextView)rootView.findViewById(R.id.txtVersionName);
+        txtVersionNo.setText(String.format("Version %s",BuildConfig.VERSION_NAME));
+
 
         toggleAutomaticLogin=(ToggleButton)rootView.findViewById(R.id.settingAutomatiskeLogin);
         toggleAutomaticLogin.setChecked(shouldShowLoginView);

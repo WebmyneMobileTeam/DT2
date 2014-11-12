@@ -16,6 +16,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import wm.com.danteater.Play.Play;
@@ -32,6 +33,7 @@ public class ReadActivityFromPreview extends BaseActivity {
     private Play play;
     int current_state = 1;
     private boolean isFromLogin=false;
+    public static boolean isBackFromOrder = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +72,7 @@ public class ReadActivityFromPreview extends BaseActivity {
         ft.replace(R.id.containerPreview,readFragment,"preview");
         ft.commit();
 
-
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
     }
 
@@ -112,6 +114,13 @@ public class ReadActivityFromPreview extends BaseActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(isBackFromOrder == true){
+            finish();
+        }
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

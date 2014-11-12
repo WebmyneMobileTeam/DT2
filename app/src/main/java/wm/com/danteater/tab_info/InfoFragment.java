@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 
@@ -18,6 +20,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,7 +28,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -39,6 +44,8 @@ import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.model.DatabaseWrapper;
 import wm.com.danteater.search.BeanSearch;
+import wm.com.danteater.tab_inspiration.Inspiration;
+import wm.com.danteater.tab_inspiration.InspirationDetailsView;
 
 
 public class InfoFragment extends Fragment {
@@ -52,6 +59,8 @@ public class InfoFragment extends Fragment {
     private String playOrderIdStr, playOrderError;
     private HUD dialog;
     private boolean wasPlayAlreadyOrderedForPreview = false;
+    GridLayout gridInspiration;
+    private ArrayList<Inspiration> inspirations;
 
     public static InfoFragment newInstance(String param1, String param2) {
         InfoFragment fragment = new InfoFragment();
@@ -74,6 +83,89 @@ public class InfoFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        showInspirations();
+    }
+
+    private void showInspirations() {
+
+
+
+        inspirations = new ArrayList<Inspiration>();
+        inspirations.clear();
+        gridInspiration.removeAllViews();
+
+
+        final HUD dialog = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
+        dialog.title("Henter inspirationer");
+        dialog.show();
+
+
+        new CallWebService("http://api.danteater.dk/api/Inspiration/"+beanSearch.PlayId,CallWebService.TYPE_JSONARRAY) {
+
+            @Override
+            public void response(String response) {
+
+                Log.e("Response from inspiration ",response);
+
+                Type listType = new TypeToken<List<Inspiration>>() {}.getType();
+                inspirations = new GsonBuilder().create().fromJson(response,listType);
+                dialog.dismiss();
+                fillInspirations();
+            }
+
+            @Override
+            public void error(VolleyError error) {
+                error.printStackTrace();
+                dialog.dismiss();
+
+            }
+        }.start();
+
+
+
+
+
+
+
+
+    }
+
+    private void fillInspirations() {
+
+
+        int w = getResources().getDisplayMetrics().widthPixels;
+
+        for(int i=0;i<inspirations.size();i++){
+
+            final int showInsp = i;
+            GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(new ViewGroup.MarginLayoutParams(w / 2, w / 4));
+            final ImageView ivi = new ImageView(getActivity());
+            ivi.setScaleType(ImageView.ScaleType.CENTER);
+            ivi.setImageResource(R.drawable.camerax);
+            gridInspiration.addView(ivi,layoutParams);
+
+            ivi.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    InspirationDetailsView inspView = new InspirationDetailsView(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
+                    inspView.setTypeView();
+                    inspView.setupExistingInspiration(inspirations.get(showInsp));
+                    inspView.show();
+
+
+
+
+                }
+            });
+        }
+
+
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_info, container, false);
@@ -81,6 +173,9 @@ public class InfoFragment extends Fragment {
 //        WebSettings settings = webview.getSettings();
 //        settings.setDefaultTextEncodingName("utf-8");
         orderForPreview = (RelativeLayout) view.findViewById(R.id.orderForPreview);
+
+        gridInspiration = (GridLayout)view.findViewById(R.id.gridInspiration);
+
         orderForPreview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -129,6 +224,7 @@ public class InfoFragment extends Fragment {
 
             }
         });
+
         webview.loadData(Synopsis,  "text/html; charset=utf-8", "utf-8");
         return view;
     }

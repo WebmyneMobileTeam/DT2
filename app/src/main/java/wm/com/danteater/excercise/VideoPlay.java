@@ -21,23 +21,13 @@ public class VideoPlay extends BaseActivity {
         setContentView(R.layout.activity_video_play);
         getActionBar().hide();
         Intent i=getIntent();
-        String videoPath=i.getStringExtra("video_path");
-
+        int videoPath = i.getIntExtra("video_path",0);
         videoView=(VideoView)findViewById(R.id.video_view_full_screen);
-//        Uri video = Uri.parse("android.resource://" + getPackageName() + "/"
-//                + Integer.parseInt(videoPath));
-//        Log.e("video path: ", video + "");
-//        videoView.setVideoURI(video);
-//        mc = new MediaController(this);
-//        videoView.setMediaController(mc);
-//        videoView.start();
-
-      MediaController mediaController = new MediaController(this);
+        MediaController mediaController = new MediaController(this);
         mediaController.setAnchorView(videoView);
-// Set video link (mp4 format )
         Uri video = Uri.parse("android.resource://" + getPackageName() + "/"
-                +R.raw.intro);
-        videoView.setMediaController(mediaController);
+                +videoPath);
+       videoView.setMediaController(mediaController);
         videoView.setVideoURI(video);
         videoView.start();
     }

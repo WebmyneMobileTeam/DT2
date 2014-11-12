@@ -60,6 +60,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import wm.com.danteater.BuildConfig;
 import wm.com.danteater.Play.AssignedUsers;
 import wm.com.danteater.Play.Comments;
 import wm.com.danteater.Play.Play;
@@ -385,6 +386,8 @@ public class ReadFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
         txtGotoLine.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -453,6 +456,11 @@ public class ReadFragment extends Fragment {
 
             }
         }.execute();
+
+
+        if(MusicFragment.mediaPlayer != null &&MusicFragment. mediaPlayer.isPlaying()){
+            MusicFragment.mediaPlayer.stop();
+        }
 
     }
 

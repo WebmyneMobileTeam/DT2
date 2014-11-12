@@ -431,6 +431,7 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
         dialog.setCanceledOnTouchOutside(true);
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         LayoutInflater mInflater = (LayoutInflater) ctx.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+
         View view = mInflater.inflate(R.layout.edit_line_view_popup_menu,null);
         dialog.setContentView(view);
         dialog.show();
@@ -439,7 +440,8 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
         editLineViewTextArea.setText(pl.textLinesList.get(0).currentText());
 
 
-
+        WMTextView editLineViewPopupTitle = (WMTextView)view.findViewById(R.id.editLineViewPopupTitle);
+        editLineViewPopupTitle.setText("Ret replik");
 
 
         WMTextView editLineViewPopupCancel = (WMTextView)view.findViewById(R.id.editLineViewPopupCancel);

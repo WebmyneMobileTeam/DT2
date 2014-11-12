@@ -284,6 +284,7 @@ public class CirclePageIndicator extends View implements PageIndicator {
     }
 
     public boolean onTouchEvent(MotionEvent ev) {
+
         if (super.onTouchEvent(ev)) {
             return true;
         }

@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -119,6 +120,9 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         segmentedTeachersPupils.setOnCheckedChangeListener(this);
         // show share with pupils tab by default
         rbTeacher.setChecked(true);
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         return convertView;
     }
 
@@ -317,9 +321,25 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
     }
 
     public void shareWithTeachersAndStudents() {
+
         final ArrayList<User> totalUsers = new ArrayList<User>();
-        totalUsers.addAll(teacherSharedList);
-        totalUsers.addAll(studentSharedList);
+
+                totalUsers.addAll(teacherSharedList);
+
+        for(int z=0;z < studentSharedList.size();z++){
+
+            User uc = studentSharedList.get(z);
+            if(uc.getFirstName().equalsIgnoreCase("Hele")){
+                studentSharedList.remove(z);
+
+            }
+
+        }
+
+
+                totalUsers.addAll(studentSharedList);
+
+
         final JSONArray shareWithUsersArray = new JSONArray();
             if(!totalUsers.contains(currentUser)) {
                 totalUsers.add(currentUser);
@@ -327,24 +347,29 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
 
         if (totalUsers != null || totalUsers.size() != 0) {
             for (User user : totalUsers) {
-                String nameToBeSaved;
 
-                if (user.checkTeacherOrAdmin(user.getRoles()) == true) {
-                    // TODO can't add "(lærer)"
-                    nameToBeSaved = user.getFirstName() + " " + user.getLastName() + " (lærer)";
+                if (!user.getFirstName().contains("Hele")) {
+
+                    String nameToBeSaved;
+                    if (user.checkTeacherOrAdmin(user.getRoles()) == true) {
+
+                        nameToBeSaved = user.getFirstName() + " " + user.getLastName() + " (lærer)";
 //                    nameToBeSaved = user.getFirstName() + " " + user.getLastName();
-                } else {
-                    nameToBeSaved = user.getFirstName() + " " + user.getLastName();
-                }
-                JSONObject userDict = new JSONObject();
-                try {
-                    userDict.put("UserId", user.getUserId());
-                    userDict.put("UserName", nameToBeSaved);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                    } else {
+                        nameToBeSaved = user.getFirstName() + " " + user.getLastName();
+                    }
+                    JSONObject userDict = new JSONObject();
+                    try {
+                        userDict.put("UserId", user.getUserId());
+                        userDict.put("UserName", nameToBeSaved);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
-                shareWithUsersArray.put(userDict);
+                    shareWithUsersArray.put(userDict);
+                }else{
+
+                }
             }
 //            Log.e("total users: ", shareWithUsersArray + "");
         }
@@ -361,36 +386,48 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
             protected Void doInBackground(Void... voids) {
                 try
                 {
+
+
+                    Log.e("Selected play order id ",selectedPlay.OrderId);
+                    Log.e("value arry ",shareWithUsersArray.toString());
+
                     Reader readerForNone = API.callWebservicePost("http://api.danteater.dk/api/playshare/" + selectedPlay.OrderId, shareWithUsersArray.toString());
 //                    Log.e("reader", readerForNone + "");
 
-                    StringBuffer response = new StringBuffer();
+               /*     StringBuffer response = new StringBuffer();
                     int i = 0;
                     do {
                         i = readerForNone.read();
                         char character = (char) i;
                         response.append(character);
 
-                    } while (i != -1);
-                    readerForNone.close();
+                    } while (i != -1);*/
+                //    readerForNone.close();
 //                    Log.e("response", response + " ");
-                    getActivity().runOnUiThread(new Runnable() {
+                  /*  getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             ShareActivityForPerform.menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_action_del_unselected));
                             ShareActivityForPerform.menu.getItem(0).setEnabled(false);
                             dialog.dismissWithStatus(R.drawable.ic_navigation_accept, "Stykker er delt");
                         }
-                    });
+                    });*/
 
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
                 return null;
             }
 
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                ShareActivityForPerform.menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_action_del_unselected));
+                ShareActivityForPerform.menu.getItem(0).setEnabled(false);
+                dialog.dismissWithStatus(R.drawable.ic_navigation_accept, "Stykker er delt");
 
+            }
         }.execute();
 
     }

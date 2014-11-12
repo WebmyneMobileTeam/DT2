@@ -3,18 +3,39 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent">
-<ScrollView
+
+    <ScrollView
     android:layout_weight="1"
     android:layout_width="match_parent"
     android:layout_height="0dp"
-
     >
 
-    <WebView
-        android:id="@+id/infoPage"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-    </WebView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <WebView
+
+                android:id="@+id/infoPage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+            </WebView>
+
+            <GridLayout
+                android:useDefaultMargins="true"
+                android:alignmentMode="alignBounds"
+                android:columnCount="2"
+                android:id="@+id/gridInspiration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></GridLayout>
+
+
+
+        </LinearLayout>
+
+
+
 
 </ScrollView>
 
@@ -37,7 +58,8 @@
             android:layout_alignParentLeft="true"
             android:layout_toLeftOf="@+id/download"
             android:layout_marginBottom="4dp"
-            android:layout_gravity="center_vertical"
+            android:layout_gravity="center"
+            android:gravity="center_vertical"
             android:textColor="#fff"
             android:textSize="18sp"/>
         <ImageView

@@ -29,7 +29,7 @@
         <activity
             android:name=".app.PlayTabActivity"
             android:label="@string/title_activity_play_tab"
-            android:windowSoftInputMode="adjustPan" >
+            android:windowSoftInputMode="adjustPan|adjustResize" >
         </activity>
 
         <activity

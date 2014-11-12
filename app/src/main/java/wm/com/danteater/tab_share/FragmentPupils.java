@@ -3,6 +3,7 @@ package wm.com.danteater.tab_share;
 import android.app.Activity;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,6 +35,7 @@ import wm.com.danteater.my_plays.SharedUser;
 
 public class FragmentPupils extends Fragment {
     //    private Menu menu;
+    private boolean isSelectAll = false;
     private ListView listStudents;
     private static final String ARG_POSITION = "position";
     private static final String ARG_CLASS_NAME = "class_name";
@@ -69,6 +72,14 @@ public class FragmentPupils extends Fragment {
         // Inflate the layout for this fragment
         View convertView = inflater.inflate(R.layout.fragment_fragment_pupils, container, false);
         listStudents=(ListView) convertView.findViewById(R.id.listStudentsShare);
+
+
+
+
+
+
+
+
         return convertView;
     }
 
@@ -76,44 +87,40 @@ public class FragmentPupils extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
         pupils = ShareActivityForPerform.pupils;
+
         if (pupils != null) {
             pupilsList = pupils.get(className);
             Collections.sort(pupilsList,User.nameComparator);
-//            Log.e("class name:.................", className + "");
+
+            for(int i=0 ;i<pupilsList.size();i++){
+                User u = pupilsList.get(i);
+
+                if(u.getFirstName().equalsIgnoreCase("Hele")){
+                   pupilsList.remove(u);
+                }
+            }
+
+            if(pupilsList.size()>0) {
+                User uHele = new User();
+                uHele.setFirstName("Hele");
+                uHele.setLastName("klassen");
+                pupilsList.add(0, uHele);
+            }
             ArrayList<String> studentNameList = new ArrayList<String>();
+
             for (int i = 0; i < pupilsList.size(); i++) {
                 studentNameList.add("" + pupilsList.get(i).getFirstName() + " " + pupilsList.get(i).getLastName());
-//                Log.e("student id:", pupilsList.get(i).getUserId() + "");
+
             }
+
             ArrayAdapter adap = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_multiple_choice, studentNameList);
             listStudents.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-//            LayoutInflater inflater = getActivity().getLayoutInflater();
-//            View header = (ViewGroup)inflater.inflate(R.layout.item_select_whole_class, listStudents, false);
-//            final CheckBox cbSelectAll=(CheckBox)header.findViewById(R.id.cbSelectWholeClass);
-//            if(studentNameList.size()>0) {
-//                listStudents.addHeaderView(header, null, false);
-//                cbSelectAll.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        if(cbSelectAll.isChecked()) {
-//                            for (int i = 0; i <= pupilsList.size(); i++) {
-//                                User user = pupilsList.get(i);
-//                                        listStudents.setItemChecked((i), true);
-//                                ShareFragment.studentSharedList.add(user);
-//                            }
-//
-//                        } else {
-//                            for (int i = 0; i <= pupilsList.size()+1; i++) {
-//                                User user = pupilsList.get(i);
-//                                        listStudents.setItemChecked((i), false);
-//                                ShareFragment.studentSharedList.remove(user);
-//                            }
-//                        }
-//                    }
-//                });
-//            }
             listStudents.setAdapter(adap);
+
+
+
             for (int i = 0; i < pupilsList.size(); i++) {
                 User user = pupilsList.get(i);
                 for (SharedUser u : ShareActivityForPerform.sharedTeachersAndStudents) {
@@ -123,19 +130,69 @@ public class FragmentPupils extends Fragment {
                     }
                 }
             }
+
+
+
+
             listStudents.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                enableDisableShareOptions(listStudents.getCheckedItemPositions());
-                    ShareActivityForPerform.isSharedforPerformChanged = true;
-                    ShareActivityForPerform.menu.getItem(0).setIcon(getActivity().getResources().getDrawable(R.drawable.ic_action_del_selected));
-                    ShareActivityForPerform.menu.getItem(0).setEnabled(true);
-                    ShareActivityForPerform.isSharedforPerformChanged = true;
-                    if (ShareFragment.studentSharedList.contains(pupilsList.get(position))) {
-                        ShareFragment.studentSharedList.remove(pupilsList.get(position));
-                    } else {
-                        ShareFragment.studentSharedList.add(pupilsList.get(position));
+
+                    if(position == 0){
+
+                        ShareActivityForPerform.menu.getItem(0).setIcon(getActivity().getResources().getDrawable(R.drawable.ic_action_del_selected));
+                        ShareActivityForPerform.menu.getItem(0).setEnabled(true);
+                        ShareActivityForPerform.isSharedforPerformChanged = true;
+
+                        if(isSelectAll == true){
+
+                            for (int i = 0; i < pupilsList.size(); i++) {
+
+                                listStudents.setItemChecked((i), false);
+                            }
+                            ShareFragment.studentSharedList.removeAll(pupilsList);
+
+                            isSelectAll = false;
+
+                        }else{
+
+                            for (int i = 0; i < pupilsList.size(); i++) {
+
+
+                                ShareFragment.studentSharedList.add(pupilsList.get(i));
+                                listStudents.setItemChecked((i), true);
+                            }
+
+
+                            isSelectAll = true;
+
+
+
+                        }
+
+
+
+
+                    }else{
+
+
+
+                        ShareActivityForPerform.menu.getItem(0).setIcon(getActivity().getResources().getDrawable(R.drawable.ic_action_del_selected));
+                        ShareActivityForPerform.menu.getItem(0).setEnabled(true);
+                        ShareActivityForPerform.isSharedforPerformChanged = true;
+                        if (ShareFragment.studentSharedList.contains(pupilsList.get(position))) {
+                            ShareFragment.studentSharedList.remove(pupilsList.get(position));
+                            listStudents.setItemChecked(0, false);
+                        } else {
+                            ShareFragment.studentSharedList.add(pupilsList.get(position));
+                        }
+
                     }
+
+
+
+
+
                 }
             });
         }

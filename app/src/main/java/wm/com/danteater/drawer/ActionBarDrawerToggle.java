@@ -134,7 +134,7 @@ public class ActionBarDrawerToggle extends android.support.v4.app.ActionBarDrawe
                 setHomeAsUpIndicator.invoke(mActivity.getActionBar(), mDrawerImage);
                 return;
             } catch (Exception e) {
-                Log.e(TAG, "setActionBarUpIndicator error", e);
+              //  Log.e(TAG, "setActionBarUpIndicator error", e);
             }
 
             final View home = mActivity.findViewById(android.R.id.home);
@@ -170,7 +170,7 @@ public class ActionBarDrawerToggle extends android.support.v4.app.ActionBarDrawe
                     mActivity.getActionBar().setSubtitle(mActivity.getActionBar().getSubtitle());
                 }
             } catch (Exception e) {
-                Log.e(TAG, "setActionBarUpIndicator", e);
+              //  Log.e(TAG, "setActionBarUpIndicator", e);
             }
         }
     }

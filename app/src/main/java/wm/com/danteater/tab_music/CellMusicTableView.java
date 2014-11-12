@@ -63,6 +63,7 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
 
 
     public CellMusicTableView(View convertView,final Context context) {
+
         this.convertView=convertView;
         this.context=context;
         musicText=(WMTextView)convertView.findViewById(R.id.music_table_view_cell_title);
@@ -79,6 +80,10 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
     public void setCounts(int cc,int fc){
         this.currentCount = cc;
         this.finalCount = fc;
+    }
+
+    public void setReadView(){
+        playerView.setVisibility(View.GONE);
     }
 
     public void setCurrentPlayingPosition(int pos,int sec){
@@ -103,6 +108,7 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
             }
 
         if (finalCount > 0) {
+
             musicDownload.setVisibility(View.GONE);
             musicPlay.setVisibility(View.VISIBLE);
             playerView.setVisibility(View.VISIBLE);
@@ -110,6 +116,42 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
             musicPlay.setImageResource(R.drawable.ic_play);
             startTime.setText("" + milliSecondsToTimer(0));
             endTime.setText("" + milliSecondsToTimer(finalCount));
+            //todo process to set for resuming the player
+
+            String hackNO = section+""+position;
+            if(MusicFragment.STATE_HOLDER != null && MusicFragment.STATE_HOLDER.containsKey(hackNO)){
+
+                long totalDuration = 00;
+                long currentDuration = 00;
+                try {
+
+                    totalDuration = Integer.parseInt(MusicFragment.STATE_HOLDER.get(hackNO).toString().split("#")[1]);
+                    currentDuration = Integer.parseInt(MusicFragment.STATE_HOLDER.get(hackNO).toString().split("#")[0]);
+
+
+                }catch (Exception e){};
+                // Displaying Total Duration time
+                endTime.setText(""+milliSecondsToTimer(totalDuration));
+                // Displaying time completed playing
+                startTime.setText(""+milliSecondsToTimer(currentDuration));
+                // Updating progress bar
+                int progress = (int)(getProgressPercentage(currentDuration, totalDuration));
+                //Log.d("Progress", ""+progress);
+                songProgressBar.setProgress(progress);
+
+                // Running this thread after 100 milliseconds
+                //  mHandler.postDelayed(this, 1);
+
+
+
+
+
+
+            }
+
+
+
+
 
         } else {
             musicDownload.setVisibility(View.VISIBLE);
@@ -120,21 +162,30 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
         if(!MusicFragment.mediaPlayer.isPlaying()) {
             musicPlay.setImageResource(R.drawable.ic_play);
 
-
         }else{
 
-            startTime.setText("" + milliSecondsToTimer(0));
-            endTime.setText("" + milliSecondsToTimer(finalCount));
+
+
+          //  startTime.setText("" + milliSecondsToTimer(0));
+          // endTime.setText("" + milliSecondsToTimer(finalCount));
+
+
+
+
             if(mCurrentPlayingPosition == position && mCurrentPlayingSection == section){
                 musicPlay.setImageResource(R.drawable.ic_pause);
                 updateProgressBar();
+
             }else{
 
                 musicPlay.setImageResource(R.drawable.ic_play);
             }
         }
 
-        musicText.setText("Instrumental");
+
+
+       // musicText.setText("Instrumental");
+        musicText.setText(songFile.FileDescription);
         musicDownload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -155,8 +206,11 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
             public void onClick(View view) {
               //  setOnPlayClick.onPlayClicked();
 
-                setOnPlayClick.onPlayClicked();
-                setOnReloading.onReload();
+
+
+                setOnPlayClick.onPlayClicked(section+""+position);
+
+              //  setOnReloading.onReload();
 
                 if(MusicFragment.mediaPlayer != null && MusicFragment.mediaPlayer.isPlaying()){
                     musicPlay.setImageResource(R.drawable.ic_pause);
@@ -185,12 +239,20 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
     }
 
     private Runnable mUpdateTimeTask = new Runnable() {
+
         public void run() {
 
             if(mCurrentPlayingSection == sec && mCurrentPlayingPosition == pos){
 
-            long totalDuration = MusicFragment.mediaPlayer.getDuration();
-            long currentDuration = MusicFragment.mediaPlayer.getCurrentPosition();
+                long totalDuration = 00;
+                long currentDuration = 00;
+                try {
+
+                     totalDuration = MusicFragment.mediaPlayer.getDuration();
+                     currentDuration = MusicFragment.mediaPlayer.getCurrentPosition();
+
+
+                }catch (Exception e){};
             // Displaying Total Duration time
             endTime.setText(""+milliSecondsToTimer(totalDuration));
             // Displaying time completed playing
@@ -199,6 +261,7 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
             int progress = (int)(getProgressPercentage(currentDuration, totalDuration));
             //Log.d("Progress", ""+progress);
             songProgressBar.setProgress(progress);
+
             // Running this thread after 100 milliseconds
             mHandler.postDelayed(this, 1);
         }
@@ -268,6 +331,10 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         mHandler.removeCallbacks(mUpdateTimeTask);
+
+
+
+        quickSeekProcess();
         int totalDuration = MusicFragment.mediaPlayer.getDuration();
         int currentPosition = progressToTimer(seekBar.getProgress(), totalDuration);
 //        Log.e("current duration: ",currentPosition+"");
@@ -276,6 +343,16 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
 
         // update timer progress again
         updateProgressBar();
+
+    }
+
+    private void quickSeekProcess() {
+
+        MusicFragment.mediaPlayer.seekTo(30);
+
+        // update timer progress again
+        updateProgressBar();
+
     }
 
 
@@ -323,7 +400,7 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
         protected void onPreExecute() {
             super.onPreExecute();
             dialog = new HUD(context, android.R.style.Theme_Translucent_NoTitleBar);
-            dialog.title("Loading...");
+            dialog.title("Henter musik");
             dialog.show();
         }
 
@@ -387,7 +464,7 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
     }
 
     public interface setOnPlayClick{
-        public void onPlayClicked();
+        public void onPlayClicked(String hackn);
     }
 
     public interface setOnReload{

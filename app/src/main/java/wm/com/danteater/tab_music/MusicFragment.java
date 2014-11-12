@@ -74,8 +74,11 @@ public class MusicFragment extends Fragment {
 
 
     public static MediaPlayer mediaPlayer = null;
-     public static int CURRENT_PLAYING_POSITION = -1;
+    public static int CURRENT_PLAYING_POSITION = -1;
     public static int CURRENT_PLAYING_SECTION = -1;
+
+    public static String HACKNUMBER = "";
+    public static HashMap<String,String> STATE_HOLDER = new HashMap<String, String>();
 
 
     static MusicFragment fragment;
@@ -93,6 +96,9 @@ public class MusicFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mediaPlayer = new MediaPlayer();
+
+
+
         setHasOptionsMenu(true);
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref", 0);
         selectedPlay = complexPreferences.getObject("selected_play", Play.class);
@@ -113,6 +119,21 @@ public class MusicFragment extends Fragment {
 //        Log.e("Sections with contents:",marrSectionsWithContent+"");
 //        Log.e("section titles:",marrSectionTitles+"");
 //        Log.e("Song files:",marrSongFilesMP3+"");
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if(mediaPlayer != null && mediaPlayer.isPlaying()){
+            mediaPlayer.stop();
+        }
+
+        HACKNUMBER = "";
+        if(STATE_HOLDER.size()>0) {
+            STATE_HOLDER.clear();
+        }
     }
 
     @Override
@@ -340,31 +361,80 @@ public class MusicFragment extends Fragment {
                     }
                 });
 
+
+
                 viewHolderForMusic.cellMusicTableView.setOnClick(new CellMusicTableView.setOnPlayClick() {
+
                     @Override
-                    public void onPlayClicked() {
+                    public void onPlayClicked(String hackn) {
 
-                        if(mediaPlayer != null && mediaPlayer.isPlaying()){
-                            //mediaPlayer.stop();
-                            mediaPlayer.pause();
-                        }else{
+                        if(hackn.equalsIgnoreCase(HACKNUMBER)){
 
 
-                            CURRENT_PLAYING_POSITION = position;
-                            CURRENT_PLAYING_SECTION = section;
-                            try {
-                                FileInputStream fis = new FileInputStream(audioPath);
-                                FileDescriptor fd = fis.getFD();
-                                mediaPlayer.reset();
-                                mediaPlayer.setDataSource(fd);
-                                mediaPlayer.prepare();
+                            if(mediaPlayer != null && mediaPlayer.isPlaying()){
+                                //mediaPlayer.stop();
+                                mediaPlayer.pause();
+                                STATE_HOLDER.put(HACKNUMBER,""+mediaPlayer.getCurrentPosition()+"#"+mediaPlayer.getDuration());
+
+                            }else {
                                 mediaPlayer.start();
 
+                            }
 
-                            }catch(FileNotFoundException e){}
-                            catch (IOException e){}
+
+                        }else{
+
+                            if(mediaPlayer != null && mediaPlayer.isPlaying()){
+
+
+                                final AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+                                alert.setTitle("Afspiller");
+                                alert.setMessage("Afspiller en anden sang. Venligst sæt den på pause, før du afspiller en ny.");
+                                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                       dialog.dismiss();
+
+
+                                    }
+                                });
+
+                                alert.show();
+
+
+                            }else{
+
+                                CURRENT_PLAYING_POSITION = position;
+                                CURRENT_PLAYING_SECTION = section;
+                                try {
+
+                                    FileInputStream fis = new FileInputStream(audioPath);
+                                    FileDescriptor fd = fis.getFD();
+                                    mediaPlayer.reset();
+                                    mediaPlayer.setDataSource(fd);
+                                    mediaPlayer.prepare();
+                                    mediaPlayer.start();
+                                    if(STATE_HOLDER.containsKey(hackn)){
+                                        int s = Integer.parseInt(STATE_HOLDER.get(hackn).toString().split("#")[0]);
+                                        mediaPlayer.seekTo(s);
+                                    }
+
+
+
+
+                                }catch(FileNotFoundException e){}
+                                catch (IOException e){}
+
+                                HACKNUMBER = hackn;
+
+                            }
+
+
 
                         }
+
                         musicSectionedAdapter.notifyDataSetChanged();
                     }
                 });

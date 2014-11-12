@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import wm.com.danteater.R;
-import wm.com.danteater.tab_inspiration.FragmnentInspirationForTeacher;
 
 /**
  * Created by nirav on 02-10-2014.

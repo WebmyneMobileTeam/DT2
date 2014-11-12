@@ -77,6 +77,7 @@ import wm.com.danteater.model.StateManager;
 import wm.com.danteater.search.FragmentSearch;
 
 public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChangeListener {
+
     public  ArrayList<Group> classes = new ArrayList<Group>();
     public  ArrayList<User> teachers= new ArrayList<User>();
     private SharedPreferenceTeachers sharedPreferenceTeachers;
@@ -227,7 +228,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
         listPlay=(ListView)convertView.findViewById(R.id.listPlays);
 
-//        listPlay.setAdapter(new ListPlayAdapter(getActivity(), titleList, imageList));
+    //  listPlay.setAdapter(new ListPlayAdapter(getActivity(), titleList, imageList));
         return convertView;
     }
 
@@ -240,6 +241,87 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
         // TODO : chat API helper for counting unread messages
 
+
+
+    }
+
+
+
+    public void handledataafterresponseVolly(final String response) {
+
+        try {
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    Type listType = new TypeToken<List<Play>>() {
+
+                    }.getType();
+
+                    playList = new GsonBuilder().create().fromJson(
+                            response, listType);
+                    try {
+                        playListForReview.clear();
+                        playListForPerform.clear();
+                    } catch (Exception e) {
+                    }
+                    ;
+
+                    //testing response
+                    for (int i = 0; i < playList.size(); i++) {
+
+                        Play bean = playList.get(i);
+
+                        if (bean.OrderType.equalsIgnoreCase("Review")) {
+                            playListForReview.add(bean);
+                        }
+                        if (bean.OrderType.equalsIgnoreCase("Perform")) {
+
+                            playListForPerform.add(bean);
+                            playOrderList.add(bean.playOrderDetails);
+                            //TODO
+                        }
+
+                    }
+
+                    for (int i = 0; i < playOrderList.size(); i++) {
+                        if (playOrderList.get(i) != null) {
+                            PlayOrderDetails bean = playOrderList.get(i);
+//                        Log.i("PlayOrderId", bean.PlayOrderId + "");
+                        }
+                    }
+                    if (playListForPerform.size() == 0 && playListForReview.size() == 0) {
+                        FragmentManager manager = getActivity().getSupportFragmentManager();
+                        FragmentTransaction ft = manager.beginTransaction();
+                        FragmentSearch fragmentSearch = FragmentSearch.newInstance("", "");
+                        if (manager.findFragmentByTag("search") == null) {
+                            ft.replace(R.id.main_content, fragmentSearch, "search").commit();
+                        }
+                        ((WMTextView) getActivity().getActionBar().getCustomView()).setText("Søg skuespil");
+                    } else if (playListForPerform.size() == 0 && playListForReview.size() != 0) {
+                        rbGennemsyn.setChecked(true);
+                        listPlayAdapterForReview = new ListPlayAdapterForReview(getActivity(), playListForReview);
+                        listPlay.setAdapter(listPlayAdapterForReview);
+                    } else if (playListForPerform.size() != 0 && playListForReview.size() == 0) {
+                        rbBestilte.setChecked(true);
+                        listPlayAdapterForPerform = new ListPlayAdapterForPerform(getActivity(), playListForPerform, playOrderList);
+                        listPlay.setAdapter(listPlayAdapterForPerform);
+                    } else {
+                        rbBestilte.setChecked(true);
+                        listPlayAdapterForPerform = new ListPlayAdapterForPerform(getActivity(), playListForPerform, playOrderList);
+                        listPlay.setAdapter(listPlayAdapterForPerform);
+                    }
+                }
+            });
+
+        }catch(Exception e){}
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
 
         // show loading
 
@@ -278,76 +360,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 //                dialog.dismiss();
             }
         }.execute();
-    }
 
-    public void handledataafterresponseVolly(final String response) {
-
-
-        getActivity().runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
-
-                Type listType = new TypeToken<List<Play>>() {
-
-                }.getType();
-
-                playList = new GsonBuilder().create().fromJson(
-                        response, listType);
-
-
-                //testing response
-                for (int i = 0; i < playList.size(); i++) {
-
-                    Play bean = playList.get(i);
-
-                    if (bean.OrderType.equalsIgnoreCase("Review")) {
-                        playListForReview.add(bean);
-                    }
-                    if (bean.OrderType.equalsIgnoreCase("Perform")) {
-
-                        playListForPerform.add(bean);
-                        playOrderList.add(bean.playOrderDetails);
-                        //TODO
-                    }
-
-                }
-
-                for (int i = 0; i < playOrderList.size(); i++) {
-                    if (playOrderList.get(i) != null) {
-                        PlayOrderDetails bean = playOrderList.get(i);
-//                        Log.i("PlayOrderId", bean.PlayOrderId + "");
-                    }
-                }
-                if(playListForPerform.size()==0 && playListForReview.size()==0){
-                    FragmentManager manager = getActivity().getSupportFragmentManager();
-                    FragmentTransaction ft = manager.beginTransaction();
-                    FragmentSearch fragmentSearch = FragmentSearch.newInstance("", "");
-                    if (manager.findFragmentByTag("search") == null) {
-                        ft.replace(R.id.main_content, fragmentSearch, "search").commit();
-                    }
-                    ((WMTextView) getActivity().getActionBar().getCustomView()).setText("Søg skuespil");
-                } else if(playListForPerform.size()==0 && playListForReview.size()!=0) {
-                    rbGennemsyn.setChecked(true);
-                    listPlayAdapterForReview=new ListPlayAdapterForReview(getActivity(), playListForReview);
-                    listPlay.setAdapter(listPlayAdapterForReview);
-                } else if(playListForPerform.size()!=0 && playListForReview.size()==0) {
-                    rbBestilte.setChecked(true);
-                    listPlayAdapterForPerform=   new ListPlayAdapterForPerform(getActivity(), playListForPerform, playOrderList);
-                    listPlay.setAdapter(listPlayAdapterForPerform);
-                } else {
-                    rbBestilte.setChecked(true);
-                    listPlayAdapterForPerform=   new ListPlayAdapterForPerform(getActivity(), playListForPerform, playOrderList);
-                    listPlay.setAdapter(listPlayAdapterForPerform);
-                }
-            }
-        });
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
 //        Log.e("resume",".........................");
 //        ShareActivityForPreview.teachers.clear();
 //        ShareActivityForPerform.classes.clear();

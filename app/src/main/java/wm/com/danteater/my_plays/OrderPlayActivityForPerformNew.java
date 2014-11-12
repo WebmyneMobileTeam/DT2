@@ -281,6 +281,7 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
 
                                     @Override
                                     public void onFinish() {
+                                        ReadActivityFromPreview.isBackFromOrder = true;
                                         finish();
 
                                     }
@@ -345,10 +346,10 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
         int day = c.get(Calendar.DAY_OF_MONTH);
         datePickerdialog = new DatePickerDialog(context, null, year, month, day);
         datePickerdialog.setCancelable(true);
-        datePickerdialog.setTitle("Select Date");
+        datePickerdialog.setTitle("Vælg dato");
 
         datePickerdialog.setButton(DialogInterface.BUTTON_NEGATIVE,
-                "Cancel	", new DialogInterface.OnClickListener() {
+                "Annuller	", new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog,
@@ -357,7 +358,7 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
                     }
                 });
         datePickerdialog.setButton(DialogInterface.BUTTON_POSITIVE,
-                "Set", new DialogInterface.OnClickListener() {
+                "Vælg", new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog,

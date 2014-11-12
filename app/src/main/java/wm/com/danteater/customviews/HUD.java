@@ -54,6 +54,7 @@ public class HUD extends Dialog{
         frameLayout = (FrameLayout)convertView.findViewById(R.id.frame);
 
 
+
     }
 
 

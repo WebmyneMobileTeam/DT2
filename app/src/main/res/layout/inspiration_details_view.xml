@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parentDialog"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="#50000000"
+    android:clickable="true"
+    android:layout_height="match_parent">
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+
+        android:layout_marginTop="56dp"
+
+       android:layout_marginLeft="@dimen/activity_margin"
+        android:layout_marginRight="@dimen/activity_margin"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:padding="8dp"
+            android:layout_gravity="right"
+            android:id="@+id/txtCancelInspirationDialog"
+            android:text="LUK X"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:background="#000"
+            android:textSize="@dimen/normalText" />
+
+        <LinearLayout
+            android:background="#000"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:clickable="false"
+                android:maxHeight="320dp"
+                android:layout_gravity="center"
+                android:id="@+id/imgDialogInspiration"
+                android:contentDescription="@string/app_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_launcher"
+                android:scaleType="centerInside" />
+
+            <EditText
+                android:background="@null"
+                android:gravity="left|top"
+                android:minLines="3"
+                android:id="@+id/txtDialogCommentInspiration"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#fff"
+                android:textSize="@dimen/normalText" />
+
+
+            <TextView
+                android:singleLine="true"
+                android:textStyle="italic"
+                android:id="@+id/txtDialogUserDetailInspiration"
+                android:text="@string/hello_world"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#fff"
+                android:textSize="@dimen/normalText" />
+
+            <TextView
+              android:padding="8dp"
+                android:layout_gravity="right"
+                android:id="@+id/txtDialogGemInspiration"
+                android:text="GEM"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#fff"
+                android:background="#000"
+                android:textSize="@dimen/normalText" />
+
+
+        </LinearLayout>
+
+
+
+
+    </LinearLayout>
+
+
+
+</FrameLayout>

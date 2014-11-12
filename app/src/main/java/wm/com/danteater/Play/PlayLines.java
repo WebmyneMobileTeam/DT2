@@ -71,6 +71,7 @@ public class PlayLines {
     }
 
     public PlayLines(String lineCount, String lineID, String roleName, ArrayList<AssignedUsers> assignedUsersList, String roleLinesCount, String mainLineType, ArrayList<TextLines> textLinesList, ArrayList<String> castMatchesList, ArrayList<Comments> commentsList, ArrayList<SongFiles> songFilesList) {
+
         LineCount = lineCount;
         LineID = lineID;
         RoleName = roleName;

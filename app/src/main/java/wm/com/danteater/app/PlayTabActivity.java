@@ -11,10 +11,9 @@ import android.widget.TextView;
 
 import wm.com.danteater.R;
 import wm.com.danteater.customviews.WMImageView;
-import wm.com.danteater.excercise.FragmentExcerciseForTeacher;
 import wm.com.danteater.login.User;
 import wm.com.danteater.model.ComplexPreferences;
-import wm.com.danteater.tab_inspiration.FragmnentInspirationForTeacher;
+import wm.com.danteater.tab_inspiration.FragmnentInspiration;
 import wm.com.danteater.tab_music.MusicFragment;
 import wm.com.danteater.tab_read.ReadFragment;
 
@@ -47,7 +46,7 @@ public class PlayTabActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_tab);
 
-       // Receive the extra string for specific tab selection.
+    //    Receive the extra string for specific tab selection.
     //    Intent i=getIntent();
     //    playinfo =i.getStringExtra("infoData");
     //    type_navigation = i.getStringExtra("type_navigation");
@@ -77,11 +76,9 @@ public class PlayTabActivity extends BaseActivity {
         mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) {
-
                 for(int i=0;i<mTabHost.getTabWidget().getTabCount();i++){
                     selectTAB(i);
                 }
-
             }
         });
 
@@ -129,10 +126,12 @@ public class PlayTabActivity extends BaseActivity {
         mTabHost.addTab(mTabHost.newTabSpec("tab2").setIndicator(view2),
                 MusicFragment.class, null);
 
+        args = new Bundle();
+        args.putString("inspirationType","tab");
 
         if(user.checkTeacherOrAdmin(user.getRoles())){
             mTabHost.addTab(mTabHost.newTabSpec("tab3").setIndicator(view3),
-                    FragmnentInspirationForTeacher.class, null);
+                    FragmnentInspiration.class, args);
         }else{
 
         }

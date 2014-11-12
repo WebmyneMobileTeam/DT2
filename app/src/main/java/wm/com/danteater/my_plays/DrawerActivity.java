@@ -37,6 +37,7 @@ import wm.com.danteater.login.LoginActivity;
 import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.search.FragmentSearch;
 import wm.com.danteater.settings.SettingsFragment;
+import wm.com.danteater.tab_inspiration.FragmnentInspiration;
 
 /**
  * Created by nirav on 25-08-2014.
@@ -208,11 +209,17 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
                     break;
 
                 case 2:
-                    FragmentExcerciseForStudent fragmentExcerciseForStudent = FragmentExcerciseForStudent.newInstance("", "");
+
+                    Bundle args = new Bundle();
+                    args.putString("inspirationType","drawer");
+
+                    FragmnentInspiration fragmentExcerciseForStudent = FragmnentInspiration.newInstance("", "");
+                    fragmentExcerciseForStudent.setArguments(args);
                     if (manager.findFragmentByTag("excercise_student") == null) {
                         ft.replace(R.id.main_content, fragmentExcerciseForStudent, "excercise_student").commit();
                     }
                     txtHeader.setText("Dramaøvelser");
+
                     break;
 
                 case 3:
@@ -251,9 +258,13 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
                     break;
 
                 case 3:
-                    FragmentExcerciseForTeacher fragmentExcerciseForTeacher = FragmentExcerciseForTeacher.newInstance("", "");
-                    if (manager.findFragmentByTag("excercise_teacher") == null) {
-                        ft.replace(R.id.main_content, fragmentExcerciseForTeacher, "excercise_teacher").commit();
+                    Bundle args = new Bundle();
+                    args.putString("inspirationType","drawer");
+
+                    FragmnentInspiration fragmentExcerciseForStudent = FragmnentInspiration.newInstance("", "");
+                    fragmentExcerciseForStudent.setArguments(args);
+                    if (manager.findFragmentByTag("excercise_student") == null) {
+                        ft.replace(R.id.main_content, fragmentExcerciseForStudent, "excercise_student").commit();
                     }
                     txtHeader.setText("Dramaøvelser");
                     break;
