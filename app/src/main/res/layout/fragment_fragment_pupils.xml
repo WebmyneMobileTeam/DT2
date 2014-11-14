@@ -2,9 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     tools:context="wm.com.danteater.tab_share.FragmentPupils">
-
 
     <ListView
         android:id="@+id/listStudentsShare"

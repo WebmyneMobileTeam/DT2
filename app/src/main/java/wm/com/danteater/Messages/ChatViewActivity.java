@@ -163,7 +163,7 @@ public class ChatViewActivity extends BaseActivity {
             requestParams.put("ToUserId", toUserId+"");
             //TODO
             String[] lines = messagesForConversationLastObject.MessageText.split(System.getProperty("line.separator"));
-            String firstLine = lines[0];
+            String firstLine = lines[1];
 
             requestParams.put("MessageText", firstLine+"\n"+etMessageValue.getText().toString().trim()+"");
         } catch (JSONException e) {
@@ -372,13 +372,20 @@ public class ChatViewActivity extends BaseActivity {
                     txtCircle.setText(msg.FromUserId.toString().toUpperCase());
 
                     WMTextView txtChatData = (WMTextView)convertView.findViewById(R.id.txtChatData);
+                    //TODO
+                    try {
+                        String[] lines = msg.MessageText.split(System.getProperty("line.separator"));
 
-                    AdvancedSpannableString spannableString = new AdvancedSpannableString(msg.MessageText);
-                    String[] lines = msg.MessageText.split(System.getProperty("line.separator"));
-                    String firstLine = lines[0];
-                    spannableString.setUnderLine(firstLine);
+                        String visibleLines = lines[1] + "\n" + lines[2];
+                        AdvancedSpannableString spannableString = new AdvancedSpannableString(msg.MessageText);
+                        String[] linearrays = visibleLines.split(System.getProperty("line.separator"));
+                        String firstLine = linearrays[0];
+                        spannableString.setUnderLine(firstLine);
 
-                    txtChatData.setText(spannableString);
+                        txtChatData.setText(spannableString);
+                    }catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     txtChatData.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -402,12 +409,19 @@ public class ChatViewActivity extends BaseActivity {
                     convertView = mInflater.inflate(R.layout.item_chat_right, parent,false);
 
                     WMTextView txtChatD = (WMTextView)convertView.findViewById(R.id.txtChatData);
+                    //TODO
+                    try {
+                        String[] line = msg.MessageText.split(System.getProperty("line.separator"));
 
-                    final AdvancedSpannableString spannableStrin = new AdvancedSpannableString(msg.MessageText);
-                    String[] line = msg.MessageText.split(System.getProperty("line.separator"));
-                    String firstLineData = line[0];
-                    spannableStrin.setUnderLine(firstLineData);
-                    txtChatD.setText(spannableStrin);
+                        String visibleLine = line[1] + "\n" + line[2];
+                        final AdvancedSpannableString spannableStrin = new AdvancedSpannableString(visibleLine);
+                        String[] linearray = visibleLine.split(System.getProperty("line.separator"));
+                        String firstLineData = linearray[0];
+                        spannableStrin.setUnderLine(firstLineData);
+                        txtChatD.setText(spannableStrin);
+                    }catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     txtChatD.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

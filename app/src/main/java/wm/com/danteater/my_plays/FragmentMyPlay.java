@@ -103,7 +103,6 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     private enum ACTIVITY_TYPE{
         TAB_ACTIVITY,ORDER_ACTIVITY
     }
-
     int plyIDAfterUpdate = 0; // hack
     private HUD dialog;
     private HUD dialogForShare;
@@ -240,8 +239,6 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
 
         // TODO : chat API helper for counting unread messages
-
-
 
     }
 

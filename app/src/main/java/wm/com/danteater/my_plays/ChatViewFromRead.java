@@ -68,12 +68,16 @@ public class ChatViewFromRead extends BaseActivity{
         setContentView(R.layout.activity_chat_view_for_read);
         messagesForConversationArrayList.clear();
         getActionBar().setDisplayHomeAsUpEnabled(true);
+
         ComplexPreferences complexPreferencesForPlayLine = ComplexPreferences.getComplexPreferences(ChatViewFromRead.this, "selected_playline", 0);
         currentPlayLine = complexPreferencesForPlayLine.getObject("current_playline", PlayLines.class);
+
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(this,"user_pref", 0);
         currentUser = complexPreferences.getObject("current_user", User.class);
+
         ComplexPreferences complexPreference = ComplexPreferences.getComplexPreferences(this, "mypref", 0);
         selectedPlay = complexPreference.getObject("selected_play",Play.class);
+
         if(currentUser.checkPupil(currentUser.getRoles())) {
             teacherName=getIntent().getStringExtra("to_user_id");
             txtHeader.setText(teacherName);
@@ -91,7 +95,7 @@ public class ChatViewFromRead extends BaseActivity{
         btnSendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               messagesForConversationArrayList.add(new MessagesForConversation("",selectedPlay.OrderId,currentPlayLine.LineID,currentUser.getUserId(),"",selectedPlay.Title.replace(" ","_")+"-"+currentPlayLine.RoleName+"-"+currentPlayLine.LineID.substring(currentPlayLine.LineID.lastIndexOf("-")+1)+"\n"+etMessageValue.getText().toString().trim()+"","",""));
+               messagesForConversationArrayList.add(new MessagesForConversation("",selectedPlay.OrderId,currentPlayLine.LineID,currentUser.getUserId(),"",currentPlayLine.LineID + "\n" +selectedPlay.Title.replace(" ","_")+"-"+currentPlayLine.RoleName+"-"+currentPlayLine.LineID.substring(currentPlayLine.LineID.lastIndexOf("-")+1)+"\n"+etMessageValue.getText().toString().trim()+"","",""));
                 chatAdapter=new ChatAdapter(ChatViewFromRead.this);
                 listChat.setAdapter(chatAdapter);
 
@@ -121,7 +125,8 @@ public class ChatViewFromRead extends BaseActivity{
             requestParams.put("LineId", currentPlayLine.LineID+"");
             requestParams.put("FromUserId", currentUser.getUserId()+"");
             requestParams.put("ToUserId", teacherName+"");
-            requestParams.put("MessageText", selectedPlay.Title.replace(" ","_")+"-"+currentPlayLine.RoleName+"-"+currentPlayLine.LineID.substring(currentPlayLine.LineID.lastIndexOf("-"+1))+"\n"+etMessageValue.getText().toString().trim()+"");
+            //TODO
+            requestParams.put("MessageText", currentPlayLine.LineID + "\n" + selectedPlay.Title.replace(" ", "_") + "-" + currentPlayLine.RoleName + "-" + currentPlayLine.LineID.substring(currentPlayLine.LineID.lastIndexOf("-" + 1)) + "\n" + etMessageValue.getText().toString().trim() + "");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -176,7 +181,7 @@ public class ChatViewFromRead extends BaseActivity{
             requestParams.put("LineId", currentPlayLine.LineID+"");
             requestParams.put("FromUserId", currentUser.getUserId()+"");
             requestParams.put("ToUserId", assignedUsers.getAssignedUserId()+"");
-            requestParams.put("MessageText", selectedPlay.Title.replace(" ","_")+"-"+currentPlayLine.RoleName+"-"+currentPlayLine.LineID.substring(currentPlayLine.LineID.lastIndexOf("-")+1)+"\n"+etMessageValue.getText().toString().trim()+"");
+            requestParams.put("MessageText", currentPlayLine.LineID+"\n"+selectedPlay.Title.replace(" ","_")+"-"+currentPlayLine.RoleName+"-"+currentPlayLine.LineID.substring(currentPlayLine.LineID.lastIndexOf("-")+1)+"\n"+etMessageValue.getText().toString().trim()+"");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -283,13 +288,22 @@ public class ChatViewFromRead extends BaseActivity{
                     txtCircle.setText(msg.FromUserId.toString().toUpperCase());
 
                     WMTextView txtChatData = (WMTextView)convertView.findViewById(R.id.txtChatData);
+                    //TODO
 
-                    AdvancedSpannableString spannableString = new AdvancedSpannableString(msg.MessageText);
-                    String[] line = msg.MessageText.split(System.getProperty("line.separator"));
-                    String firstLineData = line[0];
-                    spannableString.setUnderLine(firstLineData);
 
-                    txtChatData.setText(spannableString);
+
+                        String[] line = msg.MessageText.split(System.getProperty("line.separator"));
+                    for(int i=0; i<line.length; i++ ) {
+                        Log.e("line value: ", line[i] + "");
+                    }
+                        String visibleLine = line[1] + "\n" + line[2];
+                        AdvancedSpannableString spannableString = new AdvancedSpannableString(visibleLine);
+                        String[] linearray = visibleLine.split(System.getProperty("line.separator"));
+                        String firstLineData = linearray[0];
+                        spannableString.setUnderLine(firstLineData);
+
+                        txtChatData.setText(spannableString);
+
                     txtChatData.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -303,12 +317,19 @@ public class ChatViewFromRead extends BaseActivity{
                     convertView = mInflater.inflate(R.layout.item_chat_right, parent,false);
 
                     WMTextView txtChatD = (WMTextView)convertView.findViewById(R.id.txtChatData);
+                    //TODO
 
-                    final AdvancedSpannableString spannableStrin = new AdvancedSpannableString(msg.MessageText);
-                    String[] lines = msg.MessageText.split(System.getProperty("line.separator"));
-                    String firstLine= lines[0];
-                    spannableStrin.setUnderLine(firstLine);
-                    txtChatD.setText(spannableStrin);
+                        String[] lines = msg.MessageText.split(System.getProperty("line.separator"));
+                    for(int i=0; i<lines.length; i++ ) {
+                        Log.e("line value: ", lines[i] + "");
+                    }
+                        String visibleLines = lines[1] + "\n" + lines[2];
+                        final AdvancedSpannableString spannableStrin = new AdvancedSpannableString(visibleLines);
+                        String[] linearrays = visibleLines.split(System.getProperty("line.separator"));
+                        String firstLine = linearrays[0];
+                        spannableStrin.setUnderLine(firstLine);
+                        txtChatD.setText(spannableStrin);
+
                     txtChatD.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

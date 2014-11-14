@@ -441,13 +441,9 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
                     complexPreferences.commit();
                     Intent i=new Intent(getActivity(), PlayInfoActivity.class);
                     startActivity(i);
-
-
                 }
             });
             return convertView;
-
-
         }
 
     }
