@@ -163,9 +163,10 @@ public class ChatViewActivity extends BaseActivity {
             requestParams.put("ToUserId", toUserId+"");
             //TODO
             String[] lines = messagesForConversationLastObject.MessageText.split(System.getProperty("line.separator"));
-            String firstLine = lines[1];
+            String firstLine = lines[0];
+            String secondline = lines[1];
 
-            requestParams.put("MessageText", firstLine+"\n"+etMessageValue.getText().toString().trim()+"");
+            requestParams.put("MessageText", firstLine+"\n"+secondline+"\n"+etMessageValue.getText().toString().trim()+"");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -208,7 +209,10 @@ public class ChatViewActivity extends BaseActivity {
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
                 dialog.dismiss();
-                messagesForConversationArrayList.add(new MessagesForConversation("","","",currentUser.getUserId(),"",etMessageValue.getText().toString().trim(),"",""));
+                String[] lines = messagesForConversationLastObject.MessageText.split(System.getProperty("line.separator"));
+                String firstLine = lines[0];
+                String secondline = lines[1];
+                messagesForConversationArrayList.add(new MessagesForConversation("","","",currentUser.getUserId(),"",firstLine+"\n"+secondline+"\n"+etMessageValue.getText().toString().trim(),"",""));
                 etMessageValue.setText("");
                 chatAdapter.notifyDataSetChanged();
                 listChat.setSelection(messagesForConversationArrayList.size()-1);
@@ -377,7 +381,7 @@ public class ChatViewActivity extends BaseActivity {
                         String[] lines = msg.MessageText.split(System.getProperty("line.separator"));
 
                         String visibleLines = lines[1] + "\n" + lines[2];
-                        AdvancedSpannableString spannableString = new AdvancedSpannableString(msg.MessageText);
+                        AdvancedSpannableString spannableString = new AdvancedSpannableString(visibleLines);
                         String[] linearrays = visibleLines.split(System.getProperty("line.separator"));
                         String firstLine = linearrays[0];
                         spannableString.setUnderLine(firstLine);
@@ -389,11 +393,12 @@ public class ChatViewActivity extends BaseActivity {
                     txtChatData.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            String[] lines = msg.MessageText.split(System.getProperty("line.separator"));
 //                            Log.e("line id: ",msg.LineId.substring(0,msg.LineId.lastIndexOf("-"))+"");
-                            lineNumber=Integer.parseInt(msg.LineId.substring(msg.LineId.lastIndexOf("-")+1));
+                            lineNumber=Integer.parseInt(lines[0].substring(lines[0].lastIndexOf("-")+1));
 //                            Log.e("line number in chat activity",lineNumber+" ");
                             Play play=new Play();
-                            play.OrderId=msg.LineId.substring(0,msg.LineId.lastIndexOf("-"));
+                            play.OrderId=lines[0].substring(0,lines[0].lastIndexOf("-"));
 
                             dialog_next = new HUD(ChatViewActivity.this,android.R.style.Theme_Translucent_NoTitleBar);
                             dialog_next.title("Henter");
@@ -412,6 +417,8 @@ public class ChatViewActivity extends BaseActivity {
                     //TODO
                     try {
                         String[] line = msg.MessageText.split(System.getProperty("line.separator"));
+                        Log.e("line 0: ",line[0]+"");
+                        Log.e("line 1: ",line[1]+"");
 
                         String visibleLine = line[1] + "\n" + line[2];
                         final AdvancedSpannableString spannableStrin = new AdvancedSpannableString(visibleLine);
@@ -425,11 +432,13 @@ public class ChatViewActivity extends BaseActivity {
                     txtChatD.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+
+                            String[] line = msg.MessageText.split(System.getProperty("line.separator"));
 //                            Log.e("line id: ",msg.LineId.substring(0,msg.LineId.lastIndexOf("-"))+"");
-                            lineNumber=Integer.parseInt(msg.LineId.substring(msg.LineId.lastIndexOf("-")+1));
+                            lineNumber=Integer.parseInt(line[0].substring(line[0].lastIndexOf("-")+1));
 //                            Log.e("line number in chat activity",lineNumber+" ");
                             Play play=new Play();
-                            play.OrderId=msg.LineId.substring(0,msg.LineId.lastIndexOf("-"));
+                            play.OrderId=line[0].substring(0,line[0].lastIndexOf("-"));
                             dialog_next = new HUD(ChatViewActivity.this,android.R.style.Theme_Translucent_NoTitleBar);
                             dialog_next.title("Henter");
                             dialog_next.show();
