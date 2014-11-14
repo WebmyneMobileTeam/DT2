@@ -75,8 +75,6 @@ public class FragmentMessage extends Fragment {
         //call API getAllMessageUsers
         getAllMessageUsers();
 
-
-
 //        timer = new Timer();
 //        timer.scheduleAtFixedRate(new TimerTask() {
 //            @Override

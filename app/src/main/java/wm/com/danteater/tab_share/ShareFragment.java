@@ -119,7 +119,7 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         rbTeacher = (RadioButton)convertView.findViewById(R.id.rbTeacher);
         segmentedTeachersPupils.setOnCheckedChangeListener(this);
         // show share with pupils tab by default
-        rbTeacher.setChecked(true);
+        rbPupils.setChecked(true);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -425,7 +425,7 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
                 super.onPostExecute(aVoid);
                 ShareActivityForPerform.menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_action_del_unselected));
                 ShareActivityForPerform.menu.getItem(0).setEnabled(false);
-                dialog.dismissWithStatus(R.drawable.ic_navigation_accept, "Stykker er delt");
+                dialog.dismissWithStatus(R.drawable.ic_navigation_accept, "Stykket er delt");
 
             }
         }.execute();

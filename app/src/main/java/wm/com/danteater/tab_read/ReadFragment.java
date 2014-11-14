@@ -1041,12 +1041,13 @@ public class ReadFragment extends Fragment {
 
                         // delegate method called after textline changes
                         @Override
-                        public void onTextLineUpdated(String newText) {
+                        public void onTextLineUpdated(String newText,int pos) {
 //                            Log.e("TextLine ",""+section+":"+position);
 
-                           playLine.textLinesList.get(0).alteredLineText = newText;
-                           playLine.textLinesList.get(0).LineText = "";
+                           playLine.textLinesList.get(pos).alteredLineText = newText;
+                           playLine.textLinesList.get(pos).LineText = "";
                            callServiceForTextLineUpdate(playLine);
+
 
                         }
 
@@ -1271,12 +1272,6 @@ public class ReadFragment extends Fragment {
                 text.concat(line.currentText());
                 text.concat(" ");
             }
-
-
-
-
-
-
         }
 
 

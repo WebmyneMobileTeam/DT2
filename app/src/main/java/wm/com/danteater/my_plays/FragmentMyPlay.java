@@ -115,9 +115,9 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     private ListPlayAdapterForReview listPlayAdapterForReview;
     private ListPlayAdapterForPerform listPlayAdapterForPerform;
     private ArrayList<Play> playList;
-    private ArrayList<Play> playListForReview = new ArrayList<Play>();
-    private ArrayList<Play> playListForPerform = new ArrayList<Play>();
-    private ArrayList<PlayOrderDetails> playOrderList = new ArrayList<PlayOrderDetails>();
+    private ArrayList<Play> playListForReview;
+    private ArrayList<Play> playListForPerform;
+    private ArrayList<PlayOrderDetails> playOrderList;
     private User currentUser;
     //private Play playSelectedToBeDeleted;
     private Play playSelectedToBeDeletedForReview;
@@ -303,14 +303,18 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                         rbGennemsyn.setChecked(true);
                         listPlayAdapterForReview = new ListPlayAdapterForReview(getActivity(), playListForReview);
                         listPlay.setAdapter(listPlayAdapterForReview);
+                        listPlayAdapterForReview.notifyDataSetChanged();
+
                     } else if (playListForPerform.size() != 0 && playListForReview.size() == 0) {
                         rbBestilte.setChecked(true);
                         listPlayAdapterForPerform = new ListPlayAdapterForPerform(getActivity(), playListForPerform, playOrderList);
                         listPlay.setAdapter(listPlayAdapterForPerform);
+                        listPlayAdapterForPerform.notifyDataSetChanged();
                     } else {
                         rbBestilte.setChecked(true);
                         listPlayAdapterForPerform = new ListPlayAdapterForPerform(getActivity(), playListForPerform, playOrderList);
                         listPlay.setAdapter(listPlayAdapterForPerform);
+                        listPlayAdapterForPerform.notifyDataSetChanged();
                     }
                 }
             });
@@ -323,9 +327,35 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     public void onResume() {
         super.onResume();
 
+        listPlay.setAdapter(null);
+         playListForReview = new ArrayList<Play>();
+        playListForPerform = new ArrayList<Play>();
+         playOrderList = new ArrayList<PlayOrderDetails>();
         // show loading
+        dialog = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
+        dialog.title("Mine Stykker");
+        dialog.show();
 
-        new AsyncTask<Void,Void,Void>() {
+        new CallWebService("http://api.danteater.dk/api/MyPlays?UserId="+ currentUser.getUserId(), CallWebService.TYPE_JSONARRAY) {
+            @Override
+            public void response(String response) {
+
+                responseValue=response;
+                handledataafterresponseVolly(responseValue);
+                dialog.dismiss();
+
+
+            }
+            @Override
+            public void error(VolleyError error) {
+                dialog.dismissWithStatus(R.drawable.ic_navigation_cancel, "Sync Error");
+
+            }
+        }.start();
+
+
+
+/*        new AsyncTask<Void,Void,Void>() {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
@@ -337,6 +367,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             @Override
 
             protected Void doInBackground(Void... voids) {
+
                 new CallWebService("http://api.danteater.dk/api/MyPlays?UserId="+ currentUser.getUserId(), CallWebService.TYPE_JSONARRAY) {
                     @Override
                     public void response(String response) {
@@ -359,7 +390,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 super.onPostExecute(aVoid);
 //                dialog.dismiss();
             }
-        }.execute();
+        }.execute();*/
 
 //        Log.e("resume",".........................");
 //        ShareActivityForPreview.teachers.clear();
@@ -827,7 +858,13 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             String k = "PlayLatesteUpdateDate"+play.PlayId;
             //  Toast.makeText(getActivity(),preferences.getString(k,""), Toast.LENGTH_SHORT).show();
             //  long unixTime = Long.parseLong(preferences.getString(k,""));
-            long unixTime2 = Long.parseLong(preferences.getString(k,""));
+            long unixTime2 = 0000000;
+            try{
+                unixTime2 = Long.parseLong(preferences.getString(k,""));
+            }catch(Exception e){
+
+            }
+
 
             // BigDecimal bigDecimal = new BigDecimal(unixTime);
 

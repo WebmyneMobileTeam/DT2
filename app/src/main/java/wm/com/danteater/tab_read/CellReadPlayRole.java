@@ -2,6 +2,7 @@ package wm.com.danteater.tab_read;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -67,6 +68,31 @@ public class CellReadPlayRole {
         }else{
             btnAssignRole.setVisibility(View.INVISIBLE);
         }
+
+        // for assigned role image
+
+        Drawable retreived = btnAssignRole.getCompoundDrawables()[0];
+        int l = retreived.getBounds().left;
+        int r = retreived.getBounds().right;
+        int t = retreived.getBounds().top;
+        int b = retreived.getBounds().bottom;
+
+       Drawable drawable;
+
+        if(playLine.assignedUsersList == null || playLine.assignedUsersList.size() == 0){
+
+             drawable = ctx.getResources().getDrawable( R.drawable.ic_number_of_participants_small );
+
+        }else if(playLine.assignedUsersList.size() == 1){
+
+             drawable = ctx.getResources().getDrawable( R.drawable.ic_number_of_participants_small );
+
+        }else{
+             drawable = ctx.getResources().getDrawable( R.drawable.ic_assignmultiple);
+        }
+        drawable.setBounds(l,t,r,b);
+        btnAssignRole.setCompoundDrawables( drawable, null, null, null);
+
 
         if (isEmptyPlayRole == true) {
             tvRoleDescription.setVisibility(View.GONE);

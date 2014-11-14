@@ -31,12 +31,12 @@
 
     </LinearLayout>-->
 
-    <ListView
+    <wm.com.danteater.customviews.FullLengthListView
         android:id="@+id/listViewReadMusic"
         android:layout_width="match_parent"
         android:dividerHeight="1dp"
         android:divider="#d1d1d1"
-        android:layout_height="200dp"/>
+        android:layout_height="match_parent"/>
 
 
 

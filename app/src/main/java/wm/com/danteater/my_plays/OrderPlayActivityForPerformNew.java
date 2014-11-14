@@ -254,6 +254,7 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
             public void onClick(View view) {
                 if (!((etNumberOfPerformanceValue.getText().toString() == null || etNumberOfPerformanceValue.getText().toString() == "" || etNumberOfPerformanceValue.getText().toString().isEmpty()) || (txtFirstDateValue.getText().toString() == null || txtFirstDateValue.getText().toString() == "" || txtFirstDateValue.getText().toString().isEmpty()) || (txtSecondDateValue.getText().toString() == null || txtSecondDateValue.getText().toString() == "" || txtSecondDateValue.getText().toString().isEmpty()))) {
                     if(numberOfPerformance==true && isValidDate==true ) {
+
                         new AsyncTask<Void,Void,Void>(){
 
                             @Override
@@ -275,12 +276,21 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
                             @Override
                             protected void onPostExecute(Void aVoid) {
                                 super.onPostExecute(aVoid);
+
+
                                 dialog_next.dismissWithStatus(R.drawable.ic_navigation_accept,"Stykker bestilt");
 
                                 new CountDownTimer(2500, 1000) {
 
                                     @Override
                                     public void onFinish() {
+
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                            }
+                                        });
+
                                         ReadActivityFromPreview.isBackFromOrder = true;
                                         finish();
 
@@ -468,6 +478,7 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
 
                 @Override
                 public void onResponse(JSONObject jobj) {
+
                     String res = jobj.toString();
 //                    Log.e("response: ", res + "");
                     beanOrderPlayReview = new GsonBuilder()
@@ -477,12 +488,89 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
 
 
                     if(dbHelper.hasPlayWithPlayOrderIdText(selectedPlay.OrderId)) {
-                        selectedPlay.OrderType = "Perform";
-                        dbHelper.updatePlayInfo(selectedPlay);
+
+                        new AsyncTask<Void,Void,Void>() {
+                            @Override
+                            protected void onPreExecute() {
+                                super.onPreExecute();
+
+                            }
+
+                            @Override
+
+                            protected Void doInBackground(Void... voids) {
+
+
+                                selectedPlay.OrderType = "Perform";
+
+                                dbHelper.updatePlayInfo(selectedPlay);
+
+
+
 //                        Log.e("update","updated successfully");
+                                return null;
+                            }
+
+                            @Override
+                            protected void onPostExecute(Void aVoid) {
+                                super.onPostExecute(aVoid);
+
+
+                            }
+                        }.execute();
+
+
+
+
+
+
+
                     } else {
-                        retrievePlayContentsForPlayOrderId();
+
+                        new AsyncTask<Void,Void,Void>() {
+                            @Override
+                            protected void onPreExecute() {
+                                super.onPreExecute();
+
+                            }
+
+                            @Override
+
+                            protected Void doInBackground(Void... voids) {
+                                retrievePlayContentsForPlayOrderId();
+
+                                return null;
+                            }
+
+                            @Override
+                            protected void onPostExecute(Void aVoid) {
+                                super.onPostExecute(aVoid);
+
+                                dialog_next.dismissWithStatus(R.drawable.ic_navigation_accept,"Stykker bestilt");
+
+                                new CountDownTimer(2500, 1000) {
+
+                                    @Override
+                                    public void onFinish() {
+
+
+                                        ReadActivityFromPreview.isBackFromOrder = true;
+                                        finish();
+
+                                    }
+
+                                    @Override
+                                    public void onTick(long millisUntilFinished) {
+
+                                    }
+                                }.start();
+                            }
+                        }.execute();
+
+
+
                     }
+
 
                 }
             }, new Response.ErrorListener() {
@@ -508,11 +596,17 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
             @Override
             public void response(final String response) {
 
+
+
 //                Log.e("Response play full:", response + "");
                 Play receivedPlay = new GsonBuilder().create().fromJson(response, Play.class);
                 DatabaseWrapper db = new DatabaseWrapper(OrderPlayActivityForPerformNew.this);
                 db.insertPlay(receivedPlay, false);
                 db.close();
+
+
+
+
 
                 sharePlayWithNoone();
 
@@ -651,10 +745,17 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
 
 
 
+
                 return null;
+
+
             }
 
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
 
+            }
         }.execute();
 
     }

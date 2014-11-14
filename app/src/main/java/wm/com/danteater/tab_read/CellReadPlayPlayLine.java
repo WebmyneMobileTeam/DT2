@@ -13,6 +13,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -44,6 +45,7 @@ import wm.com.danteater.Play.PlayLines;
 import wm.com.danteater.Play.TextLines;
 import wm.com.danteater.R;
 import wm.com.danteater.app.MyApplication;
+import wm.com.danteater.customviews.FullLengthListView;
 import wm.com.danteater.customviews.HUD;
 import wm.com.danteater.customviews.SegmentedGroup;
 import wm.com.danteater.customviews.WMEdittext;
@@ -63,7 +65,7 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
 
     private LinearLayout listReadPlayPlaylinecell;
     private WMTextView lblRoleName;
-    private WMTextView tvPlayLines;
+ //   private WMTextView tvPlayLines;
     private ImageView btnMenu;
     private WMTextView lblLineNumber;
     private Context ctx;
@@ -90,14 +92,18 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
 
     private OnTextLineUpdated onTextLineUpdated;
     private View convertView;
-
+    private FullLengthListView listView;
+    ArrayList<TextLines> textLines;
+    public boolean showSideOptions = false;
+    public TextListAdapter adapterTextList;
 
     public CellReadPlayPlayLine(View view, Context context) {
         this.convertView=view;
         this.ctx = context;
         lblLineNumber = (WMTextView) view.findViewById(R.id.readPlayLineCellLineNumber);
         lblRoleName = (WMTextView) view.findViewById(R.id.readPlayLineCellRollName);
-        tvPlayLines = (WMTextView) view.findViewById(R.id.readPlayLineCellDescription);
+    //    tvPlayLines = (WMTextView) view.findViewById(R.id.readPlayLineCellDescription);
+        listView = (FullLengthListView)view.findViewById(R.id.listViewReadPlayLineText);
         btnMenu = (ImageView) view.findViewById(R.id.readPlayLineCellMoreImage);
         listReadPlayPlaylinecell = (LinearLayout)view.findViewById(R.id.listReadPlayPlaylinecell);
         lblRoleName.setBold();
@@ -121,6 +127,8 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
 
 
     public void setupForPlayLine(int section,PlayLines playLine, int current_state,boolean mark) {
+
+       showSideOptions = false;
 
        lblRoleName.setBackgroundColor(Color.TRANSPARENT);
        btnEdit.setVisibility(View.VISIBLE);
@@ -169,7 +177,7 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
             btnMenu.setVisibility(View.INVISIBLE);
         }
 
-        tvPlayLines.setText("");
+       // tvPlayLines.setText("");
 
         SharedPreferences preferences = ctx.getSharedPreferences("settings", ctx.MODE_PRIVATE);
         showLineNumber = preferences.getBoolean("showLineNumber", false);
@@ -188,9 +196,15 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
         }
 
 
-        ArrayList<TextLines> textLines = playLine.textLinesList;
+         textLines = playLine.textLinesList;
 
-        if (textLines == null || textLines.size() == 0) {
+        if(textLines != null && textLines.size()>0){
+            adapterTextList = new TextListAdapter(textLines);
+            listView.setAdapter(adapterTextList);
+        }
+
+
+/*        if (textLines == null || textLines.size() == 0) {
 
             tvPlayLines.setText("");
 
@@ -205,7 +219,6 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
             int lineCount = 0;
 
             for (TextLines textLine : textLines) {
-
                 String s = tvPlayLines.getText().toString();
                 if (s.length() == 0) {
                     tvPlayLines.setText(textLine.currentText());
@@ -215,7 +228,7 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
                 tvPlayLines.setTextColor(Color.parseColor(colorForLineType(textLine.textLineType())));
             }
 
-        }
+        }*/
 
         if (showComments == true) {
 
@@ -262,6 +275,63 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
         }
     }
 
+    public class TextListAdapter extends BaseAdapter{
+
+        private ArrayList<TextLines> arrTextLines;
+
+
+        public TextListAdapter(ArrayList<TextLines> arrTextLines) {
+            this.arrTextLines = arrTextLines;
+        }
+
+        @Override
+        public int getCount() {
+
+            return arrTextLines.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return position;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+
+            if(convertView == null){
+                convertView = View.inflate(ctx,R.layout.item_readplayplayline_textline,null);
+            }
+
+            WMTextView txt = (WMTextView)convertView.findViewById(R.id.readPlayLineCellDescription);
+            ImageView img = (ImageView)convertView.findViewById(R.id.imgReadPlayChangeLine);
+            txt.setText(arrTextLines.get(position).currentText());
+            txt.setTextColor(Color.parseColor(colorForLineType(arrTextLines.get(position).textLineType())));
+
+            if(showSideOptions == false){
+                img.setVisibility(View.INVISIBLE);
+            }else{
+                img.setVisibility(View.VISIBLE);
+            }
+
+            img.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    showEditOptionsWithFunctionality(position);
+
+                }
+            });
+
+
+            return convertView;
+        }
+    }
+
 
     @Override
     public void onClick(View v) {
@@ -283,7 +353,21 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
             case R.id.readPlayLineMenuEdit:
 
                 hideMenu();
-                showEditOptionsWithFunctionality();
+
+                if(textLines!=null && textLines.size()>0){
+
+                    if(textLines.size() == 1){
+                        showEditOptionsWithFunctionality(0);
+                    }else{
+
+                        showSideOptions = true;
+                        adapterTextList.notifyDataSetChanged();
+
+                    }
+
+                }
+
+
 
 
                 break;
@@ -420,7 +504,7 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
     }
 
 
-    private void showEditOptionsWithFunctionality() {
+    private void showEditOptionsWithFunctionality(final int pos) {
 
         final Dialog dialog = new Dialog(ctx,android.R.style.Theme_Translucent_NoTitleBar);
         WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
@@ -437,7 +521,7 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
         dialog.show();
 
         final EditText editLineViewTextArea = (EditText)view.findViewById(R.id.editLineViewTextArea);
-        editLineViewTextArea.setText(pl.textLinesList.get(0).currentText());
+        editLineViewTextArea.setText(pl.textLinesList.get(pos).currentText());
 
 
         WMTextView editLineViewPopupTitle = (WMTextView)view.findViewById(R.id.editLineViewPopupTitle);
@@ -459,7 +543,7 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
 
                 dialog.dismiss();
 
-                onTextLineUpdated.onTextLineUpdated(editLineViewTextArea.getText().toString());
+                onTextLineUpdated.onTextLineUpdated(editLineViewTextArea.getText().toString(),pos);
 
             }
         });
@@ -473,7 +557,7 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
 
 
     interface OnTextLineUpdated{
-        public void onTextLineUpdated(String newText);
+        public void onTextLineUpdated(String newText,int pos);
         public void onCommentAdded(String comment,boolean isPrivate);
         public void onChatClicked();
     }

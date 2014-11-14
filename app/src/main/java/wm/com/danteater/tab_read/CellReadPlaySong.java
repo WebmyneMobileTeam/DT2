@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import wm.com.danteater.Play.PlayLines;
 import wm.com.danteater.Play.SongFiles;
 import wm.com.danteater.R;
+import wm.com.danteater.customviews.FullLengthListView;
 import wm.com.danteater.customviews.PinnedHeaderListView;
 import wm.com.danteater.customviews.SectionedBaseAdapter;
 import wm.com.danteater.customviews.WMTextView;
@@ -47,12 +48,12 @@ public class CellReadPlaySong {
     public int mCurrentPlayingPosition;
     public int mCurrentPlayingSection;
     private PlayLines pl;
-    public ListView listMusic;
+    public FullLengthListView listMusic;
     SongAdapter adapter;
 
     public CellReadPlaySong(View view,Context context) {
 
-        listMusic = (ListView)view.findViewById(R.id.listViewReadMusic);
+        listMusic = (FullLengthListView)view.findViewById(R.id.listViewReadMusic);
         txtSongTitle = (WMTextView)view.findViewById(R.id.readPlaySongCelltitle);
      //   linearLayout = (LinearLayout)view.findViewById(R.id.linearSongCell);
         this.ctx = context;
