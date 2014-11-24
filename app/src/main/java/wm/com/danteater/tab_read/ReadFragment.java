@@ -8,6 +8,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
@@ -45,15 +48,44 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.CoreProtocolPNames;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.lang.reflect.Type;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -80,6 +112,7 @@ import wm.com.danteater.model.APIDelete;
 import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.model.DatabaseWrapper;
+import wm.com.danteater.model.MultipartUtility;
 import wm.com.danteater.model.StateManager;
 import wm.com.danteater.my_plays.ChatViewFromRead;
 import wm.com.danteater.my_plays.SelectTeacherForChat;
@@ -212,9 +245,7 @@ public class ReadFragment extends Fragment {
 
                 }
             }.start();*/
-
         }
-
     }
 
     public void updatePlaySpecificData() {
@@ -263,7 +294,6 @@ public class ReadFragment extends Fragment {
             dicPlayLines.clear();
         }
 
-
        if(_marrSharedWithUsers == null){
             _marrSharedWithUsers = new ArrayList<SharedUser>();
         }else{
@@ -283,23 +313,22 @@ public class ReadFragment extends Fragment {
                 currentKey = playLine.textLinesList.get(0).LineText;
                 marrPlaySections.add(currentKey); // add section
                 dicPlayLines.put(currentKey,new ArrayList()); // add the section and blank arry to the section
-                if(!foundIndexOfFirstScene){
 
-                    if(!currentKey.contains("første") ||
-                            !currentKey.contains("1") ||
-                            !currentKey.contains("scene") ||
-                            !currentKey.contains("akt") ){
+                if(foundIndexOfFirstScene == false){
+
+                    if(currentKey.contains("første") ||
+                            currentKey.contains("1") ||
+                            currentKey.contains("scene") ||
+                            currentKey.contains("akt") ){
 
                         indexForFirstScene = marrPlaySections.size();
                         foundIndexOfFirstScene = true;
                     }
                 }
 
-
             }else{
 
                 dicPlayLines.get(currentKey).add(playLine);
-
                 if(playLine.playLineType() == PlayLines.PlayLType.PlayLineTypeSong){
 
                     int section = marrPlaySections.indexOf(currentKey);
@@ -559,12 +588,8 @@ public class ReadFragment extends Fragment {
         btnAssignUserTildel.setEnabled(false);
 
         final ListView lstAssignRole = (ListView)view.findViewById(R.id.listAssignRoles);
-
-
         final ArrayList<String> msections = new ArrayList<String>();
-
         HashMap<String,String> mDict = new HashMap<String, String>();
-
         for(PlayLines pl : selectedPlay.playLinesList){
 
             if(pl.playLineType() == PlayLines.PlayLType.PlayLineTypeAct){
@@ -1033,10 +1058,7 @@ public class ReadFragment extends Fragment {
                         }
                     }
 
-
-
                     holderReadPlayPlayLineCell.cellReadPlayPlayLine.setupForPlayLine(section,playLine,currentState,mark22);
-
                     holderReadPlayPlayLineCell.cellReadPlayPlayLine.setOnTextLineUpdated(new CellReadPlayPlayLine.OnTextLineUpdated() {
 
                         // delegate method called after textline changes
@@ -1097,7 +1119,7 @@ public class ReadFragment extends Fragment {
                         holderReadPlayNoteCell = (ViewHolder.HolderReadPlayNoteCell)convertView.getTag();
                     }
 
-                    holderReadPlayNoteCell.cellReadPlayNote.setupForPlayLine(section,playLine,currentState);
+                    holderReadPlayNoteCell.cellReadPlayNote.setupForPlayLine(indexForFirstScene,section,playLine,currentState);
 
                     holderReadPlayNoteCell.cellReadPlayNote.setOnTextLineUpdated(new CellReadPlayNote.OnTextLineUpdated() {
                         @Override
@@ -1123,7 +1145,7 @@ public class ReadFragment extends Fragment {
                     }else{
                         holderReadPlayInfoCell = (ViewHolder.HolderReadPlayInfoCell)convertView.getTag();
                     }
-                    holderReadPlayInfoCell.cellReadPlayInfo.setupForPlayLine(section,playLine,currentState);
+                    holderReadPlayInfoCell.cellReadPlayInfo.setupForPlayLine(indexForFirstScene,section,playLine,currentState);
 
                 break;
 
@@ -1261,7 +1283,7 @@ public class ReadFragment extends Fragment {
 
     }
 
-    private void downloadAndPlayRecordTextToSpeech(PlayLines playLine) {
+    private void downloadAndPlayRecordTextToSpeech(PlayLines playLine){
 
         ArrayList<TextLines> arrTxt = playLine.textLinesList;
 
@@ -1272,7 +1294,261 @@ public class ReadFragment extends Fragment {
                 text.concat(line.currentText());
                 text.concat(" ");
             }
+
+            text = text.replaceAll("\\?","QMQM");
+
+            String latin = new String();
+
+            Charset charset = Charset.forName("ISO-8859-1");
+            CharsetDecoder decoder = charset.newDecoder();
+            CharsetEncoder encoder = charset.newEncoder();
+
+            try {
+                // Convert a string to ISO-LATIN-1 bytes in a ByteBuffer
+                // The new ByteBuffer is ready to be read.
+                ByteBuffer bbuf = encoder.encode(CharBuffer.wrap(text));
+
+                // Convert ISO-LATIN-1 bytes in a ByteBuffer to a character ByteBuffer and then to a string.
+                // The new ByteBuffer is ready to be read.
+                CharBuffer cbuf = decoder.decode(bbuf);
+                latin = cbuf.toString();
+            } catch (CharacterCodingException e) {
+            }
+
+            latin = latin.replaceAll("\\?"," ");
+            latin = latin.replaceAll("QMQM","?");
+
+          final  JSONObject mainOBJ = new JSONObject();
+
+            try {
+
+                mainOBJ.put("type","jsonwsp/request");
+                mainOBJ.put("version","1.0");
+                mainOBJ.put("methodname","synthesize");
+
+                // get s
+                SharedPreferences preferences = getActivity().getSharedPreferences("session_id", getActivity().MODE_PRIVATE);
+                String sessionId = preferences.getString("session_id","");
+                JSONObject args = new JSONObject();
+                args.put("session_id",sessionId);
+                args.put("text",latin);
+                args.put("codec","mp3");
+                args.put("sample_rate",0);
+
+                mainOBJ.put("args",args); // add to main json
+
+            new AsyncTask<Void,Void,Void>() {
+
+                String responseString = "";
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                dialog = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
+                dialog.title("Henter...");
+                dialog.show();
+            }
+
+            @Override
+
+            protected Void doInBackground(Void... voids) {
+
+                try {
+
+                   String service_url = "https://mvid-services.mv-nordic.com/theater-v1/AudioService/jsonwsp";
+                    //
+     /*               HttpClient httpclient = new DefaultHttpClient();
+                  //  httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+                    HttpPost httppost = new HttpPost(service_url);
+                    String boundary = "--" + "62cd4a08872da000cf5892ad65f1ebe6";
+                    httppost.setHeader("Content-type", "multipart/related; boundary=" + boundary);
+
+                    HttpEntity entity = MultipartEntityBuilder.create()
+                            .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
+                            .setBoundary(boundary)
+                            .addPart("body", new StringBody(mainOBJ.toString()))
+                            .build();
+
+
+
+                    httppost.setEntity(entity);
+                    try {
+                        HttpResponse response = httpclient.execute(httppost);
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+                        responseString = reader.readLine();
+
+
+                    } catch (Exception e) {
+
+                        e.printStackTrace();
+                    }
+                    */
+
+                    try {
+
+                        String boundary = "--" + "62cd4a08872da000cf5892ad65f1ebe6";
+                        MultipartUtility multipart = new MultipartUtility(service_url,"UTF-8");
+                        //multipart.addHeaderField("Test-Header", "Header-Value");
+
+                        multipart.addFormField("description", "Cool Pictures");
+                        multipart.addFormField("keywords", "Java,upload,Spring");
+
+                     //   multipart.addFilePart("fileUpload", uploadFile1);
+                    //    multipart.addFilePart("fileUpload", uploadFile2);
+
+                        List<String> response = multipart.finish();
+
+                        System.out.println("SERVER REPLIED:");
+
+                        for (String line : response) {
+                            System.out.println(line);
+                        }
+                    } catch (IOException ex) {
+                        System.err.println(ex);
+                    }
+
+
+
+
+                }catch (Exception e){}
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+               dialog.dismiss();
+
+                String url = "";
+                Log.e("Response for retreiving song TTF ", "" + responseString.toString());
+                try{
+                    JSONObject jsonObject = new JSONObject(responseString.toString());
+                    JSONObject inerObj = jsonObject.getJSONObject("result");
+                    url = inerObj.getString("url");
+
+                    Log.e("Inner URL ", "" + url.toString());
+
+                }catch(Exception e){}
+
+                downloadSpeechFile(url);
+
+
+
+
+            }
+        }.execute();
+
+
+
+
+
+
+
+
+            }catch (Exception e){}
+
+
+
+
+
+
         }
+
+
+
+
+
+    }
+
+    private void downloadSpeechFile(String url) {
+
+      final  String theURL ="https://mvid-services.mv-nordic.com/theater-v1/"+url;
+        Log.e("final url to be download ",""+theURL);
+
+
+
+
+        new AsyncTask<Void,Void,Void>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+                if(!new File("/mnt/sdcard/nameofthefile.mp3").exists()){
+                    new File("/mnt/sdcard/nameofthefile.mp3").mkdir();
+                }
+
+            }
+
+            @Override
+
+            protected Void doInBackground(Void... voids) {
+
+                int count;
+                try{
+
+                    URL url = new URL(theURL);
+
+
+                        java.io.BufferedInputStream in = new java.io.BufferedInputStream(new java.net.URL(theURL).openStream());
+                        java.io.FileOutputStream fos = new java.io.FileOutputStream(new File("/sdcard/nameofthefile.mp3"));
+                        java.io.BufferedOutputStream bout = new BufferedOutputStream(fos,1024);
+                        byte[] data = new byte[1024];
+                        int x=0;
+                        while((x=in.read(data,0,1024))>=0){
+                            bout.write(data,0,x);
+                        }
+                        fos.flush();
+                        bout.flush();
+                        fos.close();
+                        bout.close();
+                        in.close();
+                    }
+                    catch (Exception ex)
+                    {
+                        ex.printStackTrace();
+                    }
+
+
+/*                    URLConnection conexion = url.openConnection();
+                    conexion.connect();
+                    // this will be useful so that you can show a tipical 0-100% progress bar
+                    int lenghtOfFile = conexion.getContentLength();
+                    // downlod the file
+                    InputStream input = new BufferedInputStream(url.openStream());
+                    OutputStream output = new FileOutputStream(new File("/mnt/sdcard/nameofthefile.mp3"));
+                    byte data[] = new byte[1024];
+
+                    long total = 0;
+
+                    while ((count = input.read(data)) != -1) {
+                        total += count;
+                        // publishing the progress....
+                     //  publishProgress((int)(total*100/lenghtOfFile));
+                        output.write(data, 0, count);
+                    }
+
+                    output.flush();
+                    output.close();
+                    input.close();
+                } catch (Exception e) {}*/
+
+
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+
+                Toast.makeText(getActivity(), "Download complete", Toast.LENGTH_SHORT).show();
+
+
+            }
+        }.execute();
+
+
 
 
     }

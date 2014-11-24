@@ -141,7 +141,12 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
 
         String currentKey = playLine.textLinesList.get(0).LineText;
 
-        if(section == 0 && current_state != STATE_RECORD){
+//        if(section == 0 && current_state != STATE_RECORD){
+//
+//            convertView.setBackgroundColor(ctx.getResources().getColor(R.color.read_play_cell));
+//        }
+
+        if(playLine.playLineType() == PlayLines.PlayLType.PlayLineTypeAct && current_state != STATE_RECORD){
 
             convertView.setBackgroundColor(ctx.getResources().getColor(R.color.read_play_cell));
         }
@@ -252,12 +257,18 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
 
                 View vComment = mInflater.inflate(R.layout.item_comment_list,null);
                 WMTextView txt = (WMTextView)vComment.findViewById(R.id.txtItemCommentText);
+                ImageView img = (ImageView)vComment.findViewById(R.id.imgCommentCompose);
+
+                if(com.isPrivate){
+                    img.setImageResource(R.drawable.compose_green);
+                }else{
+                    img.setImageResource(R.drawable.compose_yellow);
+                }
+
                 txt.setText(com.commentText);
                 listReadPlayPlaylinecell.addView(vComment,params);
                 listReadPlayPlaylinecell.invalidate();
-
             }
-
         }
 
     }

@@ -26,7 +26,6 @@ public class ActionBarDrawerToggle extends android.support.v4.app.ActionBarDrawe
 
     protected Activity mActivity;
     protected DrawerLayout mDrawerLayout;
-
     protected int mOpenDrawerContentDescRes;
     protected int mCloseDrawerContentDescRes;
     protected DrawerArrowDrawable mDrawerImage;
@@ -37,6 +36,7 @@ public class ActionBarDrawerToggle extends android.support.v4.app.ActionBarDrawe
     }
 
     public ActionBarDrawerToggle(Activity activity, DrawerLayout drawerLayout, DrawerArrowDrawable drawerImage, int openDrawerContentDescRes, int closeDrawerContentDescRes) {
+
         super(activity, drawerLayout, R.drawable.ic_drawer, openDrawerContentDescRes, closeDrawerContentDescRes);
         mActivity = activity;
         mDrawerLayout = drawerLayout;
@@ -72,6 +72,7 @@ public class ActionBarDrawerToggle extends android.support.v4.app.ActionBarDrawe
     }
 
     public boolean isDrawerIndicatorEnabled() {
+
         if (mDrawerImage == null) {
             return super.isDrawerIndicatorEnabled();
         }
@@ -79,6 +80,7 @@ public class ActionBarDrawerToggle extends android.support.v4.app.ActionBarDrawe
     }
 
     public void onConfigurationChanged(Configuration newConfig) {
+
         if (mDrawerImage == null) {
             super.onConfigurationChanged(newConfig);
             return;
@@ -92,6 +94,7 @@ public class ActionBarDrawerToggle extends android.support.v4.app.ActionBarDrawe
 
     @Override
     public void onDrawerSlide(View drawerView, float slideOffset) {
+
         if (mDrawerImage == null) {
             super.onDrawerSlide(drawerView, slideOffset);
             return;
@@ -116,6 +119,7 @@ public class ActionBarDrawerToggle extends android.support.v4.app.ActionBarDrawe
 
     @Override
     public void onDrawerClosed(View drawerView) {
+
         if (mDrawerImage == null) {
             super.onDrawerClosed(drawerView);
             return;
@@ -127,6 +131,7 @@ public class ActionBarDrawerToggle extends android.support.v4.app.ActionBarDrawe
     }
 
     protected void setActionBarUpIndicator() {
+
         if (mActivity != null) {
             try {
                 Method setHomeAsUpIndicator = ActionBar.class.getDeclaredMethod("setHomeAsUpIndicator",

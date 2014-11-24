@@ -27,7 +27,7 @@ public class VideoPlay extends BaseActivity {
         mediaController.setAnchorView(videoView);
         Uri video = Uri.parse("android.resource://" + getPackageName() + "/"
                 +videoPath);
-       videoView.setMediaController(mediaController);
+        videoView.setMediaController(mediaController);
         videoView.setVideoURI(video);
         videoView.start();
     }

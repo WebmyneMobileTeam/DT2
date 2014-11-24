@@ -36,11 +36,11 @@ public class HUD extends Dialog{
     private TextView txtTitle;
     private FrameLayout frameLayout;
 
+
     public HUD(Context context, int theme) {
         super(context, theme);
         this.ctx = context;
         init();
-
     }
 
     private void init() {

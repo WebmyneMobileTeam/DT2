@@ -65,6 +65,7 @@ import wm.com.danteater.login.User;
 import wm.com.danteater.model.AppConstants;
 import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
+import wm.com.danteater.tab_music.MusicFragment;
 
 /**
  * Created by nirav on 02-10-2014.
@@ -118,7 +119,6 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_inspiration, container, false);
 
-
         gridTeachers = (GridLayout) view.findViewById(R.id.gridTeacherInspiration);
         gridPupils = (GridLayout) view.findViewById(R.id.gridPupilsInspiration);
         gridInspiration = (GridLayout)view.findViewById(R.id.gridInspiration);
@@ -127,8 +127,6 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
         linearTeacherInspirations = (LinearLayout)view.findViewById(R.id.linearTeacherInspirations);
         linearTeacherInspirations.setVisibility(View.GONE);
 
-
-
         return view;
     }
 
@@ -136,7 +134,12 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
     public void onResume() {
         super.onResume();
 
+        if(MusicFragment.mediaPlayer != null &&MusicFragment. mediaPlayer.isPlaying()){
+            MusicFragment.mediaPlayer.stop();
+        }
         // fillTeachers();
+
+
 
         if(getArguments().getString("inspirationType").equalsIgnoreCase("tab")) {
             fetchAndDisplayInspirations();
@@ -472,8 +475,7 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
         byte[] imageBytes = baos.toByteArray();
         ByteArrayBody bab = new ByteArrayBody(imageBytes,new File(filePath).getName()+".jpg");
 
-
-        HttpEntity entity = MultipartEntityBuilder.create()
+         HttpEntity entity = MultipartEntityBuilder.create()
                 .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
                 .setBoundary(boundary)
                 .addPart("PlayId",new StringBody(URLEncoder.encode(selectedPlay.PlayId,"UTF-8")))

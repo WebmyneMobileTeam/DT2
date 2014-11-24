@@ -71,9 +71,15 @@ public class CellReadPlayNote implements View.OnClickListener{
         this.convertView = view;
     }
 
-    public void setupForPlayLine(int section,PlayLines playline,int current_state){
+    public void setupForPlayLine(int firstIndex,int section,PlayLines playline,int current_state){
         this.pl = playline;
+
+
         convertView.setBackgroundColor(Color.TRANSPARENT);
+
+        String currentKey = playline.textLinesList.get(0).LineText;
+
+
         if(current_state==STATE_CHAT){
             if(Integer.parseInt(playline.LineCount)== ReadActivityForChat.lineNumber) {
                 convertView.setBackgroundColor(Color.parseColor("#f6f6d6"));
@@ -90,10 +96,10 @@ public class CellReadPlayNote implements View.OnClickListener{
             btnMenu.setVisibility(View.INVISIBLE);
         }
 
-        if(section == 0 && current_state != STATE_RECORD){
+  /*      if(section == 0 && current_state != STATE_RECORD){
 
             convertView.setBackgroundColor(ctx.getResources().getColor(R.color.read_play_cell));
-        }
+        }*/
 
         if(current_state == STATE_RECORD || current_state == STATE_PREVIEW){
             btnMenu.setVisibility(View.INVISIBLE);
@@ -105,6 +111,9 @@ public class CellReadPlayNote implements View.OnClickListener{
             convertView.setBackgroundColor(Color.WHITE);
         }*/
 
+        if(section<firstIndex-1){
+            convertView.setBackgroundColor(ctx.getResources().getColor(R.color.read_play_cell));
+        }
 
         if(user.checkPupil(user.getRoles())){
             btnMenu.setVisibility(View.INVISIBLE);

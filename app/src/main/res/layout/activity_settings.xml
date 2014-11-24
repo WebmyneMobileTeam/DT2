@@ -76,6 +76,7 @@
         android:layout_height="wrap_content">
 
         <wm.com.danteater.customviews.WMTextView
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Vis noter"
@@ -129,10 +130,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_margin"
         android:text="Anbefal til andre"
-
+        android:id="@+id/btnappshare"
         android:textSize="@dimen/normalText"
         android:background="@drawable/button_selector"
         android:textColor="@android:color/white" />
+
 </LinearLayout>
 
 

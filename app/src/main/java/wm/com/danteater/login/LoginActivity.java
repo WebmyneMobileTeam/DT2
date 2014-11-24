@@ -1,6 +1,9 @@
 package wm.com.danteater.login;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,6 +38,7 @@ import wm.com.danteater.guide.GuideStartup;
 import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.model.DatabaseWrapper;
 import wm.com.danteater.model.Prefs;
+import wm.com.danteater.model.SessionReceiver;
 import wm.com.danteater.model.StateManager;
 import wm.com.danteater.my_plays.DrawerActivity;
 import wm.com.danteater.my_plays.ReadActivityFromPreview;
@@ -139,17 +143,15 @@ public class LoginActivity extends BaseActivity {
 
             if (response.has_access == false) {
                 m_device_security.releaseDeviceRegistration();
+
             }
 
             session_id = m_device_security.getMVSessionID(response.access_identifier);
 
             if (session_id == "" || session_id == null) {
                 m_device_security.releaseDeviceRegistration();
-
                 // no internet connection
                 // shows no network view
-
-
                 txtTryAgain.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -202,6 +204,8 @@ public class LoginActivity extends BaseActivity {
                 editor.putString("session_id", session_id);
                 editor.commit();
 
+                startBackServiceForLIve(session_id);
+
                 // post webservice
                 callWebServicePost(session_id, response);
             }
@@ -224,10 +228,6 @@ public class LoginActivity extends BaseActivity {
                 e.printStackTrace();
             }
 
-            new AsyncTask<Void, Void, Void>() {
-
-                @Override
-                protected Void doInBackground(Void... voids) {
             JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, "https://mvid-services.mv-nordic.com/v2/UserService/jsonwsp", request_params, new Response.Listener<JSONObject>() {
 
                 @Override
@@ -243,19 +243,28 @@ public class LoginActivity extends BaseActivity {
                 }
             });
             MyApplication.getInstance().addToRequestQueue(req);
-                    return null;
-                }
-
-
-            }.execute();
         }
     };
+
+    private void startBackServiceForLIve(String session_id) {
+
+        Intent intent = new Intent(getApplicationContext(), SessionReceiver.class);
+        // Create a PendingIntent to be triggered when the alarm goes off
+        final PendingIntent pIntent = PendingIntent.getBroadcast(this,12345,intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        // Setup periodic alarm every 5 seconds
+        long firstMillis = System.currentTimeMillis(); // first run of alarm is immediate
+        int intervalMillis = 30000; // 30 seconds
+        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis, intervalMillis, pIntent);
+
+
+
+    }
 
     private void handlePostsList(final String response, final DeviceSecurity.DeviceSecurityListener.MVIDResponse mvid_response) {
 
         runOnUiThread(new Runnable() {
             public void run() {
-
                 try {
 
                     Intent intent = null;
@@ -269,6 +278,7 @@ public class LoginActivity extends BaseActivity {
 //                    Log.e("primary_group: ", user.getPrimaryGroup() + "");
 //                    Log.e("roles: ", user.getRoles() + "");
 //                    Log.e("domain: ", user.getDomain() + "");
+
                     isTeacherOrAdmin = user.checkTeacherOrAdmin(user.getRoles());
 
                 } catch (JsonSyntaxException e) {
@@ -299,6 +309,8 @@ public class LoginActivity extends BaseActivity {
                     noNetworkView.setVisibility(View.GONE);
 
                     startLoginTimer();
+
+
 //                    stateManager.retriveSchoolClasses(session_id, user.getDomain());
 //                    stateManager.retriveSchoolTeachers(session_id, user.getDomain());
 
@@ -321,6 +333,7 @@ public class LoginActivity extends BaseActivity {
 
         timer=new Timer();
        // stopLoginTimer();
+
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -338,28 +351,28 @@ public class LoginActivity extends BaseActivity {
     private void tryToLogin2() {
 
         JSONObject params = new JSONObject();
-         request_params2 = new JSONObject();
+        request_params2 = new JSONObject();
         try {
             SharedPreferences preferences = getSharedPreferences("session_id", MODE_PRIVATE);
             String sessionId=preferences.getString("session_id","");
+            Log.e("==================================================",sessionId);
             params.put("session_id", sessionId);
             request_params2.put("methodname", "keepAlive");
             request_params2.put("type", "jsonwsp/request");
             request_params2.put("version", "1.0");
             request_params2.put("args", params);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        new AsyncTask<Void, Void, Void>() {
 
-            @Override
-            protected Void doInBackground(Void... voids) {
+
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, "https://mvid-services.mv-nordic.com/v2/UserService/jsonwsp", request_params2, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject jobj) {
                 String res = jobj.toString();
-                Log.e("response continue: ", res + "");
+                Log.e("????????????  response continue: ", res + "");
 
             }
         }, new Response.ErrorListener() {
@@ -369,11 +382,8 @@ public class LoginActivity extends BaseActivity {
             }
         });
         MyApplication.getInstance().addToRequestQueue(req);
-                return null;
-            }
 
 
-        }.execute();
     }
 
 
@@ -392,6 +402,7 @@ public class LoginActivity extends BaseActivity {
 
 
     private void showDialog( String title,String message ) {
+
         AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
         alert.setTitle(title);
         alert.setMessage(message);

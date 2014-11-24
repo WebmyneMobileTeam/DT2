@@ -47,6 +47,7 @@ public abstract class DrawerArrowDrawable extends Drawable {
     }
 
     public void draw(Canvas canvas) {
+
         Rect localRect = getBounds();
         float f1 = lerp(this.mBarSize, this.mTopBottomArrowSize, this.mProgress);
         float f2 = lerp(this.mBarSize, this.mMiddleArrowSize, this.mProgress);

@@ -71,6 +71,7 @@ public class ChatViewActivity extends BaseActivity {
     int plyIDAfterUpdate = 0;
     int playid = 0;
     Play ply;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,13 +101,8 @@ public class ChatViewActivity extends BaseActivity {
                 }else{
                     btnSendMessage.setTextColor(getResources().getColor(R.color.apptheme_color));
                 }
-
-
-
             }
         });
-
-
 
         listChat = (ListView)findViewById(R.id.listViewChat);
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(this,"user_pref", 0);
@@ -368,8 +364,6 @@ public class ChatViewActivity extends BaseActivity {
             switch (type){
 
                 case ITEM_TYPE_SENDER:
-
-
                     convertView = mInflater.inflate(R.layout.item_chat_left, parent,false);
 
                     WMTextView txtCircle = (WMTextView)convertView.findViewById(R.id.txtCircleChat);
@@ -474,7 +468,6 @@ public class ChatViewActivity extends BaseActivity {
         else{
 //            Log.i("hasplay","false");
             // insert new play to db
-
             new CallWebService(API.link_retrievePlayContentsForPlayOrderId +play.OrderId,CallWebService.TYPE_JSONOBJECT) {
 
                 @Override

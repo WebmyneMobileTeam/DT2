@@ -97,9 +97,9 @@ public  class ListDialog extends Dialog{
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     dismiss();
                     listner.selected(textView.getText().toString());
-
 
                 }
             });

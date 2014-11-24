@@ -79,7 +79,7 @@ import wm.com.danteater.search.FragmentSearch;
 public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChangeListener {
 
     public  ArrayList<Group> classes = new ArrayList<Group>();
-    public  ArrayList<User> teachers= new ArrayList<User>();
+    public  ArrayList<User> teachers;
     private SharedPreferenceTeachers sharedPreferenceTeachers;
     private SharedPreferenceClasses sharedPreferenceClasses;
     private ArrayList<MessageUnread> messageUnreadArrayList=new ArrayList<MessageUnread>();
@@ -137,6 +137,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        teachers= new ArrayList<User>();
         sharedPreferenceClasses=new SharedPreferenceClasses();
         sharedPreferenceTeachers = new SharedPreferenceTeachers();
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "user_pref", 0);
@@ -324,7 +325,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     public void onResume() {
         super.onResume();
 
-        listPlay.setAdapter(null);
+         listPlay.setAdapter(null);
          playListForReview = new ArrayList<Play>();
         playListForPerform = new ArrayList<Play>();
          playOrderList = new ArrayList<PlayOrderDetails>();
@@ -486,6 +487,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                     cUser = complexPreferencesForUser.getObject("current_user", User.class);
                     SharedPreferences pre = getActivity().getSharedPreferences("session_id", getActivity().MODE_PRIVATE);
                     session_id = pre.getString("session_id", "");
+                    Log.e("Session ID : ",""+session_id);
                     //ShareActivityForPreview.teachers.clear();
 //                    sharedPreferenceTeachers.clearTeacher(getActivity());
                     retriveSchoolTeachers(session_id, cUser.getDomain());
@@ -1138,9 +1140,9 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     }
 
     public  void retriveSchoolTeachers(String seesionId, String domain) {
+
         groupForTeacher.setGroupId("teacher");
         teachers.clear();
-
         retriveMembers(seesionId, domain, groupForTeacher);
 
     }
@@ -1152,6 +1154,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             methodParams.put("session_id", seesionId);
             methodParams.put("domain", domain);
             methodParams.put("group_cn", group.getGroupId());
+
             requestParams.put("methodname", "listGroupMembers");
             requestParams.put("type", "jsonwsp/request");
             requestParams.put("version", "1.0");
@@ -1163,7 +1166,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 public void onResponse(JSONObject jobj) {
 
                     String res = jobj.toString();
-//                    Log.e("response for retrive school teachers...: ", res + "");
+                  Log.e("response for retrive school teachers...: ", res + "");
 
                     BeanGroupMemberInfo beanGroupMemberInfo = new GsonBuilder().create().fromJson(res, BeanGroupMemberInfo.class);
                     BeanGroupMemberResult beanGroupMemberResult = beanGroupMemberInfo.getBeanGroupMemberResult();

@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -75,6 +76,7 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
         endTime=(WMTextView)convertView.findViewById(R.id.end_label);
         songProgressBar=(SeekBar)convertView.findViewById(R.id.seekBar);
         songProgressBar.setOnSeekBarChangeListener(this);
+
     }
 
     public void setCounts(int cc,int fc){
@@ -142,16 +144,7 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
                 // Running this thread after 100 milliseconds
                 //  mHandler.postDelayed(this, 1);
 
-
-
-
-
-
             }
-
-
-
-
 
         } else {
             musicDownload.setVisibility(View.VISIBLE);
@@ -261,6 +254,10 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
             int progress = (int)(getProgressPercentage(currentDuration, totalDuration));
             //Log.d("Progress", ""+progress);
             songProgressBar.setProgress(progress);
+
+                if(songProgressBar.getProgress() == songProgressBar.getMax()){
+                 // setOnReloading.onReload();
+                }
 
             // Running this thread after 100 milliseconds
             mHandler.postDelayed(this, 1);
@@ -447,12 +444,14 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
             super.onProgressUpdate(values);
 //            Log.e("progress for single: ",values[0].toString()+"");
             if(values[0].toString().equalsIgnoreCase("100")) {
+
                 musicDownload.setVisibility(View.GONE);
                 musicPlay.setVisibility(View.VISIBLE);
                 playerView.setVisibility(View.VISIBLE);
                 dialog.dismiss();
-                convertView.invalidate();
+               convertView.invalidate();
                 setOnReloading.onReload();
+
             }
         }
 

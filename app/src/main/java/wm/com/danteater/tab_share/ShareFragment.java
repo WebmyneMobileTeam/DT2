@@ -97,7 +97,7 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
         Collections.sort(teacherList, User.nameComparator);
         // Get selected Play from my play list from shared preferences
         // Here we use complex preferences to store whole Play class object and retrieve.
-       ComplexPreferences complexPreference = ComplexPreferences.getComplexPreferences(getActivity(), "mypref", 0);
+        ComplexPreferences complexPreference = ComplexPreferences.getComplexPreferences(getActivity(), "mypref", 0);
         selectedPlay = complexPreference.getObject("selected_play",Play.class);
         ComplexPreferences complexPreferencesUser = ComplexPreferences.getComplexPreferences(getActivity(), "user_pref", 0);
         currentUser =complexPreferencesUser.getObject("current_user", User.class);
@@ -123,6 +123,7 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+
         return convertView;
     }
 

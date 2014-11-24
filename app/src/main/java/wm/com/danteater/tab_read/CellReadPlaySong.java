@@ -313,13 +313,34 @@ public class CellReadPlaySong {
 
                             }
 
-
                         }else{
+                            //..................................................................................
 
-                            if(MusicFragment.mediaPlayer != null && MusicFragment.mediaPlayer.isPlaying()){
+                                MusicFragment.CURRENT_PLAYING_POSITION = position;
+                                MusicFragment.CURRENT_PLAYING_SECTION = 0;
+                                try {
+
+                                    FileInputStream fis = new FileInputStream(audioPath);
+                                    FileDescriptor fd = fis.getFD();
+                                    MusicFragment.mediaPlayer.reset();
+                                    MusicFragment.mediaPlayer.setDataSource(fd);
+                                    MusicFragment.mediaPlayer.prepare();
+                                    MusicFragment.mediaPlayer.start();
+                                    if(MusicFragment.STATE_HOLDER.containsKey(hackn)){
+                                        int s = Integer.parseInt(MusicFragment.STATE_HOLDER.get(hackn).toString().split("#")[0]);
+                                        MusicFragment.mediaPlayer.seekTo(s);
+                                    }
+
+                                }catch(FileNotFoundException e){}
+                                catch (IOException e){}
+
+                                MusicFragment.HACKNUMBER = hackn;
+
+
+
+                          /*  if(MusicFragment.mediaPlayer != null && MusicFragment.mediaPlayer.isPlaying()){
 
                                 Toast.makeText(ctx, "Close first", Toast.LENGTH_SHORT).show();
-
 
                             }else{
 
@@ -343,9 +364,10 @@ public class CellReadPlaySong {
 
                                 MusicFragment.HACKNUMBER = hackn;
 
-                            }
+                            }*/
 
 
+                            //..................................................................................
 
                         }
 

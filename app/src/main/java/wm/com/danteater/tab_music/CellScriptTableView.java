@@ -19,17 +19,23 @@ public class CellScriptTableView {
     Context context;
     WMTextView scriptTitle;
 
+
     ImageView scriptView;
     public CellScriptTableView(View convertView,Context context) {
         this.context=context;
         scriptTitle=(WMTextView)convertView.findViewById(R.id.script_table_view_cell_title);
         scriptView=(ImageView)convertView.findViewById(R.id.scriptView);
 
+
     }
 
 
 
-   public void setUpScriptFile(final SongFiles songFile,final String sectionTitle,final Context context){
+   public void setUpScriptFile(int section,final SongFiles songFile,final String sectionTitle,final Context context){
+
+
+
+
        scriptTitle.setText(sectionTitle+"");
        scriptView.setOnClickListener(new View.OnClickListener() {
            @Override

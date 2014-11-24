@@ -266,6 +266,7 @@ public class MusicFragment extends Fragment {
 
 
         public class SectionHeaderHolder {
+            View viewAboveHeader;
              TextView headerTitle;
         }
         @Override
@@ -277,9 +278,15 @@ public class MusicFragment extends Fragment {
                 LayoutInflater inflator = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflator.inflate(R.layout.item_music_table_section, parent,false);
                 sectionHeaderHolder.headerTitle=(TextView)view.findViewById(R.id.music_table_section_title);
+                sectionHeaderHolder.viewAboveHeader = (View)view.findViewById(R.id.viewSectionWhiteSong);
+
                 view.setTag(sectionHeaderHolder);
             } else {
                 sectionHeaderHolder=(SectionHeaderHolder)view.getTag();
+            }
+            sectionHeaderHolder.viewAboveHeader.setVisibility(View.VISIBLE);
+            if(section == 0){
+                sectionHeaderHolder.viewAboveHeader.setVisibility(View.GONE);
             }
             sectionHeaderHolder.headerTitle.setText(marrSectionTitles.get(section));
             return view;
@@ -422,8 +429,6 @@ public class MusicFragment extends Fragment {
                                     }
 
 
-
-
                                 }catch(FileNotFoundException e){}
                                 catch (IOException e){}
 
@@ -448,7 +453,7 @@ public class MusicFragment extends Fragment {
                 }else{
                     viewHolderForPDF = (ViewHolder.ViewHolderForPDF)convertView.getTag();
                 }
-                viewHolderForPDF.cellScriptTableView.setUpScriptFile(songFile,marrSectionTitles.get(section),getActivity());
+                viewHolderForPDF.cellScriptTableView.setUpScriptFile(section,songFile,marrSectionTitles.get(section),getActivity());
             }
 
             return convertView;

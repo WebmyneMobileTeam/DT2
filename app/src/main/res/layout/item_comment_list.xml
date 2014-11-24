@@ -6,12 +6,12 @@
     android:layout_height="wrap_content">
 
     <ImageView
+        android:id="@+id/imgCommentCompose"
         android:contentDescription="@string/app_name"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_gravity="center_vertical"
         android:src="@drawable/compose_yellow"
-
         android:scaleType="centerInside" />
 
     <wm.com.danteater.customviews.WMTextView

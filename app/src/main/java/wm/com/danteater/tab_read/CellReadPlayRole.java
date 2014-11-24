@@ -85,7 +85,7 @@ public class CellReadPlayRole {
 
         }else if(playLine.assignedUsersList.size() == 1){
 
-             drawable = ctx.getResources().getDrawable( R.drawable.ic_number_of_participants_small );
+             drawable = ctx.getResources().getDrawable( R.drawable.ic_assignmultiple );
 
         }else{
              drawable = ctx.getResources().getDrawable( R.drawable.ic_assignmultiple);
