@@ -58,13 +58,18 @@ public class LoginActivity extends BaseActivity {
     String session_id;
     Timer timer;
     Play selectedPlay;
-   JSONObject request_params;
+    JSONObject request_params;
     JSONObject request_params2; //for tryToLogin2 method
     StateManager stateManager = StateManager.getInstance();
+
+  public String aaccess_identifier = "product.ios.da.intowords";
+ //   public String aaccess_identifier = "product.ios.ml.theaterapp.1";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         txtHeader.setText("Login");
         dbHelper=new DatabaseWrapper(LoginActivity.this);
         // Alternative Views
@@ -123,12 +128,12 @@ public class LoginActivity extends BaseActivity {
         // try to login
         if (isConnected()) {
             // TODO change to login with android
-            m_device_security.doLogin("product.ios.da.intowords", R.id.fragment_layout);
+            m_device_security.doLogin(aaccess_identifier, R.id.fragment_layout);
             loginView.setVisibility(View.VISIBLE);
             noAccessView.setVisibility(View.GONE);
             noNetworkView.setVisibility(View.GONE);
         } else {
-            m_device_security.doLogin("product.ios.da.intowords", R.id.fragment_layout);
+            m_device_security.doLogin(aaccess_identifier, R.id.fragment_layout);
             loginView.setVisibility(View.GONE);
             noAccessView.setVisibility(View.GONE);
             noNetworkView.setVisibility(View.GONE);
@@ -149,6 +154,7 @@ public class LoginActivity extends BaseActivity {
             session_id = m_device_security.getMVSessionID(response.access_identifier);
 
             if (session_id == "" || session_id == null) {
+
                 m_device_security.releaseDeviceRegistration();
                 // no internet connection
                 // shows no network view
@@ -156,7 +162,7 @@ public class LoginActivity extends BaseActivity {
                     @Override
                     public void onClick(View view) {
                         if (isConnected()) {
-                            m_device_security.doLogin("product.ios.da.intowords", R.id.fragment_layout);
+                            m_device_security.doLogin(aaccess_identifier, R.id.fragment_layout);
                             loginView.setVisibility(View.VISIBLE);
                             noAccessView.setVisibility(View.GONE);
                             noNetworkView.setVisibility(View.GONE);
@@ -309,8 +315,6 @@ public class LoginActivity extends BaseActivity {
                     noNetworkView.setVisibility(View.GONE);
 
                     startLoginTimer();
-
-
 //                    stateManager.retriveSchoolClasses(session_id, user.getDomain());
 //                    stateManager.retriveSchoolTeachers(session_id, user.getDomain());
 
