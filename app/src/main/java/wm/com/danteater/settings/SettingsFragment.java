@@ -163,8 +163,6 @@ public class SettingsFragment extends Fragment {
                 shareProcess();
              //   chooseImage();
                 break;
-
-
         }
 
         return super.onContextItemSelected(item);
@@ -198,8 +196,9 @@ public class SettingsFragment extends Fragment {
         ClipboardManager clipboard = (ClipboardManager)getActivity().getSystemService(getActivity().CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("",shareLink);
         clipboard.setPrimaryClip(clip);
-
         Toast.makeText(getActivity(),"Kopieret", Toast.LENGTH_SHORT).show();
+
+
 
     }
 
