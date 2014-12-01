@@ -1,10 +1,15 @@
 package wm.com.danteater.tab_info;
 
+import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +26,10 @@ import com.android.volley.VolleyError;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -85,6 +94,8 @@ public class InfoFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(getActivity()).build();
+        ImageLoader.getInstance().init(configuration);
         showInspirations();
     }
 
@@ -141,10 +152,31 @@ public class InfoFragment extends Fragment {
 
             final int showInsp = i;
             GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(new ViewGroup.MarginLayoutParams(w / 2, w / 4));
+            layoutParams.setGravity(Gravity.CENTER);
             final ImageView ivi = new ImageView(getActivity());
-            ivi.setScaleType(ImageView.ScaleType.CENTER);
-            ivi.setImageResource(R.drawable.camerax);
+            ivi.setPadding((int)convertPixelsToDp(32,getActivity()),(int)convertPixelsToDp(16,getActivity()),(int)convertPixelsToDp(32,getActivity()),(int)convertPixelsToDp(16,getActivity()));
+//            ivi.setScaleType(ImageView.ScaleType.FIT_XY);
+//            ivi.setImageResource(R.drawable.camerax);
             gridInspiration.addView(ivi,layoutParams);
+
+            if(inspirations.get(showInsp).ImageUrlSmall != null && !inspirations.get(showInsp).ImageUrlSmall.equalsIgnoreCase("")){
+
+//                ImageLoader.getInstance().loadImage(inspirations.get(showInsp).ImageUrlSmall
+//                        ,new SimpleImageLoadingListener() {
+//                    @Override
+//                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+//
+//                        ivi.setImageBitmap(loadedImage);
+//
+//                    }
+//                });
+
+                Picasso.with(getActivity())
+                        .load(inspirations.get(showInsp).ImageUrlSmall)
+                        .placeholder(R.drawable.camerax)
+                        .fit()
+                        .into(ivi);
+            }
 
             ivi.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -163,6 +195,13 @@ public class InfoFragment extends Fragment {
         }
 
 
+    }
+
+    public static float convertPixelsToDp(float px, Context context){
+        Resources resources = context.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        float dp = px / (metrics.densityDpi / 160f);
+        return dp;
     }
 
     @Override

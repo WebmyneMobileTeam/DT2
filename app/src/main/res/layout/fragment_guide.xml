@@ -9,7 +9,7 @@
         android:id="@+id/guideSlider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp">
+        android:layout_marginBottom="48dp">
 
         </android.support.v4.view.ViewPager>
 
@@ -18,16 +18,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|clip_horizontal"
-        android:padding="10dp" />
+        android:padding="16dp" />
 
-    <wm.com.danteater.customviews.WMButton
+    <wm.com.danteater.customviews.WMTextView
         android:id="@+id/btnStartUp"
         android:visibility="gone"
+        android:padding="8dp"
+        android:layout_margin="4dp"
+        android:textSize="@dimen/normalText"
         android:background="@drawable/button_selector"
         android:textColor="@android:color/white"
-        android:layout_gravity="top|right"
+        android:layout_gravity="bottom|right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start"
-        android:layout_margin="@dimen/activity_margin"/>
+        android:text="GET START"
+        />
+
+    <wm.com.danteater.customviews.WMTextView
+        android:id="@+id/btnSkip"
+        android:visibility="gone"
+        android:padding="8dp"
+        android:layout_margin="4dp"
+        android:textSize="@dimen/normalText"
+        android:background="@drawable/button_selector"
+        android:textColor="@android:color/white"
+        android:layout_gravity="bottom|left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SKIP"
+        />
+
 </FrameLayout>

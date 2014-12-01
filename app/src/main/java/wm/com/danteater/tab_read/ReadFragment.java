@@ -13,8 +13,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -34,6 +36,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -123,6 +127,8 @@ import wm.com.danteater.tab_music.MusicFragment;
 public class ReadFragment extends Fragment {
 
 
+    private MediaRecorder mRecorder = null;
+    private static String mFileName = null;
     int mSubtractionCount = 0;
     public ArrayList<String> marrMyCastMatches;
     public ReadSectionedAdapter readSectionedAdapter;
@@ -137,6 +143,8 @@ public class ReadFragment extends Fragment {
     private boolean isGoToLineVisible = false;
     private Menu menu;
     private User currentUser;
+    private  boolean isHeaderChecked=false;
+
 
     // 0 for record state
     // 1 for preview state
@@ -190,12 +198,14 @@ public class ReadFragment extends Fragment {
 
     public ReadFragment() {
         // Required empty public constructor
+
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        mFileName = Environment.getExternalStorageDirectory().getAbsolutePath();
+        mFileName += "/audiorecordtest.3gp";
         MusicFragment.mediaPlayer = new MediaPlayer();
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref", 0);
         selectedPlay = complexPreferences.getObject("selected_play", Play.class);
@@ -269,6 +279,9 @@ public class ReadFragment extends Fragment {
             }
         }.start();
 
+        DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
+        marrMyCastMatches = dbh.getMyCastMatchesForUserId(currentUser.getUserId(),selectedPlay.pID);
+        dbh.close();
 
         if(marrPlayLines == null){
             marrPlayLines = new ArrayList<String>();
@@ -328,7 +341,18 @@ public class ReadFragment extends Fragment {
 
             }else{
 
-                dicPlayLines.get(currentKey).add(playLine);
+                if(isHeaderChecked==true){
+                    for(int i=0;i<marrMyCastMatches.size();i++){
+                        String sCheck = marrMyCastMatches.get(i).toString();
+                        if(sCheck.equalsIgnoreCase(playLine.RoleName)){
+                            dicPlayLines.get(currentKey).add(playLine);
+                        }
+                    }
+                } else {
+                    dicPlayLines.get(currentKey).add(playLine);
+                }
+
+
                 if(playLine.playLineType() == PlayLines.PlayLType.PlayLineTypeSong){
 
                     int section = marrPlaySections.indexOf(currentKey);
@@ -372,9 +396,9 @@ public class ReadFragment extends Fragment {
 
         }
 
-        DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
+/*        DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
         marrMyCastMatches = dbh.getMyCastMatchesForUserId(currentUser.getUserId(),selectedPlay.pID);
-        dbh.close();
+        dbh.close();*/
 
 //        Log.e("------------------ mycast read:",""+marrMyCastMatches);
 
@@ -1028,7 +1052,72 @@ public class ReadFragment extends Fragment {
                         }
                     });
 
+                    holderRecordPlayPlayLineCell.cellRecordPlayPlayLine.setStartRecording(new CellRecordPlayPlayLine.RecordingAudio() {
+                        @Override
+                        public void startRecording() {
+                            Log.e("recording: ","recording started");
 
+                            new AsyncTask<Void,Void,Void>(){
+                                @Override
+                                protected Void doInBackground(Void... voids) {
+                                    try {
+                                        mRecorder = new MediaRecorder();
+                                        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                                        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+                                        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+                                        String str = Environment.getExternalStorageDirectory()
+                                                .getAbsolutePath();
+                                        mRecorder.setOutputFile(str + "/" + System.currentTimeMillis()
+                                                + ".mp3");
+                                        try {
+                                            mRecorder.prepare();
+                                        } catch (IllegalStateException e) {
+                                            e.printStackTrace();
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        mRecorder.start();
+                                    } catch (Exception e) {
+                                        e.getMessage();
+                                    }
+
+//                                    mRecorder = new MediaRecorder();
+//                                    mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+//                                    mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+//                                    mRecorder.setOutputFile(mFileName);
+//                                    mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+//
+//                                    try {
+//                                        mRecorder.prepare();
+//                                    } catch (IOException e) {
+//                                        Log.e("record", "prepare() failed");
+//                                    }
+//
+//                                    mRecorder.start();
+
+                                    return null;
+                                }
+                            }.execute();
+
+                        }
+
+                        @Override
+                        public void stopRecording() {
+                            Log.e("recording: ","recording ended");
+                            new AsyncTask<Void,Void,Void>() {
+                                @Override
+                                protected Void doInBackground(Void... voids) {
+//                                    mRecorder.stop();
+//                                    mRecorder.release();
+//                                    mRecorder = null;
+
+
+                                    return null;
+                                }
+                            }.execute();
+
+                        }
+                    });
 
 
 
@@ -1271,6 +1360,7 @@ public class ReadFragment extends Fragment {
         public View getSectionHeaderView(int section, View convertView, ViewGroup parent) {
 
             LinearLayout layout = null;
+            CheckBox cbShowMyData;
             if (convertView == null) {
                 LayoutInflater inflator = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 layout = (LinearLayout) inflator.inflate(R.layout.item_read_play_section_view, null);
@@ -1278,6 +1368,23 @@ public class ReadFragment extends Fragment {
                 layout = (LinearLayout) convertView;
             }
            ((TextView) layout.findViewById(R.id.readPlaySectionName)).setText(marrPlaySections.get(section));
+            cbShowMyData=((CheckBox) layout.findViewById(R.id.cbShowMyData));
+            cbShowMyData.setChecked(isHeaderChecked);
+            cbShowMyData.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean checkboxValue) {
+                    if(checkboxValue==true){
+                        isHeaderChecked=true;
+                        updatePlaySpecificData();
+                        notifyDataSetChanged();
+                    } else {
+                        isHeaderChecked=false;
+                        updatePlaySpecificData();
+                        notifyDataSetChanged();
+                    }
+                }
+            });
+
             return layout;
         }
 

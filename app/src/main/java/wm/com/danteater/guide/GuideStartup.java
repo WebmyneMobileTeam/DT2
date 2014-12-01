@@ -18,6 +18,7 @@ import wm.com.danteater.R;
 import wm.com.danteater.circle_indicator.CirclePageIndicator;
 import wm.com.danteater.circle_indicator.PageIndicator;
 import wm.com.danteater.customviews.WMButton;
+import wm.com.danteater.customviews.WMTextView;
 import wm.com.danteater.login.LoginActivity;
 import wm.com.danteater.my_plays.DrawerActivity;
 
@@ -26,7 +27,8 @@ public class GuideStartup extends Activity {
     private PagerAdapter pagerAdapter;
     private ViewPager viewPager;
     private PageIndicator mIndicator;
-    private WMButton btnStartUp;
+    private WMTextView btnStartUp,btnSkip;
+    private int currentPage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,12 +37,14 @@ public class GuideStartup extends Activity {
 
 
         viewPager = (ViewPager)findViewById(R.id.guideSlider);
-        btnStartUp=(WMButton)findViewById(R.id.btnStartUp);
+        btnStartUp=(WMTextView)findViewById(R.id.btnStartUp);
+        btnSkip=(WMTextView)findViewById(R.id.btnSkip);
         mIndicator = (CirclePageIndicator)findViewById(R.id.guideIndicator);
         int[]   guideImages={R.drawable.tutorial1,R.drawable.tutorial2,R.drawable.tutorial3};
         pagerAdapter= new GuideAdapter(this, guideImages);
         viewPager.setAdapter(pagerAdapter);
         mIndicator.setViewPager(viewPager);
+        btnSkip.setVisibility(View.VISIBLE);
         mIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i2) {
@@ -49,12 +53,24 @@ public class GuideStartup extends Activity {
 
             @Override
             public void onPageSelected(int i) {
-
-                if(i==2) {
+                currentPage=i;
+//                int item=viewPager.getCurrentItem();
+                if(currentPage==2) {
                     btnStartUp.setVisibility(View.VISIBLE);
                 } else {
                     btnStartUp.setVisibility(View.GONE);
                 }
+
+                if(currentPage==0) {
+                    btnSkip.setVisibility(View.VISIBLE);
+                } else {
+                    btnSkip.setVisibility(View.GONE);
+                }
+            }
+
+
+            public final int getCurrentPage() {
+                return currentPage;
             }
 
             @Override
@@ -72,6 +88,14 @@ public class GuideStartup extends Activity {
             }
         });
 
+        btnSkip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i=new Intent(GuideStartup.this, DrawerActivity.class);
+                startActivity(i);
+                finish();
+            }
+        });
     }
 
     public class GuideAdapter extends PagerAdapter {

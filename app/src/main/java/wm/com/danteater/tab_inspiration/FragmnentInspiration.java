@@ -1,7 +1,9 @@
 package wm.com.danteater.tab_inspiration;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -10,8 +12,11 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +37,10 @@ import com.kbeanie.imagechooser.api.ChooserType;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.kbeanie.imagechooser.api.ImageChooserListener;
 import com.kbeanie.imagechooser.api.ImageChooserManager;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.squareup.picasso.Picasso;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -113,6 +122,7 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref", 0);
         selectedPlay = complexPreferences.getObject("selected_play", Play.class);
         currentUser = complexPreferences.getObject("current_user", User.class);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -133,6 +143,9 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
     @Override
     public void onResume() {
         super.onResume();
+
+        ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(getActivity()).build();
+        ImageLoader.getInstance().init(configuration);
 
         if(MusicFragment.mediaPlayer != null &&MusicFragment. mediaPlayer.isPlaying()){
             MusicFragment.mediaPlayer.stop();
@@ -285,11 +298,37 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
         for(int i=0;i<inspirations.size();i++){
 
             final int showInsp = i;
-            GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(new ViewGroup.MarginLayoutParams(w / 2, w / 4));
+            GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(new ViewGroup.MarginLayoutParams(w /2, w / 4));
+            layoutParams.setGravity(Gravity.CENTER);
             final ImageView ivi = new ImageView(getActivity());
-            ivi.setScaleType(ImageView.ScaleType.CENTER);
-             ivi.setImageResource(R.drawable.camerax);
+
+//            ivi.setImageResource(R.drawable.camerax);
+            ivi.setPadding((int)convertPixelsToDp(32,getActivity()),(int)convertPixelsToDp(16,getActivity()),(int)convertPixelsToDp(32,getActivity()),(int)convertPixelsToDp(16,getActivity()));
+            ivi.requestLayout();
+//            ivi.setScaleType(ImageView.ScaleType.FIT_XY);
             gridInspiration.addView(ivi,layoutParams);
+
+            if(inspirations.get(showInsp).ImageUrlSmall != null && !inspirations.get(showInsp).ImageUrlSmall.equalsIgnoreCase("")){
+
+//                ImageLoader.getInstance().loadImage(inspirations.get(showInsp).ImageUrlSmall
+//                        ,new SimpleImageLoadingListener() {
+//                    @Override
+//                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+//
+//                        ivi.setImageBitmap(loadedImage);
+//
+//                    }
+//                });
+
+
+                Picasso.with(getActivity())
+                        .load(inspirations.get(showInsp).ImageUrlSmall)
+                        .placeholder(R.drawable.camerax)   // optional
+
+                        .fit()      // optional
+                                                 // optional
+                        .into(ivi);
+            }
 
             ivi.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -303,10 +342,15 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
             });
         }
 
+    }
 
 
 
-
+    public static float convertPixelsToDp(float px, Context context){
+        Resources resources = context.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        float dp = px / (metrics.densityDpi / 160f);
+        return dp;
     }
 
     @Override
@@ -503,6 +547,25 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
 
 
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+
+            case android.R.id.home:
+
+                getActivity().finish();
+
+
+                break;
+
+
+        }
+
+        return true;
+    }
+
 }
 
 

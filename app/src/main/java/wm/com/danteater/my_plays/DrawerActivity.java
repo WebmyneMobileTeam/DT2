@@ -52,7 +52,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
 //    private ActionBarDrawerToggle actionBarDrawerToggle;
     private User user;
     private String[] leftSliderDataForTeacher = {"Søg", "Mine stykker", "Beskeder", "Dramaøvelser", "Indstillinger", "Hjælp"};
-    private String[] leftSliderDataForStudent = {"Mine stykker", "Beskeder", "Dramaøvelser", "Indstillinger",};
+    private String[] leftSliderDataForStudent = {"Mine stykker", "Beskeder", "Dramaøvelser", "Indstillinger"};
     private boolean isPupil;
     private WMTextView logoutImage, logoutUser, logoutButton;
 

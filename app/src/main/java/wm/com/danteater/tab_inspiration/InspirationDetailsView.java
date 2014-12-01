@@ -18,6 +18,7 @@ import com.kbeanie.imagechooser.api.ChosenImage;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
@@ -87,14 +88,23 @@ public class InspirationDetailsView extends Dialog{
 
         if(inspiration.ImageUrlMedium != null && !inspiration.ImageUrlMedium.equalsIgnoreCase("")){
 
-            ImageLoader.getInstance().loadImage(inspiration.ImageUrlMedium
-                    ,new SimpleImageLoadingListener() {
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+//            ImageLoader.getInstance().loadImage(inspiration.ImageUrlMedium
+//                    ,new SimpleImageLoadingListener() {
+//                @Override
+//                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+//
+//                    iv.setImageBitmap(loadedImage);
+//                }
+//            });
 
-                    iv.setImageBitmap(loadedImage);
-                }
-            });
+
+            Picasso.with(ctx)
+                    .load(inspiration.ImageUrlMedium)
+                    .placeholder(R.drawable.camerax)   // optional
+
+                       // optional
+                            // optional
+                    .into(iv);
         }
     }
 

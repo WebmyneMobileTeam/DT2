@@ -26,23 +26,19 @@ public class CellScriptTableView {
         scriptTitle=(WMTextView)convertView.findViewById(R.id.script_table_view_cell_title);
         scriptView=(ImageView)convertView.findViewById(R.id.scriptView);
 
-
     }
 
-
-
    public void setUpScriptFile(int section,final SongFiles songFile,final String sectionTitle,final Context context){
-
-
-
 
        scriptTitle.setText(sectionTitle+"");
        scriptView.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
+
                         Intent i=new Intent(context,ReadChord.class);
                         i.putExtra("file_url", songFile.SongMp3Url+"" );
                         context.startActivity(i);
+
            }
        });
     }

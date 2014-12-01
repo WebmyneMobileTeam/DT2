@@ -2,6 +2,7 @@ package wm.com.danteater.customviews;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -125,6 +126,7 @@ public class PinnedHeaderListView extends ListView implements OnScrollListener {
     }
 
     private void ensurePinnedHeaderLayout(View header) {
+
         if (header.isLayoutRequested()) {
             int widthSpec = MeasureSpec.makeMeasureSpec(getMeasuredWidth(), mWidthMode);
             
@@ -137,6 +139,8 @@ public class PinnedHeaderListView extends ListView implements OnScrollListener {
             }
             header.measure(widthSpec, heightSpec);
             header.layout(0, 0, header.getMeasuredWidth(), header.getMeasuredHeight());
+
+
         }
     }
 
