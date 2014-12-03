@@ -9,8 +9,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -19,11 +17,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.util.SparseBooleanArray;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -44,46 +39,20 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpVersion;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.ByteArrayBody;
-import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.CoreProtocolPNames;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.Reader;
 import java.lang.reflect.Type;
 import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
@@ -92,27 +61,21 @@ import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import wm.com.danteater.BuildConfig;
 import wm.com.danteater.Play.AssignedUsers;
 import wm.com.danteater.Play.Comments;
 import wm.com.danteater.Play.Play;
 import wm.com.danteater.Play.PlayLines;
 import wm.com.danteater.Play.TextLines;
 import wm.com.danteater.R;
-import wm.com.danteater.app.MyApplication;
 import wm.com.danteater.customviews.HUD;
 import wm.com.danteater.customviews.PinnedHeaderListView;
 import wm.com.danteater.customviews.SectionedBaseAdapter;
 import wm.com.danteater.customviews.WMEdittext;
 import wm.com.danteater.customviews.WMTextView;
-import wm.com.danteater.login.LoginActivity;
 import wm.com.danteater.login.User;
 import wm.com.danteater.model.API;
-import wm.com.danteater.model.APIDelete;
 import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.model.DatabaseWrapper;
@@ -127,7 +90,7 @@ import wm.com.danteater.tab_music.MusicFragment;
 public class ReadFragment extends Fragment {
 
 
-    private MediaRecorder mRecorder = null;
+    public static MediaRecorder mRecorder = null;
     private static String mFileName = null;
     int mSubtractionCount = 0;
     public ArrayList<String> marrMyCastMatches;
@@ -144,7 +107,7 @@ public class ReadFragment extends Fragment {
     private Menu menu;
     private User currentUser;
     private  boolean isHeaderChecked=false;
-
+    public static MediaPlayer   mPlayer = null;
 
     // 0 for record state
     // 1 for preview state
@@ -204,8 +167,16 @@ public class ReadFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mFileName = Environment.getExternalStorageDirectory().getAbsolutePath();
-        mFileName += "/audiorecordtest.3gp";
+
+        File fileDir = new File(Environment.getExternalStorageDirectory()+ "/danteater/recording");
+        if(!fileDir.exists()) {
+            fileDir.mkdirs();
+//                        Log.e("directory:","created");
+        } else {
+//                        Log.e("directory:","already exist");
+        }
+        mFileName = fileDir.getAbsolutePath();
+//        mFileName += "/audiorecordtest.mp3";
         MusicFragment.mediaPlayer = new MediaPlayer();
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref", 0);
         selectedPlay = complexPreferences.getObject("selected_play", Play.class);
@@ -1065,10 +1036,11 @@ public class ReadFragment extends Fragment {
                                         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
                                         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
                                         mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-                                        String str = Environment.getExternalStorageDirectory()
-                                                .getAbsolutePath();
-                                        mRecorder.setOutputFile(str + "/" + System.currentTimeMillis()
-                                                + ".mp3");
+
+                                        mFileName += "/"+playLine.LineID+".aac";
+                                        Log.e("line id.............:",playLine.LineID+"");
+                                        mRecorder.setOutputFile(mFileName);
+
                                         try {
                                             mRecorder.prepare();
                                         } catch (IllegalStateException e) {
@@ -1081,19 +1053,6 @@ public class ReadFragment extends Fragment {
                                         e.getMessage();
                                     }
 
-//                                    mRecorder = new MediaRecorder();
-//                                    mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-//                                    mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-//                                    mRecorder.setOutputFile(mFileName);
-//                                    mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-//
-//                                    try {
-//                                        mRecorder.prepare();
-//                                    } catch (IOException e) {
-//                                        Log.e("record", "prepare() failed");
-//                                    }
-//
-//                                    mRecorder.start();
 
                                     return null;
                                 }
@@ -1107,11 +1066,9 @@ public class ReadFragment extends Fragment {
                             new AsyncTask<Void,Void,Void>() {
                                 @Override
                                 protected Void doInBackground(Void... voids) {
-//                                    mRecorder.stop();
-//                                    mRecorder.release();
-//                                    mRecorder = null;
-
-
+                                    mRecorder.stop();
+                                    mRecorder.release();
+                                    mRecorder = null;
                                     return null;
                                 }
                             }.execute();
@@ -1119,8 +1076,26 @@ public class ReadFragment extends Fragment {
                         }
                     });
 
+                    holderRecordPlayPlayLineCell.cellRecordPlayPlayLine.setPlayRecording(new CellRecordPlayPlayLine.PlayRecordingAudio() {
+                        @Override
+                        public void startPlaying() {
+                            mPlayer = new MediaPlayer();
+                            try {
+                                mPlayer.setDataSource(mFileName);
+                                mPlayer.prepare();
+                                mPlayer.start();
+                            } catch (IOException e) {
+                               e.printStackTrace();
+                            }
 
+                        }
 
+                        @Override
+                        public void stopPlaying() {
+                            mPlayer.release();
+                            mPlayer = null;
+                        }
+                    });
 
                 break;
 
@@ -1138,7 +1113,6 @@ public class ReadFragment extends Fragment {
                     }
 
                     boolean mark22 = false;
-
                     for(int i=0;i<marrMyCastMatches.size();i++){
                         String sCheck = marrMyCastMatches.get(i).toString();
                         if(sCheck.equalsIgnoreCase(playLine.RoleName)){

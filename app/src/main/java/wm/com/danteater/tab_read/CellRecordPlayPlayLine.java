@@ -10,13 +10,16 @@ import android.media.MediaRecorder;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
+import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -30,12 +33,12 @@ import wm.com.danteater.customviews.WMTextView;
 import wm.com.danteater.login.User;
 import wm.com.danteater.model.AppConstants;
 import wm.com.danteater.model.ComplexPreferences;
+import wm.com.danteater.tab_music.MusicFragment;
 
 /**
  * Created by dhruvil on 29-09-2014.
  */
-public class CellRecordPlayPlayLine {
-
+public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
 
     private ImageView imgPLay;
     private WMTextView btnOpTag;
@@ -61,10 +64,38 @@ public class CellRecordPlayPlayLine {
     //interfaces
     RecordDelegates delegate;
     RecordingAudio recordingAudio;
+    PlayRecordingAudio playRecordingAudio;
+    boolean mStartPlaying = true;
+
+    // music views
+    SeekBar songProgressBar;
+    WMTextView startTime;
+    WMTextView endTime;
+    Handler mHandler;
+    MediaPlayer   mPlayer = null;
+    String mFileName = null;
+    TextLines textLine;
+
+    //dialog views
+    LinearLayout recordAndPlayView;
+    EditText recordPopupTextArea;
+    WMTextView recordPopupSave;
+    ImageView countDownNumber;
+    WMTextView txtStopRecording;
+    WMTextView recordPopupCancel;
+    ImageView btnPlay;
+    ImageView btnRecord;
+    LinearLayout seekbarView;
+    User cUser;
+
+    String soundId;
 
     public CellRecordPlayPlayLine(View view, Context context) {
 
         this.ctx = context;
+        ComplexPreferences complexPreferencesForUser = ComplexPreferences.getComplexPreferences(context, "user_pref", 0);
+        cUser = complexPreferencesForUser.getObject("current_user", User.class);
+
         lblLineNumber = (WMTextView) view.findViewById(R.id.recordPlayLineCellLineNumber);
         lblRoleName = (WMTextView) view.findViewById(R.id.recordPlayLineCellRollName);
         tvPlayLines = (WMTextView) view.findViewById(R.id.recordPlayLineCellDescription);
@@ -73,6 +104,7 @@ public class CellRecordPlayPlayLine {
 
         listReadPlayPlaylinecell = (LinearLayout)view.findViewById(R.id.listReadPlayPlaylinecell);
         lblRoleName.setBold();
+
     }
 
     public void setupForPlayLine(final PlayLines playLine, int current_state,boolean mark) {
@@ -119,7 +151,7 @@ public class CellRecordPlayPlayLine {
 
         } else if (textLines.size() == 1) {
 
-            TextLines textLine = textLines.get(0);
+            textLine = textLines.get(0);
             tvPlayLines.setText(textLine.currentText());
             tvPlayLines.setTextColor(Color.parseColor(colorForLineType(textLine.textLineType())));
 
@@ -228,19 +260,32 @@ public class CellRecordPlayPlayLine {
         dialog.show();
         dialogView(view,dialog);
 
+
+
     }
 
     private void dialogView(View view,final Dialog dialog) {
 
         final int[] backGroundtimer={R.drawable.ic_one,R.drawable.ic_two,R.drawable.ic_three};
-        final LinearLayout recordAndPlayView=(LinearLayout)view.findViewById(R.id.recordAndPlayView);
-        final WMTextView recordPopupSave=(WMTextView)view.findViewById(R.id.recordPopupSave);
-        final ImageView countDownNumber=(ImageView)view.findViewById(R.id.countDownNumber);
-        final WMTextView txtStopRecording=(WMTextView)view.findViewById(R.id.txtStopRecording);
 
-        WMTextView recordPopupCancel=(WMTextView)view.findViewById(R.id.recordPopupCancel);
-        ImageView btnPlay=(ImageView)view.findViewById(R.id.recordPlay);
-        ImageView btnRecord=(ImageView)view.findViewById(R.id.record);
+        recordAndPlayView=(LinearLayout)view.findViewById(R.id.recordAndPlayView);
+        recordPopupTextArea=(EditText)view.findViewById(R.id.recordPopupTextArea);
+        recordPopupSave=(WMTextView)view.findViewById(R.id.recordPopupSave);
+        countDownNumber=(ImageView)view.findViewById(R.id.countDownNumber);
+        txtStopRecording=(WMTextView)view.findViewById(R.id.txtStopRecording);
+        songProgressBar=(SeekBar)view.findViewById(R.id.seekBar);
+        startTime=(WMTextView)view.findViewById(R.id.start_label);
+        endTime=(WMTextView)view.findViewById(R.id.end_label);
+        recordPopupCancel=(WMTextView)view.findViewById(R.id.recordPopupCancel);
+        btnPlay=(ImageView)view.findViewById(R.id.recordPlay);
+        btnRecord=(ImageView)view.findViewById(R.id.record);
+        seekbarView=(LinearLayout)view.findViewById(R.id.seekbarView);
+
+        recordPopupTextArea.setText(textLine.currentText());
+        seekbarView.setVisibility(View.GONE);
+        recordPopupSave.setEnabled(false);
+        btnPlay.setEnabled(false);
+
 
         recordPopupCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -252,7 +297,14 @@ public class CellRecordPlayPlayLine {
         btnPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                updateProgressBar();
+                onPlay(mStartPlaying);
+                if (mStartPlaying) {
+                    btnPlay.setBackgroundResource(R.drawable.ic_pause);
+                } else {
+                    btnPlay.setBackgroundResource(R.drawable.ic_play);
+                }
+                mStartPlaying = !mStartPlaying;
             }
         });
 
@@ -278,10 +330,15 @@ public class CellRecordPlayPlayLine {
                                 recordingAudio.stopRecording();
                                 recordAndPlayView.setVisibility(View.VISIBLE);
                                 recordPopupSave.setVisibility(View.VISIBLE);
+                                recordPopupSave.setEnabled(true);
+                                recordPopupSave.setTextColor(Color.parseColor("#006fb1"));
+                                btnPlay.setEnabled(true);
                                 txtStopRecording.setVisibility(View.GONE);
+                                btnPlay.setBackgroundResource(R.drawable.ic_play);
+                                seekbarView.setVisibility(View.VISIBLE);
+                                updateProgressBarFirstTime();
                             }
                         });
-
                     }
 
                     @Override
@@ -293,6 +350,159 @@ public class CellRecordPlayPlayLine {
             }
 
         });
+
+        recordPopupSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("clicked:","click on save");
+                //stop plaing
+                if(ReadFragment.mPlayer.isPlaying()){
+                    ReadFragment.mPlayer.release();
+                    ReadFragment.mPlayer = null;
+                }
+               if(cUser.checkTeacherOrAdmin(cUser.getRoles())){
+                   soundId=playLine.LineID+".aac";
+               } else {
+                   //TODO
+               }
+               uploadAudio(soundId);
+            }
+        });
+    }
+
+
+    private void onPlay(boolean start) {
+        if (start) {
+            playRecordingAudio.startPlaying();
+        } else {
+            playRecordingAudio.stopPlaying();
+        }
+    }
+
+    public String milliSecondsToTimer(long milliseconds){
+        String finalTimerString = "";
+        String secondsString = "";
+
+        // Convert total duration into time
+        int hours = (int)( milliseconds / (1000*60*60));
+        int minutes = (int)(milliseconds % (1000*60*60)) / (1000*60);
+        int seconds = (int) ((milliseconds % (1000*60*60)) % (1000*60) / 1000);
+        // Add hours if there
+        if(hours > 0){
+            finalTimerString = hours + ":";
+        }
+        if(seconds < 10){
+            secondsString = "0" + seconds;
+        }else{
+            secondsString = "" + seconds;}
+
+        finalTimerString = finalTimerString + minutes + ":" + secondsString;
+
+        // return timer string
+        return finalTimerString;
+    }
+
+    private Runnable mUpdateTimeTask = new Runnable() {
+
+        public void run() {
+
+                long totalDuration = 00;
+                long currentDuration = 00;
+                try {
+
+                    totalDuration = ReadFragment.mPlayer.getDuration();
+                    currentDuration = ReadFragment.mPlayer.getCurrentPosition();
+
+                }catch (Exception e){};
+                // Displaying Total Duration time
+                endTime.setText(""+milliSecondsToTimer(totalDuration));
+                // Displaying time completed playing
+                startTime.setText(""+milliSecondsToTimer(currentDuration));
+                // Updating progress bar
+                int progress = (int)(getProgressPercentage(currentDuration, totalDuration));
+                //Log.d("Progress", ""+progress);
+                songProgressBar.setProgress(progress);
+
+                if(songProgressBar.getProgress() == songProgressBar.getMax()){
+                    // setOnReloading.onReload();
+                }
+
+                // Running this thread after 100 milliseconds
+                mHandler.postDelayed(this, 1);
+            }
+    };
+
+    public void updateProgressBar() {
+        mHandler.postDelayed(mUpdateTimeTask, 1);
+    }
+
+    /**
+     * Function to get Progress percentage
+     * @param currentDuration
+     * @param totalDuration
+     * */
+    public int getProgressPercentage(long currentDuration, long totalDuration){
+        Double percentage = (double) 0;
+
+        long currentSeconds = (int) (currentDuration / 1000);
+        long totalSeconds = (int) (totalDuration / 1000);
+
+        // calculating percentage
+        percentage =(((double)currentSeconds)/totalSeconds)*100;
+
+        // return percentage
+        return percentage.intValue();
+    }
+
+    /**
+     * Function to change progress to timer
+     * @param progress -
+     * @param totalDuration
+     * returns current duration in milliseconds
+     * */
+    public int progressToTimer(int progress, int totalDuration) {
+        int currentDuration = 0;
+        totalDuration = (int) (totalDuration / 1000);
+        currentDuration = (int) ((((double)progress) / 100) * totalDuration);
+
+        // return current duration in milliseconds
+        return currentDuration * 1000;
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
+
+    }
+
+    /**
+     * When user starts moving the progress handler
+     * */
+    @Override
+
+    public void onStartTrackingTouch(SeekBar seekBar) {
+        // remove message Handler from updating progress bar
+        mHandler.removeCallbacks(mUpdateTimeTask);
+    }
+
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        mHandler.removeCallbacks(mUpdateTimeTask);
+         quickSeekProcess();
+        int totalDuration = MusicFragment.mediaPlayer.getDuration();
+        int currentPosition = progressToTimer(seekBar.getProgress(), totalDuration);
+//        Log.e("current duration: ",currentPosition+"");
+        // forward or backward to certain seconds
+        MusicFragment.mediaPlayer.seekTo(currentPosition);
+        // update timer progress again
+        updateProgressBar();
+    }
+
+    private void quickSeekProcess() {
+        MusicFragment.mediaPlayer.seekTo(30);
+        // update timer progress again
+        updateProgressBar();
+
     }
 
     public interface RecordingAudio {
@@ -304,4 +514,50 @@ public class CellRecordPlayPlayLine {
         this.recordingAudio = RecordingAudio;
     }
 
+    public interface PlayRecordingAudio {
+        public void startPlaying();
+        public void stopPlaying();
+    }
+
+    public void setPlayRecording(PlayRecordingAudio playRecordingAudio) {
+        this.playRecordingAudio=playRecordingAudio;
+    }
+
+
+    private void updateProgressBarFirstTime(){
+        //Music view
+        mFileName = Environment.getExternalStorageDirectory().getAbsolutePath()+ "/danteater/recording";
+
+        mFileName += "/"+playLine.LineID+".aac";
+        mHandler = new Handler();
+        mPlayer=new MediaPlayer();
+        try {
+            mPlayer.setDataSource(mFileName);
+            mPlayer.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        long totalDuration = 00;
+        long currentDuration = 00;
+
+        try {
+
+            totalDuration = mPlayer.getDuration();
+            currentDuration = mPlayer.getCurrentPosition();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        };
+
+        endTime.setText(""+milliSecondsToTimer(totalDuration));
+        startTime.setText(""+milliSecondsToTimer(currentDuration));
+        int progress = (int)(getProgressPercentage(currentDuration, totalDuration));
+        songProgressBar.setProgress(progress);
+    }
+
+    private void uploadAudio(final String soundId) {
+        //TODO
+        Log.e("uploading","upload audio");
+    }
 }

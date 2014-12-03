@@ -84,8 +84,10 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
     private int[] arrImagesTeacher = {R.drawable.teacher1, R.drawable.teacher2, R.drawable.teacher3};
     private int[] arrImagesPupils = {R.drawable.vid1, R.drawable.vid2, R.drawable.vid3, R.drawable.vid4};
 
-    private int[] arrVideosTeachers = {R.raw.goderaad_converted, R.raw.vaerktoejer_converted, R.raw.forklaring_converted};
-    private int[] arrVideosPupils = {R.raw.intro_converted, R.raw.fokus_converted, R.raw.taleteknik_converted, R.raw.foelelser_converted};
+//    private int[] arrVideosTeachers = {R.raw.goderaad_converted, R.raw.vaerktoejer_converted, R.raw.forklaring_converted};
+//    private int[] arrVideosPupils = {R.raw.intro_converted, R.raw.fokus_converted, R.raw.taleteknik_converted, R.raw.foelelser_converted};
+    private int[] arrVideosTeachers = {R.raw.forklaring_converted, R.raw.forklaring_converted, R.raw.forklaring_converted};
+    private int[] arrVideosPupils = {R.raw.forklaring_converted, R.raw.forklaring_converted, R.raw.forklaring_converted, R.raw.forklaring_converted};
 
     private String[] arrCaptionsTeachers = {"Gode råd", "Værktøjer", "Forklaring"};
     private String[] arrCaptionsPupils = {"Intro", "Fokus", "Taleteknik", "Følelser"};

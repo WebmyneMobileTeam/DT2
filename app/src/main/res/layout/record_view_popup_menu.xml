@@ -52,6 +52,7 @@
         android:gravity="top|left"
         android:paddingLeft="4dp"
         android:paddingTop="4dp"
+        android:textColor="@android:color/black"
         android:background="@drawable/ed_rounded"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
@@ -74,7 +75,7 @@
                 android:id="@+id/recordPlay"
                 android:layout_width="wrap_content"
                 android:layout_gravity="center"
-                android:background="@drawable/ic_play"
+                android:background="@drawable/ic_play_disable"
                 android:layout_height="wrap_content" />
 
             <ImageView
@@ -86,12 +87,15 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/seekbarView"
             android:layout_width="wrap_content"
             android:orientation="vertical"
             android:layout_height="wrap_content">
             <SeekBar
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:indeterminate="false"
+                android:id="@+id/seekBar" />
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:orientation="horizontal"
@@ -99,6 +103,7 @@
                 <wm.com.danteater.customviews.WMTextView
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/normalText"
+                    android:id="@+id/start_label"
                     android:text="0:00"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
@@ -111,6 +116,7 @@
                 <wm.com.danteater.customviews.WMTextView
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/normalText"
+                    android:id="@+id/end_label"
                     android:text="1:03"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
@@ -155,7 +161,7 @@
         android:layout_height="wrap_content"
         android:text="Send til alle"
         android:layout_centerVertical="true"
-        android:textColor="@color/apptheme_color"
+        android:textColor="@color/gray_color"
         android:textSize="@dimen/normalText" />
     </FrameLayout>
 </LinearLayout>

@@ -721,7 +721,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                     dialogForShare.title("");
                     dialogForShare.show();
                     ComplexPreferences complexPreferencesForUser = ComplexPreferences.getComplexPreferences(getActivity(), "user_pref", 0);
-                    cUser = complexPreferences.getObject("current_user", User.class);
+                    cUser = complexPreferencesForUser.getObject("current_user", User.class);
                     SharedPreferences pre = getActivity().getSharedPreferences("session_id", getActivity().MODE_PRIVATE);
                     session_id = pre.getString("session_id", "");
 //                    ShareActivityForPerform.classes.clear();
