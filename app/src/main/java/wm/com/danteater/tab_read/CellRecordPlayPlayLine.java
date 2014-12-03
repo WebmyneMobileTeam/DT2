@@ -528,7 +528,7 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
     }
 
     public interface UploadAudioFile {
-        public void uploadingAudio(String sessionId);
+        public void uploadingAudio(String soundId);
     }
 
     public void setUploadingAudio(UploadAudioFile uploadAudio) {

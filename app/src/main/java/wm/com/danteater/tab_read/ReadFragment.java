@@ -1100,8 +1100,9 @@ public class ReadFragment extends Fragment {
 
                     holderRecordPlayPlayLineCell.cellRecordPlayPlayLine.setUploadingAudio(new CellRecordPlayPlayLine.UploadAudioFile() {
                         @Override
-                        public void uploadingAudio(String sessionId) {
+                        public void uploadingAudio(String soundId) {
                             Log.e("upload audio","uploading");
+                            uploadFileToServer(soundId);
                         }
                     });
 
@@ -1369,6 +1370,12 @@ public class ReadFragment extends Fragment {
 
             return layout;
         }
+
+    }
+
+    private void uploadFileToServer(String soundId) {
+
+        //TODO
 
     }
 
