@@ -1076,6 +1076,7 @@ public class ReadFragment extends Fragment {
                         }
                     });
 
+
                     holderRecordPlayPlayLineCell.cellRecordPlayPlayLine.setPlayRecording(new CellRecordPlayPlayLine.PlayRecordingAudio() {
                         @Override
                         public void startPlaying() {
@@ -1094,6 +1095,13 @@ public class ReadFragment extends Fragment {
                         public void stopPlaying() {
                             mPlayer.release();
                             mPlayer = null;
+                        }
+                    });
+
+                    holderRecordPlayPlayLineCell.cellRecordPlayPlayLine.setUploadingAudio(new CellRecordPlayPlayLine.UploadAudioFile() {
+                        @Override
+                        public void uploadingAudio(String sessionId) {
+                            Log.e("upload audio","uploading");
                         }
                     });
 

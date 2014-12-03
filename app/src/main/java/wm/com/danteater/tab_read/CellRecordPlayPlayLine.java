@@ -45,7 +45,6 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
     private LinearLayout listReadPlayPlaylinecell;
     private WMTextView lblRoleName;
     private WMTextView tvPlayLines;
-
     private WMTextView lblLineNumber;
     private Context ctx;
     private boolean showLineNumber;
@@ -66,6 +65,7 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
     RecordingAudio recordingAudio;
     PlayRecordingAudio playRecordingAudio;
     boolean mStartPlaying = true;
+    UploadAudioFile uploadAudio;
 
     // music views
     SeekBar songProgressBar;
@@ -95,6 +95,8 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
         this.ctx = context;
         ComplexPreferences complexPreferencesForUser = ComplexPreferences.getComplexPreferences(context, "user_pref", 0);
         cUser = complexPreferencesForUser.getObject("current_user", User.class);
+
+        mHandler = new Handler();
 
         lblLineNumber = (WMTextView) view.findViewById(R.id.recordPlayLineCellLineNumber);
         lblRoleName = (WMTextView) view.findViewById(R.id.recordPlayLineCellRollName);
@@ -337,6 +339,7 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
                                 btnPlay.setBackgroundResource(R.drawable.ic_play);
                                 seekbarView.setVisibility(View.VISIBLE);
                                 updateProgressBarFirstTime();
+//                                updateProgressBar();
                             }
                         });
                     }
@@ -365,7 +368,8 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
                } else {
                    //TODO
                }
-               uploadAudio(soundId);
+                uploadAudio.uploadingAudio(soundId);
+
             }
         });
     }
@@ -523,17 +527,25 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
         this.playRecordingAudio=playRecordingAudio;
     }
 
+    public interface UploadAudioFile {
+        public void uploadingAudio(String sessionId);
+    }
+
+    public void setUploadingAudio(UploadAudioFile uploadAudio) {
+        this.uploadAudio=uploadAudio;
+    }
+
 
     private void updateProgressBarFirstTime(){
         //Music view
         mFileName = Environment.getExternalStorageDirectory().getAbsolutePath()+ "/danteater/recording";
 
         mFileName += "/"+playLine.LineID+".aac";
-        mHandler = new Handler();
+
         mPlayer=new MediaPlayer();
         try {
             mPlayer.setDataSource(mFileName);
-            mPlayer.prepare();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -552,12 +564,8 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
 
         endTime.setText(""+milliSecondsToTimer(totalDuration));
         startTime.setText(""+milliSecondsToTimer(currentDuration));
-        int progress = (int)(getProgressPercentage(currentDuration, totalDuration));
-        songProgressBar.setProgress(progress);
+
     }
 
-    private void uploadAudio(final String soundId) {
-        //TODO
-        Log.e("uploading","upload audio");
-    }
+
 }
