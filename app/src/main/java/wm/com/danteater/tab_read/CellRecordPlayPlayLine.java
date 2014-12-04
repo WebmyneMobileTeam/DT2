@@ -299,11 +299,14 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
         btnPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updateProgressBar();
+
                 onPlay(mStartPlaying);
                 if (mStartPlaying) {
+
+                    updateProgressBar();
                     btnPlay.setBackgroundResource(R.drawable.ic_pause);
                 } else {
+                    updateProgressBar();
                     btnPlay.setBackgroundResource(R.drawable.ic_play);
                 }
                 mStartPlaying = !mStartPlaying;
@@ -429,6 +432,9 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
 
                 if(songProgressBar.getProgress() == songProgressBar.getMax()){
                     // setOnReloading.onReload();
+                    songProgressBar.setProgress(0);
+                    startTime.setText(""+milliSecondsToTimer(0));
+                    btnPlay.setBackgroundResource(R.drawable.ic_play);
                 }
 
                 // Running this thread after 100 milliseconds
@@ -521,6 +527,7 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
     public interface PlayRecordingAudio {
         public void startPlaying();
         public void stopPlaying();
+
     }
 
     public void setPlayRecording(PlayRecordingAudio playRecordingAudio) {
@@ -537,33 +544,51 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
 
 
     private void updateProgressBarFirstTime(){
-        //Music view
-        mFileName = Environment.getExternalStorageDirectory().getAbsolutePath()+ "/danteater/recording";
 
-        mFileName += "/"+playLine.LineID+".aac";
+        new CountDownTimer(30000, 1000) {
 
-        mPlayer=new MediaPlayer();
-        try {
-            mPlayer.setDataSource(mFileName);
+            public void onTick(long millisUntilFinished) {
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            }
 
-        long totalDuration = 00;
-        long currentDuration = 00;
+            public void onFinish() {
+                //Music view
+                mFileName = Environment.getExternalStorageDirectory().getAbsolutePath()+ "/danteater/recording";
 
-        try {
+                mFileName += "/"+playLine.LineID+".aac";
 
-            totalDuration = mPlayer.getDuration();
-            currentDuration = mPlayer.getCurrentPosition();
+                mPlayer=new MediaPlayer();
+                try {
+                    mPlayer.setDataSource(mFileName);
 
-        }catch (Exception e){
-            e.printStackTrace();
-        };
+                    mPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                        @Override
+                        public void onPrepared(MediaPlayer mp) {
+                            long totalDuration = 00;
+                            long currentDuration = 00;
 
-        endTime.setText(""+milliSecondsToTimer(totalDuration));
-        startTime.setText(""+milliSecondsToTimer(currentDuration));
+                            try {
+
+                                totalDuration = mPlayer.getDuration();
+                                currentDuration = mPlayer.getCurrentPosition();
+
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            };
+
+                            endTime.setText(""+milliSecondsToTimer(totalDuration));
+                            startTime.setText(""+milliSecondsToTimer(currentDuration));
+
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+
+
+
 
     }
 

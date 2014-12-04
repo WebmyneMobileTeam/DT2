@@ -49,6 +49,7 @@
             android:layout_height="wrap_content"
             android:textColor="#ababab"
             android:text="Send"
+            
             android:textSize="@dimen/normalText"/>
     </LinearLayout>
 

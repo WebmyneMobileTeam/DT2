@@ -1093,8 +1093,9 @@ public class ReadFragment extends Fragment {
 
                         @Override
                         public void stopPlaying() {
-                            mPlayer.release();
-                            mPlayer = null;
+//                            mPlayer.release();
+//                            mPlayer = null;
+                            mPlayer.stop();
                         }
                     });
 
