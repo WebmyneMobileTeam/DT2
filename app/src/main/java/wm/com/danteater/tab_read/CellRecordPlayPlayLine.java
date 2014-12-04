@@ -19,6 +19,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
@@ -26,14 +27,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import wm.com.danteater.Play.Comments;
+import wm.com.danteater.Play.Play;
 import wm.com.danteater.Play.PlayLines;
 import wm.com.danteater.Play.TextLines;
 import wm.com.danteater.R;
+import wm.com.danteater.customviews.SegmentedGroup;
 import wm.com.danteater.customviews.WMTextView;
 import wm.com.danteater.login.User;
 import wm.com.danteater.model.AppConstants;
 import wm.com.danteater.model.ComplexPreferences;
-import wm.com.danteater.tab_music.MusicFragment;
+import wm.com.danteater.my_plays.SharedUser;
+//import wm.com.danteater.tab_music.MusicFragment;
 
 /**
  * Created by dhruvil on 29-09-2014.
@@ -55,6 +59,8 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
     public int STATE_READ = 2;
     public int STATE_CHAT = 3;
 
+    Play selectedPlay;
+
     User user;
     String currentUserName = "";
     String currentUserId = "";
@@ -72,9 +78,11 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
     WMTextView startTime;
     WMTextView endTime;
     Handler mHandler;
-    MediaPlayer   mPlayer = null;
-    String mFileName = null;
+
+//    MediaPlayer   mPlayer = null;
+//    String mFileName = null;
     TextLines textLine;
+    boolean isStopPlayclicked=false;
 
     //dialog views
     LinearLayout recordAndPlayView;
@@ -87,7 +95,11 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
     ImageView btnRecord;
     LinearLayout seekbarView;
     User cUser;
+    SegmentedGroup recordSegmentGroup;
+    RadioButton recordShareWithteacher;
+    RadioButton recordShareWithAll;
 
+    ArrayList<SharedUser> marrTeachers;
     String soundId;
 
     public CellRecordPlayPlayLine(View view, Context context) {
@@ -95,6 +107,9 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
         this.ctx = context;
         ComplexPreferences complexPreferencesForUser = ComplexPreferences.getComplexPreferences(context, "user_pref", 0);
         cUser = complexPreferencesForUser.getObject("current_user", User.class);
+
+        ComplexPreferences complexPreference = ComplexPreferences.getComplexPreferences(ctx, "mypref", 0);
+        selectedPlay = complexPreference.getObject("selected_play",Play.class);
 
         mHandler = new Handler();
 
@@ -107,14 +122,16 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
         listReadPlayPlaylinecell = (LinearLayout)view.findViewById(R.id.listReadPlayPlaylinecell);
         lblRoleName.setBold();
 
+
+
     }
 
-    public void setupForPlayLine(final PlayLines playLine, int current_state,boolean mark) {
-
+    public void setupForPlayLine(final PlayLines playLine, int current_state,boolean mark,ArrayList<SharedUser> marrTeachers) {
+        this.marrTeachers=marrTeachers;
         this.playLine = playLine;
         listReadPlayPlaylinecell.removeAllViews();
         listReadPlayPlaylinecell.invalidate();
-
+        lblRoleName.setBackgroundColor(Color.TRANSPARENT);
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(ctx, "user_pref", 0);
         user = complexPreferences.getObject("current_user", User.class);
         currentUserId = user.getUserId();
@@ -142,6 +159,17 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
         if(mark == true){
             lblRoleName.setBackgroundColor(Color.YELLOW);
         }
+
+        if(!cUser.checkTeacherOrAdmin(cUser.getRoles())){
+            if(mark != true){
+                btnOpTag.setVisibility(View.GONE);
+                imgPLay.setVisibility(View.GONE);
+            } else {
+                btnOpTag.setVisibility(View.VISIBLE);
+                imgPLay.setVisibility(View.VISIBLE);
+            }
+        }
+
 
 
 
@@ -262,20 +290,21 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
         dialog.show();
         dialogView(view,dialog);
 
-
-
     }
 
     private void dialogView(View view,final Dialog dialog) {
 
         final int[] backGroundtimer={R.drawable.ic_one,R.drawable.ic_two,R.drawable.ic_three};
-
+        recordSegmentGroup=(SegmentedGroup)view.findViewById(R.id.recordSegmentGroup);
+        recordShareWithteacher=(RadioButton)view.findViewById(R.id.recordShareWithteacher);
+        recordShareWithAll=(RadioButton)view.findViewById(R.id.recordShareWithAll);
         recordAndPlayView=(LinearLayout)view.findViewById(R.id.recordAndPlayView);
         recordPopupTextArea=(EditText)view.findViewById(R.id.recordPopupTextArea);
         recordPopupSave=(WMTextView)view.findViewById(R.id.recordPopupSave);
         countDownNumber=(ImageView)view.findViewById(R.id.countDownNumber);
         txtStopRecording=(WMTextView)view.findViewById(R.id.txtStopRecording);
         songProgressBar=(SeekBar)view.findViewById(R.id.seekBar);
+        songProgressBar.setOnSeekBarChangeListener(this);
         startTime=(WMTextView)view.findViewById(R.id.start_label);
         endTime=(WMTextView)view.findViewById(R.id.end_label);
         recordPopupCancel=(WMTextView)view.findViewById(R.id.recordPopupCancel);
@@ -287,11 +316,15 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
         seekbarView.setVisibility(View.GONE);
         recordPopupSave.setEnabled(false);
         btnPlay.setEnabled(false);
-
+        recordSegmentGroup.setVisibility(View.GONE);
 
         recordPopupCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(ReadFragment.mPlayer !=null){
+                    ReadFragment.mPlayer.release();
+                    ReadFragment.mPlayer = null;
+                }
                 dialog.dismiss();
             }
         });
@@ -302,11 +335,13 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
 
                 onPlay(mStartPlaying);
                 if (mStartPlaying) {
-
+                    isStopPlayclicked=false;
                     updateProgressBar();
                     btnPlay.setBackgroundResource(R.drawable.ic_pause);
                 } else {
+                    isStopPlayclicked=true;
                     updateProgressBar();
+//                    updateProgressBarOneTime();
                     btnPlay.setBackgroundResource(R.drawable.ic_play);
                 }
                 mStartPlaying = !mStartPlaying;
@@ -329,22 +364,7 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
                         txtStopRecording.setVisibility(View.VISIBLE);
                         recordingAudio.startRecording();
 
-                        txtStopRecording.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                recordingAudio.stopRecording();
-                                recordAndPlayView.setVisibility(View.VISIBLE);
-                                recordPopupSave.setVisibility(View.VISIBLE);
-                                recordPopupSave.setEnabled(true);
-                                recordPopupSave.setTextColor(Color.parseColor("#006fb1"));
-                                btnPlay.setEnabled(true);
-                                txtStopRecording.setVisibility(View.GONE);
-                                btnPlay.setBackgroundResource(R.drawable.ic_play);
-                                seekbarView.setVisibility(View.VISIBLE);
-                                updateProgressBarFirstTime();
-//                                updateProgressBar();
-                            }
-                        });
+
                     }
 
                     @Override
@@ -357,27 +377,79 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
 
         });
 
+        txtStopRecording.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recordingAudio.stopRecording();
+
+                new CountDownTimer(1500, 1000) {
+
+                    public void onTick(long millisUntilFinished) {
+
+                    }
+                    public void onFinish() {
+                        recordAndPlayView.setVisibility(View.VISIBLE);
+                        recordPopupSave.setVisibility(View.VISIBLE);
+                        recordPopupSave.setEnabled(true);
+                        recordPopupSave.setTextColor(Color.parseColor("#006fb1"));
+                        btnPlay.setEnabled(true);
+                        txtStopRecording.setVisibility(View.GONE);
+                        btnPlay.setBackgroundResource(R.drawable.ic_play);
+                        seekbarView.setVisibility(View.VISIBLE);
+
+                        isStopPlayclicked=false;
+                        playRecordingAudio.preparePlay();
+                        updateProgressBar();
+                        if(cUser.checkTeacherOrAdmin(cUser.getRoles())) {
+                            recordSegmentGroup.setVisibility(View.GONE);
+                        } else {
+                            recordSegmentGroup.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }.start();
+
+            }
+        });
+
         recordPopupSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.e("clicked:","click on save");
                 //stop plaing
-                if(ReadFragment.mPlayer.isPlaying()){
+                if(ReadFragment.mPlayer.isPlaying() || ReadFragment.mPlayer !=null){
                     ReadFragment.mPlayer.release();
                     ReadFragment.mPlayer = null;
                 }
                if(cUser.checkTeacherOrAdmin(cUser.getRoles())){
                    soundId=playLine.LineID+".aac";
                } else {
-                   //TODO
+                  if(recordSegmentGroup.getCheckedRadioButtonId() == R.id.recordShareWithteacher){
+                      soundId=playLine.LineID+"-teacher.aac";
+                  } else {
+                      soundId=playLine.LineID+".aac";
+                  }
                }
-                uploadAudio.uploadingAudio(soundId);
+
+                didFinishSavingUserAudio();
+               //TODO
+//                uploadAudio.uploadingAudio(soundId);
 
             }
         });
     }
 
+    private void didFinishSavingUserAudio() {
+        if(recordSegmentGroup.getCheckedRadioButtonId() == R.id.recordShareWithteacher) {
+            String strMessageTextWithLinkTitleRoleLinenumber="sound-"+playLine.LineID+"\n"+selectedPlay.Title.replace(" ","_")+"-"+playLine.RoleName+"-"+playLine.LineID.substring(playLine.LineID.lastIndexOf("-")+1)+"\n"+"Lydoptagelse";
 
+
+            // send a message
+            for(SharedUser assignedUser : marrTeachers) {
+//                createNewMessageAndSendToUser(assignedUser.userId,strMessageTextWithLinkTitleRoleLinenumber,playLine.LineID,true)
+            //TODO
+            }
+        }
+    }
     private void onPlay(boolean start) {
         if (start) {
             playRecordingAudio.startPlaying();
@@ -430,11 +502,12 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
                 //Log.d("Progress", ""+progress);
                 songProgressBar.setProgress(progress);
 
-                if(songProgressBar.getProgress() == songProgressBar.getMax()){
+                if(songProgressBar.getProgress() == songProgressBar.getMax() || isStopPlayclicked==true){
                     // setOnReloading.onReload();
                     songProgressBar.setProgress(0);
                     startTime.setText(""+milliSecondsToTimer(0));
                     btnPlay.setBackgroundResource(R.drawable.ic_play);
+
                 }
 
                 // Running this thread after 100 milliseconds
@@ -444,6 +517,38 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
 
     public void updateProgressBar() {
         mHandler.postDelayed(mUpdateTimeTask, 1);
+    }
+
+    private void updateProgressBarOneTime(){
+
+
+//        mFileName = Environment.getExternalStorageDirectory().getAbsolutePath()+ "/danteater/recording";
+//
+//        mFileName += "/"+playLine.LineID+".aac";
+//
+//        mPlayer=new MediaPlayer();
+//        try {
+//            mPlayer.setDataSource(mFileName);
+//            mPlayer.prepare();
+//            long totalDuration = 00;
+//            long currentDuration = 00;
+//
+//            try {
+//
+//                totalDuration = mPlayer.getDuration();
+//                currentDuration = mPlayer.getCurrentPosition();
+//
+//            }catch (Exception e){
+//                e.printStackTrace();
+//            };
+//
+//            endTime.setText(""+milliSecondsToTimer(totalDuration));
+//            startTime.setText(""+milliSecondsToTimer(currentDuration));
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
     }
 
     /**
@@ -498,18 +603,18 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         mHandler.removeCallbacks(mUpdateTimeTask);
-         quickSeekProcess();
-        int totalDuration = MusicFragment.mediaPlayer.getDuration();
+//         quickSeekProcess();
+        int totalDuration = ReadFragment.mPlayer.getDuration();
         int currentPosition = progressToTimer(seekBar.getProgress(), totalDuration);
 //        Log.e("current duration: ",currentPosition+"");
         // forward or backward to certain seconds
-        MusicFragment.mediaPlayer.seekTo(currentPosition);
+        ReadFragment.mPlayer.seekTo(currentPosition);
         // update timer progress again
         updateProgressBar();
     }
 
     private void quickSeekProcess() {
-        MusicFragment.mediaPlayer.seekTo(30);
+        ReadFragment.mPlayer.seekTo(2);
         // update timer progress again
         updateProgressBar();
 
@@ -527,6 +632,7 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
     public interface PlayRecordingAudio {
         public void startPlaying();
         public void stopPlaying();
+        public void preparePlay();
 
     }
 
@@ -543,54 +649,7 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
     }
 
 
-    private void updateProgressBarFirstTime(){
 
-        new CountDownTimer(30000, 1000) {
-
-            public void onTick(long millisUntilFinished) {
-
-            }
-
-            public void onFinish() {
-                //Music view
-                mFileName = Environment.getExternalStorageDirectory().getAbsolutePath()+ "/danteater/recording";
-
-                mFileName += "/"+playLine.LineID+".aac";
-
-                mPlayer=new MediaPlayer();
-                try {
-                    mPlayer.setDataSource(mFileName);
-
-                    mPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                        @Override
-                        public void onPrepared(MediaPlayer mp) {
-                            long totalDuration = 00;
-                            long currentDuration = 00;
-
-                            try {
-
-                                totalDuration = mPlayer.getDuration();
-                                currentDuration = mPlayer.getCurrentPosition();
-
-                            }catch (Exception e){
-                                e.printStackTrace();
-                            };
-
-                            endTime.setText(""+milliSecondsToTimer(totalDuration));
-                            startTime.setText(""+milliSecondsToTimer(currentDuration));
-
-                        }
-                    });
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-
-
-
-
-    }
 
 
 }

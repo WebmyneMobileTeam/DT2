@@ -6,163 +6,193 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     >
-<LinearLayout
-
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_gravity="center"
-    android:background="@android:color/white"
-    android:padding="8dp"
-    android:layout_margin="@dimen/activity_margin"
-    android:layout_height="wrap_content">
-
     <LinearLayout
+
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:background="@android:color/white"
+        android:padding="8dp"
+        android:layout_margin="@dimen/activity_margin"
         android:layout_height="wrap_content">
-        <wm.com.danteater.customviews.WMTextView
-            android:id="@+id/recordPopupTitle"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Optag replik"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/normalText" />
-
-        <wm.com.danteater.customviews.WMTextView
-            android:id="@+id/recordPopupCancel"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Luk"
-            android:textColor="@color/apptheme_color"
-            android:textSize="@dimen/normalText" />
-    </LinearLayout>
-
-
-    <EditText
-        android:enabled="false"
-        android:id="@+id/recordPopupTextArea"
-        android:inputType="textMultiLine"
-        android:lines="8"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
-        android:minLines="8"
-        android:gravity="top|left"
-        android:paddingLeft="4dp"
-        android:paddingTop="4dp"
-        android:textColor="@android:color/black"
-        android:background="@drawable/ed_rounded"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:scrollbars="vertical"
-        />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:layout_height="wrap_content"
-        android:id="@+id/recordAndPlayView">
 
         <LinearLayout
-            android:layout_gravity="top"
-            android:layout_weight="1"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:orientation="horizontal"
             android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/recordPlay"
-                android:layout_width="wrap_content"
+            <wm.com.danteater.customviews.WMTextView
+                android:id="@+id/recordPopupTitle"
+                android:layout_weight="1"
                 android:layout_gravity="center"
-                android:background="@drawable/ic_play_disable"
-                android:layout_height="wrap_content" />
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Optag replik"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/normalText" />
 
-            <ImageView
-                android:id="@+id/record"
+            <wm.com.danteater.customviews.WMTextView
+                android:id="@+id/recordPopupCancel"
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
-                android:background="@drawable/record"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="Luk"
+                android:textColor="@color/apptheme_color"
+                android:textSize="@dimen/normalText" />
         </LinearLayout>
+
+
+        <EditText
+            android:enabled="false"
+            android:id="@+id/recordPopupTextArea"
+            android:inputType="textMultiLine"
+            android:lines="8"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:minLines="8"
+            android:gravity="top|left"
+            android:paddingLeft="4dp"
+            android:paddingTop="4dp"
+            android:textColor="@android:color/black"
+            android:background="@drawable/ed_rounded"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:scrollbars="vertical"
+            />
 
         <LinearLayout
-            android:id="@+id/seekbarView"
-            android:layout_width="wrap_content"
-            android:orientation="vertical"
-            android:layout_height="wrap_content">
-            <SeekBar
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:indeterminate="false"
-                android:id="@+id/seekBar" />
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content"
+            android:id="@+id/recordAndPlayView">
+
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_gravity="top"
+                android:layout_weight="1"
+                android:layout_width="0dp"
                 android:orientation="horizontal"
                 android:layout_height="wrap_content">
-                <wm.com.danteater.customviews.WMTextView
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/normalText"
-                    android:id="@+id/start_label"
-                    android:text="0:00"
+                <ImageView
+                    android:id="@+id/recordPlay"
                     android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/ic_play_disable"
                     android:layout_height="wrap_content" />
-                <wm.com.danteater.customviews.WMTextView
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/normalText"
-                    android:text=" / "
+
+                <ImageView
+                    android:id="@+id/record"
+                    android:layout_gravity="center"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <wm.com.danteater.customviews.WMTextView
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/normalText"
-                    android:id="@+id/end_label"
-                    android:text="1:03"
-                    android:layout_width="wrap_content"
+                    android:background="@drawable/record"
                     android:layout_height="wrap_content" />
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/seekbarView"
+                android:layout_width="wrap_content"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+                <SeekBar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="false"
+                    android:id="@+id/seekBar" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content">
+                    <wm.com.danteater.customviews.WMTextView
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/normalText"
+                        android:id="@+id/start_label"
+                        android:text="0:00"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <wm.com.danteater.customviews.WMTextView
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/normalText"
+                        android:text=" / "
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <wm.com.danteater.customviews.WMTextView
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/normalText"
+                        android:id="@+id/end_label"
+                        android:text="0:00"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:paddingTop="16dp"
+            android:layout_height="wrap_content">
+
+            <wm.com.danteater.customviews.SegmentedGroup
+                android:layout_alignParentLeft="true"
+                android:visibility="visible"
+                android:layout_toLeftOf="@+id/writeCommentPopupSave"
+                android:id="@+id/recordSegmentGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:checkedButton="@+id/writeCommentPopupShareWithEveryOne"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/recordShareWithteacher"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/small_text"
+                    android:text="Til Lærer"
+                    style="@style/RadioButton"
+                    android:checked="true" />
+
+                <RadioButton
+                    android:id="@+id/recordShareWithAll"
+
+                    android:textSize="@dimen/small_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Til alle"
+                    style="@style/RadioButton" />
+
+            </wm.com.danteater.customviews.SegmentedGroup>
+            <ImageView
+                android:id="@+id/countDownNumber"
+                android:visibility="gone"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_three"
+
+
+                />
+
+            <wm.com.danteater.customviews.WMTextView
+                android:id="@+id/txtStopRecording"
+                android:visibility="gone"
+                android:gravity="center"
+                android:drawablePadding="-8dp"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stop"
+                android:drawableLeft="@drawable/ic_voice_record_stop"
+
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/normalText" />
+
+            <wm.com.danteater.customviews.WMTextView
+                android:id="@+id/recordPopupSave"
+                android:layout_gravity="right|bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Send til alle"
+                android:layout_centerVertical="true"
+                android:textColor="@color/gray_color"
+                android:textSize="@dimen/normalText" />
+        </FrameLayout>
     </LinearLayout>
-    
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:paddingTop="16dp"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/countDownNumber"
-            android:visibility="gone"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-           android:background="@drawable/ic_three"
-
-
-           />
-
-        <wm.com.danteater.customviews.WMTextView
-            android:id="@+id/txtStopRecording"
-            android:visibility="gone"
-           android:gravity="center"
-            android:drawablePadding="-8dp"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Stop"
-            android:drawableLeft="@drawable/ic_voice_record_stop"
-
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/normalText" />
-
-    <wm.com.danteater.customviews.WMTextView
-        android:id="@+id/recordPopupSave"
-        android:layout_gravity="right|bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Send til alle"
-        android:layout_centerVertical="true"
-        android:textColor="@color/gray_color"
-        android:textSize="@dimen/normalText" />
-    </FrameLayout>
-</LinearLayout>
 </FrameLayout>

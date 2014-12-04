@@ -77,7 +77,8 @@
                 android:text="Del med alle"
 
                 android:layout_weight="1"
-                style="@style/RadioButton" />
+                style="@style/RadioButton"
+                android:checked="false" />
 
             <RadioButton
                 android:id="@+id/writeCommentPopupShareWithMe"

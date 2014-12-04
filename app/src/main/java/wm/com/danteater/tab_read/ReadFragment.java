@@ -9,11 +9,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -43,16 +46,33 @@ import com.android.volley.VolleyError;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.CoreProtocolPNames;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Type;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
@@ -151,7 +171,7 @@ public class ReadFragment extends Fragment {
 
    private WMEdittext edGotoLine;
    private WMTextView txtGotoLine;
-
+    File fileDir;
 
     public static ReadFragment newInstance(String param1, String param2) {
         ReadFragment fragment = new ReadFragment();
@@ -168,14 +188,14 @@ public class ReadFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        File fileDir = new File(Environment.getExternalStorageDirectory()+ "/danteater/recording");
+       fileDir = new File(Environment.getExternalStorageDirectory()+ "/danteater/recording");
         if(!fileDir.exists()) {
             fileDir.mkdirs();
 //                        Log.e("directory:","created");
         } else {
 //                        Log.e("directory:","already exist");
         }
-        mFileName = fileDir.getAbsolutePath();
+
 //        mFileName += "/audiorecordtest.mp3";
         MusicFragment.mediaPlayer = new MediaPlayer();
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref", 0);
@@ -1012,7 +1032,17 @@ public class ReadFragment extends Fragment {
 
                         }
                     }
-                    holderRecordPlayPlayLineCell.cellRecordPlayPlayLine.setupForPlayLine(playLine,currentState,mark2);
+                    ArrayList<SharedUser> marrTeachers=new ArrayList<SharedUser>();
+                    for(SharedUser au : _marrSharedWithUsers){
+
+                        String check = "lærer";
+
+                        if(au.userName != null && au.userName.contains(check.toString())){
+                            marrTeachers.add(au);
+                        }
+                    }
+
+                    holderRecordPlayPlayLineCell.cellRecordPlayPlayLine.setupForPlayLine(playLine,currentState,mark2,marrTeachers);
 
                     holderRecordPlayPlayLineCell.cellRecordPlayPlayLine.setRecordDelegates(new CellRecordPlayPlayLine.RecordDelegates() {
                         @Override
@@ -1036,7 +1066,7 @@ public class ReadFragment extends Fragment {
                                         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
                                         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
                                         mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-
+                                        mFileName = fileDir.getAbsolutePath();
                                         mFileName += "/"+playLine.LineID+".aac";
                                         Log.e("line id.............:",playLine.LineID+"");
                                         mRecorder.setOutputFile(mFileName);
@@ -1097,12 +1127,29 @@ public class ReadFragment extends Fragment {
 //                            mPlayer = null;
                             mPlayer.stop();
                         }
+
+                        @Override
+                        public void preparePlay() {
+                            mPlayer = new MediaPlayer();
+                            try {
+                                mPlayer.setDataSource(mFileName);
+                                mPlayer.prepare();
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+
+
+                        }
                     });
 
                     holderRecordPlayPlayLineCell.cellRecordPlayPlayLine.setUploadingAudio(new CellRecordPlayPlayLine.UploadAudioFile() {
                         @Override
                         public void uploadingAudio(String soundId) {
                             Log.e("upload audio","uploading");
+
+
                             uploadFileToServer(soundId);
                         }
                     });
@@ -1374,9 +1421,104 @@ public class ReadFragment extends Fragment {
 
     }
 
-    private void uploadFileToServer(String soundId) {
+    private void uploadFileToServer(final String soundIdValue) {
+        try {
+      SharedPreferences preferences = getActivity().getSharedPreferences("session_id", getActivity().MODE_PRIVATE);
+      String sessionId=preferences.getString("session_id","");
+      final String SERVER_URL="https://mvid-services.mv-nordic.com/theater-v1/AudioService/jsonwsp";
+      final String filePath=fileDir.getAbsolutePath();
+      final String soundId=soundIdValue;
 
-        //TODO
+        final JSONObject args=new JSONObject();
+        final JSONObject uploadRequest=new JSONObject();
+
+
+            args.put("session_id",sessionId+"");
+            args.put("audio_id",soundId+"");
+
+            uploadRequest.put("type","jsonwsp/request");
+            uploadRequest.put("version","1.0");
+            uploadRequest.put("methodname","uploadAudio");
+            uploadRequest.put("args",args);
+
+            //TODO
+
+
+          new AsyncTask<Void,Void,Void>(){
+              @Override
+              protected void onPreExecute() {
+                  super.onPreExecute();
+                  dialog = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
+                  dialog.title("Gemmer lydoptagelse");
+                  dialog.show();
+              }
+
+              @Override
+              protected Void doInBackground(Void... params) {
+
+                  try {
+                      HttpClient httpclient = new DefaultHttpClient();
+                      //  httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+                      HttpPost httppost = new HttpPost(SERVER_URL);
+                      String boundary = "--" + "62cd4a08872da000cf5892ad65f1ebe6";
+                      httppost.setHeader("Content-type", "multipart/related; boundary=" + boundary);
+
+                      // Convert File to Byte Array
+                      File file1 = new File(filePath+"/"+soundId);
+                      ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                      InputStream is = new FileInputStream(file1);
+                      byte[] temp = new byte[(int) file1.length()];
+                      int read;
+                      while((read = is.read(temp)) >= 0){
+                          buffer.write(temp, 0, read);
+                      }
+                      byte[] bFile = buffer.toByteArray();
+
+                      String fullPath =filePath+"/"+soundId;
+                      ByteArrayBody bab = new ByteArrayBody(bFile,new File(fullPath).getName()+".aac");
+                      HttpEntity entity = MultipartEntityBuilder.create()
+                              .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
+                              .setBoundary(boundary)
+                              .addPart("body", new StringBody(uploadRequest.toString()))
+                              .addPart("audiocontent", bab)
+                              .build();
+
+                      httppost.setEntity(entity);
+                      try {
+                          HttpResponse response = httpclient.execute(httppost);
+                          BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+
+                          String responseString = reader.readLine();
+                          Log.e("responseString..............................", responseString + "");
+
+                      } catch (Exception e) {
+
+                          e.printStackTrace();
+                      }
+                  } catch (Exception e) {
+                      e.printStackTrace();
+                  }
+                  return null;
+              }
+
+              @Override
+              protected void onPostExecute(Void aVoid) {
+                  super.onPostExecute(aVoid);
+                  dialog.dismiss();
+              }
+          }.execute();
+
+
+
+
+
+
+
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -2104,6 +2246,8 @@ public class ReadFragment extends Fragment {
         updatePlayUsingMethodParams(methodParams.toString());
 
     }
+
+
 
 
 }
