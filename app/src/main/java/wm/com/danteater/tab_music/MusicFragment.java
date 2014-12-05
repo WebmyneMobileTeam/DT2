@@ -379,7 +379,7 @@ public class MusicFragment extends Fragment {
 
 
                             if(mediaPlayer != null && mediaPlayer.isPlaying()){
-                                //mediaPlayer.stop();
+
                                 mediaPlayer.pause();
                                 STATE_HOLDER.put(HACKNUMBER,""+mediaPlayer.getCurrentPosition()+"#"+mediaPlayer.getDuration());
 

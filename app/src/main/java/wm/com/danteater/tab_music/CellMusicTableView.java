@@ -33,6 +33,7 @@ import wm.com.danteater.R;
 import wm.com.danteater.customviews.HUD;
 import wm.com.danteater.customviews.WMTextView;
 import wm.com.danteater.model.AppConstants;
+import wm.com.danteater.tab_read.CellReadPlaySong;
 
 /**
  * Created by nirav on 01-10-2014.
@@ -206,8 +207,14 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
               //  setOnReloading.onReload();
 
                 if(MusicFragment.mediaPlayer != null && MusicFragment.mediaPlayer.isPlaying()){
-                    musicPlay.setImageResource(R.drawable.ic_pause);
-                    updateProgressBar();
+                    try {
+                        musicPlay.setImageResource(R.drawable.ic_pause);
+
+                            updateProgressBar();
+
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
                 }else{
                     musicPlay.setImageResource(R.drawable.ic_play);
                 }
@@ -257,8 +264,11 @@ public class CellMusicTableView implements SeekBar.OnSeekBarChangeListener{
 
                 if(songProgressBar.getProgress() == songProgressBar.getMax()){
                  // setOnReloading.onReload();
+                    songProgressBar.setProgress(0);
+                    startTime.setText(""+milliSecondsToTimer(00));
+                    endTime.setText(""+milliSecondsToTimer(totalDuration));
+                    musicPlay.setImageResource(R.drawable.ic_play);
                 }
-
             // Running this thread after 100 milliseconds
             mHandler.postDelayed(this, 1);
         }

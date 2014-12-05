@@ -126,7 +126,7 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
 
 
 
-    public void setupForPlayLine(int section,PlayLines playLine, int current_state,boolean mark) {
+    public void setupForPlayLine(int firstIndex,int section,PlayLines playLine, int current_state,boolean mark) {
 
        showSideOptions = false;
 
@@ -146,11 +146,13 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
 //            convertView.setBackgroundColor(ctx.getResources().getColor(R.color.read_play_cell));
 //        }
 
-        if(playLine.playLineType() == PlayLines.PlayLType.PlayLineTypeAct && current_state != STATE_RECORD){
-            //TODO
+//        if(playLine.playLineType() == PlayLines.PlayLType.PlayLineTypeAct && current_state != STATE_RECORD){
+//
+//            convertView.setBackgroundColor(ctx.getResources().getColor(R.color.read_play_cell));
+//        }
+        if(section<firstIndex-1 || section==0){
             convertView.setBackgroundColor(ctx.getResources().getColor(R.color.read_play_cell));
         }
-
 
 //        Log.e("Mark is ",""+mark);
         if(mark == true){

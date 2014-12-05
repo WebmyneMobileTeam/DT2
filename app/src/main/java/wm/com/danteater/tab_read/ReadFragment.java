@@ -48,15 +48,24 @@ import com.google.gson.reflect.TypeToken;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpServerConnection;
 import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.SingleClientConnManager;
+import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreProtocolPNames;
+import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -82,6 +91,12 @@ import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+
+
 
 import wm.com.danteater.Play.AssignedUsers;
 import wm.com.danteater.Play.Comments;
@@ -1178,7 +1193,7 @@ public class ReadFragment extends Fragment {
                         }
                     }
 
-                    holderReadPlayPlayLineCell.cellReadPlayPlayLine.setupForPlayLine(section,playLine,currentState,mark22);
+                    holderReadPlayPlayLineCell.cellReadPlayPlayLine.setupForPlayLine(indexForFirstScene,section,playLine,currentState,mark22);
                     holderReadPlayPlayLineCell.cellReadPlayPlayLine.setOnTextLineUpdated(new CellReadPlayPlayLine.OnTextLineUpdated() {
 
                         // delegate method called after textline changes
@@ -1401,10 +1416,12 @@ public class ReadFragment extends Fragment {
            ((TextView) layout.findViewById(R.id.readPlaySectionName)).setText(marrPlaySections.get(section));
             cbShowMyData=((CheckBox) layout.findViewById(R.id.cbShowMyData));
             if(currentState == STATE_RECORD){
-                cbShowMyData.setText("All Play");
+                cbShowMyData.setVisibility(View.GONE);
             } else {
-                cbShowMyData.setText("My Play");
+                cbShowMyData.setVisibility(View.VISIBLE);
+                cbShowMyData.setText("Vis kum mine replikker");
             }
+
             cbShowMyData.setChecked(isHeaderChecked);
             cbShowMyData.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -1470,8 +1487,21 @@ public class ReadFragment extends Fragment {
               protected Void doInBackground(Void... params) {
 
                   try {
-                      HttpClient httpclient = new DefaultHttpClient();
-                      //  httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+                      HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+                      DefaultHttpClient client = new DefaultHttpClient();
+                      SchemeRegistry registry = new SchemeRegistry();
+                      SSLSocketFactory socketFactory = SSLSocketFactory.getSocketFactory();
+                      socketFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
+                      registry.register(new Scheme("https", socketFactory, 443));
+                      SingleClientConnManager mgr = new SingleClientConnManager(client.getParams(), registry);
+                      DefaultHttpClient httpclient = new DefaultHttpClient(mgr, client.getParams());
+
+// Set verifier
+                      HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
+
+
+//                      HttpClient httpclient = new DefaultHttpClient();
+
                       HttpPost httppost = new HttpPost(SERVER_URL);
                       String boundary = "--" + "62cd4a08872da000cf5892ad65f1ebe6";
                       httppost.setHeader("Content-type", "multipart/related; boundary=" + boundary);
@@ -1602,14 +1632,25 @@ public class ReadFragment extends Fragment {
             }
 
             @Override
-
             protected Void doInBackground(Void... voids) {
 
                 try {
 
                    String service_url = "https://mvid-services.mv-nordic.com/theater-v1/AudioService/jsonwsp";
                     //
-     /*               HttpClient httpclient = new DefaultHttpClient();
+                    HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+                    DefaultHttpClient client = new DefaultHttpClient();
+                    SchemeRegistry registry = new SchemeRegistry();
+                    SSLSocketFactory socketFactory = SSLSocketFactory.getSocketFactory();
+                    socketFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
+                    registry.register(new Scheme("https", socketFactory, 443));
+                    SingleClientConnManager mgr = new SingleClientConnManager(client.getParams(), registry);
+                    DefaultHttpClient httpclient = new DefaultHttpClient(mgr, client.getParams());
+
+// Set verifier
+                    HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
+
+//                 HttpClient httpclient = new DefaultHttpClient();
                   //  httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
                     HttpPost httppost = new HttpPost(service_url);
                     String boundary = "--" + "62cd4a08872da000cf5892ad65f1ebe6";
@@ -1634,30 +1675,30 @@ public class ReadFragment extends Fragment {
 
                         e.printStackTrace();
                     }
-                    */
 
-                    try {
 
-                        String boundary = "--" + "62cd4a08872da000cf5892ad65f1ebe6";
-                        MultipartUtility multipart = new MultipartUtility(service_url,"UTF-8");
-                        //multipart.addHeaderField("Test-Header", "Header-Value");
-
-                        multipart.addFormField("description", "Cool Pictures");
-                        multipart.addFormField("keywords", "Java,upload,Spring");
-
-                     //   multipart.addFilePart("fileUpload", uploadFile1);
-                    //    multipart.addFilePart("fileUpload", uploadFile2);
-
-                        List<String> response = multipart.finish();
-
-                        System.out.println("SERVER REPLIED:");
-
-                        for (String line : response) {
-                            System.out.println(line);
-                        }
-                    } catch (IOException ex) {
-                        System.err.println(ex);
-                    }
+//                    try {
+//
+//                        String boundary = "--" + "62cd4a08872da000cf5892ad65f1ebe6";
+//                        MultipartUtility multipart = new MultipartUtility(service_url,"UTF-8");
+//                        //multipart.addHeaderField("Test-Header", "Header-Value");
+//
+//                        multipart.addFormField("description", "Cool Pictures");
+//                        multipart.addFormField("keywords", "Java,upload,Spring");
+//
+//                     //   multipart.addFilePart("fileUpload", uploadFile1);
+//                    //    multipart.addFilePart("fileUpload", uploadFile2);
+//
+//                        List<String> response = multipart.finish();
+//
+//                        System.out.println("SERVER REPLIED:");
+//
+//                        for (String line : response) {
+//                            System.out.println(line);
+//                        }
+//                    } catch (IOException ex) {
+//                        System.err.println(ex);
+//                    }
 
 
 

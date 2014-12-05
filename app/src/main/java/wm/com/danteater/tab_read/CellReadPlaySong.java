@@ -50,6 +50,7 @@ public class CellReadPlaySong {
     private PlayLines pl;
     public FullLengthListView listMusic;
     SongAdapter adapter;
+    public static boolean stopProgress=false;
 
     public CellReadPlaySong(View view,Context context) {
 
@@ -304,11 +305,13 @@ public class CellReadPlaySong {
 
 
                             if(MusicFragment.mediaPlayer != null && MusicFragment.mediaPlayer.isPlaying()){
-                                //mediaPlayer.stop();
+
+
                                 MusicFragment.mediaPlayer.pause();
                                 MusicFragment.STATE_HOLDER.put(MusicFragment.HACKNUMBER,""+MusicFragment.mediaPlayer.getCurrentPosition()+"#"+MusicFragment.mediaPlayer.getDuration());
 
                             }else {
+
                                 MusicFragment.mediaPlayer.start();
 
                             }

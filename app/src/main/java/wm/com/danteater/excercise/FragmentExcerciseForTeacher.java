@@ -141,10 +141,10 @@ public class FragmentExcerciseForTeacher extends Fragment {
             holder.txtVideoName.setText(list.get(position));
 
 
-//           Uri  videoURI = Uri.parse("android.resource://" + getActivity().getPackageName() +"/"
-//                    +R.raw.intro_converted);
-            Uri  videoURI = Uri.parse("android.resource://" + getActivity().getPackageName() +"/"
-                    +R.raw.forklaring_converted);
+           Uri  videoURI = Uri.parse("android.resource://" + getActivity().getPackageName() +"/"
+                    +R.raw.intro_converted);
+//            Uri  videoURI = Uri.parse("android.resource://" + getActivity().getPackageName() +"/"
+//                    +R.raw.forklaring_converted);
             MediaMetadataRetriever retriever = new MediaMetadataRetriever();
             retriever.setDataSource(getActivity(), videoURI);
             Bitmap bitmap = retriever

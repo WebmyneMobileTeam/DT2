@@ -92,7 +92,7 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setHasOptionsMenu(true);
+        setHasOptionsMenu(true);
 
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "user_pref", 0);
         currentUser =complexPreferences.getObject("current_user", User.class);
@@ -533,6 +533,8 @@ public class FragmentSearch extends Fragment implements AdapterView.OnItemClickL
             tv.setText(value);
         }
     }
+
+
 }
 
 

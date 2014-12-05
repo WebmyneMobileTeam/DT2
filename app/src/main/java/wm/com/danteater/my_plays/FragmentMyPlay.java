@@ -206,7 +206,8 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-    this.menu=menu;
+
+        this.menu=menu;
     }
 
     @Override

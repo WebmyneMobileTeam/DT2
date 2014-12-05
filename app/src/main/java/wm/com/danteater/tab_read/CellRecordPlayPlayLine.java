@@ -430,9 +430,9 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
                   }
                }
 
-                didFinishSavingUserAudio();
-               //TODO
-//                uploadAudio.uploadingAudio(soundId);
+//                didFinishSavingUserAudio();
+//               //TODO
+                uploadAudio.uploadingAudio(soundId);
 
             }
         });

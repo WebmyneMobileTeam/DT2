@@ -111,7 +111,7 @@ public class CellReadPlayNote implements View.OnClickListener{
             convertView.setBackgroundColor(Color.WHITE);
         }*/
 
-        if(section<firstIndex-1){
+        if(section<firstIndex-1 || section==0){
             convertView.setBackgroundColor(ctx.getResources().getColor(R.color.read_play_cell));
         }
 

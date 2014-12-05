@@ -19,6 +19,7 @@ import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,10 +85,10 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
     private int[] arrImagesTeacher = {R.drawable.teacher1, R.drawable.teacher2, R.drawable.teacher3};
     private int[] arrImagesPupils = {R.drawable.vid1, R.drawable.vid2, R.drawable.vid3, R.drawable.vid4};
 
-//    private int[] arrVideosTeachers = {R.raw.goderaad_converted, R.raw.vaerktoejer_converted, R.raw.forklaring_converted};
-//    private int[] arrVideosPupils = {R.raw.intro_converted, R.raw.fokus_converted, R.raw.taleteknik_converted, R.raw.foelelser_converted};
-    private int[] arrVideosTeachers = {R.raw.forklaring_converted, R.raw.forklaring_converted, R.raw.forklaring_converted};
-    private int[] arrVideosPupils = {R.raw.forklaring_converted, R.raw.forklaring_converted, R.raw.forklaring_converted, R.raw.forklaring_converted};
+    private int[] arrVideosTeachers = {R.raw.goderaad_converted, R.raw.vaerktoejer_converted, R.raw.forklaring_converted};
+    private int[] arrVideosPupils = {R.raw.intro_converted, R.raw.fokus_converted, R.raw.taleteknik_converted, R.raw.foelelser_converted};
+//    private int[] arrVideosTeachers = {R.raw.forklaring_converted, R.raw.forklaring_converted, R.raw.forklaring_converted};
+//    private int[] arrVideosPupils = {R.raw.forklaring_converted, R.raw.forklaring_converted, R.raw.forklaring_converted, R.raw.forklaring_converted};
 
     private String[] arrCaptionsTeachers = {"Gode råd", "Værktøjer", "Forklaring"};
     private String[] arrCaptionsPupils = {"Intro", "Fokus", "Taleteknik", "Følelser"};
@@ -124,7 +125,7 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref", 0);
         selectedPlay = complexPreferences.getObject("selected_play", Play.class);
         currentUser = complexPreferences.getObject("current_user", User.class);
-        setHasOptionsMenu(true);
+//        setHasOptionsMenu(true);
     }
 
     @Override
@@ -362,8 +363,9 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
         menu.add(0,1, Menu.NONE,"Camera");
         menu.add(0,2,Menu.NONE,"Choose from gallery");
 
-
     }
+
+
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
@@ -567,6 +569,8 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
 
         return true;
     }
+
+
 
 }
 
