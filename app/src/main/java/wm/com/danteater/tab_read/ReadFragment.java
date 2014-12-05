@@ -1400,18 +1400,31 @@ public class ReadFragment extends Fragment {
             }
            ((TextView) layout.findViewById(R.id.readPlaySectionName)).setText(marrPlaySections.get(section));
             cbShowMyData=((CheckBox) layout.findViewById(R.id.cbShowMyData));
+            if(currentState == STATE_RECORD){
+                cbShowMyData.setText("All Play");
+            } else {
+                cbShowMyData.setText("My Play");
+            }
             cbShowMyData.setChecked(isHeaderChecked);
             cbShowMyData.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checkboxValue) {
                     if(checkboxValue==true){
                         isHeaderChecked=true;
-                        updatePlaySpecificData();
-                        notifyDataSetChanged();
+                        if(currentState == STATE_RECORD) {
+
+                        } else {
+                            updatePlaySpecificData();
+                            notifyDataSetChanged();
+                        }
                     } else {
                         isHeaderChecked=false;
-                        updatePlaySpecificData();
-                        notifyDataSetChanged();
+                        if(currentState == STATE_RECORD) {
+
+                        } else {
+                            updatePlaySpecificData();
+                            notifyDataSetChanged();
+                        }
                     }
                 }
             });

@@ -147,7 +147,7 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
 //        }
 
         if(playLine.playLineType() == PlayLines.PlayLType.PlayLineTypeAct && current_state != STATE_RECORD){
-
+            //TODO
             convertView.setBackgroundColor(ctx.getResources().getColor(R.color.read_play_cell));
         }
 

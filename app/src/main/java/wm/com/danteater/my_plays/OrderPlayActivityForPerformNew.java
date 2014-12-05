@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -116,6 +117,7 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
         schoolId.setText(currentUser.getDomain().toString()+"");
         userName.setText(currentUser.getFirstName()+" "+currentUser.getLastName());
         btnPlayOrder.setBackgroundColor(getResources().getColor(R.color.gray_color));
+        btnPlayOrder.setEnabled(false);
         etNumberOfPerformanceValue.setFocusable(false);
         etNumberOfPerformanceValue.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -190,8 +192,10 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
                     if (!((etNumberOfPerformanceValue.getText().toString() == null || etNumberOfPerformanceValue.getText().toString() == "" || etNumberOfPerformanceValue.getText().toString().isEmpty()) || (txtFirstDateValue.getText().toString() == null || txtFirstDateValue.getText().toString() == "" || txtFirstDateValue.getText().toString().isEmpty()) || (txtSecondDateValue.getText().toString() == null || txtSecondDateValue.getText().toString() == "" || txtSecondDateValue.getText().toString().isEmpty()))) {
                         if (numberOfPerformance == true && isValidDate == true) {
                             btnPlayOrder.setBackgroundColor(getResources().getColor(R.color.apptheme_color));
+                            btnPlayOrder.setEnabled(true);
                         } else {
                             btnPlayOrder.setBackgroundColor(getResources().getColor(R.color.gray_color));
+                            btnPlayOrder.setEnabled(false);
                         }
 //                        Log.e("",numberOfPerformance+" "+isValidDate);
                     }
@@ -252,6 +256,7 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
         btnPlayOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Toast.makeText(context,"clicked",Toast.LENGTH_LONG);
                 if (!((etNumberOfPerformanceValue.getText().toString() == null || etNumberOfPerformanceValue.getText().toString() == "" || etNumberOfPerformanceValue.getText().toString().isEmpty()) || (txtFirstDateValue.getText().toString() == null || txtFirstDateValue.getText().toString() == "" || txtFirstDateValue.getText().toString().isEmpty()) || (txtSecondDateValue.getText().toString() == null || txtSecondDateValue.getText().toString() == "" || txtSecondDateValue.getText().toString().isEmpty()))) {
                     if(numberOfPerformance==true && isValidDate==true ) {
 
@@ -433,8 +438,10 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
                             if (!((etNumberOfPerformanceValue.getText().toString() == null || etNumberOfPerformanceValue.getText().toString() == "" || etNumberOfPerformanceValue.getText().toString().isEmpty()) || (txtFirstDateValue.getText().toString() == null || txtFirstDateValue.getText().toString() == "" || txtFirstDateValue.getText().toString().isEmpty()) || (txtSecondDateValue.getText().toString() == null || txtSecondDateValue.getText().toString() == "" || txtSecondDateValue.getText().toString().isEmpty()))) {
                                 if(numberOfPerformance==true && isValidDate==true ) {
                                     btnPlayOrder.setBackgroundColor(getResources().getColor(R.color.apptheme_color));
+                                    btnPlayOrder.setEnabled(true);
                                 }else {
                                     btnPlayOrder.setBackgroundColor(getResources().getColor(R.color.gray_color));
+                                    btnPlayOrder.setEnabled(false);
                                 }
 //                                    Log.e("",numberOfPerformance+" "+isValidDate);
                             }
