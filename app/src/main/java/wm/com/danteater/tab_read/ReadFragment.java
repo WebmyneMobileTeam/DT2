@@ -1085,7 +1085,7 @@ public class ReadFragment extends Fragment {
                                         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
                                         mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
                                         mFileName = fileDir.getAbsolutePath();
-                                        mFileName += "/"+playLine.LineID+"-teacher.aac";
+                                        mFileName += "/"+playLine.LineID+".aac";
                                         Log.e("line id.............:",playLine.LineID+"");
                                         mRecorder.setOutputFile(mFileName);
 
