@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.os.AsyncTask;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
@@ -23,17 +24,24 @@ import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 
+import wm.com.danteater.Messages.MessagesForConversation;
 import wm.com.danteater.Play.Comments;
 import wm.com.danteater.Play.Play;
 import wm.com.danteater.Play.PlayLines;
 import wm.com.danteater.Play.TextLines;
 import wm.com.danteater.R;
+import wm.com.danteater.customviews.HUD;
 import wm.com.danteater.customviews.SegmentedGroup;
 import wm.com.danteater.customviews.WMTextView;
 import wm.com.danteater.login.User;
+import wm.com.danteater.model.API;
 import wm.com.danteater.model.AppConstants;
 import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.my_plays.SharedUser;
@@ -78,8 +86,9 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
     WMTextView startTime;
     WMTextView endTime;
     Handler mHandler;
+    Handler mHandlerModifyIcon;
 
-//    MediaPlayer   mPlayer = null;
+    //    MediaPlayer   mPlayer = null;
 //    String mFileName = null;
     TextLines textLine;
     boolean isStopPlayclicked=false;
@@ -112,7 +121,7 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
         selectedPlay = complexPreference.getObject("selected_play",Play.class);
 
         mHandler = new Handler();
-
+        mHandlerModifyIcon= new Handler();
         lblLineNumber = (WMTextView) view.findViewById(R.id.recordPlayLineCellLineNumber);
         lblRoleName = (WMTextView) view.findViewById(R.id.recordPlayLineCellRollName);
         tvPlayLines = (WMTextView) view.findViewById(R.id.recordPlayLineCellDescription);
@@ -228,15 +237,17 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
                 listReadPlayPlaylinecell.invalidate();
 
             }
-
         }
 
         imgPLay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                delegate.onPlayClicked(playLine);
+                imgPLay.setBackgroundResource(R.drawable.ic_pause);
+
+                delegate.onPlayClicked(playLine,imgPLay);
             }
         });
+
 
         btnOpTag.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -269,11 +280,16 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
 
     public interface RecordDelegates{
 
-        public void onPlayClicked(PlayLines playLine);
+        public void onPlayClicked(PlayLines playLine,ImageView imgPlay);
 
     }
 
 
+
+    private void modifyPlayIcon() {
+
+
+    }
     private void showRecordDialog(){
 
         final Dialog dialog = new Dialog(ctx,android.R.style.Theme_Translucent_NoTitleBar);
@@ -416,39 +432,182 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
             public void onClick(View v) {
                 Log.e("clicked:","click on save");
                 //stop plaing
-                if(ReadFragment.mPlayer.isPlaying() || ReadFragment.mPlayer !=null){
-                    ReadFragment.mPlayer.release();
-                    ReadFragment.mPlayer = null;
+//                if(ReadFragment.mPlayer.isPlaying() || ReadFragment.mPlayer !=null){
+//                    ReadFragment.mPlayer.release();
+//                    ReadFragment.mPlayer = null;
+//                }
+                if(cUser.checkTeacherOrAdmin(cUser.getRoles())){
+                    soundId=playLine.LineID+".aac";
+                } else {
+                    if(recordSegmentGroup.isShown() && recordSegmentGroup.getCheckedRadioButtonId() == R.id.recordShareWithteacher){
+                        soundId=playLine.LineID+"-teacher.aac";
+                    } else {
+                        soundId=playLine.LineID+".aac";
+                    }
                 }
-               if(cUser.checkTeacherOrAdmin(cUser.getRoles())){
-                   soundId=playLine.LineID+".aac";
-               } else {
-                  if(recordSegmentGroup.getCheckedRadioButtonId() == R.id.recordShareWithteacher){
-                      soundId=playLine.LineID+"-teacher.aac";
-                  } else {
-                      soundId=playLine.LineID+".aac";
-                  }
-               }
 
-//                didFinishSavingUserAudio();
-//               //TODO
-                uploadAudio.uploadingAudio(soundId);
+                didFinishSavingUserAudio();
+//
+
 
             }
         });
     }
 
     private void didFinishSavingUserAudio() {
-        if(recordSegmentGroup.getCheckedRadioButtonId() == R.id.recordShareWithteacher) {
+        if(recordSegmentGroup.isShown() && recordSegmentGroup.getCheckedRadioButtonId() == R.id.recordShareWithteacher) {
             String strMessageTextWithLinkTitleRoleLinenumber="sound-"+playLine.LineID+"\n"+selectedPlay.Title.replace(" ","_")+"-"+playLine.RoleName+"-"+playLine.LineID.substring(playLine.LineID.lastIndexOf("-")+1)+"\n"+"Lydoptagelse";
 
-
+//            ReadFragment.staticdialog = new HUD(ctx,android.R.style.Theme_Translucent_NoTitleBar);
+//            ReadFragment.staticdialog .title("");
+//            ReadFragment.staticdialog .show();
             // send a message
             for(SharedUser assignedUser : marrTeachers) {
-//                createNewMessageAndSendToUser(assignedUser.userId,strMessageTextWithLinkTitleRoleLinenumber,playLine.LineID,true)
-            //TODO
+                createNewMessageAndSendToUser(assignedUser.userId,strMessageTextWithLinkTitleRoleLinenumber,playLine.LineID,true);
+
             }
+
         }
+        didFinishUploadingUserAudioToMV();
+    }
+
+    private void didFinishUploadingUserAudioToMV() {
+
+        boolean shareWithTeacherOnly=true;
+        if(recordSegmentGroup.isShown() && recordSegmentGroup.getCheckedRadioButtonId() == R.id.recordShareWithteacher) {
+            shareWithTeacherOnly=true;
+        } else {
+            shareWithTeacherOnly=false;
+        }
+
+        String timeStamp=((int)(System.currentTimeMillis() / 1000))+"";
+
+        saveUserAudioForPlayLineIdString(playLine.getLineID(),timeStamp,shareWithTeacherOnly);
+
+
+    }
+
+    private void saveUserAudioForPlayLineIdString(String playLineId, String timestamp, boolean forTeachersOnly) {
+
+        String shareType;
+        if (forTeachersOnly) {
+            shareType = "teacher";
+        } else {
+            shareType = "all";
+        }
+        final JSONObject requestParams=new JSONObject();
+        try {
+
+
+            requestParams.put("OrderID", playLineId.substring(0,playLineId.lastIndexOf("-"))+"");
+            requestParams.put("LineID", playLineId+"");
+            requestParams.put("TimeStamp", timestamp+"");
+            requestParams.put("UserId", cUser.getUserId()+"");
+            requestParams.put("shareType", shareType);
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+            }
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                try
+                {
+                    Reader readerForNone = API.callWebservicePost("http://api.danteater.dk/Api/Audio", requestParams.toString());
+//                    Log.e("reader", readerForNone + "");
+
+                    StringBuffer response = new StringBuffer();
+                    int i = 0;
+                    do {
+                        i = readerForNone.read();
+                        char character = (char) i;
+                        response.append(character);
+
+                    } while (i != -1);
+                    readerForNone.close();
+                    Log.e("response", response + " ");
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+
+                uploadAudio.uploadingAudio(soundId);
+
+            }
+        }.execute();
+
+
+    }
+    private void createNewMessageAndSendToUser(String username, String messageText, String orderAndLineId, boolean isSound ){
+
+        final JSONObject requestParamss=new JSONObject();
+        try {
+
+
+            requestParamss.put("OrderId", orderAndLineId + "");
+            requestParamss.put("LineId", orderAndLineId + "");
+            requestParamss.put("FromUserId", cUser.getUserId() + "");
+            requestParamss.put("ToUserId", username + "");
+            requestParamss.put("MessageText", messageText);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+            }
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                try
+                {
+                    Reader readerForNone = API.callWebservicePost("http://api.danteater.dk/api/Message", requestParamss.toString());
+//                    Log.e("reader", readerForNone + "");
+
+                    StringBuffer response = new StringBuffer();
+                    int i = 0;
+                    do {
+                        i = readerForNone.read();
+                        char character = (char) i;
+                        response.append(character);
+
+                    } while (i != -1);
+                    readerForNone.close();
+                    Log.e("response message", response + " ");
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+
+
+            }
+        }.execute();
+
     }
     private void onPlay(boolean start) {
         if (start) {
@@ -485,34 +644,34 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
 
         public void run() {
 
-                long totalDuration = 00;
-                long currentDuration = 00;
-                try {
+            long totalDuration = 00;
+            long currentDuration = 00;
+            try {
 
-                    totalDuration = ReadFragment.mPlayer.getDuration();
-                    currentDuration = ReadFragment.mPlayer.getCurrentPosition();
+                totalDuration = ReadFragment.mPlayer.getDuration();
+                currentDuration = ReadFragment.mPlayer.getCurrentPosition();
 
-                }catch (Exception e){};
-                // Displaying Total Duration time
-                endTime.setText(""+milliSecondsToTimer(totalDuration));
-                // Displaying time completed playing
-                startTime.setText(""+milliSecondsToTimer(currentDuration));
-                // Updating progress bar
-                int progress = (int)(getProgressPercentage(currentDuration, totalDuration));
-                //Log.d("Progress", ""+progress);
-                songProgressBar.setProgress(progress);
+            }catch (Exception e){};
+            // Displaying Total Duration time
+            endTime.setText(""+milliSecondsToTimer(totalDuration));
+            // Displaying time completed playing
+            startTime.setText(""+milliSecondsToTimer(currentDuration));
+            // Updating progress bar
+            int progress = (int)(getProgressPercentage(currentDuration, totalDuration));
+            //Log.d("Progress", ""+progress);
+            songProgressBar.setProgress(progress);
 
-                if(songProgressBar.getProgress() == songProgressBar.getMax() || isStopPlayclicked==true){
-                    // setOnReloading.onReload();
-                    songProgressBar.setProgress(0);
-                    startTime.setText(""+milliSecondsToTimer(0));
-                    btnPlay.setBackgroundResource(R.drawable.ic_play);
+            if(songProgressBar.getProgress() == songProgressBar.getMax() || isStopPlayclicked==true){
+                // setOnReloading.onReload();
+                songProgressBar.setProgress(0);
+                startTime.setText(""+milliSecondsToTimer(0));
+                btnPlay.setBackgroundResource(R.drawable.ic_play);
 
-                }
-
-                // Running this thread after 100 milliseconds
-                mHandler.postDelayed(this, 1);
             }
+
+            // Running this thread after 100 milliseconds
+            mHandler.postDelayed(this, 1);
+        }
     };
 
     public void updateProgressBar() {

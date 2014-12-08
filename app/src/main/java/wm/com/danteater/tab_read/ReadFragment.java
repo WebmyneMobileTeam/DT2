@@ -136,14 +136,15 @@ public class ReadFragment extends Fragment {
     private Play selectedPlay;
     private ArrayList<PlayLines> playLinesesList;
     private ArrayList<AssignedUsers> assignedUsersesList = new ArrayList<AssignedUsers>();
-    private HUD dialog;
+    public static HUD dialog;
+//    public static HUD staticdialog;
     private View layout_gotoLine;
     private boolean isGoToLineVisible = false;
     private Menu menu;
     private User currentUser;
     private  boolean isHeaderChecked=false;
     public static MediaPlayer   mPlayer = null;
-
+    File txtToSpeechfileDir;
     // 0 for record state
     // 1 for preview state
     // 2 for chat state
@@ -187,6 +188,7 @@ public class ReadFragment extends Fragment {
    private WMEdittext edGotoLine;
    private WMTextView txtGotoLine;
     File fileDir;
+    public static MediaPlayer mTextToSpeechPlayer;
 
     public static ReadFragment newInstance(String param1, String param2) {
         ReadFragment fragment = new ReadFragment();
@@ -794,13 +796,13 @@ public class ReadFragment extends Fragment {
 
         @Override
         public Object getItem(int section, int position) {
-            // TODO Auto-generated method stub
+
             return null;
         }
 
         @Override
         public long getItemId(int section, int position) {
-            // TODO Auto-generated method stub
+
             return 0;
         }
 
@@ -1060,11 +1062,12 @@ public class ReadFragment extends Fragment {
                     holderRecordPlayPlayLineCell.cellRecordPlayPlayLine.setupForPlayLine(playLine,currentState,mark2,marrTeachers);
 
                     holderRecordPlayPlayLineCell.cellRecordPlayPlayLine.setRecordDelegates(new CellRecordPlayPlayLine.RecordDelegates() {
+
+
                         @Override
-                        public void onPlayClicked(PlayLines playLine) {
-                          
-                            downloadAndPlayRecordTextToSpeech(playLine);
-                            
+                        public void onPlayClicked(PlayLines playLine, ImageView imgPlay) {
+                            downloadAndPlayRecordTextToSpeech(playLine,imgPlay);
+
                         }
                     });
 
@@ -1082,7 +1085,7 @@ public class ReadFragment extends Fragment {
                                         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
                                         mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
                                         mFileName = fileDir.getAbsolutePath();
-                                        mFileName += "/"+playLine.LineID+".aac";
+                                        mFileName += "/"+playLine.LineID+"-teacher.aac";
                                         Log.e("line id.............:",playLine.LineID+"");
                                         mRecorder.setOutputFile(mFileName);
 
@@ -1223,15 +1226,13 @@ public class ReadFragment extends Fragment {
                             playLine.commentsList.add(com);
                             callServiceForCommentAdded(playLine);
 
-
-
                         }
 
                         @Override
                         public void onChatClicked() {
 
 
-                            proceedMessage(playLine);
+                                                    proceedMessage(playLine);
 
 
                         }
@@ -1478,9 +1479,7 @@ public class ReadFragment extends Fragment {
               @Override
               protected void onPreExecute() {
                   super.onPreExecute();
-                  dialog = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
-                  dialog.title("Gemmer lydoptagelse");
-                  dialog.show();
+
               }
 
               @Override
@@ -1505,6 +1504,7 @@ public class ReadFragment extends Fragment {
                       HttpPost httppost = new HttpPost(SERVER_URL);
                       String boundary = "--" + "62cd4a08872da000cf5892ad65f1ebe6";
                       httppost.setHeader("Content-type", "multipart/related; boundary=" + boundary);
+
 
                       // Convert File to Byte Array
                       File file1 = new File(filePath+"/"+soundId);
@@ -1547,17 +1547,9 @@ public class ReadFragment extends Fragment {
               @Override
               protected void onPostExecute(Void aVoid) {
                   super.onPostExecute(aVoid);
-                  dialog.dismiss();
+//                  staticdialog.dismiss();
               }
           }.execute();
-
-
-
-
-
-
-
-
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -1565,40 +1557,47 @@ public class ReadFragment extends Fragment {
 
     }
 
-    private void downloadAndPlayRecordTextToSpeech(PlayLines playLine){
+    private void downloadAndPlayRecordTextToSpeech(final PlayLines playLine,final ImageView imgPlay){
 
         ArrayList<TextLines> arrTxt = playLine.textLinesList;
-
+            Log.e("arrTxt",arrTxt.size()+"");
+        StringBuffer text=new StringBuffer();
         if(arrTxt != null && arrTxt.size()>0){
-
-            String text = new String();
             for(TextLines line : arrTxt){
-                text.concat(line.currentText());
-                text.concat(" ");
+                text.append(line.currentText());
+                text.append(" ");
             }
+            Log.e("text...",text+"");
+            String textValue=text.toString();
+//            textValue = textValue.replaceAll("\\?","QMQM");
+//            Log.e("replaced text",textValue+"");
+//            Log.e("question mark.....","\\?");
+//            Log.e("question mark new.....","/?");
+//            String latin = new String();
 
-            text = text.replaceAll("\\?","QMQM");
-
-            String latin = new String();
-
-            Charset charset = Charset.forName("ISO-8859-1");
-            CharsetDecoder decoder = charset.newDecoder();
-            CharsetEncoder encoder = charset.newEncoder();
-
-            try {
-                // Convert a string to ISO-LATIN-1 bytes in a ByteBuffer
-                // The new ByteBuffer is ready to be read.
-                ByteBuffer bbuf = encoder.encode(CharBuffer.wrap(text));
-
-                // Convert ISO-LATIN-1 bytes in a ByteBuffer to a character ByteBuffer and then to a string.
-                // The new ByteBuffer is ready to be read.
-                CharBuffer cbuf = decoder.decode(bbuf);
-                latin = cbuf.toString();
-            } catch (CharacterCodingException e) {
-            }
-
-            latin = latin.replaceAll("\\?"," ");
-            latin = latin.replaceAll("QMQM","?");
+//            Charset charset = Charset.forName("US-ASCII");
+////            CharsetDecoder decoder = charset.newDecoder();
+//            CharsetEncoder encoder = charset.newEncoder();
+//
+//            try {
+//                // Convert a string to ISO-LATIN-1 bytes in a ByteBuffer
+//                // The new ByteBuffer is ready to be read.
+//                ByteBuffer bbuf = encoder.encode(CharBuffer.wrap(text));
+//
+//                // Convert ISO-LATIN-1 bytes in a ByteBuffer to a character ByteBuffer and then to a string.
+//                // The new ByteBuffer is ready to be read.
+////                CharBuffer cbuf = decoder.decode(bbuf);
+////                latin = cbuf.toString();
+//                  latin=bbuf.toString();
+//
+//            } catch (CharacterCodingException e) {
+//            }
+//            Charset characterSet = Charset.forName("US-ASCII");
+//
+//            byte[] bytes = textValue.getBytes(characterSet);
+//            latin=bytes.toString();
+//            latin = latin.replaceAll("\\?"," ");
+//            latin = latin.replaceAll("QMQM","?");
 
           final  JSONObject mainOBJ = new JSONObject();
 
@@ -1613,10 +1612,9 @@ public class ReadFragment extends Fragment {
                 String sessionId = preferences.getString("session_id","");
                 JSONObject args = new JSONObject();
                 args.put("session_id",sessionId);
-                args.put("text",latin);
+                args.put("text",textValue);
                 args.put("codec","mp3");
                 args.put("sample_rate",0);
-
                 mainOBJ.put("args",args); // add to main json
 
             new AsyncTask<Void,Void,Void>() {
@@ -1711,7 +1709,7 @@ public class ReadFragment extends Fragment {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-               dialog.dismiss();
+
 
                 String url = "";
                 Log.e("Response for retreiving song TTF ", "" + responseString.toString());
@@ -1724,37 +1722,19 @@ public class ReadFragment extends Fragment {
 
                 }catch(Exception e){}
 
-                downloadSpeechFile(url);
-
-
-
+                downloadSpeechFile(url,playLine,imgPlay);
 
             }
         }.execute();
 
-
-
-
-
-
-
-
-            }catch (Exception e){}
-
-
-
-
-
-
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
-
-
-
-
 
     }
 
-    private void downloadSpeechFile(String url) {
+    private void downloadSpeechFile(String url,final PlayLines playLines,final ImageView imgPlay) {
 
       final  String theURL ="https://mvid-services.mv-nordic.com/theater-v1/"+url;
         Log.e("final url to be download ",""+theURL);
@@ -1767,8 +1747,12 @@ public class ReadFragment extends Fragment {
             protected void onPreExecute() {
                 super.onPreExecute();
 
-                if(!new File("/mnt/sdcard/nameofthefile.mp3").exists()){
-                    new File("/mnt/sdcard/nameofthefile.mp3").mkdir();
+                txtToSpeechfileDir = new File(Environment.getExternalStorageDirectory()+ "/danteater/speech");
+                if(!txtToSpeechfileDir.exists()) {
+                    txtToSpeechfileDir.mkdirs();
+//                        Log.e("directory:","created");
+                } else {
+//                        Log.e("directory:","already exist");
                 }
 
             }
@@ -1784,7 +1768,7 @@ public class ReadFragment extends Fragment {
 
 
                         java.io.BufferedInputStream in = new java.io.BufferedInputStream(new java.net.URL(theURL).openStream());
-                        java.io.FileOutputStream fos = new java.io.FileOutputStream(new File("/sdcard/nameofthefile.mp3"));
+                        java.io.FileOutputStream fos = new java.io.FileOutputStream(new File(txtToSpeechfileDir.getAbsolutePath()+"/"+playLines.LineID+".mp3"));
                         java.io.BufferedOutputStream bout = new BufferedOutputStream(fos,1024);
                         byte[] data = new byte[1024];
                         int x=0;
@@ -1834,19 +1818,32 @@ public class ReadFragment extends Fragment {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-
-                Toast.makeText(getActivity(), "Download complete", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+                //TODO
+                playTextToSpeechFile(playLines,imgPlay);
 
 
             }
         }.execute();
 
-
-
-
     }
+    private void playTextToSpeechFile(PlayLines playLines,final ImageView imgPlay) {
+        mTextToSpeechPlayer= new MediaPlayer();
+        try {
+            mTextToSpeechPlayer.setDataSource(Environment.getExternalStorageDirectory()+ "/danteater/speech/"+playLines.LineID+".mp3");
+            mTextToSpeechPlayer.prepare();
+            mTextToSpeechPlayer.start();
+            mTextToSpeechPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 
-
+                public void onCompletion(MediaPlayer mp) {
+                    mp.stop();
+                    imgPlay.setBackgroundResource(R.drawable.ic_play);
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     private void proceedMessage(PlayLines playLine) {
 
         if(currentUser.checkPupil(currentUser.getRoles())){

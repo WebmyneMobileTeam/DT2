@@ -149,15 +149,12 @@ public class ChatViewActivity extends BaseActivity {
 
     private void sendMessageToUser() {
 
-
-
         final JSONObject requestParams=new JSONObject();
         try {
             requestParams.put("OrderId", messagesForConversationLastObject.OrderId+"");
             requestParams.put("LineId", messagesForConversationLastObject.LineId+"");
             requestParams.put("FromUserId", currentUser.getUserId()+"");
             requestParams.put("ToUserId", toUserId+"");
-            //TODO
             String[] lines = messagesForConversationLastObject.MessageText.split(System.getProperty("line.separator"));
             String firstLine = lines[0];
             String secondline = lines[1];
@@ -205,13 +202,7 @@ public class ChatViewActivity extends BaseActivity {
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
                 dialog.dismiss();
-                String[] lines = messagesForConversationLastObject.MessageText.split(System.getProperty("line.separator"));
-                String firstLine = lines[0];
-                String secondline = lines[1];
-                messagesForConversationArrayList.add(new MessagesForConversation("","","",currentUser.getUserId(),"",firstLine+"\n"+secondline+"\n"+etMessageValue.getText().toString().trim(),"",""));
-                etMessageValue.setText("");
-                chatAdapter.notifyDataSetChanged();
-                listChat.setSelection(messagesForConversationArrayList.size()-1);
+
             }
         }.execute();
     }
