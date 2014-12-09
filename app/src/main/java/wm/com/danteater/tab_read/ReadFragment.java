@@ -9,14 +9,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -48,9 +45,6 @@ import com.google.gson.reflect.TypeToken;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpServerConnection;
-import org.apache.http.HttpVersion;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
@@ -59,43 +53,27 @@ import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.SingleClientConnManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.CoreProtocolPNames;
-import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Type;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.CharacterCodingException;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-
 
 
 import wm.com.danteater.Play.AssignedUsers;
@@ -114,7 +92,6 @@ import wm.com.danteater.model.API;
 import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.model.DatabaseWrapper;
-import wm.com.danteater.model.MultipartUtility;
 import wm.com.danteater.model.StateManager;
 import wm.com.danteater.my_plays.ChatViewFromRead;
 import wm.com.danteater.my_plays.SelectTeacherForChat;
@@ -137,7 +114,7 @@ public class ReadFragment extends Fragment {
     private ArrayList<PlayLines> playLinesesList;
     private ArrayList<AssignedUsers> assignedUsersesList = new ArrayList<AssignedUsers>();
     public static HUD dialog;
-//    public static HUD staticdialog;
+
     private View layout_gotoLine;
     private boolean isGoToLineVisible = false;
     private Menu menu;
@@ -145,6 +122,7 @@ public class ReadFragment extends Fragment {
     private  boolean isHeaderChecked=false;
     public static MediaPlayer   mPlayer = null;
     File txtToSpeechfileDir;
+    File recordedAudiofileDir;
     // 0 for record state
     // 1 for preview state
     // 2 for chat state
@@ -170,26 +148,26 @@ public class ReadFragment extends Fragment {
     public boolean foundIndexOfFirstScene = false;
     int indexForFirstScene = 0;
 
-  static final int RecordPlayRoleCell = 0;
-  static final int EmptyPreviewPlayRoleCell = 1;
-  static final int PreviewPlayRoleCell = 2;
-  static final int EmptyPlayRoleCell = 3;
-  static final int ReadPlayRoleCell = 4;
-  static final int RecordPlayPlayLineCell = 5;
-  static final int PreviewPlayPlayLineCell = 6;
-  static final int ReadPlayPlayLineCell = 7;
-  static final int PreviewReadPlayNoteCell = 8;
-  static final int ReadPlayNoteCell = 9;
-  static final int ReadPlayInfoCell = 10;
-  static final int ReadPlayPictureCell = 11;
-  static final int ReadPlaySongCell = 12;
-  static final int ReadPlaySongLineCell = 13;
+    static final int RecordPlayRoleCell = 0;
+    static final int EmptyPreviewPlayRoleCell = 1;
+    static final int PreviewPlayRoleCell = 2;
+    static final int EmptyPlayRoleCell = 3;
+    static final int ReadPlayRoleCell = 4;
+    static final int RecordPlayPlayLineCell = 5;
+    static final int PreviewPlayPlayLineCell = 6;
+    static final int ReadPlayPlayLineCell = 7;
+    static final int PreviewReadPlayNoteCell = 8;
+    static final int ReadPlayNoteCell = 9;
+    static final int ReadPlayInfoCell = 10;
+    static final int ReadPlayPictureCell = 11;
+    static final int ReadPlaySongCell = 12;
+    static final int ReadPlaySongLineCell = 13;
 
-   private WMEdittext edGotoLine;
-   private WMTextView txtGotoLine;
+    private WMEdittext edGotoLine;
+    private WMTextView txtGotoLine;
     File fileDir;
     public static MediaPlayer mTextToSpeechPlayer;
-
+    public MediaPlayer downloadedSoundPlayer;
     public static ReadFragment newInstance(String param1, String param2) {
         ReadFragment fragment = new ReadFragment();
 
@@ -205,7 +183,7 @@ public class ReadFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-       fileDir = new File(Environment.getExternalStorageDirectory()+ "/danteater/recording");
+        fileDir = new File(Environment.getExternalStorageDirectory()+ "/danteater/recording");
         if(!fileDir.exists()) {
             fileDir.mkdirs();
 //                        Log.e("directory:","created");
@@ -219,10 +197,10 @@ public class ReadFragment extends Fragment {
         selectedPlay = complexPreferences.getObject("selected_play", Play.class);
         currentUser = complexPreferences.getObject("current_user", User.class);
 
-         // setup actionbar methods
-         ((WMTextView) getActivity().getActionBar().getCustomView()).setText(selectedPlay.Title);
-         currentState = getArguments().getInt("currentState");
-         lineNumber=   getArguments().getInt("line_number");
+        // setup actionbar methods
+        ((WMTextView) getActivity().getActionBar().getCustomView()).setText(selectedPlay.Title);
+        currentState = getArguments().getInt("currentState");
+        lineNumber=   getArguments().getInt("line_number");
 
 //         Log.e("lineNumber:",lineNumber+"");
 
@@ -315,7 +293,7 @@ public class ReadFragment extends Fragment {
             dicPlayLines.clear();
         }
 
-       if(_marrSharedWithUsers == null){
+        if(_marrSharedWithUsers == null){
             _marrSharedWithUsers = new ArrayList<SharedUser>();
         }else{
             _marrSharedWithUsers.clear();
@@ -499,8 +477,8 @@ public class ReadFragment extends Fragment {
             @Override
             protected String doInBackground(String... params) {
 
-               updatePlaySpecificData();
-               return null;
+                updatePlaySpecificData();
+                return null;
             }
 
             @Override
@@ -546,7 +524,7 @@ public class ReadFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-       // super.onCreateOptionsMenu(menu, inflater);
+        // super.onCreateOptionsMenu(menu, inflater);
         this.menu = menu;
         getActivity().getMenuInflater().inflate(R.menu.menu_read,menu);
 
@@ -573,8 +551,8 @@ public class ReadFragment extends Fragment {
             case R.id.action_line_number:
 
 
-                    menu.getItem(0).setEnabled(false);
-                    enableDisableLineLayout();
+                menu.getItem(0).setEnabled(false);
+                enableDisableLineLayout();
 
 
 
@@ -582,7 +560,7 @@ public class ReadFragment extends Fragment {
 
             case R.id.action_section:
 
-                    viewSectionsView();
+                viewSectionsView();
 
 
 
@@ -626,8 +604,8 @@ public class ReadFragment extends Fragment {
 
             if(pl.playLineType() == PlayLines.PlayLType.PlayLineTypeAct){
 
-                    msections.add(pl.textLinesList.get(0).LineText);
-                    mDict.put(pl.textLinesList.get(0).LineText,"Akt");
+                msections.add(pl.textLinesList.get(0).LineText);
+                mDict.put(pl.textLinesList.get(0).LineText,"Akt");
 
 
             }else if(pl.playLineType() == PlayLines.PlayLType.PlayLineTypeSong){
@@ -645,7 +623,7 @@ public class ReadFragment extends Fragment {
                 dialog.dismiss();
                 String selectedString = msections.get(position);
 
-               for(int i=0;i<selectedPlay.playLinesList.size();i++){
+                for(int i=0;i<selectedPlay.playLinesList.size();i++){
                     PlayLines pl = selectedPlay.playLinesList.get(i);
                     for(TextLines tl : pl.textLinesList){
 
@@ -678,13 +656,13 @@ public class ReadFragment extends Fragment {
         private ArrayList<String> marSections;
         private HashMap<String,String> map;
 
-      public  GoToSectionAdapter(Context ctx,ArrayList<String> vals,HashMap<String,String> map){
+        public  GoToSectionAdapter(Context ctx,ArrayList<String> vals,HashMap<String,String> map){
 
-          this.marSections = vals;
-          this.map = map;
-          this.ctx = ctx;
+            this.marSections = vals;
+            this.map = map;
+            this.ctx = ctx;
 
-      }
+        }
 
 
 
@@ -719,7 +697,7 @@ public class ReadFragment extends Fragment {
             if(map.get(text).equalsIgnoreCase("Akt")){
                 img.setVisibility(View.GONE);
             }else if(map.get(text).equalsIgnoreCase("Sang")){
-                    img.setVisibility(View.VISIBLE);
+                img.setVisibility(View.VISIBLE);
             }
 
 
@@ -814,7 +792,7 @@ public class ReadFragment extends Fragment {
         @Override
         public int getItemViewType(int section, int position) {
 
-          PlayLines playLine = dicPlayLines.get(marrPlaySections.get(section)).get(position);
+            PlayLines playLine = dicPlayLines.get(marrPlaySections.get(section)).get(position);
 
 //          Log.e("GetItemViewType  :  Type : ","pos : "+position+" "+playLine.playLineType());
 
@@ -823,25 +801,25 @@ public class ReadFragment extends Fragment {
                 TextLines textLines = playLine.textLinesList.get(0);
                 String roleDescription = textLines.LineText;
 
-                    if(currentState == STATE_RECORD){
+                if(currentState == STATE_RECORD){
 
-                        return RecordPlayRoleCell;
+                    return RecordPlayRoleCell;
 
-                    }else if(currentState == STATE_PREVIEW){
+                }else if(currentState == STATE_PREVIEW){
 
-                        if(roleDescription.length() == 0){
-                            return EmptyPreviewPlayRoleCell;
-                        }else{
-                            return  PreviewPlayRoleCell;
-                        }
-
+                    if(roleDescription.length() == 0){
+                        return EmptyPreviewPlayRoleCell;
                     }else{
-                        if(roleDescription.length() == 0){
-                            return EmptyPlayRoleCell;
-                        }else{
-                            return  ReadPlayRoleCell;
-                        }
+                        return  PreviewPlayRoleCell;
                     }
+
+                }else{
+                    if(roleDescription.length() == 0){
+                        return EmptyPlayRoleCell;
+                    }else{
+                        return  ReadPlayRoleCell;
+                    }
+                }
 
 
 
@@ -921,7 +899,7 @@ public class ReadFragment extends Fragment {
 
             ViewHolder.HolderRecordPlayRoleCell holderRecordPlayRoleCell = null;
             ViewHolder.HolderEmptyPreviewPlayRoleCell holderEmptyPreviewPlayRoleCell = null;
-           // ViewHolder.HolderPreviewPlayRoleCell holderPreviewPlayRoleCell = null;
+            // ViewHolder.HolderPreviewPlayRoleCell holderPreviewPlayRoleCell = null;
             ViewHolder.HolderEmptyPlayRoleCell holderEmptyPlayRoleCell = null;
             ViewHolder.HolderReadPlayRoleCell holderReadPlayRoleCell = null;
             ViewHolder.HolderRecordPlayPlayLineCell holderRecordPlayPlayLineCell = null;
@@ -952,7 +930,7 @@ public class ReadFragment extends Fragment {
                         holderRecordPlayRoleCell = (ViewHolder.HolderRecordPlayRoleCell)convertView.getTag();
                     }
 
-                break;
+                    break;
 
                 case EmptyPreviewPlayRoleCell:
                 case PreviewPlayRoleCell:
@@ -977,7 +955,7 @@ public class ReadFragment extends Fragment {
                     }
                     holderEmptyPreviewPlayRoleCell.cellEmptyPreviewPlayRole.setupForPlayLine(playLine,isEmptyPreview);
 
-                break;
+                    break;
 
 
                 case EmptyPlayRoleCell:
@@ -986,10 +964,10 @@ public class ReadFragment extends Fragment {
                     //
                     if(convertView == null){
 
-                          convertView = mInflater.inflate(R.layout.item_read_play_role_cell, parent,false);
-                          holderReadPlayRoleCell = new ViewHolder().new HolderReadPlayRoleCell();
-                          holderReadPlayRoleCell.cellReadPlayRole = new CellReadPlayRole(convertView,getActivity());
-                          convertView.setTag(holderReadPlayRoleCell);
+                        convertView = mInflater.inflate(R.layout.item_read_play_role_cell, parent,false);
+                        holderReadPlayRoleCell = new ViewHolder().new HolderReadPlayRoleCell();
+                        holderReadPlayRoleCell.cellReadPlayRole = new CellReadPlayRole(convertView,getActivity());
+                        convertView.setTag(holderReadPlayRoleCell);
 
                     }else{
                         holderReadPlayRoleCell = (ViewHolder.HolderReadPlayRoleCell)convertView.getTag();
@@ -1021,12 +999,12 @@ public class ReadFragment extends Fragment {
                     holderReadPlayRoleCell.cellReadPlayRole.setAssignClicked(new setOnAssignButtonClicked() {
                         @Override
                         public void onAssignButtonClicked() {
-                         gotoAssignUserList(playLine);
+                            gotoAssignUserList(playLine);
 
                         }
                     });
 
-                break;
+                    break;
 
                 case RecordPlayPlayLineCell:
 
@@ -1065,8 +1043,14 @@ public class ReadFragment extends Fragment {
 
 
                         @Override
-                        public void onPlayClicked(PlayLines playLine, ImageView imgPlay) {
-                            downloadAndPlayRecordTextToSpeech(playLine,imgPlay);
+                        public void onPlayClicked(PlayLines playLine, ImageView imgPlay, boolean isUserAudioAvailable) {
+
+                            if(isUserAudioAvailable==true){
+                                playUserAudio(playLine,imgPlay);
+                            } else {
+                                downloadAndPlayRecordTextToSpeech(playLine,imgPlay);
+                            }
+
 
                         }
                     });
@@ -1130,11 +1114,14 @@ public class ReadFragment extends Fragment {
                         public void startPlaying() {
                             mPlayer = new MediaPlayer();
                             try {
-                                mPlayer.setDataSource(mFileName);
+//
+                                    mPlayer.setDataSource(mFileName);
+//
+
                                 mPlayer.prepare();
                                 mPlayer.start();
                             } catch (IOException e) {
-                               e.printStackTrace();
+                                e.printStackTrace();
                             }
 
                         }
@@ -1162,17 +1149,17 @@ public class ReadFragment extends Fragment {
                         }
                     });
 
-                    holderRecordPlayPlayLineCell.cellRecordPlayPlayLine.setUploadingAudio(new CellRecordPlayPlayLine.UploadAudioFile() {
-                        @Override
-                        public void uploadingAudio(String soundId) {
-                            Log.e("upload audio","uploading");
+//                    holderRecordPlayPlayLineCell.cellRecordPlayPlayLine.setUploadingAudio(new CellRecordPlayPlayLine.UploadAudioFile() {
+//                        @Override
+//                        public void uploadingAudio(String soundId) {
+//                            Log.e("upload audio","uploading");
+//
+//
+//                            uploadFileToServer(soundId);
+//                        }
+//                    });
 
-
-                            uploadFileToServer(soundId);
-                        }
-                    });
-
-                break;
+                    break;
 
                 case PreviewPlayPlayLineCell:
                 case ReadPlayPlayLineCell:
@@ -1204,9 +1191,9 @@ public class ReadFragment extends Fragment {
                         public void onTextLineUpdated(String newText,int pos) {
 //                            Log.e("TextLine ",""+section+":"+position);
 
-                           playLine.textLinesList.get(pos).alteredLineText = newText;
-                           playLine.textLinesList.get(pos).LineText = "";
-                           callServiceForTextLineUpdate(playLine);
+                            playLine.textLinesList.get(pos).alteredLineText = newText;
+                            playLine.textLinesList.get(pos).LineText = "";
+                            callServiceForTextLineUpdate(playLine);
 
 
                         }
@@ -1232,7 +1219,7 @@ public class ReadFragment extends Fragment {
                         public void onChatClicked() {
 
 
-                                                    proceedMessage(playLine);
+                            proceedMessage(playLine);
 
 
                         }
@@ -1240,7 +1227,7 @@ public class ReadFragment extends Fragment {
 
 
 
-                break;
+                    break;
 
 
                 case PreviewReadPlayNoteCell:
@@ -1267,7 +1254,7 @@ public class ReadFragment extends Fragment {
                         }
                     });
 
-                break;
+                    break;
 
                 case ReadPlayInfoCell:
                     //
@@ -1283,7 +1270,7 @@ public class ReadFragment extends Fragment {
                     }
                     holderReadPlayInfoCell.cellReadPlayInfo.setupForPlayLine(indexForFirstScene,section,playLine,currentState);
 
-                break;
+                    break;
 
 
                 case ReadPlayPictureCell:
@@ -1301,7 +1288,7 @@ public class ReadFragment extends Fragment {
 
                     holderReadPlayPictureCell.cellReadPlayPicture.setupForPlayLine(playLine);
 
-                break;
+                    break;
 
                 case ReadPlaySongCell:
                     //
@@ -1323,7 +1310,7 @@ public class ReadFragment extends Fragment {
                         }
                     });
 
-                break;
+                    break;
 
 
                 case ReadPlaySongLineCell:
@@ -1340,7 +1327,7 @@ public class ReadFragment extends Fragment {
                         holderReadPlaySongLineCell = (ViewHolder.HolderReadPlaySongLineCell)convertView.getTag();
                     }
                     holderReadPlaySongLineCell.cellReadPlaySongLine.setUpForPlayLine(playLine);
-                break;
+                    break;
 
                 default:
                     //
@@ -1353,7 +1340,7 @@ public class ReadFragment extends Fragment {
                         holderPreviewReadPlayNoteCell = (ViewHolder.HolderPreviewReadPlayNoteCell)convertView.getTag();
                     }
 
-                break;
+                    break;
 
             }
 
@@ -1414,7 +1401,7 @@ public class ReadFragment extends Fragment {
             } else {
                 layout = (LinearLayout) convertView;
             }
-           ((TextView) layout.findViewById(R.id.readPlaySectionName)).setText(marrPlaySections.get(section));
+            ((TextView) layout.findViewById(R.id.readPlaySectionName)).setText(marrPlaySections.get(section));
             cbShowMyData=((CheckBox) layout.findViewById(R.id.cbShowMyData));
             if(currentState == STATE_RECORD){
                 cbShowMyData.setVisibility(View.GONE);
@@ -1452,115 +1439,222 @@ public class ReadFragment extends Fragment {
 
     }
 
-    private void uploadFileToServer(final String soundIdValue) {
-        try {
-      SharedPreferences preferences = getActivity().getSharedPreferences("session_id", getActivity().MODE_PRIVATE);
-      String sessionId=preferences.getString("session_id","");
-      final String SERVER_URL="https://mvid-services.mv-nordic.com/theater-v1/AudioService/jsonwsp";
-      final String filePath=fileDir.getAbsolutePath();
-      final String soundId=soundIdValue;
+    private void playUserAudio(PlayLines playLines, ImageView imgPlay) {
+        boolean shouldDownloadLastestVersion = true;
+        String soundId;
+        if(currentState==STATE_CHAT){
+            soundId=playLines.LineID+"-teacher.aac";
+        }else {
+            soundId=playLines.LineID+".aac";
+        }
 
-        final JSONObject args=new JSONObject();
-        final JSONObject uploadRequest=new JSONObject();
+        if(!(currentState==STATE_CHAT)){
+//        if(currentFiledate.equal serverFileData){
+//        shouldDownloadLastestVersion=false;
+//            playDownloadedAudio(playLines,imgPlay,soundId);
+//        }
+        }
 
+        if(shouldDownloadLastestVersion==true){
+            downloadAndPlayreordedAudio(soundId, playLines, imgPlay);
+        }
+    }
 
-            args.put("session_id",sessionId+"");
-            args.put("audio_id",soundId+"");
+    private void downloadAndPlayreordedAudio(final String soundId, final PlayLines playLines, final ImageView imgPlay){
+        SharedPreferences preferences = getActivity().getSharedPreferences("session_id", getActivity().MODE_PRIVATE);
+        String sessionId = preferences.getString("session_id","");
 
-            uploadRequest.put("type","jsonwsp/request");
-            uploadRequest.put("version","1.0");
-            uploadRequest.put("methodname","uploadAudio");
-            uploadRequest.put("args",args);
+            final  JSONObject mainOBJ = new JSONObject();
+            final  JSONObject args=new JSONObject();
+            try {
+                args.put("session_id",sessionId);
+                args.put("audio_id",soundId);
+                args.put("codec","aac");
+                args.put("sample_rate",0);
 
-            //TODO
+                mainOBJ.put("type","jsonwsp/request");
+                mainOBJ.put("version","1.0");
+                mainOBJ.put("methodname","downloadAudio");
+                mainOBJ.put("args",args);
 
+                new AsyncTask<Void,Void,Void>() {
 
-          new AsyncTask<Void,Void,Void>(){
-              @Override
-              protected void onPreExecute() {
-                  super.onPreExecute();
+                    String responseString = "";
 
-              }
+                    @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+                        dialog = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
+                        dialog.title("Henter lyd");
+                        dialog.show();
+                    }
 
-              @Override
-              protected Void doInBackground(Void... params) {
+                    @Override
+                    protected Void doInBackground(Void... voids) {
 
-                  try {
-                      HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
-                      DefaultHttpClient client = new DefaultHttpClient();
-                      SchemeRegistry registry = new SchemeRegistry();
-                      SSLSocketFactory socketFactory = SSLSocketFactory.getSocketFactory();
-                      socketFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
-                      registry.register(new Scheme("https", socketFactory, 443));
-                      SingleClientConnManager mgr = new SingleClientConnManager(client.getParams(), registry);
-                      DefaultHttpClient httpclient = new DefaultHttpClient(mgr, client.getParams());
+                        try {
+
+                            String service_url = "https://mvid-services.mv-nordic.com/theater-v1/AudioService/jsonwsp";
+                            //
+                            HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+                            DefaultHttpClient client = new DefaultHttpClient();
+                            SchemeRegistry registry = new SchemeRegistry();
+                            SSLSocketFactory socketFactory = SSLSocketFactory.getSocketFactory();
+                            socketFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
+                            registry.register(new Scheme("https", socketFactory, 443));
+                            SingleClientConnManager mgr = new SingleClientConnManager(client.getParams(), registry);
+                            DefaultHttpClient httpclient = new DefaultHttpClient(mgr, client.getParams());
 
 // Set verifier
-                      HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
+                            HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
+
+//                 HttpClient httpclient = new DefaultHttpClient();
+                            //  httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+                            HttpPost httppost = new HttpPost(service_url);
+                            String boundary = "--" + "62cd4a08872da000cf5892ad65f1ebe6";
+                            httppost.setHeader("Content-type", "multipart/related; boundary=" + boundary);
+
+                            HttpEntity entity = MultipartEntityBuilder.create()
+                                    .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
+                                    .setBoundary(boundary)
+                                    .addPart("body", new StringBody(mainOBJ.toString()))
+                                    .build();
 
 
-//                      HttpClient httpclient = new DefaultHttpClient();
 
-                      HttpPost httppost = new HttpPost(SERVER_URL);
-                      String boundary = "--" + "62cd4a08872da000cf5892ad65f1ebe6";
-                      httppost.setHeader("Content-type", "multipart/related; boundary=" + boundary);
+                            httppost.setEntity(entity);
+                            try {
+                                HttpResponse response = httpclient.execute(httppost);
+                                BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+                                responseString = reader.readLine();
 
 
-                      // Convert File to Byte Array
-                      File file1 = new File(filePath+"/"+soundId);
-                      ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-                      InputStream is = new FileInputStream(file1);
-                      byte[] temp = new byte[(int) file1.length()];
-                      int read;
-                      while((read = is.read(temp)) >= 0){
-                          buffer.write(temp, 0, read);
-                      }
-                      byte[] bFile = buffer.toByteArray();
+                            } catch (Exception e) {
 
-                      String fullPath =filePath+"/"+soundId;
-                      ByteArrayBody bab = new ByteArrayBody(bFile,new File(fullPath).getName()+".aac");
-                      HttpEntity entity = MultipartEntityBuilder.create()
-                              .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
-                              .setBoundary(boundary)
-                              .addPart("body", new StringBody(uploadRequest.toString()))
-                              .addPart("audiocontent", bab)
-                              .build();
+                                e.printStackTrace();
+                            }
 
-                      httppost.setEntity(entity);
-                      try {
-                          HttpResponse response = httpclient.execute(httppost);
-                          BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+                        }catch (Exception e){}
 
-                          String responseString = reader.readLine();
-                          Log.e("responseString..............................", responseString + "");
+                        return null;
+                    }
 
-                      } catch (Exception e) {
+                    @Override
+                    protected void onPostExecute(Void aVoid) {
+                        super.onPostExecute(aVoid);
 
-                          e.printStackTrace();
-                      }
-                  } catch (Exception e) {
-                      e.printStackTrace();
-                  }
-                  return null;
-              }
 
-              @Override
-              protected void onPostExecute(Void aVoid) {
-                  super.onPostExecute(aVoid);
-//                  staticdialog.dismiss();
-              }
-          }.execute();
+                        String url = "";
+                        Log.e("response string............ ", "" + responseString.toString());
+                        try{
+                            JSONObject jsonObject = new JSONObject(responseString.toString());
+                            JSONObject inerObj = jsonObject.getJSONObject("result");
+                            url = inerObj.getString("url");
 
-        } catch (JSONException e) {
-            e.printStackTrace();
+                            Log.e("URL ", "" + url.toString());
+
+                        }catch(Exception e){}
+
+
+                        downloadRecordedFile(url,playLines,imgPlay,soundId);
+                    }
+                }.execute();
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
         }
+
+    private void downloadRecordedFile(String url, final PlayLines playLines,final ImageView imgPlay, final String soundId){
+
+        final  String theURL ="https://mvid-services.mv-nordic.com/theater-v1/"+url;
+        Log.e("final url to be download ",""+theURL);
+
+        new AsyncTask<Void,Void,Void>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+                recordedAudiofileDir = new File(Environment.getExternalStorageDirectory()+ "/danteater/recording");
+                if(!recordedAudiofileDir.exists()) {
+                    recordedAudiofileDir.mkdirs();
+//                        Log.e("directory:","created");
+                } else {
+//                        Log.e("directory:","already exist");
+                }
+
+            }
+
+            @Override
+
+            protected Void doInBackground(Void... voids) {
+
+                int count;
+                try{
+
+                    URL url = new URL(theURL);
+
+
+                    java.io.BufferedInputStream in = new java.io.BufferedInputStream(new java.net.URL(theURL).openStream());
+                    java.io.FileOutputStream fos = new java.io.FileOutputStream(new File(recordedAudiofileDir.getAbsolutePath()+"/"+soundId));
+                    java.io.BufferedOutputStream bout = new BufferedOutputStream(fos,1024);
+                    byte[] data = new byte[1024];
+                    int x=0;
+                    while((x=in.read(data,0,1024))>=0){
+                        bout.write(data,0,x);
+                    }
+                    fos.flush();
+                    bout.flush();
+                    fos.close();
+                    bout.close();
+                    in.close();
+                }
+                catch (Exception ex)
+                {
+                    ex.printStackTrace();
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                dialog.dismiss();
+
+                mFileName = fileDir.getAbsolutePath();
+                mFileName += "/"+soundId;
+//                playDownloadedAudio(playLines,imgPlay,soundId);
+
+            }
+        }.execute();
+
 
     }
 
+
+    private void playDownloadedAudio(PlayLines playLines, final ImageView imgPlay,final String soundId){
+        downloadedSoundPlayer= new MediaPlayer();
+        try {
+            downloadedSoundPlayer.setDataSource(Environment.getExternalStorageDirectory()+ "/danteater/recording/"+soundId);
+            downloadedSoundPlayer.prepare();
+            downloadedSoundPlayer.start();
+            downloadedSoundPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+
+                public void onCompletion(MediaPlayer mp) {
+                    mp.stop();
+                    imgPlay.setBackgroundResource(R.drawable.ic_recorded_voice);
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     private void downloadAndPlayRecordTextToSpeech(final PlayLines playLine,final ImageView imgPlay){
 
         ArrayList<TextLines> arrTxt = playLine.textLinesList;
-            Log.e("arrTxt",arrTxt.size()+"");
+        Log.e("arrTxt",arrTxt.size()+"");
         StringBuffer text=new StringBuffer();
         if(arrTxt != null && arrTxt.size()>0){
             for(TextLines line : arrTxt){
@@ -1599,7 +1693,7 @@ public class ReadFragment extends Fragment {
 //            latin = latin.replaceAll("\\?"," ");
 //            latin = latin.replaceAll("QMQM","?");
 
-          final  JSONObject mainOBJ = new JSONObject();
+            final  JSONObject mainOBJ = new JSONObject();
 
             try {
 
@@ -1617,62 +1711,62 @@ public class ReadFragment extends Fragment {
                 args.put("sample_rate",0);
                 mainOBJ.put("args",args); // add to main json
 
-            new AsyncTask<Void,Void,Void>() {
+                new AsyncTask<Void,Void,Void>() {
 
-                String responseString = "";
+                    String responseString = "";
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                dialog = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
-                dialog.title("Henter...");
-                dialog.show();
-            }
+                    @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+                        dialog = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
+                        dialog.title("Henter...");
+                        dialog.show();
+                    }
 
-            @Override
-            protected Void doInBackground(Void... voids) {
+                    @Override
+                    protected Void doInBackground(Void... voids) {
 
-                try {
+                        try {
 
-                   String service_url = "https://mvid-services.mv-nordic.com/theater-v1/AudioService/jsonwsp";
-                    //
-                    HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
-                    DefaultHttpClient client = new DefaultHttpClient();
-                    SchemeRegistry registry = new SchemeRegistry();
-                    SSLSocketFactory socketFactory = SSLSocketFactory.getSocketFactory();
-                    socketFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
-                    registry.register(new Scheme("https", socketFactory, 443));
-                    SingleClientConnManager mgr = new SingleClientConnManager(client.getParams(), registry);
-                    DefaultHttpClient httpclient = new DefaultHttpClient(mgr, client.getParams());
+                            String service_url = "https://mvid-services.mv-nordic.com/theater-v1/AudioService/jsonwsp";
+                            //
+                            HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+                            DefaultHttpClient client = new DefaultHttpClient();
+                            SchemeRegistry registry = new SchemeRegistry();
+                            SSLSocketFactory socketFactory = SSLSocketFactory.getSocketFactory();
+                            socketFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
+                            registry.register(new Scheme("https", socketFactory, 443));
+                            SingleClientConnManager mgr = new SingleClientConnManager(client.getParams(), registry);
+                            DefaultHttpClient httpclient = new DefaultHttpClient(mgr, client.getParams());
 
 // Set verifier
-                    HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
+                            HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
 
 //                 HttpClient httpclient = new DefaultHttpClient();
-                  //  httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
-                    HttpPost httppost = new HttpPost(service_url);
-                    String boundary = "--" + "62cd4a08872da000cf5892ad65f1ebe6";
-                    httppost.setHeader("Content-type", "multipart/related; boundary=" + boundary);
+                            //  httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+                            HttpPost httppost = new HttpPost(service_url);
+                            String boundary = "--" + "62cd4a08872da000cf5892ad65f1ebe6";
+                            httppost.setHeader("Content-type", "multipart/related; boundary=" + boundary);
 
-                    HttpEntity entity = MultipartEntityBuilder.create()
-                            .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
-                            .setBoundary(boundary)
-                            .addPart("body", new StringBody(mainOBJ.toString()))
-                            .build();
-
-
-
-                    httppost.setEntity(entity);
-                    try {
-                        HttpResponse response = httpclient.execute(httppost);
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
-                        responseString = reader.readLine();
+                            HttpEntity entity = MultipartEntityBuilder.create()
+                                    .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
+                                    .setBoundary(boundary)
+                                    .addPart("body", new StringBody(mainOBJ.toString()))
+                                    .build();
 
 
-                    } catch (Exception e) {
 
-                        e.printStackTrace();
-                    }
+                            httppost.setEntity(entity);
+                            try {
+                                HttpResponse response = httpclient.execute(httppost);
+                                BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+                                responseString = reader.readLine();
+
+
+                            } catch (Exception e) {
+
+                                e.printStackTrace();
+                            }
 
 
 //                    try {
@@ -1701,31 +1795,31 @@ public class ReadFragment extends Fragment {
 
 
 
-                }catch (Exception e){}
+                        }catch (Exception e){}
 
-                return null;
-            }
+                        return null;
+                    }
 
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
+                    @Override
+                    protected void onPostExecute(Void aVoid) {
+                        super.onPostExecute(aVoid);
 
 
-                String url = "";
-                Log.e("Response for retreiving song TTF ", "" + responseString.toString());
-                try{
-                    JSONObject jsonObject = new JSONObject(responseString.toString());
-                    JSONObject inerObj = jsonObject.getJSONObject("result");
-                    url = inerObj.getString("url");
+                        String url = "";
+                        Log.e("Response for retreiving song TTF ", "" + responseString.toString());
+                        try{
+                            JSONObject jsonObject = new JSONObject(responseString.toString());
+                            JSONObject inerObj = jsonObject.getJSONObject("result");
+                            url = inerObj.getString("url");
 
-                    Log.e("Inner URL ", "" + url.toString());
+                            Log.e("Inner URL ", "" + url.toString());
 
-                }catch(Exception e){}
+                        }catch(Exception e){}
 
-                downloadSpeechFile(url,playLine,imgPlay);
+                        downloadSpeechFile(url,playLine,imgPlay);
 
-            }
-        }.execute();
+                    }
+                }.execute();
 
             }catch (Exception e){
                 e.printStackTrace();
@@ -1736,7 +1830,7 @@ public class ReadFragment extends Fragment {
 
     private void downloadSpeechFile(String url,final PlayLines playLines,final ImageView imgPlay) {
 
-      final  String theURL ="https://mvid-services.mv-nordic.com/theater-v1/"+url;
+        final  String theURL ="https://mvid-services.mv-nordic.com/theater-v1/"+url;
         Log.e("final url to be download ",""+theURL);
 
 
@@ -1767,24 +1861,24 @@ public class ReadFragment extends Fragment {
                     URL url = new URL(theURL);
 
 
-                        java.io.BufferedInputStream in = new java.io.BufferedInputStream(new java.net.URL(theURL).openStream());
-                        java.io.FileOutputStream fos = new java.io.FileOutputStream(new File(txtToSpeechfileDir.getAbsolutePath()+"/"+playLines.LineID+".mp3"));
-                        java.io.BufferedOutputStream bout = new BufferedOutputStream(fos,1024);
-                        byte[] data = new byte[1024];
-                        int x=0;
-                        while((x=in.read(data,0,1024))>=0){
-                            bout.write(data,0,x);
-                        }
-                        fos.flush();
-                        bout.flush();
-                        fos.close();
-                        bout.close();
-                        in.close();
+                    java.io.BufferedInputStream in = new java.io.BufferedInputStream(new java.net.URL(theURL).openStream());
+                    java.io.FileOutputStream fos = new java.io.FileOutputStream(new File(txtToSpeechfileDir.getAbsolutePath()+"/"+playLines.LineID+".mp3"));
+                    java.io.BufferedOutputStream bout = new BufferedOutputStream(fos,1024);
+                    byte[] data = new byte[1024];
+                    int x=0;
+                    while((x=in.read(data,0,1024))>=0){
+                        bout.write(data,0,x);
                     }
-                    catch (Exception ex)
-                    {
-                        ex.printStackTrace();
-                    }
+                    fos.flush();
+                    bout.flush();
+                    fos.close();
+                    bout.close();
+                    in.close();
+                }
+                catch (Exception ex)
+                {
+                    ex.printStackTrace();
+                }
 
 
 /*                    URLConnection conexion = url.openConnection();
@@ -1851,7 +1945,7 @@ public class ReadFragment extends Fragment {
             complexPreferences.putObject("current_playline", playLine);
             complexPreferences.commit();
             Toast.makeText(getActivity(), "Pupil", Toast.LENGTH_SHORT).show();
-           Intent i=new Intent(getActivity(), SelectTeacherForChat.class);
+            Intent i=new Intent(getActivity(), SelectTeacherForChat.class);
             startActivity(i);
 
         }else{
@@ -1908,26 +2002,26 @@ public class ReadFragment extends Fragment {
             }
 
         }
-            if(pupilsFound){
+        if(pupilsFound){
 
-                showUsersAndAssignRole(playLine);
+            showUsersAndAssignRole(playLine);
 
-            }else{
+        }else{
 
-                AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-                alert.setTitle("");
-                alert.setMessage("Du kan ikke dele stykket med elever, hvis stykket ikke er bestilt til opførelse. Bestil stykket til opførelse først.");
-                alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+            AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+            alert.setTitle("");
+            alert.setMessage("Du kan ikke dele stykket med elever, hvis stykket ikke er bestilt til opførelse. Bestil stykket til opførelse først.");
+            alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
 
-                    }
-                });
+                }
+            });
 
 
-                alert.show();
+            alert.show();
 
-            }
+        }
 
 
 
@@ -1982,12 +2076,12 @@ public class ReadFragment extends Fragment {
 
         for(int i=0;i<arrSharedUsers.size();i++){
 
-           for(SharedUser su : alreadyAssignedUsers){
+            for(SharedUser su : alreadyAssignedUsers){
 
-               if(su.userName.equalsIgnoreCase(arrSharedUsers.get(i))){
-                   lstAssignRole.setItemChecked(i,true);
-               }
-           }
+                if(su.userName.equalsIgnoreCase(arrSharedUsers.get(i))){
+                    lstAssignRole.setItemChecked(i,true);
+                }
+            }
         }
 
         lstAssignRole.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -2050,43 +2144,43 @@ public class ReadFragment extends Fragment {
     private void callServiceForAssignedUserAdded(PlayLines playLine,ArrayList<AssignedUsers> aus) {
 
 
-            final JSONObject methodParams = new JSONObject();
+        final JSONObject methodParams = new JSONObject();
 
-            JSONArray arr = new JSONArray();
+        JSONArray arr = new JSONArray();
 
-            for(AssignedUsers u : aus){
+        for(AssignedUsers u : aus){
 
-                JSONObject requestParams = new JSONObject();
-                try {
-                    requestParams.put("AssignedUserName",u.AssignedUserName);
-                    requestParams.put("AssignedUserId",u.AssignedUserId);
-
-                    arr.put(requestParams);
-                } catch (JSONException je) {
-                    je.printStackTrace();
-                }
-
-            }
+            JSONObject requestParams = new JSONObject();
             try {
-                methodParams.put("LineCount", Integer.parseInt(playLine.LineCount));
-                methodParams.put("LineID",playLine.LineID);
-                methodParams.put("AssignedUsers",arr);
+                requestParams.put("AssignedUserName",u.AssignedUserName);
+                requestParams.put("AssignedUserId",u.AssignedUserId);
 
-            }catch (Exception e){
-
-                e.printStackTrace();
-
+                arr.put(requestParams);
+            } catch (JSONException je) {
+                je.printStackTrace();
             }
 
-          assignRoleUsingMethodParams(methodParams.toString(), aus, playLine);
+        }
+        try {
+            methodParams.put("LineCount", Integer.parseInt(playLine.LineCount));
+            methodParams.put("LineID",playLine.LineID);
+            methodParams.put("AssignedUsers",arr);
+
+        }catch (Exception e){
+
+            e.printStackTrace();
+
+        }
+
+        assignRoleUsingMethodParams(methodParams.toString(), aus, playLine);
 
     }
 
     private void assignRoleUsingMethodParams(final String s, final ArrayList<AssignedUsers> aus, final PlayLines playLine) {
 
-    //   Log.e("RRRRRROOOOLLLEEE ",playLine.castMatchesString);
+        //   Log.e("RRRRRROOOOLLLEEE ",playLine.castMatchesString);
 
-       final HUD hud = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
+        final HUD hud = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
         hud.title("Rollen er tildelt");
         hud.show();
 
@@ -2152,7 +2246,7 @@ public class ReadFragment extends Fragment {
 
                 }
 
-              final ArrayList<String> myRoles = new ArrayList<String>();
+                final ArrayList<String> myRoles = new ArrayList<String>();
                 String currentUserId = currentUser.getUserId();
 
                 for(PlayLines pl : selectedPlay.playLinesList){

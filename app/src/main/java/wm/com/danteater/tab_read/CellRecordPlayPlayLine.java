@@ -24,12 +24,34 @@ import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.conn.ssl.X509HostnameVerifier;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.SingleClientConnManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
 
 import wm.com.danteater.Messages.MessagesForConversation;
 import wm.com.danteater.Play.Comments;
@@ -61,7 +83,7 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
     private Context ctx;
     private boolean showLineNumber;
     private boolean showComments;
-
+    public static HUD dialog;
     public int STATE_RECORD = 0;
     public int STATE_PREVIEW = 1;
     public int STATE_READ = 2;
@@ -79,7 +101,7 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
     RecordingAudio recordingAudio;
     PlayRecordingAudio playRecordingAudio;
     boolean mStartPlaying = true;
-    UploadAudioFile uploadAudio;
+//    UploadAudioFile uploadAudio;
 
     // music views
     SeekBar songProgressBar;
@@ -110,9 +132,12 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
 
     ArrayList<SharedUser> marrTeachers;
     String soundId;
+    boolean isUserAudioAvailable;
 
     public CellRecordPlayPlayLine(View view, Context context) {
 
+        //TODO change to false
+        isUserAudioAvailable = true;
         this.ctx = context;
         ComplexPreferences complexPreferencesForUser = ComplexPreferences.getComplexPreferences(context, "user_pref", 0);
         cUser = complexPreferencesForUser.getObject("current_user", User.class);
@@ -127,7 +152,11 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
         tvPlayLines = (WMTextView) view.findViewById(R.id.recordPlayLineCellDescription);
         btnOpTag = (WMTextView) view.findViewById(R.id.btnOpTag);
         imgPLay = (ImageView) view.findViewById(R.id.recordPlayLineCellPlayButton);
-
+        if(isUserAudioAvailable) {
+            imgPLay.setBackgroundResource(R.drawable.ic_recorded_voice);
+        } else {
+            imgPLay.setBackgroundResource(R.drawable.ic_play);
+        }
         listReadPlayPlaylinecell = (LinearLayout)view.findViewById(R.id.listReadPlayPlaylinecell);
         lblRoleName.setBold();
 
@@ -174,6 +203,7 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
                 btnOpTag.setVisibility(View.GONE);
                 imgPLay.setVisibility(View.GONE);
             } else {
+
                 btnOpTag.setVisibility(View.VISIBLE);
                 imgPLay.setVisibility(View.VISIBLE);
             }
@@ -244,7 +274,11 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
             public void onClick(View v) {
                 imgPLay.setBackgroundResource(R.drawable.ic_pause);
 
-                delegate.onPlayClicked(playLine,imgPLay);
+
+
+                    delegate.onPlayClicked(playLine,imgPLay,isUserAudioAvailable);
+
+
             }
         });
 
@@ -280,16 +314,12 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
 
     public interface RecordDelegates{
 
-        public void onPlayClicked(PlayLines playLine,ImageView imgPlay);
+        public void onPlayClicked(PlayLines playLine, ImageView imgPlay, boolean isUserAudioAvailable);
 
     }
 
 
 
-    private void modifyPlayIcon() {
-
-
-    }
     private void showRecordDialog(){
 
         final Dialog dialog = new Dialog(ctx,android.R.style.Theme_Translucent_NoTitleBar);
@@ -328,11 +358,22 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
         btnRecord=(ImageView)view.findViewById(R.id.record);
         seekbarView=(LinearLayout)view.findViewById(R.id.seekbarView);
 
-        recordPopupTextArea.setText(textLine.currentText());
-        seekbarView.setVisibility(View.GONE);
-        recordPopupSave.setEnabled(false);
-        btnPlay.setEnabled(false);
-        recordSegmentGroup.setVisibility(View.GONE);
+        if(isUserAudioAvailable) {
+            recordPopupTextArea.setText(textLine.currentText());
+            seekbarView.setVisibility(View.VISIBLE);
+            recordPopupSave.setEnabled(true);
+            btnPlay.setEnabled(true);
+            recordSegmentGroup.setVisibility(View.GONE);
+            delegate.onPlayClicked(playLine,imgPLay,isUserAudioAvailable);
+
+        }else {
+            recordPopupTextArea.setText(textLine.currentText());
+            seekbarView.setVisibility(View.GONE);
+            recordPopupSave.setEnabled(false);
+            btnPlay.setEnabled(false);
+            recordSegmentGroup.setVisibility(View.GONE);
+        }
+
 
         recordPopupCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -455,12 +496,13 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
     }
 
     private void didFinishSavingUserAudio() {
+        dialog = new HUD(ctx,android.R.style.Theme_Translucent_NoTitleBar);
+        dialog .title("");
+        dialog .show();
         if(recordSegmentGroup.isShown() && recordSegmentGroup.getCheckedRadioButtonId() == R.id.recordShareWithteacher) {
             String strMessageTextWithLinkTitleRoleLinenumber="sound-"+playLine.LineID+"\n"+selectedPlay.Title.replace(" ","_")+"-"+playLine.RoleName+"-"+playLine.LineID.substring(playLine.LineID.lastIndexOf("-")+1)+"\n"+"Lydoptagelse";
 
-//            ReadFragment.staticdialog = new HUD(ctx,android.R.style.Theme_Translucent_NoTitleBar);
-//            ReadFragment.staticdialog .title("");
-//            ReadFragment.staticdialog .show();
+
             // send a message
             for(SharedUser assignedUser : marrTeachers) {
                 createNewMessageAndSendToUser(assignedUser.userId,strMessageTextWithLinkTitleRoleLinenumber,playLine.LineID,true);
@@ -546,8 +588,8 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
 
-                uploadAudio.uploadingAudio(soundId);
-
+//                uploadAudio.uploadingAudio(soundId);
+                uploadFileToServer(soundId);
             }
         }.execute();
 
@@ -799,16 +841,136 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
         this.playRecordingAudio=playRecordingAudio;
     }
 
-    public interface UploadAudioFile {
-        public void uploadingAudio(String soundId);
+//    public interface UploadAudioFile {
+//        public void uploadingAudio(String soundId);
+//    }
+//
+//    public void setUploadingAudio(UploadAudioFile uploadAudio) {
+//        this.uploadAudio=uploadAudio;
+//    }
+
+
+    private void uploadFileToServer(final String soundIdValue) {
+        try {
+           File fileDir = new File(Environment.getExternalStorageDirectory()+ "/danteater/recording");
+            if(!fileDir.exists()) {
+                fileDir.mkdirs();
+//                        Log.e("directory:","created");
+            } else {
+//                        Log.e("directory:","already exist");
+            }
+
+            SharedPreferences preferences = ctx.getSharedPreferences("session_id", ctx.MODE_PRIVATE);
+            String sessionId=preferences.getString("session_id","");
+            final String SERVER_URL="https://mvid-services.mv-nordic.com/theater-v1/AudioService/jsonwsp";
+            final String filePath=fileDir.getAbsolutePath();
+            final String soundId=soundIdValue;
+
+            final JSONObject args=new JSONObject();
+            final JSONObject uploadRequest=new JSONObject();
+
+
+            args.put("session_id",sessionId+"");
+            args.put("audio_id",soundId+"");
+
+            uploadRequest.put("type","jsonwsp/request");
+            uploadRequest.put("version","1.0");
+            uploadRequest.put("methodname","uploadAudio");
+            uploadRequest.put("args",args);
+
+            //TODO
+
+
+            new AsyncTask<Void,Void,Void>(){
+                @Override
+                protected void onPreExecute() {
+                    super.onPreExecute();
+
+                }
+
+                @Override
+                protected Void doInBackground(Void... params) {
+
+                    try {
+                        HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+                        DefaultHttpClient client = new DefaultHttpClient();
+                        SchemeRegistry registry = new SchemeRegistry();
+                        SSLSocketFactory socketFactory = SSLSocketFactory.getSocketFactory();
+                        socketFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
+                        registry.register(new Scheme("https", socketFactory, 443));
+                        SingleClientConnManager mgr = new SingleClientConnManager(client.getParams(), registry);
+                        DefaultHttpClient httpclient = new DefaultHttpClient(mgr, client.getParams());
+
+// Set verifier
+                        HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
+
+
+//                      HttpClient httpclient = new DefaultHttpClient();
+
+                        HttpPost httppost = new HttpPost(SERVER_URL);
+                        String boundary = "--" + "62cd4a08872da000cf5892ad65f1ebe6";
+                        httppost.setHeader("Content-type", "multipart/related; boundary=" + boundary);
+
+                        File fileOutput ;
+                        // Convert File to Byte Array
+                        File file1=new File(filePath+"/"+playLine.LineID+".aac");
+                        File file2=new File(filePath+"/"+playLine.LineID+"-teacher.aac");
+                        if(recordSegmentGroup.isShown() && recordSegmentGroup.getCheckedRadioButtonId() == R.id.recordShareWithteacher){
+                            file1.renameTo(file2);
+                            fileOutput=file2;
+                        } else {
+                            fileOutput=file1;
+                        }
+                        Log.e("fileOutput",fileOutput+"");
+
+                        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                        InputStream is = new FileInputStream(fileOutput);
+                        byte[] temp = new byte[(int) fileOutput.length()];
+                        int read;
+                        while((read = is.read(temp)) >= 0){
+                            buffer.write(temp, 0, read);
+                        }
+                        byte[] bFile = buffer.toByteArray();
+
+                        String fullPath =filePath+"/"+soundId;
+                        ByteArrayBody bab = new ByteArrayBody(bFile,new File(fullPath)+"");
+                        HttpEntity entity = MultipartEntityBuilder.create()
+                                .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
+                                .setBoundary(boundary)
+                                .addPart("body", new StringBody(uploadRequest.toString()))
+                                .addPart("audiocontent", bab)
+                                .build();
+
+                        httppost.setEntity(entity);
+                        try {
+                            HttpResponse response = httpclient.execute(httppost);
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+
+                            String responseString = reader.readLine();
+                            Log.e("responseString..............................", responseString + "");
+
+                        } catch (Exception e) {
+
+                            e.printStackTrace();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Void aVoid) {
+                    super.onPostExecute(aVoid);
+                  dialog.dismiss();
+                }
+            }.execute();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
-
-    public void setUploadingAudio(UploadAudioFile uploadAudio) {
-        this.uploadAudio=uploadAudio;
-    }
-
-
-
 
 
 }
