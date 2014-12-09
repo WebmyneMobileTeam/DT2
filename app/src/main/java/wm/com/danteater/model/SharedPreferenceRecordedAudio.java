@@ -38,9 +38,9 @@ public class SharedPreferenceRecordedAudio {
         SharedPreferences sharedPref;
         Editor editor;
 
-        if (recordedAudios == null) {
-            recordedAudios = new ArrayList<RecordedAudio>();
-        }
+//        if (recordedAudios == null) {
+//            recordedAudios = new ArrayList<RecordedAudio>();
+//        }
         recordedAudios.add(product);
         sharedPref = context.getSharedPreferences(PREF_NAME,Context.MODE_PRIVATE);
         editor = sharedPref.edit();

@@ -21,15 +21,33 @@
         android:paddingBottom="4dp"
         android:gravity="left|center_vertical"/>
 
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:paddingRight="4dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:layout_height="match_parent">
+        <wm.com.danteater.customviews.WMTextView
+            android:visibility="gone"
+            android:id="@+id/playPauseAll"
+            android:layout_width="wrap_content"
+            android:drawableLeft="@drawable/ic_play"
+            android:layout_height="match_parent"
+            android:textSize="@dimen/small_text"
+            android:gravity="center|right"
+            android:textColor="@android:color/white"
+            android:text="Afspil alle"
+
+          />
     <CheckBox
+        android:visibility="gone"
         android:gravity="center_vertical|right"
         android:textSize="@dimen/small_text"
         android:textColor="@android:color/white"
         android:id="@+id/cbShowMyData"
         android:layout_width="wrap_content"
-        android:paddingRight="4dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
+
         android:layout_height="wrap_content"
         android:text="Vis kum mine replikker"/>
+    </FrameLayout>
 </LinearLayout>

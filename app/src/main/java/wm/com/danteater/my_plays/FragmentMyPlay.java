@@ -125,7 +125,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     private Play playSelectedToBeDeletedForPerform;
     private StateManager state = StateManager.getInstance();
     String responseValue;
-    SharedPreferenceRecordedAudio sharedPreferenceRecordedAudio;
+    public static SharedPreferenceRecordedAudio sharedPreferenceRecordedAudio;
     public static FragmentMyPlay newInstance(String param1, String param2) {
         FragmentMyPlay fragment = new FragmentMyPlay();
 

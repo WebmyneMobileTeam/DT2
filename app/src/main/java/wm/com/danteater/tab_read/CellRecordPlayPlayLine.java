@@ -63,6 +63,7 @@ import wm.com.danteater.model.AppConstants;
 import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.model.RecordedAudio;
 import wm.com.danteater.model.SharedPreferenceRecordedAudio;
+import wm.com.danteater.my_plays.FragmentMyPlay;
 import wm.com.danteater.my_plays.SharedUser;
 //import wm.com.danteater.tab_music.MusicFragment;
 
@@ -113,6 +114,7 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
     boolean isStopPlayclicked=false;
 
     //dialog views
+   Dialog recordDialog;
     LinearLayout recordAndPlayView;
     EditText recordPopupTextArea;
     WMTextView recordPopupSave;
@@ -131,12 +133,13 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
     String soundId;
     boolean isUserAudioAvailable;
     boolean isRecordButton=false;
-    SharedPreferenceRecordedAudio sharedPreferenceRecordedAudio;
+//    SharedPreferenceRecordedAudio sharedPreferenceRecordedAudio;
     ReloadListView reloadListView;
     public CellRecordPlayPlayLine(View view, Context context) {
 
         //TODO change to false
-        sharedPreferenceRecordedAudio=new SharedPreferenceRecordedAudio();
+//        FragmentMyPlay.sharedPreferenceRecordedAudio=new SharedPreferenceRecordedAudio();
+
         this.ctx = context;
         ComplexPreferences complexPreferencesForUser = ComplexPreferences.getComplexPreferences(context, "user_pref", 0);
         cUser = complexPreferencesForUser.getObject("current_user", User.class);
@@ -326,19 +329,19 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
 
     private void showRecordDialog(){
 
-        final Dialog dialog = new Dialog(ctx,android.R.style.Theme_Translucent_NoTitleBar);
-        WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
+        recordDialog= new Dialog(ctx,android.R.style.Theme_Translucent_NoTitleBar);
+        WindowManager.LayoutParams lp = recordDialog.getWindow().getAttributes();
         lp.dimAmount=0.6f;
-        dialog.getWindow().setAttributes(lp);
-        dialog.setCancelable(true);
-        dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        recordDialog.getWindow().setAttributes(lp);
+        recordDialog.setCancelable(true);
+        recordDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        recordDialog.setCanceledOnTouchOutside(true);
+        recordDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         LayoutInflater mInflater = (LayoutInflater) ctx.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         View view = mInflater.inflate(R.layout.record_view_popup_menu,null);
-        dialog.setContentView(view);
-        dialog.show();
-        dialogView(view,dialog);
+        recordDialog.setContentView(view);
+        recordDialog.show();
+        dialogView(view,recordDialog);
 
     }
 
@@ -599,8 +602,12 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
 
-                sharedPreferenceRecordedAudio.saveAudio(ctx, recordedAudio);
+                FragmentMyPlay.sharedPreferenceRecordedAudio.saveAudio(ctx, recordedAudio);
+//                imgPLay.setBackgroundResource(R.drawable.ic_recorded_voice);
+//                isUserAudioAvailable=true;
                 reloadListView.reload();
+                ArrayList<RecordedAudio> recordList=FragmentMyPlay.sharedPreferenceRecordedAudio.loadAudio(ctx);
+                Log.e("size of recordList",recordList.size()+"");
 //                uploadAudio.uploadingAudio(soundId);
                 uploadFileToServer(soundId);
             }
@@ -988,6 +995,7 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
                 protected void onPostExecute(Void aVoid) {
                     super.onPostExecute(aVoid);
                   dialog.dismiss();
+                    recordDialog.dismiss();
                 }
             }.execute();
 

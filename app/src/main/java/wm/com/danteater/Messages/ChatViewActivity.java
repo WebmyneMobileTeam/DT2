@@ -48,7 +48,10 @@ import wm.com.danteater.model.AdvancedSpannableString;
 import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.model.DatabaseWrapper;
+import wm.com.danteater.model.RecordedAudio;
+import wm.com.danteater.model.SharedPreferenceRecordedAudio;
 import wm.com.danteater.model.TextWatcherAdapter;
+import wm.com.danteater.my_plays.FragmentMyPlay;
 import wm.com.danteater.my_plays.ReadActivityFromPreview;
 import wm.com.danteater.my_plays.ShareActivityForPerform;
 
@@ -60,6 +63,7 @@ public class ChatViewActivity extends BaseActivity {
     private String response,toUserId;
     static final int ITEM_TYPE_ME = 0;
     static final int ITEM_TYPE_SENDER = 1;
+    public static int STATE_RECORD = 0;
     public static int STATE_CHAT = 3;
     private User currentUser;
     ListView listChat;
@@ -71,6 +75,7 @@ public class ChatViewActivity extends BaseActivity {
     int plyIDAfterUpdate = 0;
     int playid = 0;
     Play ply;
+    boolean isSound=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -444,6 +449,14 @@ public class ChatViewActivity extends BaseActivity {
 
 
         DatabaseWrapper dbh = new DatabaseWrapper(ChatViewActivity.this);
+        if(play.OrderId.contains("sound-"))
+        {
+            isSound=true;
+            String[] orderId=play.OrderId.split("-");
+            play.OrderId=orderId[1]+"-"+orderId[2];
+            Log.e("new Order id:",play.OrderId+"");
+        }
+
         boolean hasPlay = dbh.hasPlayWithPlayOrderIdText(play.OrderId);
         dbh.close();
 
@@ -457,14 +470,15 @@ public class ChatViewActivity extends BaseActivity {
             gotoNextPage();
         }
         else{
-//            Log.i("hasplay","false");
+            Log.e("hasplay","false");
             // insert new play to db
+            Log.e("order id:....",API.link_retrievePlayContentsForPlayOrderId +play.OrderId+"");
             new CallWebService(API.link_retrievePlayContentsForPlayOrderId +play.OrderId,CallWebService.TYPE_JSONOBJECT) {
 
                 @Override
                 public void response(final String response) {
 
-//                    Log.i("Response full play : ",""+response);
+                    Log.i("Response full play : ",""+response);
                     new AsyncTask<String,Integer,String>(){
 
                         @Override
@@ -493,13 +507,12 @@ public class ChatViewActivity extends BaseActivity {
 
                         }
                     }.execute();
-
                 }
 
                 @Override
                 public void error(VolleyError error) {
                     dialog_next.dismiss();
-
+                    Log.e("error",error+"");
                     Toast.makeText(ChatViewActivity.this,error.getMessage(), Toast.LENGTH_SHORT).show();
 
                 }
@@ -540,11 +553,42 @@ public class ChatViewActivity extends BaseActivity {
                 complexPreferences.putObject("selected_play",ply);
                 complexPreferences.commit();
 
-                dialog_next.dismiss();
+
+                FragmentMyPlay.sharedPreferenceRecordedAudio=new SharedPreferenceRecordedAudio();
+                new CallWebService("http://api.danteater.dk/Api/Audio?UserId=&OrderId="+ply.OrderId+"&LineId=&isTeacher=false",CallWebService.TYPE_JSONARRAY) {
+
+                    @Override
+                    public void response(final String response) {
+                        dialog_next.dismiss();
+                        Log.e("Response recorded audio  : ", "" + response);
+                        Type listType = new TypeToken<ArrayList<RecordedAudio>>(){}.getType();
+                        ArrayList<RecordedAudio> recordedList = new GsonBuilder().create().fromJson(response, listType);
+                        FragmentMyPlay.sharedPreferenceRecordedAudio.clearAudio(ChatViewActivity.this);
+                        for(int i=0;i<recordedList.size();i++){
+                            FragmentMyPlay.sharedPreferenceRecordedAudio.saveAudio(ChatViewActivity.this, recordedList.get(i));
+                        }
                         Intent i1 = new Intent(ChatViewActivity.this, ReadActivityForChat.class);
-                        i1.putExtra("currentState",STATE_CHAT);
+                        if(isSound==true) {
+                            i1.putExtra("currentState",STATE_RECORD);
+                        } else {
+                            i1.putExtra("currentState",STATE_CHAT);
+                        }
+
                         i1.putExtra("line_number",lineNumber);
+//                        i1.putExtra("isSound",isSound);
                         startActivity(i1);
+
+                    }
+
+                    @Override
+                    public void error(VolleyError error) {
+
+                        Log.e("error  : ",""+error);
+
+
+                    }
+                }.start();
+
 
 
 
