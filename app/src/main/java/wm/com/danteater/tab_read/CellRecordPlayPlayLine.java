@@ -5,13 +5,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.media.MediaPlayer;
-import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
-import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.SeekBar;
-import android.widget.Toast;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -53,7 +49,6 @@ import java.util.ArrayList;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 
-import wm.com.danteater.Messages.MessagesForConversation;
 import wm.com.danteater.Play.Comments;
 import wm.com.danteater.Play.Play;
 import wm.com.danteater.Play.PlayLines;
@@ -66,6 +61,8 @@ import wm.com.danteater.login.User;
 import wm.com.danteater.model.API;
 import wm.com.danteater.model.AppConstants;
 import wm.com.danteater.model.ComplexPreferences;
+import wm.com.danteater.model.RecordedAudio;
+import wm.com.danteater.model.SharedPreferenceRecordedAudio;
 import wm.com.danteater.my_plays.SharedUser;
 //import wm.com.danteater.tab_music.MusicFragment;
 
@@ -133,11 +130,13 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
     ArrayList<SharedUser> marrTeachers;
     String soundId;
     boolean isUserAudioAvailable;
-
+    boolean isRecordButton=false;
+    SharedPreferenceRecordedAudio sharedPreferenceRecordedAudio;
+    ReloadListView reloadListView;
     public CellRecordPlayPlayLine(View view, Context context) {
 
         //TODO change to false
-        isUserAudioAvailable = true;
+        sharedPreferenceRecordedAudio=new SharedPreferenceRecordedAudio();
         this.ctx = context;
         ComplexPreferences complexPreferencesForUser = ComplexPreferences.getComplexPreferences(context, "user_pref", 0);
         cUser = complexPreferencesForUser.getObject("current_user", User.class);
@@ -152,11 +151,7 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
         tvPlayLines = (WMTextView) view.findViewById(R.id.recordPlayLineCellDescription);
         btnOpTag = (WMTextView) view.findViewById(R.id.btnOpTag);
         imgPLay = (ImageView) view.findViewById(R.id.recordPlayLineCellPlayButton);
-        if(isUserAudioAvailable) {
-            imgPLay.setBackgroundResource(R.drawable.ic_recorded_voice);
-        } else {
-            imgPLay.setBackgroundResource(R.drawable.ic_play);
-        }
+
         listReadPlayPlaylinecell = (LinearLayout)view.findViewById(R.id.listReadPlayPlaylinecell);
         lblRoleName.setBold();
 
@@ -164,7 +159,16 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
 
     }
 
-    public void setupForPlayLine(final PlayLines playLine, int current_state,boolean mark,ArrayList<SharedUser> marrTeachers) {
+    public void setupForPlayLine(final PlayLines playLine, int current_state, boolean mark, ArrayList<SharedUser> marrTeachers, boolean isUserAudioAvailable) {
+
+
+
+        this.isUserAudioAvailable=isUserAudioAvailable;
+        if(isUserAudioAvailable) {
+            imgPLay.setBackgroundResource(R.drawable.ic_recorded_voice);
+        } else {
+            imgPLay.setBackgroundResource(R.drawable.ic_play);
+        }
         this.marrTeachers=marrTeachers;
         this.playLine = playLine;
         listReadPlayPlaylinecell.removeAllViews();
@@ -275,8 +279,8 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
                 imgPLay.setBackgroundResource(R.drawable.ic_pause);
 
 
-
-                    delegate.onPlayClicked(playLine,imgPLay,isUserAudioAvailable);
+                isRecordButton=false;
+                    delegate.onPlayClicked(playLine,imgPLay, CellRecordPlayPlayLine.this.isUserAudioAvailable,isRecordButton,endTime);
 
 
             }
@@ -314,7 +318,7 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
 
     public interface RecordDelegates{
 
-        public void onPlayClicked(PlayLines playLine, ImageView imgPlay, boolean isUserAudioAvailable);
+        public void onPlayClicked(PlayLines playLine, ImageView imgPlay, boolean userAudioAvailable, boolean isUserAudioAvailable, WMTextView endTime);
 
     }
 
@@ -363,8 +367,10 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
             seekbarView.setVisibility(View.VISIBLE);
             recordPopupSave.setEnabled(true);
             btnPlay.setEnabled(true);
+            btnPlay.setBackgroundResource(R.drawable.ic_play);
             recordSegmentGroup.setVisibility(View.GONE);
-            delegate.onPlayClicked(playLine,imgPLay,isUserAudioAvailable);
+            isRecordButton=true;
+            delegate.onPlayClicked(playLine,imgPLay,isUserAudioAvailable,isRecordButton, endTime);
 
         }else {
             recordPopupTextArea.setText(textLine.currentText());
@@ -530,7 +536,7 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
     }
 
     private void saveUserAudioForPlayLineIdString(String playLineId, String timestamp, boolean forTeachersOnly) {
-
+        final RecordedAudio recordedAudio=new RecordedAudio();
         String shareType;
         if (forTeachersOnly) {
             shareType = "teacher";
@@ -547,6 +553,11 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
             requestParams.put("UserId", cUser.getUserId()+"");
             requestParams.put("shareType", shareType);
 
+            recordedAudio.setLineID(playLineId+"");
+            recordedAudio.setOrderID(playLineId.substring(0,playLineId.lastIndexOf("-"))+"");
+            recordedAudio.setShareType(shareType);
+            recordedAudio.setTimeStamp(timestamp+"");
+            recordedAudio.setUserId( cUser.getUserId()+"");
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -588,6 +599,8 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
 
+                sharedPreferenceRecordedAudio.saveAudio(ctx, recordedAudio);
+                reloadListView.reload();
 //                uploadAudio.uploadingAudio(soundId);
                 uploadFileToServer(soundId);
             }
@@ -720,6 +733,8 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
         mHandler.postDelayed(mUpdateTimeTask, 1);
     }
 
+
+
     private void updateProgressBarOneTime(){
 
 
@@ -839,6 +854,16 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
 
     public void setPlayRecording(PlayRecordingAudio playRecordingAudio) {
         this.playRecordingAudio=playRecordingAudio;
+    }
+
+    public interface ReloadListView {
+        public void reload();
+
+
+    }
+
+    public void setReloading(ReloadListView reloadListView) {
+        this.reloadListView=reloadListView;
     }
 
 //    public interface UploadAudioFile {

@@ -45,7 +45,7 @@ public class StateManager { //singleton class
 //    public static int numberOfClassesToBeRetrieved = 0;
 //    public  static Group groupForTeacher = new Group();
 //    public  static ArrayList<Group> classes = new ArrayList<Group>();
-//    public static ArrayList<User> teachers= new ArrayList<User>();
+//    public static ArrayList<User> recordedAudios= new ArrayList<User>();
 //    public static HashMap<String, ArrayList<User>> pupils=new HashMap<String, ArrayList<User>>();
 
 
@@ -101,7 +101,7 @@ public class StateManager { //singleton class
 
 //    public static void retriveSchoolTeachers(String seesionId, String domain) {
 //        groupForTeacher.setGroupId("teacher");
-//        teachers.clear();
+//        recordedAudios.clear();
 //        retriveMembers(seesionId, domain, groupForTeacher);
 //    }
 
@@ -123,7 +123,7 @@ public class StateManager { //singleton class
 //                public void onResponse(JSONObject jobj) {
 //
 //                    String res = jobj.toString();
-////                    Log.e("response for retrive school teachers...: ", res + "");
+////                    Log.e("response for retrive school recordedAudios...: ", res + "");
 //
 //                    BeanGroupMemberInfo beanGroupMemberInfo = new GsonBuilder().create().fromJson(res, BeanGroupMemberInfo.class);
 //                    BeanGroupMemberResult beanGroupMemberResult = beanGroupMemberInfo.getBeanGroupMemberResult();
@@ -139,8 +139,8 @@ public class StateManager { //singleton class
 //
 //                    if (group.getGroupId().equals("teacher")) {
 //
-//                        teachers.addAll(userArrayList);
-//                        Log.e("teachers:",teachers+"");
+//                        recordedAudios.addAll(userArrayList);
+//                        Log.e("recordedAudios:",recordedAudios+"");
 //
 //                        finishedRetrievingTeachers = true;
 //                    } else {

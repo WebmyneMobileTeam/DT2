@@ -71,7 +71,9 @@ import wm.com.danteater.model.APIDelete;
 import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.model.DatabaseWrapper;
+import wm.com.danteater.model.RecordedAudio;
 import wm.com.danteater.model.SharedPreferenceClasses;
+import wm.com.danteater.model.SharedPreferenceRecordedAudio;
 import wm.com.danteater.model.SharedPreferenceTeachers;
 import wm.com.danteater.model.StateManager;
 import wm.com.danteater.search.FragmentSearch;
@@ -123,7 +125,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     private Play playSelectedToBeDeletedForPerform;
     private StateManager state = StateManager.getInstance();
     String responseValue;
-
+    SharedPreferenceRecordedAudio sharedPreferenceRecordedAudio;
     public static FragmentMyPlay newInstance(String param1, String param2) {
         FragmentMyPlay fragment = new FragmentMyPlay();
 
@@ -140,6 +142,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
         teachers= new ArrayList<User>();
         sharedPreferenceClasses=new SharedPreferenceClasses();
         sharedPreferenceTeachers = new SharedPreferenceTeachers();
+        sharedPreferenceRecordedAudio=new SharedPreferenceRecordedAudio();
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "user_pref", 0);
         currentUser =complexPreferences.getObject("current_user", User.class);
         Timer timer = new Timer();
@@ -937,7 +940,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                                 String k = "PlayLatesteUpdateDate"+play.PlayId;
                                 editor.putString(k,""+(long) (System.currentTimeMillis() / 1000));
                                 editor.commit();
-                                gotoNextPage(act_type,play_index);
+                                gotoNextPage(act_type,play_index,play);
                             }
 
                         }.execute();
@@ -989,7 +992,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                             editor.putString(k,""+(int) (System.currentTimeMillis() / 1000));
                             editor.commit();
 
-                            gotoNextPage(act_type,play_index);
+                            gotoNextPage(act_type,play_index,play);
 
                         }
                     }.execute();
@@ -1009,59 +1012,86 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
     }
 
-    private void gotoNextPage(final ACTIVITY_TYPE act_type,int position) {
+    private void gotoNextPage(final ACTIVITY_TYPE act_type,int position,Play play) {
 
-        new AsyncTask<String,Integer,String>(){
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                SharedPreferences preferences = getActivity().getSharedPreferences("Plays", getActivity().MODE_PRIVATE);
-                playid = preferences.getInt("playid",0);
-
-            }
+        new CallWebService("http://api.danteater.dk/Api/Audio?UserId=&OrderId="+play.OrderId+"&LineId=&isTeacher=false",CallWebService.TYPE_JSONARRAY) {
 
             @Override
-            protected String doInBackground(String... params) {
+            public void response(final String response) {
 
-                DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
-
-                ply = dbh.retrievePlayWithId(playid);
-                dbh.close();
-
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-
-                ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref",0);
-                complexPreferences.putObject("selected_play",ply);
-                complexPreferences.commit();
-
-                switch (act_type){
-
-                    case ORDER_ACTIVITY:
-
-
-                        Intent i1 = new Intent(getActivity(), ReadActivityFromPreview.class);
-                        i1.putExtra("currentState",STATE_PREVIEW);
-                        i1.putExtra("isFromLogin",false);
-                        startActivity(i1);
-
-                        break;
-
-                    case TAB_ACTIVITY:
-
-                        Intent i = new Intent(getActivity(), PlayTabActivity.class);
-                        startActivity(i);
-
-                        break;
+                    Log.e("Response recorded audio  : ", "" + response);
+                Type listType = new TypeToken<ArrayList<RecordedAudio>>(){}.getType();
+                ArrayList<RecordedAudio> recordedList = new GsonBuilder().create().fromJson(response, listType);
+                sharedPreferenceRecordedAudio.clearAudio(getActivity());
+                for(int i=0;i<recordedList.size();i++){
+                    sharedPreferenceRecordedAudio.saveAudio(getActivity(), recordedList.get(i));
                 }
 
+                new AsyncTask<String,Integer,String>(){
+
+                    @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+                        SharedPreferences preferences = getActivity().getSharedPreferences("Plays", getActivity().MODE_PRIVATE);
+                        playid = preferences.getInt("playid",0);
+
+                    }
+
+                    @Override
+                    protected String doInBackground(String... params) {
+
+                        DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
+
+                        ply = dbh.retrievePlayWithId(playid);
+                        dbh.close();
+
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(String s) {
+                        super.onPostExecute(s);
+
+                        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref",0);
+                        complexPreferences.putObject("selected_play",ply);
+                        complexPreferences.commit();
+
+                        switch (act_type){
+
+                            case ORDER_ACTIVITY:
+
+
+                                Intent i1 = new Intent(getActivity(), ReadActivityFromPreview.class);
+                                i1.putExtra("currentState",STATE_PREVIEW);
+                                i1.putExtra("isFromLogin",false);
+                                startActivity(i1);
+
+                                break;
+
+                            case TAB_ACTIVITY:
+
+                                Intent i = new Intent(getActivity(), PlayTabActivity.class);
+                                startActivity(i);
+
+                                break;
+                        }
+
+                    }
+                }.execute();
             }
-        }.execute();
+
+            @Override
+            public void error(VolleyError error) {
+
+                Log.e("error  : ",""+error);
+
+
+            }
+        }.start();
+
+
+
 
 
     }

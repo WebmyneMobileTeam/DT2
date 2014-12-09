@@ -92,6 +92,8 @@ import wm.com.danteater.model.API;
 import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.model.DatabaseWrapper;
+import wm.com.danteater.model.RecordedAudio;
+import wm.com.danteater.model.SharedPreferenceRecordedAudio;
 import wm.com.danteater.model.StateManager;
 import wm.com.danteater.my_plays.ChatViewFromRead;
 import wm.com.danteater.my_plays.SelectTeacherForChat;
@@ -100,8 +102,9 @@ import wm.com.danteater.tab_music.MusicFragment;
 
 
 public class ReadFragment extends Fragment {
+    SharedPreferenceRecordedAudio sharedPreferenceRecordedAudio;
 
-
+    public boolean isUserAudioAvailable;
     public static MediaRecorder mRecorder = null;
     private static String mFileName = null;
     int mSubtractionCount = 0;
@@ -826,9 +829,31 @@ public class ReadFragment extends Fragment {
 
             }else if(playLine.playLineType() == PlayLines.PlayLType.PlayLineTypeLine){
 
-                if(currentState == STATE_RECORD){
+                if(currentState == STATE_RECORD) {
 
-                    //todo here chat state condition
+                    if (currentState == STATE_CHAT) {
+                        isUserAudioAvailable = true;
+
+                    } else {
+                        isUserAudioAvailable = false;
+                    }
+                     if (!(currentState == STATE_CHAT)) {
+
+//                        bool isSoundAvailable = [[[[StateManager sharedInstance] userAudiosTimestamps] allKeys] containsObject:playLine.lineIdString];
+//                        [cell setUserAudioState:isSoundAvailable];
+                         sharedPreferenceRecordedAudio=new SharedPreferenceRecordedAudio();
+                         ArrayList<RecordedAudio> recordedList=sharedPreferenceRecordedAudio.loadAudio(getActivity());
+                         for(int i=0;i<recordedList.size();i++){
+                            if(recordedList.get(i).getLineID().toString().contains(playLine.getLineID().toString())){
+                                isUserAudioAvailable = true;
+                                Log.e("in loop","in loop");
+                            }
+                             Log.e("out loop","out loop");
+                         }
+
+                    }
+
+
 
                     return RecordPlayPlayLineCell;
 
@@ -1037,22 +1062,29 @@ public class ReadFragment extends Fragment {
                         }
                     }
 
-                    holderRecordPlayPlayLineCell.cellRecordPlayPlayLine.setupForPlayLine(playLine,currentState,mark2,marrTeachers);
-
+                    holderRecordPlayPlayLineCell.cellRecordPlayPlayLine.setupForPlayLine(playLine,currentState,mark2,marrTeachers, isUserAudioAvailable);
+                    holderRecordPlayPlayLineCell.cellRecordPlayPlayLine.setReloading(new CellRecordPlayPlayLine.ReloadListView() {
+                        @Override
+                        public void reload() {
+                            readSectionedAdapter.notifyDataSetChanged();
+                        }
+                    });
                     holderRecordPlayPlayLineCell.cellRecordPlayPlayLine.setRecordDelegates(new CellRecordPlayPlayLine.RecordDelegates() {
 
 
                         @Override
-                        public void onPlayClicked(PlayLines playLine, ImageView imgPlay, boolean isUserAudioAvailable) {
+                        public void onPlayClicked(PlayLines playLine, ImageView imgPlay, boolean isUserAudioAvailable, boolean isRecordButton, WMTextView endTime) {
 
                             if(isUserAudioAvailable==true){
-                                playUserAudio(playLine,imgPlay);
+                                playUserAudio(playLine,imgPlay,isRecordButton,endTime);
                             } else {
                                 downloadAndPlayRecordTextToSpeech(playLine,imgPlay);
                             }
 
 
                         }
+
+
                     });
 
                     holderRecordPlayPlayLineCell.cellRecordPlayPlayLine.setStartRecording(new CellRecordPlayPlayLine.RecordingAudio() {
@@ -1114,9 +1146,8 @@ public class ReadFragment extends Fragment {
                         public void startPlaying() {
                             mPlayer = new MediaPlayer();
                             try {
-//
+
                                     mPlayer.setDataSource(mFileName);
-//
 
                                 mPlayer.prepare();
                                 mPlayer.start();
@@ -1439,7 +1470,7 @@ public class ReadFragment extends Fragment {
 
     }
 
-    private void playUserAudio(PlayLines playLines, ImageView imgPlay) {
+    private void playUserAudio(PlayLines playLines, ImageView imgPlay,boolean isRecordButton, WMTextView endTime) {
         boolean shouldDownloadLastestVersion = true;
         String soundId;
         if(currentState==STATE_CHAT){
@@ -1456,11 +1487,12 @@ public class ReadFragment extends Fragment {
         }
 
         if(shouldDownloadLastestVersion==true){
-            downloadAndPlayreordedAudio(soundId, playLines, imgPlay);
+            Log.e("playLines..........................",playLines.LineID+"");
+            downloadAndPlayreordedAudio(soundId, playLines, imgPlay, isRecordButton, endTime);
         }
     }
 
-    private void downloadAndPlayreordedAudio(final String soundId, final PlayLines playLines, final ImageView imgPlay){
+    private void downloadAndPlayreordedAudio(final String soundId, final PlayLines playLines, final ImageView imgPlay,final boolean isRecordButton, final WMTextView endTime){
         SharedPreferences preferences = getActivity().getSharedPreferences("session_id", getActivity().MODE_PRIVATE);
         String sessionId = preferences.getString("session_id","");
 
@@ -1556,7 +1588,7 @@ public class ReadFragment extends Fragment {
                         }catch(Exception e){}
 
 
-                        downloadRecordedFile(url,playLines,imgPlay,soundId);
+                        downloadRecordedFile(url,playLines,imgPlay,soundId,isRecordButton,endTime);
                     }
                 }.execute();
 
@@ -1566,7 +1598,7 @@ public class ReadFragment extends Fragment {
 
         }
 
-    private void downloadRecordedFile(String url, final PlayLines playLines,final ImageView imgPlay, final String soundId){
+    private void downloadRecordedFile(String url, final PlayLines playLines,final ImageView imgPlay, final String soundId,final boolean isRecordButton,final WMTextView endTime){
 
         final  String theURL ="https://mvid-services.mv-nordic.com/theater-v1/"+url;
         Log.e("final url to be download ",""+theURL);
@@ -1622,17 +1654,58 @@ public class ReadFragment extends Fragment {
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
                 dialog.dismiss();
+                if(isRecordButton==true){
+                    mFileName = fileDir.getAbsolutePath();
+                    mFileName += "/"+soundId;
+                    mPlayer = new MediaPlayer();
+                    try {
 
-                mFileName = fileDir.getAbsolutePath();
-                mFileName += "/"+soundId;
-//                playDownloadedAudio(playLines,imgPlay,soundId);
+                        mPlayer.setDataSource(mFileName);
 
+                        mPlayer.prepare();
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    long totalDuration = 00;
+
+                    try {
+
+                        totalDuration =mPlayer.getDuration();
+
+                    }catch (Exception e){};
+                    // Displaying Total Duration time
+                    endTime.setText(""+milliSecondsToTimer(totalDuration));
+                } else {
+                playDownloadedAudio(playLines,imgPlay,soundId);
+                }
             }
         }.execute();
 
 
     }
+    public String milliSecondsToTimer(long milliseconds){
+        String finalTimerString = "";
+        String secondsString = "";
 
+        // Convert total duration into time
+        int hours = (int)( milliseconds / (1000*60*60));
+        int minutes = (int)(milliseconds % (1000*60*60)) / (1000*60);
+        int seconds = (int) ((milliseconds % (1000*60*60)) % (1000*60) / 1000);
+        // Add hours if there
+        if(hours > 0){
+            finalTimerString = hours + ":";
+        }
+        if(seconds < 10){
+            secondsString = "0" + seconds;
+        }else{
+            secondsString = "" + seconds;}
+
+        finalTimerString = finalTimerString + minutes + ":" + secondsString;
+
+        // return timer string
+        return finalTimerString;
+    }
 
     private void playDownloadedAudio(PlayLines playLines, final ImageView imgPlay,final String soundId){
         downloadedSoundPlayer= new MediaPlayer();
@@ -1655,6 +1728,7 @@ public class ReadFragment extends Fragment {
 
         ArrayList<TextLines> arrTxt = playLine.textLinesList;
         Log.e("arrTxt",arrTxt.size()+"");
+        Log.e("playLine",playLine.LineID+"");
         StringBuffer text=new StringBuffer();
         if(arrTxt != null && arrTxt.size()>0){
             for(TextLines line : arrTxt){
@@ -2301,6 +2375,8 @@ public class ReadFragment extends Fragment {
 
 
     }
+
+
 
     private void updatePlayUsingMethodParams(final String s) {
 
