@@ -179,7 +179,7 @@ public class ReadFragment extends Fragment {
     public int indexPostion=0;
 
     ArrayList<PlayLines> audioPlayLineList;
-
+    ArrayList<RecordedAudio> recordedList;
 
     public static ReadFragment newInstance(String param1, String param2) {
         ReadFragment fragment = new ReadFragment();
@@ -501,6 +501,8 @@ public class ReadFragment extends Fragment {
              /*   for(int i = 0 ; i<marrPlaySections.size(); i++){
                    Log.i(marrPlaySections.get(i)," count is : "+dicPlayLines.get(marrPlaySections.get(i)).size());
                 }*/
+                sharedPreferenceRecordedAudio=new SharedPreferenceRecordedAudio();
+                recordedList= sharedPreferenceRecordedAudio.loadAudio(getActivity());
                 readSectionedAdapter = new ReadSectionedAdapter(getActivity());
                 listRead.setAdapter(readSectionedAdapter);
                 if(lineNumber !=0) {
@@ -851,9 +853,9 @@ public class ReadFragment extends Fragment {
 
 //                        bool isSoundAvailable = [[[[StateManager sharedInstance] userAudiosTimestamps] allKeys] containsObject:playLine.lineIdString];
 //                        [cell setUserAudioState:isSoundAvailable];
-                         sharedPreferenceRecordedAudio=new SharedPreferenceRecordedAudio();
+
                          try {
-                             ArrayList<RecordedAudio> recordedList = sharedPreferenceRecordedAudio.loadAudio(getActivity());
+
                              for (int i = 0; i < recordedList.size(); i++) {
                                  if (recordedList.get(i).getLineID().toString().contains(playLine.getLineID().toString())) {
                                      isUserAudioAvailable = true;
@@ -1091,8 +1093,6 @@ public class ReadFragment extends Fragment {
                                 downloadAndPlayRecordTextToSpeech(playLine,imgPlay);
                             }
                         }
-
-
                     });
 
                     holderRecordPlayPlayLineCell.cellRecordPlayPlayLine.setStartRecording(new CellRecordPlayPlayLine.RecordingAudio() {
@@ -1444,6 +1444,7 @@ public class ReadFragment extends Fragment {
             ((TextView) layout.findViewById(R.id.readPlaySectionName)).setText(marrPlaySections.get(section));
             cbShowMyData=(CheckBox) layout.findViewById(R.id.cbShowMyData);
             playPasueAll=(WMTextView) layout.findViewById(R.id.playPauseAll);
+
             if(currentState == STATE_RECORD){
                 cbShowMyData.setVisibility(View.GONE);
                 playPasueAll.setVisibility(View.VISIBLE);
@@ -1452,6 +1453,7 @@ public class ReadFragment extends Fragment {
                 cbShowMyData.setVisibility(View.VISIBLE);
                 cbShowMyData.setText("Vis kum mine replikker");
             }
+
             if(isplayPauseAudioclicked==true){
                 playPasueAll.setText("Pause");
                 playPasueAll.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_pause, 0, 0, 0);
@@ -1459,7 +1461,9 @@ public class ReadFragment extends Fragment {
                 playPasueAll.setText("Afspil alle");
                 playPasueAll.setCompoundDrawablesWithIntrinsicBounds( R.drawable.ic_play, 0, 0, 0);
             }
+
             cbShowMyData.setChecked(isHeaderChecked);
+
             playPasueAll.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -1468,29 +1472,19 @@ public class ReadFragment extends Fragment {
                         playPasueAll.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_pause, 0, 0, 0);
                         isplayPauseAudioclicked=true;
 
-//                        if(nextLine==0) {
-//
-//                            firstLine=(Integer.parseInt(selectedPlay.playLinesList.get(indexPostion).LineID.substring(selectedPlay.playLinesList.get(indexPostion).LineID.lastIndexOf("-")+1)));
-//                            listRead.setSelection(firstLine - mSubtractionCount);
-//                            if(isUserAudioAvailable==true){
-//                                playUserAudio(selectedPlay.playLinesList.get(indexPostion),null,false,null);
-//                            } else {
-//                                downloadAndPlayRecordTextToSpeech(selectedPlay.playLinesList.get(indexPostion),null);
-//                            }
-//                        } else {
                         audioPlayLineList=new ArrayList<PlayLines>();
                         for(PlayLines playLine : selectedPlay.playLinesList) {
                             if(playLine.playLineType() == PlayLines.PlayLType.PlayLineTypeLine){
 
                                 audioPlayLineList.add(playLine);
 
-
                             }
                         }
 
                             nextLine = (Integer.parseInt(audioPlayLineList.get(indexPostion).LineID.substring(audioPlayLineList.get(indexPostion).LineID.lastIndexOf("-") + 1)));
-                            Log.e("nextLine......",nextLine+"");
+
                             listRead.setSelection(nextLine - mSubtractionCount);
+
                             if (isUserAudioAvailable == true) {
                                 playUserAudio(audioPlayLineList.get(indexPostion), null, false, null);
                             } else {
@@ -1498,12 +1492,6 @@ public class ReadFragment extends Fragment {
                             }
 
 //                        }
-
-
-
-
-
-
                     } else {
                         playPasueAll.setText("Afspil alle");
                         playPasueAll.setCompoundDrawablesWithIntrinsicBounds( R.drawable.ic_play, 0, 0, 0);
@@ -1512,6 +1500,7 @@ public class ReadFragment extends Fragment {
                     }
                 }
             });
+
             cbShowMyData.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checkboxValue) {
@@ -1667,7 +1656,6 @@ public class ReadFragment extends Fragment {
             }catch (Exception e){
                 e.printStackTrace();
             }
-
         }
 
     private void downloadRecordedFile(String url, final PlayLines playLines,final ImageView imgPlay, final String soundId,final boolean isRecordButton,final WMTextView endTime){
@@ -1698,8 +1686,6 @@ public class ReadFragment extends Fragment {
                 try{
 
                     URL url = new URL(theURL);
-
-
                     java.io.BufferedInputStream in = new java.io.BufferedInputStream(new java.net.URL(theURL).openStream());
                     java.io.FileOutputStream fos = new java.io.FileOutputStream(new File(recordedAudiofileDir.getAbsolutePath()+"/"+soundId));
                     java.io.BufferedOutputStream bout = new BufferedOutputStream(fos,1024);
@@ -1717,6 +1703,7 @@ public class ReadFragment extends Fragment {
                 catch (Exception ex)
                 {
                     ex.printStackTrace();
+
                 }
 
                 return null;
@@ -1755,8 +1742,6 @@ public class ReadFragment extends Fragment {
                 }
             }
         }.execute();
-
-
     }
     public String milliSecondsToTimer(long milliseconds){
         String finalTimerString = "";
@@ -1782,8 +1767,9 @@ public class ReadFragment extends Fragment {
     }
 
     private void playDownloadedAudio(PlayLines playLines, final ImageView imgPlay,final String soundId){
-        downloadedSoundPlayer= new MediaPlayer();
+
         try {
+            downloadedSoundPlayer= new MediaPlayer();
             downloadedSoundPlayer.setDataSource(Environment.getExternalStorageDirectory()+ "/danteater/recording/"+soundId);
             downloadedSoundPlayer.prepare();
             downloadedSoundPlayer.start();
@@ -1814,8 +1800,7 @@ public class ReadFragment extends Fragment {
     private void downloadAndPlayRecordTextToSpeech(final PlayLines playLine,final ImageView imgPlay){
 
         ArrayList<TextLines> arrTxt = playLine.textLinesList;
-        Log.e("arrTxt",arrTxt.size()+"");
-        Log.e("playLine",playLine.LineID+"");
+
         StringBuffer text=new StringBuffer();
         if(arrTxt != null && arrTxt.size()>0){
             for(TextLines line : arrTxt){
@@ -1944,9 +1929,6 @@ public class ReadFragment extends Fragment {
         final  String theURL ="https://mvid-services.mv-nordic.com/theater-v1/"+url;
         Log.e("final url to be download ",""+theURL);
 
-
-
-
         new AsyncTask<Void,Void,Void>() {
             @Override
             protected void onPreExecute() {
@@ -1959,7 +1941,6 @@ public class ReadFragment extends Fragment {
                 } else {
 //                        Log.e("directory:","already exist");
                 }
-
             }
 
             @Override
@@ -1970,14 +1951,12 @@ public class ReadFragment extends Fragment {
                 try{
 
                     URL url = new URL(theURL);
-
-
                     java.io.BufferedInputStream in = new java.io.BufferedInputStream(new java.net.URL(theURL).openStream());
                     java.io.FileOutputStream fos = new java.io.FileOutputStream(new File(txtToSpeechfileDir.getAbsolutePath()+"/"+playLines.LineID+".mp3"));
-                    java.io.BufferedOutputStream bout = new BufferedOutputStream(fos,1024);
-                    byte[] data = new byte[1024];
+                    java.io.BufferedOutputStream bout = new BufferedOutputStream(fos,5000);
+                    byte[] data = new byte[5000];
                     int x=0;
-                    while((x=in.read(data,0,1024))>=0){
+                    while((x=in.read(data,0,5000))>=0){
                         bout.write(data,0,x);
                     }
                     fos.flush();
@@ -1990,8 +1969,6 @@ public class ReadFragment extends Fragment {
                 {
                     ex.printStackTrace();
                 }
-
-
 
                 return null;
             }
@@ -2034,11 +2011,11 @@ public class ReadFragment extends Fragment {
                         mp.stop();
                         imgPlay.setBackgroundResource(R.drawable.ic_play);
                     }
-
                 }
             });
         } catch (IOException e) {
             e.printStackTrace();
+
         }
     }
     private void proceedMessage(PlayLines playLine) {
@@ -2052,6 +2029,7 @@ public class ReadFragment extends Fragment {
             startActivity(i);
 
         }else{
+
             if (playLine.assignedUsersList.size() > 0) {
 
                 ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "selected_playline", 0);
@@ -2072,11 +2050,8 @@ public class ReadFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
 
-
                     }
                 });
-
-
                 alert.show();
 
             }
