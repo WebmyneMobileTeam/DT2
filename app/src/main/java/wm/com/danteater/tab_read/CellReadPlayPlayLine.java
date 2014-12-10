@@ -191,7 +191,7 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
         showComments = preferences.getBoolean("showComments", false);
 
         if (showLineNumber == true) {
-            lblLineNumber.setText(playLine.LineCount);
+            lblLineNumber.setText(String.valueOf(playLine.LineCount));
         } else {
             lblLineNumber.setText("");
         }
