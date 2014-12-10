@@ -1963,7 +1963,7 @@ public class ReadFragment extends Fragment {
                         nextLine=(Integer.parseInt(audioPlayLineList.get(indexPostion).LineID.substring(audioPlayLineList.get(indexPostion).LineID.lastIndexOf("-")+1)));
                         Log.e("nextLine......",nextLine+"");
                         listRead.setSelection(nextLine - mSubtractionCount);
-                        if(audioPlayLineList.get(indexPostion).isSoundAvailable()==true){
+                        if(audioPlayLineList.get(indexPostion).isSoundAvailable()  ==true){
                             playUserAudio(audioPlayLineList.get(indexPostion),null,false,null);
                         } else {
                             downloadAndPlayRecordTextToSpeech(audioPlayLineList.get(indexPostion),null);
