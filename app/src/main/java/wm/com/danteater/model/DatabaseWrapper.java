@@ -752,7 +752,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
 
                 playlineModelObject.lID = cursor.getInt(cursor.getColumnIndex("id_"));
-                playlineModelObject.LineCount = ""+cursor.getInt(cursor.getColumnIndex("line_number_"));
+                playlineModelObject.LineCount = cursor.getInt(cursor.getColumnIndex("line_number_"));
                 playlineModelObject.LineID = cursor.getString(cursor.getColumnIndex("playline_id_text_"));
                 playlineModelObject.MainLineType = cursor.getString(cursor.getColumnIndex("main_line_type_"));
                 playlineModelObject.RoleName = cursor.getString(cursor.getColumnIndex("role_name_"));

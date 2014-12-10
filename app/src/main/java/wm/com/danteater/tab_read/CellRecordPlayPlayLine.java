@@ -167,6 +167,9 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
 
 
         this.isUserAudioAvailable=isUserAudioAvailable;
+
+        Log.e("isUserAudioAvailable",this.isUserAudioAvailable+"");
+
         if(isUserAudioAvailable) {
             imgPLay.setBackgroundResource(R.drawable.ic_recorded_voice);
         } else {
@@ -206,13 +209,10 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
         }
 
         if(!cUser.checkTeacherOrAdmin(cUser.getRoles())){
-            if(mark != true){
-                btnOpTag.setVisibility(View.GONE);
-                imgPLay.setVisibility(View.GONE);
-            } else {
-
+            if(mark == true) {
                 btnOpTag.setVisibility(View.VISIBLE);
-                imgPLay.setVisibility(View.VISIBLE);
+            } else {
+                btnOpTag.setVisibility(View.GONE);
             }
         }
 
@@ -602,11 +602,11 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
 
-                FragmentMyPlay.sharedPreferenceRecordedAudio.saveAudio(ctx, recordedAudio);
+                ReadFragment.sharedPreferenceRecordedAudio.saveAudio(ctx, recordedAudio);
 //                imgPLay.setBackgroundResource(R.drawable.ic_recorded_voice);
 //                isUserAudioAvailable=true;
                 reloadListView.reload();
-                ArrayList<RecordedAudio> recordList=FragmentMyPlay.sharedPreferenceRecordedAudio.loadAudio(ctx);
+                ArrayList<RecordedAudio> recordList=ReadFragment.sharedPreferenceRecordedAudio.loadAudio(ctx);
                 Log.e("size of recordList",recordList.size()+"");
 //                uploadAudio.uploadingAudio(soundId);
                 uploadFileToServer(soundId);

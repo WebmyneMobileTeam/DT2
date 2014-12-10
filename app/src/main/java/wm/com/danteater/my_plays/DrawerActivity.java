@@ -124,6 +124,13 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.clear();
                 editor.commit();
+
+
+//                SharedPreferences preferencesTutorial = getSharedPreferences("show_tutorial",MODE_PRIVATE);
+//                SharedPreferences.Editor editorTutorial = preferencesTutorial.edit();
+//                editorTutorial.putBoolean("isShowTutorial", true);
+//                editorTutorial.commit();
+
                 DeviceSecurity   m_device_security = new DeviceSecurity(DrawerActivity.this);
                 m_device_security.releaseDeviceRegistration();
                 Intent i = new Intent(DrawerActivity.this,LoginActivity.class );

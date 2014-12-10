@@ -54,6 +54,7 @@ import wm.com.danteater.model.TextWatcherAdapter;
 import wm.com.danteater.my_plays.FragmentMyPlay;
 import wm.com.danteater.my_plays.ReadActivityFromPreview;
 import wm.com.danteater.my_plays.ShareActivityForPerform;
+import wm.com.danteater.tab_read.ReadFragment;
 
 public class ChatViewActivity extends BaseActivity {
 
@@ -554,7 +555,7 @@ public class ChatViewActivity extends BaseActivity {
                 complexPreferences.commit();
 
 
-                FragmentMyPlay.sharedPreferenceRecordedAudio=new SharedPreferenceRecordedAudio();
+                ReadFragment.sharedPreferenceRecordedAudio=new SharedPreferenceRecordedAudio();
                 new CallWebService("http://api.danteater.dk/Api/Audio?UserId=&OrderId="+ply.OrderId+"&LineId=&isTeacher=false",CallWebService.TYPE_JSONARRAY) {
 
                     @Override
@@ -563,9 +564,9 @@ public class ChatViewActivity extends BaseActivity {
                         Log.e("Response recorded audio  : ", "" + response);
                         Type listType = new TypeToken<ArrayList<RecordedAudio>>(){}.getType();
                         ArrayList<RecordedAudio> recordedList = new GsonBuilder().create().fromJson(response, listType);
-                        FragmentMyPlay.sharedPreferenceRecordedAudio.clearAudio(ChatViewActivity.this);
+                        ReadFragment.sharedPreferenceRecordedAudio.clearAudio(ChatViewActivity.this);
                         for(int i=0;i<recordedList.size();i++){
-                            FragmentMyPlay.sharedPreferenceRecordedAudio.saveAudio(ChatViewActivity.this, recordedList.get(i));
+                            ReadFragment.sharedPreferenceRecordedAudio.saveAudio(ChatViewActivity.this, recordedList.get(i));
                         }
                         Intent i1 = new Intent(ChatViewActivity.this, ReadActivityForChat.class);
                         if(isSound==true) {

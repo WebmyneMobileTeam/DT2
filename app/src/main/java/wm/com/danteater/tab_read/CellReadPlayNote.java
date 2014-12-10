@@ -81,7 +81,7 @@ public class CellReadPlayNote implements View.OnClickListener{
 
 
         if(current_state==STATE_CHAT){
-            if(Integer.parseInt(playline.LineCount)== ReadActivityForChat.lineNumber) {
+            if(playline.LineCount== ReadActivityForChat.lineNumber) {
                 convertView.setBackgroundColor(Color.parseColor("#f6f6d6"));
             }
         }

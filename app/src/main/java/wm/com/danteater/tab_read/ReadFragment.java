@@ -69,8 +69,12 @@ import java.io.Reader;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -92,18 +96,20 @@ import wm.com.danteater.model.API;
 import wm.com.danteater.model.CallWebService;
 import wm.com.danteater.model.ComplexPreferences;
 import wm.com.danteater.model.DatabaseWrapper;
+import wm.com.danteater.model.LineNumberComparator;
 import wm.com.danteater.model.RecordedAudio;
 import wm.com.danteater.model.SharedPreferenceRecordedAudio;
 import wm.com.danteater.model.StateManager;
 import wm.com.danteater.my_plays.ChatViewFromRead;
+import wm.com.danteater.my_plays.FragmentMyPlay;
 import wm.com.danteater.my_plays.SelectTeacherForChat;
 import wm.com.danteater.my_plays.SharedUser;
 import wm.com.danteater.tab_music.MusicFragment;
 
 
 public class ReadFragment extends Fragment {
-
-    SharedPreferenceRecordedAudio sharedPreferenceRecordedAudio;
+    boolean isPupil;
+    public static SharedPreferenceRecordedAudio sharedPreferenceRecordedAudio;
     public boolean isUserAudioAvailable;
     public static MediaRecorder mRecorder = null;
     private static String mFileName = null;
@@ -134,7 +140,7 @@ public class ReadFragment extends Fragment {
 
     public int currentState = 0;
     private int lineNumber=0;
-    public boolean isPreview = false;
+
     private StateManager stateManager = StateManager.getInstance();
 
     public ArrayList<SharedUser> _marrSharedWithUsers;
@@ -169,7 +175,7 @@ public class ReadFragment extends Fragment {
     public MediaPlayer downloadedSoundPlayer;
 
 
-    public int firstLine=0;
+
     public int nextLine=0;
     public int indexPostion=0;
 
@@ -191,6 +197,68 @@ public class ReadFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        sharedPreferenceRecordedAudio=new SharedPreferenceRecordedAudio();
+        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref", 0);
+        selectedPlay = complexPreferences.getObject("selected_play", Play.class);
+        currentUser = complexPreferences.getObject("current_user", User.class);
+
+        new CallWebService("http://api.danteater.dk/Api/Audio?UserId=&OrderId="+selectedPlay.OrderId+"&LineId=&isTeacher=false",CallWebService.TYPE_JSONARRAY) {
+
+            @Override
+            public void response(final String response) {
+
+                Log.e("Response recorded audio  : ", "" + response);
+                Type listType = new TypeToken<ArrayList<RecordedAudio>>(){}.getType();
+              recordedList = new GsonBuilder().create().fromJson(response, listType);
+                if(recordedList !=null) {
+                    sharedPreferenceRecordedAudio.clearAudio(getActivity());
+                    for (int i = 0; i < recordedList.size(); i++) {
+                        sharedPreferenceRecordedAudio.saveAudio(getActivity(), recordedList.get(i));
+                    }
+                }
+                ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "user_pref", 0);
+                User user = complexPreferences.getObject("current_user", User.class);
+                isPupil= user.checkPupil(user.getRoles());
+                if(isPupil){
+                    FragmentMyPlay.isPreview=false;
+                }
+                if(!FragmentMyPlay.isPreview ) {
+                    try {
+                        Log.e("isPreview: ", FragmentMyPlay.isPreview + "");
+                        sharedPreferenceRecordedAudio = new SharedPreferenceRecordedAudio();
+                        recordedList = sharedPreferenceRecordedAudio.loadAudio(getActivity());
+
+                        audioPlayLineList = new ArrayList<PlayLines>();
+                        for (PlayLines playLine : selectedPlay.playLinesList) {
+                            if (playLine.playLineType() == PlayLines.PlayLType.PlayLineTypeLine) {
+                                isUserAudioAvailable=true;
+                                for (int i = 0; i < recordedList.size(); i++) {
+                                    if (recordedList.get(i).getLineID().toString().contains(playLine.getLineID().toString())) {
+                                        playLine.setSoundAvailable(true);
+                                    }
+                                }
+                                audioPlayLineList.add(playLine);
+
+                            }
+                        }
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+
+            @Override
+            public void error(VolleyError error) {
+
+                Log.e("error  : ",""+error);
+
+
+            }
+        }.start();
+
+
+
         fileDir = new File(Environment.getExternalStorageDirectory()+ "/danteater/recording");
         if(!fileDir.exists()) {
             fileDir.mkdirs();
@@ -201,9 +269,7 @@ public class ReadFragment extends Fragment {
 
 //        mFileName += "/audiorecordtest.mp3";
         MusicFragment.mediaPlayer = new MediaPlayer();
-        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref", 0);
-        selectedPlay = complexPreferences.getObject("selected_play", Play.class);
-        currentUser = complexPreferences.getObject("current_user", User.class);
+
 
         // setup actionbar methods
         ((WMTextView) getActivity().getActionBar().getCustomView()).setText(selectedPlay.Title);
@@ -226,7 +292,7 @@ public class ReadFragment extends Fragment {
 
 //        Log.e("marrMyCastMatches   -- ",""+marrMyCastMatches);
 
-        if(!isPreview){
+        if(!FragmentMyPlay.isPreview){
 
             //TODO fetch sharing details
 /*
@@ -253,6 +319,7 @@ public class ReadFragment extends Fragment {
     }
 
     public void updatePlaySpecificData() {
+        playLinesesList=new ArrayList<PlayLines>();
 
         new CallWebService("http://api.danteater.dk/api/PlayShare/" +selectedPlay.OrderId,CallWebService.TYPE_JSONARRAY) {
 
@@ -336,9 +403,11 @@ public class ReadFragment extends Fragment {
             }else{
 
                 if(isHeaderChecked==true){
+
                     for(int i=0;i<marrMyCastMatches.size();i++){
                         String sCheck = marrMyCastMatches.get(i).toString();
                         if(sCheck.equalsIgnoreCase(playLine.RoleName)){
+
                             dicPlayLines.get(currentKey).add(playLine);
                         }
                     }
@@ -387,7 +456,6 @@ public class ReadFragment extends Fragment {
             for(String sec : toDelete){
                 marrPlaySections.remove(sec);
             }
-
         }
 
 /*        DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
@@ -447,8 +515,58 @@ public class ReadFragment extends Fragment {
                     final int gotoL = 0;
 
                     try {
-                        listRead.setSelection(Integer.parseInt(edGotoLine.getText().toString())-1);
+//                        listRead.setSelection(Integer.parseInt(edGotoLine.getText().toString())-1);
+                        if(currentState == STATE_READ){
+                            if(isHeaderChecked) {
+                                //TODO
+                                int newLinePostion=0;
+//                                Log.e("playLinesesList",playLinesesList.size()+"");
+//                                for(int i=0;i<playLinesesList.size();i++){
+//
+//                                    if(playLinesesList.get(i).LineCount.toString().equalsIgnoreCase(edGotoLine.getText().toString())){
+//                                        newLinePostion=i;
+//                                    }
+//                                }
+                                Set<PlayLines> list=new HashSet<PlayLines>();
+                                for(Map.Entry<String,ArrayList<PlayLines>> entry : dicPlayLines.entrySet()){
+                                    list.addAll(entry.getValue());
 
+                                }
+                                ArrayList<PlayLines> playLineListData=new ArrayList<PlayLines>();
+                                for(PlayLines playLines: list){
+                                    playLineListData.add(playLines);
+
+                                }
+
+
+                                Collections.sort(playLineListData,new LineNumberComparator());
+
+                                for(int i=0;i<playLineListData.size();i++){
+                                    Log.e("line number all: ",playLineListData.get(i).LineCount+"");
+                                    if(edGotoLine.getText().toString().equalsIgnoreCase(playLineListData.get(i).LineCount+"")){
+                                        newLinePostion=i;
+                                    }
+                                }
+
+//                                for(int i=0;i<list.size();i++){
+//                                    Log.e("line number all: ",list.get(i).LineCount.toString()+"");
+//                                    if(edGotoLine.getText().toString().equalsIgnoreCase(list.get(i).LineCount.toString())){
+//                                        Log.e("line number: ",list.get(i).LineCount.toString()+"");
+//                                        Log.e("line number postion : ",i+"");
+//                                        newLinePostion=i;
+//
+//
+//                                    }
+//                                }
+                                listRead.setSelection(newLinePostion);
+                            } else {
+                                listRead.setSelection(Integer.parseInt(edGotoLine.getText().toString())-1);
+                            }
+
+                        }else if(currentState == STATE_RECORD){
+                            listRead.setSelection(Integer.parseInt(edGotoLine.getText().toString())-1-mSubtractionCount);
+//                            listRead.setSelection(i-mSubtractionCount);
+                        }
                     }catch(Exception e){}
 
                     edGotoLine.setText("");
@@ -490,21 +608,6 @@ public class ReadFragment extends Fragment {
             MusicFragment.mediaPlayer.stop();
         }
 
-        sharedPreferenceRecordedAudio=new SharedPreferenceRecordedAudio();
-        recordedList= sharedPreferenceRecordedAudio.loadAudio(getActivity());
-
-        audioPlayLineList=new ArrayList<PlayLines>();
-        for(PlayLines playLine : selectedPlay.playLinesList) {
-            if(playLine.playLineType() == PlayLines.PlayLType.PlayLineTypeLine){
-                for (int i = 0; i < recordedList.size(); i++) {
-                    if (recordedList.get(i).getLineID().toString().contains(playLine.getLineID().toString())) {
-                        playLine.setSoundAvailable(true);
-                    }
-                }
-                audioPlayLineList.add(playLine);
-
-            }
-        }
 
     }
 
@@ -843,6 +946,7 @@ public class ReadFragment extends Fragment {
                             for (int i = 0; i < recordedList.size(); i++) {
                                 if (recordedList.get(i).getLineID().toString().contains(playLine.getLineID().toString())) {
                                     isUserAudioAvailable = true;
+                                    Log.e("is User Audio .......................",isUserAudioAvailable+"");
                                 }
                             }
                         } catch (Exception e) {
@@ -934,6 +1038,7 @@ public class ReadFragment extends Fragment {
             ViewHolder.HolderReadPlaySongLineCell holderReadPlaySongLineCell = null;
 
             final PlayLines playLine = dicPlayLines.get(marrPlaySections.get(section)).get(position);
+
             int type = getItemViewType(section,position);
 
             switch (type){
@@ -1398,7 +1503,7 @@ public class ReadFragment extends Fragment {
             }
 
             try {
-                methodParams.put("LineCount", Integer.parseInt(playLine.LineCount));
+                methodParams.put("LineCount", playLine.LineCount);
                 methodParams.put("LineID",playLine.LineID);
                 methodParams.put("TextLines",arr);
 
@@ -1437,7 +1542,13 @@ public class ReadFragment extends Fragment {
                 cbShowMyData.setVisibility(View.VISIBLE);
                 cbShowMyData.setText("Vis kum mine replikker");
             }
+            if(FragmentMyPlay.isPreview){
+                cbShowMyData.setVisibility(View.GONE);
+            }
 
+            if(isPupil && !(currentState==STATE_RECORD)) {
+                cbShowMyData.setVisibility(View.VISIBLE);
+            }
             if(isplayPauseAudioclicked==true){
                 playPasueAll.setText("Pause");
                 playPasueAll.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_pause, 0, 0, 0);
@@ -1460,15 +1571,16 @@ public class ReadFragment extends Fragment {
                             Log.e("isSoundAvailable",audioPlayLineList.get(i).isSoundAvailable()+"");
                             Log.e("line number",(Integer.parseInt(audioPlayLineList.get(i).LineID.substring(audioPlayLineList.get(i).LineID.lastIndexOf("-") + 1))+""));
                         }
+                            if(nextLine<audioPlayLineList.size()) {
+                                nextLine = (Integer.parseInt(audioPlayLineList.get(indexPostion).LineID.substring(audioPlayLineList.get(indexPostion).LineID.lastIndexOf("-") + 1)));
 
-                            nextLine = (Integer.parseInt(audioPlayLineList.get(indexPostion).LineID.substring(audioPlayLineList.get(indexPostion).LineID.lastIndexOf("-") + 1)));
+                                listRead.setSelection(nextLine - mSubtractionCount);
 
-                            listRead.setSelection(nextLine - mSubtractionCount);
-
-                            if (audioPlayLineList.get(indexPostion).isSoundAvailable() == true) {
-                                playUserAudio(audioPlayLineList.get(indexPostion), null, false, null);
-                            } else {
-                                downloadAndPlayRecordTextToSpeech(audioPlayLineList.get(indexPostion), null);
+                                if (audioPlayLineList.get(indexPostion).isSoundAvailable() == true) {
+                                    playUserAudio(audioPlayLineList.get(indexPostion), null, false, null);
+                                } else {
+                                    downloadAndPlayRecordTextToSpeech(audioPlayLineList.get(indexPostion), null);
+                                }
                             }
 
 //                        }
@@ -1476,6 +1588,14 @@ public class ReadFragment extends Fragment {
                         playPasueAll.setText("Afspil alle");
                         playPasueAll.setCompoundDrawablesWithIntrinsicBounds( R.drawable.ic_play, 0, 0, 0);
                         isplayPauseAudioclicked=false;
+
+                        if(mTextToSpeechPlayer !=null && mTextToSpeechPlayer.isPlaying()){
+                            mTextToSpeechPlayer.stop();
+                        }
+                        if(downloadedSoundPlayer !=null && downloadedSoundPlayer.isPlaying()) {
+                            downloadedSoundPlayer.stop();
+                        }
+
 
                     }
                 }
@@ -1485,6 +1605,7 @@ public class ReadFragment extends Fragment {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checkboxValue) {
                     if(checkboxValue==true){
+                        playLinesesList.clear();
                         isHeaderChecked=true;
                         if(currentState == STATE_RECORD) {
 
@@ -1693,7 +1814,9 @@ public class ReadFragment extends Fragment {
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
                 if(!isplayPauseAudioclicked) {
-                    dialog.dismiss();
+                    if(dialog != null && dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
                 }
                 if(isRecordButton==true){
                     mFileName = fileDir.getAbsolutePath();
@@ -1726,9 +1849,9 @@ public class ReadFragment extends Fragment {
 
 
     private void playDownloadedAudio(PlayLines playLines, final ImageView imgPlay,final String soundId){
-
+        downloadedSoundPlayer= new MediaPlayer();
         try {
-            downloadedSoundPlayer= new MediaPlayer();
+
             downloadedSoundPlayer.setDataSource(Environment.getExternalStorageDirectory()+ "/danteater/recording/"+soundId);
             downloadedSoundPlayer.prepare();
             downloadedSoundPlayer.start();
@@ -1738,21 +1861,26 @@ public class ReadFragment extends Fragment {
                     if(isplayPauseAudioclicked)  {
                         mp.stop();
                         indexPostion++;
-                        nextLine=(Integer.parseInt(audioPlayLineList.get(indexPostion).LineID.substring(audioPlayLineList.get(indexPostion).LineID.lastIndexOf("-")+1)));
-                        Log.e("nextLine......",nextLine+"");
-                        listRead.setSelection(nextLine - mSubtractionCount);
-                        if(audioPlayLineList.get(indexPostion).isSoundAvailable()==true){
-                            playUserAudio(audioPlayLineList.get(indexPostion),null,false,null);
-                        } else {
-                            downloadAndPlayRecordTextToSpeech(audioPlayLineList.get(indexPostion),null);
+                        if(nextLine<audioPlayLineList.size()) {
+
+                            nextLine = (Integer.parseInt(audioPlayLineList.get(indexPostion).LineID.substring(audioPlayLineList.get(indexPostion).LineID.lastIndexOf("-") + 1)));
+                            Log.e("nextLine......", nextLine + "");
+                            listRead.setSelection(nextLine - mSubtractionCount);
+                            if (audioPlayLineList.get(indexPostion).isSoundAvailable() == true) {
+                                playUserAudio(audioPlayLineList.get(indexPostion), null, false, null);
+                            } else {
+                                downloadAndPlayRecordTextToSpeech(audioPlayLineList.get(indexPostion), null);
+                            }
                         }
                     } else {
                         mp.stop();
-                        imgPlay.setBackgroundResource(R.drawable.ic_recorded_voice);
+                        if(imgPlay != null) {
+                            imgPlay.setBackgroundResource(R.drawable.ic_recorded_voice);
+                        }
                     }
                 }
             });
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -1938,7 +2066,10 @@ public class ReadFragment extends Fragment {
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
                 if(!isplayPauseAudioclicked) {
-                    dialog.dismiss();
+                    if(dialog != null && dialog.isShowing()){
+                        dialog.dismiss();
+                    }
+
                 }
                 //TODO
                 playTextToSpeechFile(playLines,imgPlay);
@@ -1960,21 +2091,25 @@ public class ReadFragment extends Fragment {
                     if(isplayPauseAudioclicked) {
                         mp.stop();
                         indexPostion++;
-                        nextLine=(Integer.parseInt(audioPlayLineList.get(indexPostion).LineID.substring(audioPlayLineList.get(indexPostion).LineID.lastIndexOf("-")+1)));
-                        Log.e("nextLine......",nextLine+"");
-                        listRead.setSelection(nextLine - mSubtractionCount);
-                        if(audioPlayLineList.get(indexPostion).isSoundAvailable()  ==true){
-                            playUserAudio(audioPlayLineList.get(indexPostion),null,false,null);
-                        } else {
-                            downloadAndPlayRecordTextToSpeech(audioPlayLineList.get(indexPostion),null);
+                        if(nextLine<audioPlayLineList.size()) {
+                            nextLine = (Integer.parseInt(audioPlayLineList.get(indexPostion).LineID.substring(audioPlayLineList.get(indexPostion).LineID.lastIndexOf("-") + 1)));
+                            Log.e("nextLine......", nextLine + "");
+                            listRead.setSelection(nextLine - mSubtractionCount);
+                            if (audioPlayLineList.get(indexPostion).isSoundAvailable() == true) {
+                                playUserAudio(audioPlayLineList.get(indexPostion), null, false, null);
+                            } else {
+                                downloadAndPlayRecordTextToSpeech(audioPlayLineList.get(indexPostion), null);
+                            }
                         }
                     } else {
                         mp.stop();
-                        imgPlay.setBackgroundResource(R.drawable.ic_play);
+                        if(imgPlay != null) {
+                            imgPlay.setBackgroundResource(R.drawable.ic_play);
+                        }
                     }
                 }
             });
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
 
         }
@@ -2221,7 +2356,7 @@ public class ReadFragment extends Fragment {
 
         }
         try {
-            methodParams.put("LineCount", Integer.parseInt(playLine.LineCount));
+            methodParams.put("LineCount",playLine.LineCount);
             methodParams.put("LineID",playLine.LineID);
             methodParams.put("AssignedUsers",arr);
 
@@ -2440,7 +2575,7 @@ public class ReadFragment extends Fragment {
 
         }
         try {
-            methodParams.put("LineCount", Integer.parseInt(playLine.LineCount));
+            methodParams.put("LineCount", playLine.LineCount);
             methodParams.put("LineID",playLine.LineID);
             methodParams.put("Comments",arr);
 
@@ -2450,10 +2585,5 @@ public class ReadFragment extends Fragment {
 
         }
         updatePlayUsingMethodParams(methodParams.toString());
-
     }
-
-
-
-
 }

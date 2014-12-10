@@ -134,7 +134,7 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
        btnEdit.setVisibility(View.VISIBLE);
         convertView.setBackgroundColor(Color.TRANSPARENT);
         if(current_state==STATE_CHAT){
-            if(Integer.parseInt(playLine.LineCount)== ReadActivityForChat.lineNumber) {
+            if(playLine.LineCount== ReadActivityForChat.lineNumber) {
                 convertView.setBackgroundColor(Color.parseColor("#f6f6d6"));
             }
         }

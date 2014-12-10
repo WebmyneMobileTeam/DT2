@@ -9,6 +9,10 @@ import java.util.ArrayList;
  */
 public class PlayLines {
 
+
+
+
+
     public enum PlayLType {
         PlayLineTypeUnknown,
         PlayLineTypeAuthor,
@@ -33,7 +37,7 @@ public class PlayLines {
     public boolean isLastSongLine = false;
 
     @SerializedName("LineCount")
-    public String LineCount;
+    public int LineCount;
 
     public int lID;
 
@@ -82,7 +86,7 @@ public class PlayLines {
 
     }
 
-    public PlayLines(String lineCount, String lineID, String roleName, ArrayList<AssignedUsers> assignedUsersList, String roleLinesCount, String mainLineType, ArrayList<TextLines> textLinesList, ArrayList<String> castMatchesList, ArrayList<Comments> commentsList, ArrayList<SongFiles> songFilesList) {
+    public PlayLines(int lineCount, String lineID, String roleName, ArrayList<AssignedUsers> assignedUsersList, String roleLinesCount, String mainLineType, ArrayList<TextLines> textLinesList, ArrayList<String> castMatchesList, ArrayList<Comments> commentsList, ArrayList<SongFiles> songFilesList) {
 
         LineCount = lineCount;
         LineID = lineID;
@@ -99,7 +103,7 @@ public class PlayLines {
 
     }
 
-    public String getLineCount() {
+    public int getLineCount() {
         return LineCount;
     }
 
@@ -182,6 +186,15 @@ public class PlayLines {
 
         return PlayLType.PlayLineTypeUnknown;
     }
+
+//    @Override
+//    public int compareTo(PlayLines another) {
+//        PlayLines p=(PlayLines)another;
+//
+//        return this.LineCount-another.LineCount;
+//
+//    }
+
 
 }
 
