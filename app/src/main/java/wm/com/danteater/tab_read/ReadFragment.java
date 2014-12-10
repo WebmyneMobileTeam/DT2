@@ -102,8 +102,8 @@ import wm.com.danteater.tab_music.MusicFragment;
 
 
 public class ReadFragment extends Fragment {
-    SharedPreferenceRecordedAudio sharedPreferenceRecordedAudio;
 
+    SharedPreferenceRecordedAudio sharedPreferenceRecordedAudio;
     public boolean isUserAudioAvailable;
     public static MediaRecorder mRecorder = null;
     private static String mFileName = null;
@@ -117,7 +117,6 @@ public class ReadFragment extends Fragment {
     private ArrayList<PlayLines> playLinesesList;
     private ArrayList<AssignedUsers> assignedUsersesList = new ArrayList<AssignedUsers>();
     public static HUD dialog;
-
     private View layout_gotoLine;
     private boolean isGoToLineVisible = false;
     private Menu menu;
@@ -127,10 +126,6 @@ public class ReadFragment extends Fragment {
     public static MediaPlayer   mPlayer = null;
     File txtToSpeechfileDir;
     File recordedAudiofileDir;
-    // 0 for record state
-    // 1 for preview state
-    // 2 for chat state
-    // 3 for read
 
     public static int STATE_RECORD = 0;
     public static int STATE_PREVIEW = 1;
@@ -406,8 +401,7 @@ public class ReadFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
         View convertView = inflater.inflate(R.layout.fragment_read, container, false);
@@ -453,22 +447,6 @@ public class ReadFragment extends Fragment {
                     final int gotoL = 0;
 
                     try {
-
-/*                        new AsyncTask<Void,Void,Void>(){
-
-                            @Override
-                            protected Void doInBackground(Void... voids) {
-
-                                return null;
-                            }
-
-                            @Override
-                            protected void onPostExecute(Void aVoid) {
-                                super.onPostExecute(aVoid);
-
-                            }
-                        }.execute();*/
-
                         listRead.setSelection(Integer.parseInt(edGotoLine.getText().toString())-1);
 
                     }catch(Exception e){}
@@ -476,10 +454,7 @@ public class ReadFragment extends Fragment {
                     edGotoLine.setText("");
 
                 }
-
                 enableDisableLineLayout();
-
-
             }
         });
 
@@ -501,20 +476,34 @@ public class ReadFragment extends Fragment {
              /*   for(int i = 0 ; i<marrPlaySections.size(); i++){
                    Log.i(marrPlaySections.get(i)," count is : "+dicPlayLines.get(marrPlaySections.get(i)).size());
                 }*/
-                sharedPreferenceRecordedAudio=new SharedPreferenceRecordedAudio();
-                recordedList= sharedPreferenceRecordedAudio.loadAudio(getActivity());
+
                 readSectionedAdapter = new ReadSectionedAdapter(getActivity());
                 listRead.setAdapter(readSectionedAdapter);
                 if(lineNumber !=0) {
                     listRead.setSelection(lineNumber - 1);
                 }
-
             }
         }.execute();
 
 
         if(MusicFragment.mediaPlayer != null &&MusicFragment. mediaPlayer.isPlaying()){
             MusicFragment.mediaPlayer.stop();
+        }
+
+        sharedPreferenceRecordedAudio=new SharedPreferenceRecordedAudio();
+        recordedList= sharedPreferenceRecordedAudio.loadAudio(getActivity());
+
+        audioPlayLineList=new ArrayList<PlayLines>();
+        for(PlayLines playLine : selectedPlay.playLinesList) {
+            if(playLine.playLineType() == PlayLines.PlayLType.PlayLineTypeLine){
+                for (int i = 0; i < recordedList.size(); i++) {
+                    if (recordedList.get(i).getLineID().toString().contains(playLine.getLineID().toString())) {
+                        playLine.setSoundAvailable(true);
+                    }
+                }
+                audioPlayLineList.add(playLine);
+
+            }
         }
 
     }
@@ -715,10 +704,6 @@ public class ReadFragment extends Fragment {
                 img.setVisibility(View.VISIBLE);
             }
 
-
-
-
-
             return convertView;
         }
 
@@ -726,7 +711,6 @@ public class ReadFragment extends Fragment {
     }
 
     public void enableDisableLineLayout() {
-
 
         int static_height = 0;
         if(isGoToLineVisible == true){
@@ -849,21 +833,21 @@ public class ReadFragment extends Fragment {
                     } else {
                         isUserAudioAvailable = false;
                     }
-                     if (!(currentState == STATE_CHAT)) {
+                    if (!(currentState == STATE_CHAT)) {
 
 //                        bool isSoundAvailable = [[[[StateManager sharedInstance] userAudiosTimestamps] allKeys] containsObject:playLine.lineIdString];
 //                        [cell setUserAudioState:isSoundAvailable];
 
-                         try {
+                        try {
 
-                             for (int i = 0; i < recordedList.size(); i++) {
-                                 if (recordedList.get(i).getLineID().toString().contains(playLine.getLineID().toString())) {
-                                     isUserAudioAvailable = true;
-                                 }
-                             }
-                         } catch (Exception e) {
-                             e.printStackTrace();
-                         }
+                            for (int i = 0; i < recordedList.size(); i++) {
+                                if (recordedList.get(i).getLineID().toString().contains(playLine.getLineID().toString())) {
+                                    isUserAudioAvailable = true;
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
                     }
 
@@ -1155,7 +1139,7 @@ public class ReadFragment extends Fragment {
                             mPlayer = new MediaPlayer();
                             try {
 
-                                    mPlayer.setDataSource(mFileName);
+                                mPlayer.setDataSource(mFileName);
 
                                 mPlayer.prepare();
                                 mPlayer.start();
@@ -1472,20 +1456,16 @@ public class ReadFragment extends Fragment {
                         playPasueAll.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_pause, 0, 0, 0);
                         isplayPauseAudioclicked=true;
 
-                        audioPlayLineList=new ArrayList<PlayLines>();
-                        for(PlayLines playLine : selectedPlay.playLinesList) {
-                            if(playLine.playLineType() == PlayLines.PlayLType.PlayLineTypeLine){
-
-                                audioPlayLineList.add(playLine);
-
-                            }
+                        for(int i=0;i<audioPlayLineList.size();i++){
+                            Log.e("isSoundAvailable",audioPlayLineList.get(i).isSoundAvailable()+"");
+                            Log.e("line number",(Integer.parseInt(audioPlayLineList.get(i).LineID.substring(audioPlayLineList.get(i).LineID.lastIndexOf("-") + 1))+""));
                         }
 
                             nextLine = (Integer.parseInt(audioPlayLineList.get(indexPostion).LineID.substring(audioPlayLineList.get(indexPostion).LineID.lastIndexOf("-") + 1)));
 
                             listRead.setSelection(nextLine - mSubtractionCount);
 
-                            if (isUserAudioAvailable == true) {
+                            if (audioPlayLineList.get(indexPostion).isSoundAvailable() == true) {
                                 playUserAudio(audioPlayLineList.get(indexPostion), null, false, null);
                             } else {
                                 downloadAndPlayRecordTextToSpeech(audioPlayLineList.get(indexPostion), null);
@@ -1555,108 +1535,108 @@ public class ReadFragment extends Fragment {
         SharedPreferences preferences = getActivity().getSharedPreferences("session_id", getActivity().MODE_PRIVATE);
         String sessionId = preferences.getString("session_id","");
 
-            final  JSONObject mainOBJ = new JSONObject();
-            final  JSONObject args=new JSONObject();
-            try {
-                args.put("session_id",sessionId);
-                args.put("audio_id",soundId);
-                args.put("codec","aac");
-                args.put("sample_rate",0);
+        final  JSONObject mainOBJ = new JSONObject();
+        final  JSONObject args=new JSONObject();
+        try {
+            args.put("session_id",sessionId);
+            args.put("audio_id",soundId);
+            args.put("codec","aac");
+            args.put("sample_rate",0);
 
-                mainOBJ.put("type","jsonwsp/request");
-                mainOBJ.put("version","1.0");
-                mainOBJ.put("methodname","downloadAudio");
-                mainOBJ.put("args",args);
+            mainOBJ.put("type","jsonwsp/request");
+            mainOBJ.put("version","1.0");
+            mainOBJ.put("methodname","downloadAudio");
+            mainOBJ.put("args",args);
 
-                new AsyncTask<Void,Void,Void>() {
+            new AsyncTask<Void,Void,Void>() {
 
-                    String responseString = "";
+                String responseString = "";
 
-                    @Override
-                    protected void onPreExecute() {
-                        super.onPreExecute();
-                       if(!isplayPauseAudioclicked) {
-                           dialog = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
-                           dialog.title("Henter lyd");
-                           dialog.show();
-                       }
+                @Override
+                protected void onPreExecute() {
+                    super.onPreExecute();
+                    if(!isplayPauseAudioclicked) {
+                        dialog = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
+                        dialog.title("Henter lyd");
+                        dialog.show();
                     }
+                }
 
-                    @Override
-                    protected Void doInBackground(Void... voids) {
+                @Override
+                protected Void doInBackground(Void... voids) {
 
-                        try {
+                    try {
 
-                            String service_url = "https://mvid-services.mv-nordic.com/theater-v1/AudioService/jsonwsp";
-                            //
-                            HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
-                            DefaultHttpClient client = new DefaultHttpClient();
-                            SchemeRegistry registry = new SchemeRegistry();
-                            SSLSocketFactory socketFactory = SSLSocketFactory.getSocketFactory();
-                            socketFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
-                            registry.register(new Scheme("https", socketFactory, 443));
-                            SingleClientConnManager mgr = new SingleClientConnManager(client.getParams(), registry);
-                            DefaultHttpClient httpclient = new DefaultHttpClient(mgr, client.getParams());
+                        String service_url = "https://mvid-services.mv-nordic.com/theater-v1/AudioService/jsonwsp";
+                        //
+                        HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+                        DefaultHttpClient client = new DefaultHttpClient();
+                        SchemeRegistry registry = new SchemeRegistry();
+                        SSLSocketFactory socketFactory = SSLSocketFactory.getSocketFactory();
+                        socketFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
+                        registry.register(new Scheme("https", socketFactory, 443));
+                        SingleClientConnManager mgr = new SingleClientConnManager(client.getParams(), registry);
+                        DefaultHttpClient httpclient = new DefaultHttpClient(mgr, client.getParams());
 
 // Set verifier
-                            HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
+                        HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
 
 //                 HttpClient httpclient = new DefaultHttpClient();
-                            //  httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
-                            HttpPost httppost = new HttpPost(service_url);
-                            String boundary = "--" + "62cd4a08872da000cf5892ad65f1ebe6";
-                            httppost.setHeader("Content-type", "multipart/related; boundary=" + boundary);
+                        //  httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+                        HttpPost httppost = new HttpPost(service_url);
+                        String boundary = "--" + "62cd4a08872da000cf5892ad65f1ebe6";
+                        httppost.setHeader("Content-type", "multipart/related; boundary=" + boundary);
 
-                            HttpEntity entity = MultipartEntityBuilder.create()
-                                    .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
-                                    .setBoundary(boundary)
-                                    .addPart("body", new StringBody(mainOBJ.toString()))
-                                    .build();
-
-
-
-                            httppost.setEntity(entity);
-                            try {
-                                HttpResponse response = httpclient.execute(httppost);
-                                BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
-                                responseString = reader.readLine();
+                        HttpEntity entity = MultipartEntityBuilder.create()
+                                .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
+                                .setBoundary(boundary)
+                                .addPart("body", new StringBody(mainOBJ.toString()))
+                                .build();
 
 
-                            } catch (Exception e) {
 
-                                e.printStackTrace();
-                            }
-
-                        }catch (Exception e){}
-
-                        return null;
-                    }
-
-                    @Override
-                    protected void onPostExecute(Void aVoid) {
-                        super.onPostExecute(aVoid);
+                        httppost.setEntity(entity);
+                        try {
+                            HttpResponse response = httpclient.execute(httppost);
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+                            responseString = reader.readLine();
 
 
-                        String url = "";
-                        Log.e("response string............ ", "" + responseString.toString());
-                        try{
-                            JSONObject jsonObject = new JSONObject(responseString.toString());
-                            JSONObject inerObj = jsonObject.getJSONObject("result");
-                            url = inerObj.getString("url");
+                        } catch (Exception e) {
 
-                            Log.e("URL ", "" + url.toString());
+                            e.printStackTrace();
+                        }
 
-                        }catch(Exception e){}
+                    }catch (Exception e){}
+
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Void aVoid) {
+                    super.onPostExecute(aVoid);
 
 
-                        downloadRecordedFile(url,playLines,imgPlay,soundId,isRecordButton,endTime);
-                    }
-                }.execute();
+                    String url = "";
+                    Log.e("response string............ ", "" + responseString.toString());
+                    try{
+                        JSONObject jsonObject = new JSONObject(responseString.toString());
+                        JSONObject inerObj = jsonObject.getJSONObject("result");
+                        url = inerObj.getString("url");
 
-            }catch (Exception e){
-                e.printStackTrace();
-            }
+                        Log.e("URL ", "" + url.toString());
+
+                    }catch(Exception e){}
+
+
+                    downloadRecordedFile(url,playLines,imgPlay,soundId,isRecordButton,endTime);
+                }
+            }.execute();
+
+        }catch (Exception e){
+            e.printStackTrace();
         }
+    }
 
     private void downloadRecordedFile(String url, final PlayLines playLines,final ImageView imgPlay, final String soundId,final boolean isRecordButton,final WMTextView endTime){
 
@@ -1738,33 +1718,12 @@ public class ReadFragment extends Fragment {
                     // Displaying Total Duration time
                     endTime.setText(""+milliSecondsToTimer(totalDuration));
                 } else {
-                playDownloadedAudio(playLines,imgPlay,soundId);
+                    playDownloadedAudio(playLines,imgPlay,soundId);
                 }
             }
         }.execute();
     }
-    public String milliSecondsToTimer(long milliseconds){
-        String finalTimerString = "";
-        String secondsString = "";
 
-        // Convert total duration into time
-        int hours = (int)( milliseconds / (1000*60*60));
-        int minutes = (int)(milliseconds % (1000*60*60)) / (1000*60);
-        int seconds = (int) ((milliseconds % (1000*60*60)) % (1000*60) / 1000);
-        // Add hours if there
-        if(hours > 0){
-            finalTimerString = hours + ":";
-        }
-        if(seconds < 10){
-            secondsString = "0" + seconds;
-        }else{
-            secondsString = "" + seconds;}
-
-        finalTimerString = finalTimerString + minutes + ":" + secondsString;
-
-        // return timer string
-        return finalTimerString;
-    }
 
     private void playDownloadedAudio(PlayLines playLines, final ImageView imgPlay,final String soundId){
 
@@ -1776,27 +1735,29 @@ public class ReadFragment extends Fragment {
             downloadedSoundPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 
                 public void onCompletion(MediaPlayer mp) {
-                   if(isplayPauseAudioclicked)  {
-                       mp.stop();
-                       indexPostion++;
-                       nextLine=(Integer.parseInt(audioPlayLineList.get(indexPostion).LineID.substring(audioPlayLineList.get(indexPostion).LineID.lastIndexOf("-")+1)));
-                       Log.e("nextLine......",nextLine+"");
-                       listRead.setSelection(nextLine - mSubtractionCount);
-                       if(isUserAudioAvailable==true){
-                           playUserAudio(audioPlayLineList.get(indexPostion),null,false,null);
-                       } else {
-                           downloadAndPlayRecordTextToSpeech(audioPlayLineList.get(indexPostion),null);
-                       }
-                   } else {
-                       mp.stop();
-                       imgPlay.setBackgroundResource(R.drawable.ic_recorded_voice);
-                   }
+                    if(isplayPauseAudioclicked)  {
+                        mp.stop();
+                        indexPostion++;
+                        nextLine=(Integer.parseInt(audioPlayLineList.get(indexPostion).LineID.substring(audioPlayLineList.get(indexPostion).LineID.lastIndexOf("-")+1)));
+                        Log.e("nextLine......",nextLine+"");
+                        listRead.setSelection(nextLine - mSubtractionCount);
+                        if(audioPlayLineList.get(indexPostion).isSoundAvailable()==true){
+                            playUserAudio(audioPlayLineList.get(indexPostion),null,false,null);
+                        } else {
+                            downloadAndPlayRecordTextToSpeech(audioPlayLineList.get(indexPostion),null);
+                        }
+                    } else {
+                        mp.stop();
+                        imgPlay.setBackgroundResource(R.drawable.ic_recorded_voice);
+                    }
                 }
             });
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+
     private void downloadAndPlayRecordTextToSpeech(final PlayLines playLine,final ImageView imgPlay){
 
         ArrayList<TextLines> arrTxt = playLine.textLinesList;
@@ -1953,10 +1914,10 @@ public class ReadFragment extends Fragment {
                     URL url = new URL(theURL);
                     java.io.BufferedInputStream in = new java.io.BufferedInputStream(new java.net.URL(theURL).openStream());
                     java.io.FileOutputStream fos = new java.io.FileOutputStream(new File(txtToSpeechfileDir.getAbsolutePath()+"/"+playLines.LineID+".mp3"));
-                    java.io.BufferedOutputStream bout = new BufferedOutputStream(fos,5000);
-                    byte[] data = new byte[5000];
+                    java.io.BufferedOutputStream bout = new BufferedOutputStream(fos,1024);
+                    byte[] data = new byte[1024];
                     int x=0;
-                    while((x=in.read(data,0,5000))>=0){
+                    while((x=in.read(data,0,1024))>=0){
                         bout.write(data,0,x);
                     }
                     fos.flush();
@@ -2002,7 +1963,7 @@ public class ReadFragment extends Fragment {
                         nextLine=(Integer.parseInt(audioPlayLineList.get(indexPostion).LineID.substring(audioPlayLineList.get(indexPostion).LineID.lastIndexOf("-")+1)));
                         Log.e("nextLine......",nextLine+"");
                         listRead.setSelection(nextLine - mSubtractionCount);
-                        if(isUserAudioAvailable==true){
+                        if(audioPlayLineList.get(indexPostion).isSoundAvailable()==true){
                             playUserAudio(audioPlayLineList.get(indexPostion),null,false,null);
                         } else {
                             downloadAndPlayRecordTextToSpeech(audioPlayLineList.get(indexPostion),null);
@@ -2018,6 +1979,31 @@ public class ReadFragment extends Fragment {
 
         }
     }
+
+
+    public String milliSecondsToTimer(long milliseconds){
+        String finalTimerString = "";
+        String secondsString = "";
+
+        // Convert total duration into time
+        int hours = (int)( milliseconds / (1000*60*60));
+        int minutes = (int)(milliseconds % (1000*60*60)) / (1000*60);
+        int seconds = (int) ((milliseconds % (1000*60*60)) % (1000*60) / 1000);
+        // Add hours if there
+        if(hours > 0){
+            finalTimerString = hours + ":";
+        }
+        if(seconds < 10){
+            secondsString = "0" + seconds;
+        }else{
+            secondsString = "" + seconds;}
+
+        finalTimerString = finalTimerString + minutes + ":" + secondsString;
+
+        // return timer string
+        return finalTimerString;
+    }
+
     private void proceedMessage(PlayLines playLine) {
 
         if(currentUser.checkPupil(currentUser.getRoles())){
@@ -2057,8 +2043,6 @@ public class ReadFragment extends Fragment {
             }
 
         }
-
-
     }
 
     private void gotoAssignUserList(PlayLines playLine) {
@@ -2100,9 +2084,6 @@ public class ReadFragment extends Fragment {
             alert.show();
 
         }
-
-
-
 
     }
 

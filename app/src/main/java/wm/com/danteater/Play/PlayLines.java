@@ -66,6 +66,18 @@ public class PlayLines {
     @SerializedName("SongFiles")
     public ArrayList<SongFiles> songFilesList;
 
+    public boolean isSoundAvailable=false;
+
+    public boolean isSoundAvailable() {
+        return isSoundAvailable;
+    }
+
+    public void setSoundAvailable(boolean isSoundAvailable) {
+        this.isSoundAvailable = isSoundAvailable;
+    }
+
+
+
     public PlayLines(){
 
     }
