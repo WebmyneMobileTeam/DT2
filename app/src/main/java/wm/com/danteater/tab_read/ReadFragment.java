@@ -120,7 +120,7 @@ public class ReadFragment extends Fragment {
     public int goToLineNumberFromChatLink = 0;
     public PinnedHeaderListView listRead;
     private Play selectedPlay;
-    private ArrayList<PlayLines> playLinesesList;
+//    private ArrayList<PlayLines> playLinesesList;
     private ArrayList<AssignedUsers> assignedUsersesList = new ArrayList<AssignedUsers>();
     public static HUD dialog;
     private View layout_gotoLine;
@@ -319,7 +319,7 @@ public class ReadFragment extends Fragment {
     }
 
     public void updatePlaySpecificData() {
-        playLinesesList=new ArrayList<PlayLines>();
+
 
         new CallWebService("http://api.danteater.dk/api/PlayShare/" +selectedPlay.OrderId,CallWebService.TYPE_JSONARRAY) {
 
@@ -520,13 +520,7 @@ public class ReadFragment extends Fragment {
                             if(isHeaderChecked) {
                                 //TODO
                                 int newLinePostion=0;
-//                                Log.e("playLinesesList",playLinesesList.size()+"");
-//                                for(int i=0;i<playLinesesList.size();i++){
-//
-//                                    if(playLinesesList.get(i).LineCount.toString().equalsIgnoreCase(edGotoLine.getText().toString())){
-//                                        newLinePostion=i;
-//                                    }
-//                                }
+
                                 Set<PlayLines> list=new HashSet<PlayLines>();
                                 for(Map.Entry<String,ArrayList<PlayLines>> entry : dicPlayLines.entrySet()){
                                     list.addAll(entry.getValue());
@@ -548,17 +542,8 @@ public class ReadFragment extends Fragment {
                                     }
                                 }
 
-//                                for(int i=0;i<list.size();i++){
-//                                    Log.e("line number all: ",list.get(i).LineCount.toString()+"");
-//                                    if(edGotoLine.getText().toString().equalsIgnoreCase(list.get(i).LineCount.toString())){
-//                                        Log.e("line number: ",list.get(i).LineCount.toString()+"");
-//                                        Log.e("line number postion : ",i+"");
-//                                        newLinePostion=i;
-//
-//
-//                                    }
-//                                }
-                                listRead.setSelection(newLinePostion);
+
+                                listRead.setSelection(newLinePostion+2);
                             } else {
                                 listRead.setSelection(Integer.parseInt(edGotoLine.getText().toString())-1);
                             }
@@ -1605,7 +1590,7 @@ public class ReadFragment extends Fragment {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checkboxValue) {
                     if(checkboxValue==true){
-                        playLinesesList.clear();
+
                         isHeaderChecked=true;
                         if(currentState == STATE_RECORD) {
 
