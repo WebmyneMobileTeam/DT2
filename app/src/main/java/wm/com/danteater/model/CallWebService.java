@@ -119,7 +119,11 @@ public abstract class CallWebService implements IService {
 							error(e);
 						}
 					});
-
+//            request.setRetryPolicy(
+//                    new DefaultRetryPolicy(
+//                            0,
+//                            0,
+//                            0));
 			MyApplication.getInstance().addToRequestQueue(request);
 
 			break;
@@ -143,7 +147,11 @@ public abstract class CallWebService implements IService {
 							error(arg0);
 						}
 					});
-
+//            request2.setRetryPolicy(
+//                    new DefaultRetryPolicy(
+//                            0,
+//                            0,
+//                            0));
 			MyApplication.getInstance().addToRequestQueue(request2);
 
 			break;

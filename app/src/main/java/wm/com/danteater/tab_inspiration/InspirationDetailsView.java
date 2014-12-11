@@ -88,23 +88,23 @@ public class InspirationDetailsView extends Dialog{
 
         if(inspiration.ImageUrlMedium != null && !inspiration.ImageUrlMedium.equalsIgnoreCase("")){
 
-//            ImageLoader.getInstance().loadImage(inspiration.ImageUrlMedium
-//                    ,new SimpleImageLoadingListener() {
-//                @Override
-//                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+            ImageLoader.getInstance().loadImage(inspiration.ImageUrlMedium
+                    ,new SimpleImageLoadingListener() {
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+
+                    iv.setImageBitmap(loadedImage);
+                }
+            });
+
+
+//            Picasso.with(ctx)
+//                    .load(inspiration.ImageUrlMedium)
+//                    .placeholder(R.drawable.camerax)   // optional
 //
-//                    iv.setImageBitmap(loadedImage);
-//                }
-//            });
-
-
-            Picasso.with(ctx)
-                    .load(inspiration.ImageUrlMedium)
-                    .placeholder(R.drawable.camerax)   // optional
-
-                       // optional
-                            // optional
-                    .into(iv);
+//                       // optional
+//                            // optional
+//                    .into(iv);
         }
     }
 

@@ -9,8 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:scaleType="fitXY"
         android:src="@drawable/ic_launcher"
-        android:scaleType="center" />
+         />
 
     <TextView
         android:id="@+id/txtItemInspiration"

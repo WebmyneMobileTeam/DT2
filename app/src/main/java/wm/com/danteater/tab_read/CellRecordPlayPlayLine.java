@@ -197,7 +197,7 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
         showComments = preferences.getBoolean("showComments", false);
 
         if (showLineNumber == true) {
-            lblLineNumber.setText(playLine.LineCount);
+            lblLineNumber.setText(String.valueOf(playLine.LineCount));
         } else {
             lblLineNumber.setText("");
         }
@@ -366,7 +366,8 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
         seekbarView=(LinearLayout)view.findViewById(R.id.seekbarView);
 
         if(isUserAudioAvailable) {
-            recordPopupTextArea.setText(textLine.currentText());
+
+            recordPopupTextArea.setText(tvPlayLines.getText().toString());
             seekbarView.setVisibility(View.VISIBLE);
             recordPopupSave.setEnabled(true);
             btnPlay.setEnabled(true);
@@ -376,7 +377,7 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
             delegate.onPlayClicked(playLine,imgPLay,isUserAudioAvailable,isRecordButton, endTime);
 
         }else {
-            recordPopupTextArea.setText(textLine.currentText());
+            recordPopupTextArea.setText(tvPlayLines.getText().toString());
             seekbarView.setVisibility(View.GONE);
             recordPopupSave.setEnabled(false);
             btnPlay.setEnabled(false);

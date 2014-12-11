@@ -200,8 +200,13 @@ public class ReadFragment extends Fragment {
         sharedPreferenceRecordedAudio=new SharedPreferenceRecordedAudio();
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref", 0);
         selectedPlay = complexPreferences.getObject("selected_play", Play.class);
-        currentUser = complexPreferences.getObject("current_user", User.class);
-
+        ComplexPreferences complexPreferencesPupil = ComplexPreferences.getComplexPreferences(getActivity(), "user_pref", 0);
+        currentUser = complexPreferencesPupil.getObject("current_user", User.class);
+        isPupil= currentUser.checkPupil(currentUser.getRoles());
+        if(isPupil){
+            FragmentMyPlay.isPreview=false;
+        }
+        if(!FragmentMyPlay.isPreview ) {
         new CallWebService("http://api.danteater.dk/Api/Audio?UserId=&OrderId="+selectedPlay.OrderId+"&LineId=&isTeacher=false",CallWebService.TYPE_JSONARRAY) {
 
             @Override
@@ -210,19 +215,15 @@ public class ReadFragment extends Fragment {
                 Log.e("Response recorded audio  : ", "" + response);
                 Type listType = new TypeToken<ArrayList<RecordedAudio>>(){}.getType();
               recordedList = new GsonBuilder().create().fromJson(response, listType);
+
                 if(recordedList !=null) {
                     sharedPreferenceRecordedAudio.clearAudio(getActivity());
                     for (int i = 0; i < recordedList.size(); i++) {
                         sharedPreferenceRecordedAudio.saveAudio(getActivity(), recordedList.get(i));
                     }
                 }
-                ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "user_pref", 0);
-                User user = complexPreferences.getObject("current_user", User.class);
-                isPupil= user.checkPupil(user.getRoles());
-                if(isPupil){
-                    FragmentMyPlay.isPreview=false;
-                }
-                if(!FragmentMyPlay.isPreview ) {
+
+
                     try {
                         Log.e("isPreview: ", FragmentMyPlay.isPreview + "");
                         sharedPreferenceRecordedAudio = new SharedPreferenceRecordedAudio();
@@ -246,7 +247,7 @@ public class ReadFragment extends Fragment {
                     }
                 }
 
-            }
+
 
             @Override
             public void error(VolleyError error) {
@@ -256,7 +257,7 @@ public class ReadFragment extends Fragment {
 
             }
         }.start();
-
+        }
 
 
         fileDir = new File(Environment.getExternalStorageDirectory()+ "/danteater/recording");
@@ -331,7 +332,7 @@ public class ReadFragment extends Fragment {
                 _marrSharedWithUsersString = response;
                 _marrSharedWithUsers = new ArrayList<SharedUser>();
                 _marrSharedWithUsers = new GsonBuilder().create().fromJson(response,listType);
-//                Log.e("_maarSharedWithUsers ",""+_marrSharedWithUsers);
+                Log.e("_maarSharedWithUsers ",""+_marrSharedWithUsers);
             }
 
             @Override
@@ -364,6 +365,7 @@ public class ReadFragment extends Fragment {
 
         if(dicPlayLines == null){
             dicPlayLines = new HashMap<String,ArrayList<PlayLines>>();
+
         }else{
             dicPlayLines.clear();
         }
@@ -415,16 +417,16 @@ public class ReadFragment extends Fragment {
                     dicPlayLines.get(currentKey).add(playLine);
                 }
 
+                if(playLine.playLineType() == PlayLines.PlayLType.PlayLineTypeSong) {
+                    if (!isHeaderChecked) {
+                        int section = marrPlaySections.indexOf(currentKey);
+                        int row = dicPlayLines.get(currentKey).size();
 
-                if(playLine.playLineType() == PlayLines.PlayLType.PlayLineTypeSong){
-
-                    int section = marrPlaySections.indexOf(currentKey);
-                    int row = dicPlayLines.get(currentKey).size();
-
-                    String songTitle = playLine.textLinesList.get(0).LineText;
-                    mdictSongIndexPaths.put(songTitle,section+","+row); // hack for similar to indexPath in iOS
-                    // seperated by ","
-                    // First object is section and second is row
+                        String songTitle = playLine.textLinesList.get(0).LineText;
+                        mdictSongIndexPaths.put(songTitle, section + "," + row); // hack for similar to indexPath in iOS
+                        // seperated by ","
+                        // First object is section and second is row
+                    }
                 }
 
             }

@@ -23,6 +23,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.BaseAdapter;
 import android.widget.GridLayout;
 import android.widget.GridView;
@@ -180,6 +181,8 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
                 iv.setImageResource(arrImagesTeacher[i]);
                 tv.setText(arrCaptionsTeachers[i]);
                 GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(new ViewGroup.MarginLayoutParams(w / 2, w / 4));
+                layoutParams.setMargins(20,20,20,20);
+
 
                 vIT.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -211,6 +214,7 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
                 ivn.setImageResource(arrImagesPupils[k]);
                 tvn.setText(arrCaptionsPupils[k]);
                 GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(new ViewGroup.MarginLayoutParams(w / 2, w / 4));
+                layoutParams.setMargins(20,20,20,20);
                 vit.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -244,9 +248,9 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
 
             int w = getResources().getDisplayMetrics().widthPixels;
             GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(new ViewGroup.MarginLayoutParams(w / 2, w / 4));
-
+                layoutParams.setMargins(20,20,20,20);
             final ImageView iv = new ImageView(getActivity());
-            iv.setScaleType(ImageView.ScaleType.CENTER);
+            iv.setScaleType(ImageView.ScaleType.FIT_XY);
             iv.setImageResource(R.drawable.cameraadd);
             gridInspiration.addView(iv, 0, layoutParams);
 
@@ -262,7 +266,16 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
             });
 
 
-
+//        ViewTreeObserver vto = layout.getViewTreeObserver();
+//        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//            @Override
+//            public void onGlobalLayout() {
+//                this.layout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+//                int width  = layout.getMeasuredWidth();
+//                int height = layout.getMeasuredHeight();
+//
+//            }
+//        });
 
 
         final HUD dialog = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
@@ -303,12 +316,13 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
             final int showInsp = i;
             GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(new ViewGroup.MarginLayoutParams(w /2, w / 4));
             layoutParams.setGravity(Gravity.CENTER);
+            layoutParams.setMargins(20,20,20,20);
             final ImageView ivi = new ImageView(getActivity());
 
 //            ivi.setImageResource(R.drawable.camerax);
-            ivi.setPadding((int)convertPixelsToDp(32,getActivity()),(int)convertPixelsToDp(16,getActivity()),(int)convertPixelsToDp(32,getActivity()),(int)convertPixelsToDp(16,getActivity()));
+//            ivi.setPadding((int)convertPixelsToDp(32,getActivity()),(int)convertPixelsToDp(16,getActivity()),(int)convertPixelsToDp(32,getActivity()),(int)convertPixelsToDp(16,getActivity()));
             ivi.requestLayout();
-//            ivi.setScaleType(ImageView.ScaleType.FIT_XY);
+            ivi.setScaleType(ImageView.ScaleType.CENTER_CROP);
             gridInspiration.addView(ivi,layoutParams);
 
             if(inspirations.get(showInsp).ImageUrlSmall != null && !inspirations.get(showInsp).ImageUrlSmall.equalsIgnoreCase("")){
@@ -326,9 +340,10 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
 
                 Picasso.with(getActivity())
                         .load(inspirations.get(showInsp).ImageUrlSmall)
-                        .placeholder(R.drawable.camerax)   // optional
-
-                        .fit()      // optional
+                        .placeholder(R.drawable.camerax)
+//                        .centerCrop()
+//                        .resize(175, 95)
+                            // optional
                                                  // optional
                         .into(ivi);
             }
