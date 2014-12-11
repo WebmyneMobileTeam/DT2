@@ -1,6 +1,7 @@
 package wm.com.danteater.app;
 
 import android.graphics.Color;
+import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTabHost;
 import android.view.Menu;
@@ -50,13 +51,11 @@ public class PlayTabActivity extends BaseActivity {
     //    Intent i=getIntent();
     //    playinfo =i.getStringExtra("infoData");
     //    type_navigation = i.getStringExtra("type_navigation");
+    //    Helping to create a tabs to this application
 
-
-        // Helping to create a tabs to this application
         initTabHost();
         mTabHost.setCurrentTab(0);
         selectTAB(0);
-
 
         // Check weather the received extra string is read or share to select corresponding tabs;
       /*  if(type_navigation.equalsIgnoreCase("Read")){
@@ -191,10 +190,13 @@ public class PlayTabActivity extends BaseActivity {
         super.onPause();
 
         if(MusicFragment.mediaPlayer !=null && MusicFragment.mediaPlayer.isPlaying()){
+
             MusicFragment.mediaPlayer.pause();
             MusicFragment.mediaPlayer.stop();
             finish();
         }
+
+
     }
 
     @Override
@@ -205,5 +207,6 @@ public class PlayTabActivity extends BaseActivity {
             MusicFragment.mediaPlayer.pause();
             MusicFragment.mediaPlayer.stop();
         }
+
     }
 }

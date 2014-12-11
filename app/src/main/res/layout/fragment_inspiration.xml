@@ -59,9 +59,10 @@
 
             <GridLayout
 
+
                 android:columnCount="2"
                 android:id="@+id/gridInspiration"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"></GridLayout>
 
 
@@ -93,7 +94,7 @@
 
                 android:columnCount="2"
                 android:id="@+id/gridTeacherInspiration"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"></GridLayout>
 
 
@@ -118,11 +119,12 @@
                 />
 
             <GridLayout
-
                 android:columnCount="2"
                 android:id="@+id/gridPupilsInspiration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"></GridLayout>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                </GridLayout>
 
         </LinearLayout>
     </LinearLayout>

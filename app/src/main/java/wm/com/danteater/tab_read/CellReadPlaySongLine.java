@@ -24,7 +24,6 @@ public class CellReadPlaySongLine {
     public CellReadPlaySongLine(View view,Context ctx) {
 
         txtDescription = (WMTextView)view.findViewById(R.id.readPlaySongLineCellDescription);
-
         txtRoleName = (WMTextView)view.findViewById(R.id.readPlaySongLineCellRollName);
         viewSongLineBottom = (View)view.findViewById(R.id.viewSongLineBottom);
         txtRoleName.setBold();
@@ -69,12 +68,6 @@ public class CellReadPlaySongLine {
                 txtDescription.setTextColor(Color.parseColor(AppConstants.songLineTextColor));
             }
 
-
-
         }
-
-
-
-
     }
 }

@@ -36,7 +36,6 @@ public class HUD extends Dialog{
     private TextView txtTitle;
     private FrameLayout frameLayout;
 
-
     public HUD(Context context, int theme) {
         super(context, theme);
         this.ctx = context;
@@ -52,8 +51,6 @@ public class HUD extends Dialog{
         imgStatus = (ImageView)convertView.findViewById(R.id.imgStatus);
         txtTitle = (TextView)convertView.findViewById(R.id.txttitle);
         frameLayout = (FrameLayout)convertView.findViewById(R.id.frame);
-
-
 
     }
 

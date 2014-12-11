@@ -378,8 +378,6 @@ public class CellReadPlaySong {
                     }
                 });
 
-
-
             return convertView;
         }
     }

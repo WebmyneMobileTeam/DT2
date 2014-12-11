@@ -164,8 +164,8 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             public void response(String response) {
                 Type listType=new TypeToken<List<MessageUnread>>(){
                 }.getType();
-                if(response !=null) {
 
+                if(response !=null) {
                     messageUnreadArrayList = new GsonBuilder().create().fromJson(response, listType);
                     if (getActivity() != null) {
                         SharedPreferences preferencesBadgeValue = getActivity().getSharedPreferences("badge_value", getActivity().MODE_PRIVATE);
@@ -180,8 +180,6 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                         }
 
                         badgeValue = preferencesBadgeValue.getString("badge_count", "0");
-
-
                         if (badgeValue.equalsIgnoreCase("0")) {
                             setHasOptionsMenu(false);
                         } else {
@@ -202,9 +200,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 
             @Override
             public void error(VolleyError error) {
-
                 Log.e("error: ",error+"");
-
             }
         }.start();
     }

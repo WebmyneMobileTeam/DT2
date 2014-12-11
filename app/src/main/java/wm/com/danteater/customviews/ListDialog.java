@@ -59,8 +59,6 @@ public  class ListDialog extends Dialog{
         });
 
     }
-
-
     public void title(String title){
 
         txtTitle.setText(title);
@@ -72,7 +70,6 @@ public  class ListDialog extends Dialog{
         listDialog.setAdapter(adapter);
 
     }
-
 
     public class TypeAdapter extends ArrayAdapter{
 
@@ -93,7 +90,6 @@ public  class ListDialog extends Dialog{
             textView.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
             textView.setTextColor(Color.BLACK);
 
-
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -109,7 +105,6 @@ public  class ListDialog extends Dialog{
     }
 
    public static interface setSelectedListner{
-
        public void selected(String value);
    }
 

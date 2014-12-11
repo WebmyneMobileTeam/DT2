@@ -45,7 +45,6 @@ import wm.com.danteater.my_plays.ReadActivityFromPreview;
 
 public class LoginActivity extends BaseActivity {
 
-
     public  DeviceSecurity m_device_security=null;
     boolean shouldShowLoginView;
     private LinearLayout loginView, noAccessView;
@@ -61,6 +60,8 @@ public class LoginActivity extends BaseActivity {
     JSONObject request_params;
     JSONObject request_params2; //for tryToLogin2 method
     StateManager stateManager = StateManager.getInstance();
+
+
 
   public String aaccess_identifier = "product.ios.da.intowords";
  //   public String aaccess_identifier = "product.ios.ml.theaterapp.1";
@@ -124,14 +125,17 @@ public class LoginActivity extends BaseActivity {
         if (shouldShowLoginView == false) {
 
             m_device_security.releaseDeviceRegistration();
+
         }
         // try to login
         if (isConnected()) {
+
             // TODO change to login with android
             m_device_security.doLogin(aaccess_identifier, R.id.fragment_layout);
             loginView.setVisibility(View.VISIBLE);
             noAccessView.setVisibility(View.GONE);
             noNetworkView.setVisibility(View.GONE);
+
         } else {
             m_device_security.doLogin(aaccess_identifier, R.id.fragment_layout);
             loginView.setVisibility(View.GONE);
@@ -147,6 +151,7 @@ public class LoginActivity extends BaseActivity {
         public void onMVIDResponseReady(MVIDResponse response) {
 
             if (response.has_access == false) {
+
                 m_device_security.releaseDeviceRegistration();
 
             }
@@ -248,6 +253,7 @@ public class LoginActivity extends BaseActivity {
                 public void onErrorResponse(VolleyError arg0) {
                 }
             });
+
             MyApplication.getInstance().addToRequestQueue(req);
         }
     };

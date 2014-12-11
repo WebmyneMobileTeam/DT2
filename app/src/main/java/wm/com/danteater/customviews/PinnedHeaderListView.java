@@ -14,6 +14,7 @@ public class PinnedHeaderListView extends ListView implements OnScrollListener {
     private OnScrollListener mOnScrollListener;
 
     public static interface PinnedSectionedHeaderAdapter {
+
         public boolean isSectionHeader(int position);
 
         public int getSectionForPosition(int position);

@@ -110,6 +110,9 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
 
     private User currentUser;
 
+    public static int HACK_WIDTH = 160;
+    public static int HACK_HEIGHT = 90;
+
 
     public static FragmnentInspiration newInstance(String param1, String param2) {
         FragmnentInspiration fragment = new FragmnentInspiration();
@@ -172,6 +175,7 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
         if(currentUser.checkTeacherOrAdmin(currentUser.getRoles())){
 
             linearTeacherInspirations.setVisibility(View.VISIBLE);
+
             for (int i = 0; i < arrVideosTeachers.length; i++) {
 
                 final int play = i;
@@ -181,8 +185,10 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
                 iv.setImageResource(arrImagesTeacher[i]);
                 tv.setText(arrCaptionsTeachers[i]);
                 GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(new ViewGroup.MarginLayoutParams(w / 2, w / 4));
-                layoutParams.setMargins(20,20,20,20);
 
+                iv.getLayoutParams().width = HACK_WIDTH;
+                iv.getLayoutParams().height = HACK_HEIGHT;
+                iv.requestLayout();
 
                 vIT.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -195,10 +201,7 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
                 });
                 gridTeachers.addView(vIT, layoutParams);
 
-
             }
-
-
 
         }
 
@@ -214,7 +217,14 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
                 ivn.setImageResource(arrImagesPupils[k]);
                 tvn.setText(arrCaptionsPupils[k]);
                 GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(new ViewGroup.MarginLayoutParams(w / 2, w / 4));
-                layoutParams.setMargins(20,20,20,20);
+
+                ivn.getLayoutParams().width = HACK_WIDTH;
+                ivn.getLayoutParams().height = HACK_HEIGHT;
+                ivn.requestLayout();
+
+
+
+
                 vit.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -248,11 +258,20 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
 
             int w = getResources().getDisplayMetrics().widthPixels;
             GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(new ViewGroup.MarginLayoutParams(w / 2, w / 4));
-                layoutParams.setMargins(20,20,20,20);
+
+
             final ImageView iv = new ImageView(getActivity());
             iv.setScaleType(ImageView.ScaleType.FIT_XY);
             iv.setImageResource(R.drawable.cameraadd);
-            gridInspiration.addView(iv, 0, layoutParams);
+
+
+        LinearLayout linearItem = new LinearLayout(getActivity());
+        linearItem.setGravity(Gravity.CENTER);
+        linearItem.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams ip = new LinearLayout.LayoutParams(HACK_WIDTH,HACK_HEIGHT);
+        linearItem.addView(iv,ip);
+
+        gridInspiration.addView(linearItem, 0, layoutParams);
 
             registerForContextMenu(iv);
             iv.setOnClickListener(new View.OnClickListener() {
@@ -315,16 +334,23 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
 
             final int showInsp = i;
             GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(new ViewGroup.MarginLayoutParams(w /2, w / 4));
+
             layoutParams.setGravity(Gravity.CENTER);
-            layoutParams.setMargins(20,20,20,20);
             final ImageView ivi = new ImageView(getActivity());
 
 //            ivi.setImageResource(R.drawable.camerax);
 //            ivi.setPadding((int)convertPixelsToDp(32,getActivity()),(int)convertPixelsToDp(16,getActivity()),(int)convertPixelsToDp(32,getActivity()),(int)convertPixelsToDp(16,getActivity()));
             ivi.requestLayout();
             ivi.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            gridInspiration.addView(ivi,layoutParams);
 
+            LinearLayout linearItem = new LinearLayout(getActivity());
+            linearItem.setGravity(Gravity.CENTER);
+            linearItem.setOrientation(LinearLayout.VERTICAL);
+            LinearLayout.LayoutParams ip = new LinearLayout.LayoutParams(HACK_WIDTH,HACK_HEIGHT);
+            linearItem.addView(ivi,ip);
+
+
+            gridInspiration.addView(linearItem,layoutParams);
             if(inspirations.get(showInsp).ImageUrlSmall != null && !inspirations.get(showInsp).ImageUrlSmall.equalsIgnoreCase("")){
 
 //                ImageLoader.getInstance().loadImage(inspirations.get(showInsp).ImageUrlSmall

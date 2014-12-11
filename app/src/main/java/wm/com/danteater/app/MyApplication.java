@@ -43,11 +43,13 @@ public class MyApplication extends Application {
 	super.onCreate();
     // initialize the singleton
     sInstance = this;
+
         db_wrapper = new DatabaseWrapper(this.getApplicationContext());
         try {
             db_wrapper.createDataBase();
         }catch(Exception e){e.printStackTrace();}
     }
+
     
     /**
      * @return ApplicationController singleton instance
@@ -65,7 +67,6 @@ public class MyApplication extends Application {
         if (mRequestQueue == null) {
             mRequestQueue = Volley.newRequestQueue(getApplicationContext());
         }
-
         return mRequestQueue;
     }
 
