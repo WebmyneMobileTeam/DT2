@@ -324,28 +324,35 @@ public class LoginActivity extends BaseActivity {
 //                    stateManager.retriveSchoolClasses(session_id, user.getDomain());
 //                    stateManager.retriveSchoolTeachers(session_id, user.getDomain());
                     // check user is login first time or not
-                    SharedPreferences preferences = getSharedPreferences("show_tutorial",MODE_PRIVATE);
-                    String lastLoginUsers=preferences.getString("last_login_users", "");
+                    if(isTeacherOrAdmin){
+                        SharedPreferences preferences = getSharedPreferences("show_tutorial",MODE_PRIVATE);
+                        String lastLoginUsers=preferences.getString("last_login_users", "");
 
                         SharedPreferences.Editor editor = preferences.edit();
                         editor.putString("last_login_users", lastLoginUsers+"*"+user.getUserId());
                         editor.commit();
 
-                    boolean showtutorial=false;
+                        boolean showtutorial=false;
                         if((!lastLoginUsers.contains(user.getUserId().toString()))){
                             showtutorial=true;
                         }
 
-                    // go to next screen
-                    if (isFirstTime() || showtutorial) { // show guide pages
-                        Intent i = new Intent(LoginActivity.this, GuideStartup.class);
-                        startActivity(i);
-                        finish();
-                    } else {    // show home screen
+                        // go to next screen
+                        if (isFirstTime() || showtutorial) { // show guide pages
+                            Intent i = new Intent(LoginActivity.this, GuideStartup.class);
+                            startActivity(i);
+                            finish();
+                        } else {    // show home screen
+                            Intent i = new Intent(LoginActivity.this, DrawerActivity.class);
+                            startActivity(i);
+                            finish();
+                        }
+                    } else {
                         Intent i = new Intent(LoginActivity.this, DrawerActivity.class);
                         startActivity(i);
                         finish();
                     }
+
                 }
             }
         });

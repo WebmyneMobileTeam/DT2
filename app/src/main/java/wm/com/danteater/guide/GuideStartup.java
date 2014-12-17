@@ -57,14 +57,10 @@ public class GuideStartup extends Activity {
 //                int item=viewPager.getCurrentItem();
                 if(currentPage==2) {
                     btnStartUp.setVisibility(View.VISIBLE);
+                    btnSkip.setVisibility(View.GONE);
                 } else {
                     btnStartUp.setVisibility(View.GONE);
-                }
-
-                if(currentPage==0) {
                     btnSkip.setVisibility(View.VISIBLE);
-                } else {
-                    btnSkip.setVisibility(View.GONE);
                 }
             }
 

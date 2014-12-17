@@ -452,8 +452,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             ImageView imgPreviewTrashIcon;
         }
 
-        public View getView(final int position, View convertView,
-                            ViewGroup parent) {
+        public View getView(final int position, View convertView,ViewGroup parent) {
 
             final ViewHolder holder;
             LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
@@ -518,7 +517,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 public void onClick(View v) {
                     // Goto read page
                     dialog_next = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
-                    dialog_next.title("Henter");
+                    dialog_next.title("Henter skuespil");
                     dialog_next.show();
 
                     gotoSpecificPage(position,0,playListForReview.get(position),ACTIVITY_TYPE.ORDER_ACTIVITY);
@@ -758,7 +757,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 public void onClick(View v) {
 
                     dialog_next = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
-                    dialog_next.title("Henter");
+                    dialog_next.title("Henter skuespil");
                     dialog_next.show();
                     gotoSpecificPage(position,0,playListForPerform.get(position),ACTIVITY_TYPE.TAB_ACTIVITY);
 

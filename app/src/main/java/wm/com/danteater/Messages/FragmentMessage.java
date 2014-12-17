@@ -90,6 +90,7 @@ public class FragmentMessage extends Fragment {
         dialog = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
         dialog.title("");
         dialog.show();
+        Log.e("message list","http://api.danteater.dk/api/MessageUser/"+currentUser.getUserId()+"");
         new CallWebService("http://api.danteater.dk/api/MessageUser/"+currentUser.getUserId(), CallWebService.TYPE_JSONARRAY) {
 
             @Override
@@ -225,7 +226,7 @@ public class FragmentMessage extends Fragment {
         dialog = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
         dialog.title("");
         dialog.show();
-//        Log.e("generated url: ","http://api.danteater.dk/api/Message/"+currentUser.getUserId()+"?recipient="+chatUserList.get(position));
+        Log.e("generated url: ","http://api.danteater.dk/api/Message/"+currentUser.getUserId()+"?recipient="+chatUserList.get(position));
         new CallWebService("http://api.danteater.dk/api/Message/"+currentUser.getUserId()+"?recipient="+chatUserList.get(position), CallWebService.TYPE_JSONARRAY) {
 
             @Override

@@ -401,8 +401,8 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
 
-        menu.add(0,1, Menu.NONE,"Camera");
-        menu.add(0,2,Menu.NONE,"Choose from gallery");
+        menu.add(0,1, Menu.NONE,"Tag foto");
+        menu.add(0,2,Menu.NONE,"Vælg eksisterende");
 
     }
 

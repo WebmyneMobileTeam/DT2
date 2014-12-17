@@ -417,8 +417,8 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
                             if (firstDate.after(seocndDate) ) {
                                 isValidDate=false;
                                 if(isFirstdate) {
-
-                                    txtFirstDateValue.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+                                    txtSecondDateValue.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+//                                    txtFirstDateValue.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
                                 } else {
                                     txtSecondDateValue.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
                                 }

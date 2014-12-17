@@ -16,6 +16,7 @@
 
     <wm.com.danteater.customviews.WMTextView
         android:id="@+id/txtItemCommentText"
+        android:textStyle="italic"
         android:layout_width="match_parent"
         android:layout_gravity="center_vertical"
         android:textColor="#000"

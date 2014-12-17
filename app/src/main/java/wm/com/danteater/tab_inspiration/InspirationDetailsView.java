@@ -7,6 +7,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -37,6 +39,7 @@ public class InspirationDetailsView extends Dialog{
     private EditText tvComment;
     private TextView tvName;
     private TextView tvGem;
+    private TextView txtCancelInspirationDialog;
     ImageLoader loader;
 
     public InspirationDetailsView(Context context, int theme) {
@@ -50,25 +53,34 @@ public class InspirationDetailsView extends Dialog{
     }
 
     public void init() {
-
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         LayoutInflater inflater = (LayoutInflater) ctx.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
         convertView = inflater.inflate(R.layout.inspiration_details_view,null);
         setContentView(convertView);
-
+        txtCancelInspirationDialog=(TextView)convertView.findViewById(R.id.txtCancelInspirationDialog);
         parentDialog=(FrameLayout)convertView.findViewById(R.id.parentDialog);
         iv = (ImageView)convertView.findViewById(R.id.imgDialogInspiration);
 
         iv.getLayoutParams().height = (int)(ctx.getResources().getDisplayMetrics().widthPixels/3);
         iv.requestLayout();
         tvComment = (EditText)convertView.findViewById(R.id.txtDialogCommentInspiration);
-        tvComment.setHint("Skriv en kort beskrivelse her...");
+        tvComment.setHint("Hjælp andre lærere med gore ideer fra jeres forestilling. Lav en kort beskrivelse her…");
         tvName = (TextView)convertView.findViewById(R.id.txtDialogUserDetailInspiration);
         tvGem = (TextView)convertView.findViewById(R.id.txtDialogGemInspiration);
-
+        setCanceledOnTouchOutside(true);
 
         parentDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ((InputMethodManager)ctx.getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(tvComment.getWindowToken(), 0);
+                dismiss();
+            }
+        });
+
+        txtCancelInspirationDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
                 dismiss();
             }
         });
@@ -80,7 +92,7 @@ public class InspirationDetailsView extends Dialog{
     }
 
     public void setupExistingInspiration(Inspiration inspiration){
-
+        tvComment.setHint("");
         tvComment.setText(inspiration.MessageText);
         tvComment.setEnabled(false);
         tvName.setText(inspiration.UserName+","+inspiration.SchoolName);

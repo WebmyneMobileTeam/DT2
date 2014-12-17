@@ -268,6 +268,7 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
                 }
 
                 txt.setText(com.commentText);
+
                 listReadPlayPlaylinecell.addView(vComment,params);
                 listReadPlayPlaylinecell.invalidate();
             }

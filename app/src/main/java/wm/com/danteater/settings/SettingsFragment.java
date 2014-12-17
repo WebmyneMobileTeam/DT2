@@ -33,7 +33,8 @@ public class SettingsFragment extends Fragment {
     private TextView txtVersionNo;
     private Button btnappshare;
 
-    private static String shareLink = "Hej med dig,\n\nJeg har prøvet Danteater-appen, og den er rigtig god.\nDu kan hente den her: https://itunes.apple.com/dk/app/danteater/id900901253?mt=8\"";
+    private static String shareLink = "Hej med dig,\n\nJeg har prøvet Danteater-appen, og den er rigtig god.\nDu kan hente den her: https://itunes.apple.com/dk/app/danteater/id900901253?mt=8\n" +
+            "Du kan hente den her: https://play.google.com/store/apps/details?id=wm.com.danteater";
 
 
     public static SettingsFragment newInstance(String param1, String param2) {
