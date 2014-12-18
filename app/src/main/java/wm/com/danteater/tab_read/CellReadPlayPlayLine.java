@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -259,6 +260,7 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
 
                 View vComment = mInflater.inflate(R.layout.item_comment_list,null);
                 WMTextView txt = (WMTextView)vComment.findViewById(R.id.txtItemCommentText);
+                txt.setTypeface(null,Typeface.ITALIC);
                 ImageView img = (ImageView)vComment.findViewById(R.id.imgCommentCompose);
 
                 if(com.isPrivate){
