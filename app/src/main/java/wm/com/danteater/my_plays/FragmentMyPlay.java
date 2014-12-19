@@ -517,7 +517,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 public void onClick(View v) {
                     // Goto read page
                     dialog_next = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
-                    dialog_next.title("Henter skuespil");
+                    dialog_next.title("Henter"+"\n"+"skuespil");
                     dialog_next.show();
 
                     gotoSpecificPage(position,0,playListForReview.get(position),ACTIVITY_TYPE.ORDER_ACTIVITY);

@@ -39,7 +39,7 @@ public class CellReadPlayInfo {
           //  convertView.setBackgroundColor(ctx.getResources().getColor(R.color.read_play_cell));
         }
 
-        if(section<indexForFirstScene-1 || section==0){
+        if((section<indexForFirstScene-1 || section==0) && !(current_state == STATE_RECORD)){
             convertView.setBackgroundColor(ctx.getResources().getColor(R.color.read_play_cell));
         }
 

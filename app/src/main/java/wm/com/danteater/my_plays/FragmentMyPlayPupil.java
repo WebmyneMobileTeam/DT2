@@ -177,7 +177,7 @@ public class FragmentMyPlayPupil extends Fragment {
 
         // show loading
         dialog = new HUD(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
-        dialog.title("Mine Stykker");
+        dialog.title("Mine stykker");
         dialog.show();
 
         new CallWebService("http://api.danteater.dk/api/MyPlays?UserId=" + user.getUserId(), CallWebService.TYPE_JSONARRAY) {
@@ -338,7 +338,7 @@ public class FragmentMyPlayPupil extends Fragment {
                 public void onClick(View v) {
 
                     dialog_next = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
-                    dialog_next.title("Henter");
+                    dialog_next.title("Henter"+"\n"+"skuespil");
                     dialog_next.show();
                     //   gotoTabActivity(position, "Read");
                     gotoSpecificPage(position,0,playListForPerform.get(position),ACTIVITY_TYPE.TAB_ACTIVITY);

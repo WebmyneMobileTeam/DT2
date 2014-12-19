@@ -95,9 +95,11 @@ public class ChatViewFromRead extends BaseActivity{
         btnSendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               messagesForConversationArrayList.add(new MessagesForConversation("",selectedPlay.OrderId,currentPlayLine.LineID,currentUser.getUserId(),"",currentPlayLine.LineID + "\n" +selectedPlay.Title.replace(" ","_")+"-"+currentPlayLine.RoleName+"-"+currentPlayLine.LineID.substring(currentPlayLine.LineID.lastIndexOf("-")+1)+"\n"+etMessageValue.getText().toString().trim()+"","",""));
+               messagesForConversationArrayList.add(new MessagesForConversation("",selectedPlay.OrderId,currentPlayLine.LineID,currentUser.getUserId(),"",currentPlayLine.LineID + "\n" +selectedPlay.Title.replace(" ","_")+"-"+currentPlayLine.RoleName+"-"+currentPlayLine.LineID.substring(currentPlayLine.LineID.lastIndexOf("-")+1)+"\n"+etMessageValue.getText().toString().trim()+"",0.0,""));
+
                 chatAdapter=new ChatAdapter(ChatViewFromRead.this);
                 listChat.setAdapter(chatAdapter);
+                chatAdapter.notifyDataSetChanged();
 
                 if(currentUser.checkPupil(currentUser.getRoles())) {
                     // For Student

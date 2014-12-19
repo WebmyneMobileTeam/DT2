@@ -108,7 +108,6 @@ public class PlayTabActivity extends BaseActivity {
      //   Bundle bInfo=new Bundle();
      //   bInfo.putString("infoData",playinfo+"");
 
-
         Bundle args = new Bundle();
         args.putInt("currentState",STATE_READ);
 

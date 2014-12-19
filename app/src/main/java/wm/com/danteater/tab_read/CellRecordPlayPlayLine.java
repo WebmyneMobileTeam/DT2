@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.CountDownTimer;
 import android.os.Environment;
@@ -269,6 +270,14 @@ public class CellRecordPlayPlayLine implements SeekBar.OnSeekBarChangeListener{
             for(Comments com : finalComments){
                 View vComment = mInflater.inflate(R.layout.item_comment_list,null);
                 WMTextView txt = (WMTextView)vComment.findViewById(R.id.txtItemCommentText);
+                txt.setTypeface(null, Typeface.ITALIC);
+                ImageView img = (ImageView)vComment.findViewById(R.id.imgCommentCompose);
+
+                if(com.isPrivate){
+                    img.setImageResource(R.drawable.compose_green);
+                }else{
+                    img.setImageResource(R.drawable.compose_yellow);
+                }
                 txt.setText(com.commentText);
                 listReadPlayPlaylinecell.addView(vComment,params);
                 listReadPlayPlaylinecell.invalidate();

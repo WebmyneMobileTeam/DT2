@@ -127,7 +127,7 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
 
 
 
-    public void setupForPlayLine(int firstIndex,int section,PlayLines playLine, int current_state,boolean mark) {
+    public void setupForPlayLine(int firstIndex,int section,int position,PlayLines playLine, int current_state,boolean mark) {
 
        showSideOptions = false;
 
@@ -139,6 +139,7 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
                 convertView.setBackgroundColor(Color.parseColor("#f6f6d6"));
             }
         }
+        Log.e("new final line number",position+"");
 
         String currentKey = playLine.textLinesList.get(0).LineText;
 
@@ -151,13 +152,22 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
 //
 //            convertView.setBackgroundColor(ctx.getResources().getColor(R.color.read_play_cell));
 //        }
-        if(section<firstIndex-1 || section==0){
+        if((section<firstIndex-1 || section==0) && !(current_state == STATE_RECORD)){
             convertView.setBackgroundColor(ctx.getResources().getColor(R.color.read_play_cell));
         }
 
 //        Log.e("Mark is ",""+mark);
         if(mark == true){
             lblRoleName.setBackgroundColor(Color.YELLOW);
+        }
+
+        if(mark == true){
+            btnMenu.setVisibility(View.VISIBLE);
+            btnEdit.setVisibility(View.GONE);
+        } else {
+
+            btnMenu.setVisibility(View.GONE);
+            btnEdit.setVisibility(View.VISIBLE);
         }
 
         viewMenu.setVisibility(View.GONE);
@@ -176,9 +186,6 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
 
         if(user.checkTeacherOrAdmin(user.getRoles())){
             btnMenu.setVisibility(View.VISIBLE);
-        }else{
-            btnMenu.setVisibility(View.GONE);
-          //  btnMenu.setVisibility(View.INVISIBLE);
         }
 
         if(current_state == STATE_PREVIEW){
@@ -399,7 +406,7 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
                 onTextLineUpdated.onChatClicked();
                 //TODO
 
-//               Log.e("message","click on message");
+               Log.e("message","click on message");
                 break;
 
         }

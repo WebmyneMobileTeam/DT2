@@ -112,8 +112,8 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
 
     public static int HACK_WIDTH = 160;
     public static int HACK_HEIGHT = 90;
-
-
+    public String badgeValue;
+//    private Menu menu;
     public static FragmnentInspiration newInstance(String param1, String param2) {
         FragmnentInspiration fragment = new FragmnentInspiration();
         return fragment;
@@ -126,10 +126,15 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+//        HACK_WIDTH= displayMetrics.widthPixels/3;
+//        HACK_HEIGHT = displayMetrics.heightPixels/4;
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "mypref", 0);
         selectedPlay = complexPreferences.getObject("selected_play", Play.class);
         currentUser = complexPreferences.getObject("current_user", User.class);
-//        setHasOptionsMenu(true);
+        setHasOptionsMenu(true);
+
+
     }
 
     @Override
@@ -612,6 +617,20 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
     }
 
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        try {
+            if (menu != null) {
+                View count = menu.findItem(R.id.badge).getActionView();
+                count.setVisibility(View.GONE);
+                TextView notifCount = (TextView) count.findViewById(R.id.notif_count);
+                notifCount.setVisibility(View.GONE);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
 }
 

@@ -478,6 +478,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         try{
             for(TextLines textLine : play_line.textLinesList){
                 updateTextLine(textLine,playLineID,index);
+                index++;
             }
 
         }catch(Exception e){

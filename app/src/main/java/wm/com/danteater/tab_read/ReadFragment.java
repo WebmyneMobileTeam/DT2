@@ -14,6 +14,7 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -66,8 +67,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -76,8 +80,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
+
 
 
 import wm.com.danteater.Play.AssignedUsers;
@@ -108,6 +116,9 @@ import wm.com.danteater.tab_music.MusicFragment;
 
 
 public class ReadFragment extends Fragment {
+    int linenumber;
+    public static int staticLineNumber;
+    int newLinePostion=0;
     boolean isPupil;
     public static SharedPreferenceRecordedAudio sharedPreferenceRecordedAudio;
     public boolean isUserAudioAvailable;
@@ -333,6 +344,7 @@ public class ReadFragment extends Fragment {
                 _marrSharedWithUsers = new ArrayList<SharedUser>();
                 _marrSharedWithUsers = new GsonBuilder().create().fromJson(response,listType);
                 Log.e("_maarSharedWithUsers ",""+_marrSharedWithUsers);
+
             }
 
             @Override
@@ -410,7 +422,11 @@ public class ReadFragment extends Fragment {
                         String sCheck = marrMyCastMatches.get(i).toString();
                         if(sCheck.equalsIgnoreCase(playLine.RoleName)){
 
-                            dicPlayLines.get(currentKey).add(playLine);
+
+                               dicPlayLines.get(currentKey).add(playLine);
+
+
+
                         }
                     }
                 } else {
@@ -521,12 +537,13 @@ public class ReadFragment extends Fragment {
                         if(currentState == STATE_READ){
                             if(isHeaderChecked) {
                                 //TODO
-                                int newLinePostion=0;
 
+                                int n=0;
                                 Set<PlayLines> list=new HashSet<PlayLines>();
                                 for(Map.Entry<String,ArrayList<PlayLines>> entry : dicPlayLines.entrySet()){
                                     list.addAll(entry.getValue());
-
+                                    n++;
+                                    Log.e("number of section: ",n+"");
                                 }
                                 ArrayList<PlayLines> playLineListData=new ArrayList<PlayLines>();
                                 for(PlayLines playLines: list){
@@ -536,16 +553,19 @@ public class ReadFragment extends Fragment {
 
 
                                 Collections.sort(playLineListData,new LineNumberComparator());
+                                Log.e("total size",listRead.getCount()+"");
 
+                                Log.e("filter size",playLineListData.size()+"");
                                 for(int i=0;i<playLineListData.size();i++){
-                                    Log.e("line number all: ",playLineListData.get(i).LineCount+"");
+                                    Log.e("searching : ","line number: "+playLineListData.get(i).LineCount+" position: "+i);
                                     if(edGotoLine.getText().toString().equalsIgnoreCase(playLineListData.get(i).LineCount+"")){
                                         newLinePostion=i;
+                                        Log.e("search result : ","line number: "+playLineListData.get(i).LineCount+" position: "+i);
                                     }
                                 }
 
+                                listRead.setSelection(newLinePostion+5);
 
-                                listRead.setSelection(newLinePostion+2);
                             } else {
                                 listRead.setSelection(Integer.parseInt(edGotoLine.getText().toString())-1);
                             }
@@ -1106,7 +1126,7 @@ public class ReadFragment extends Fragment {
 
                         }
                     }
-
+                    //TODO
                     holderReadPlayRoleCell.cellReadPlayRole.setupForPlayLine(playLine,currentState,convertView,isEmpty,mark);
 
                     holderReadPlayRoleCell.cellReadPlayRole.setAssignClicked(new setOnAssignButtonClicked() {
@@ -1298,7 +1318,7 @@ public class ReadFragment extends Fragment {
                         }
                     }
 
-                    holderReadPlayPlayLineCell.cellReadPlayPlayLine.setupForPlayLine(indexForFirstScene,section,playLine,currentState,mark22);
+                    holderReadPlayPlayLineCell.cellReadPlayPlayLine.setupForPlayLine(indexForFirstScene,section,position,playLine,currentState,mark22);
                     holderReadPlayPlayLineCell.cellReadPlayPlayLine.setOnTextLineUpdated(new CellReadPlayPlayLine.OnTextLineUpdated() {
 
                         // delegate method called after textline changes
@@ -1570,6 +1590,12 @@ public class ReadFragment extends Fragment {
                                 }
                             }
 
+
+
+
+
+
+
 //                        }
                     } else {
                         playPasueAll.setText("Afspil alle");
@@ -1597,6 +1623,7 @@ public class ReadFragment extends Fragment {
                         if(currentState == STATE_RECORD) {
 
                         } else {
+
                             updatePlaySpecificData();
                             notifyDataSetChanged();
                         }
@@ -1873,6 +1900,7 @@ public class ReadFragment extends Fragment {
     }
 
 
+
     private void downloadAndPlayRecordTextToSpeech(final PlayLines playLine,final ImageView imgPlay){
 
         ArrayList<TextLines> arrTxt = playLine.textLinesList;
@@ -1885,8 +1913,22 @@ public class ReadFragment extends Fragment {
             }
             Log.e("text...",text+"");
             String textValue=text.toString();
+            textValue.replaceAll("/?", "QMQM");
+            try {
 
 
+                textValue=new String(textValue.getBytes("UTF-8"));
+//                textValue=new String(textValue.getBytes("ISO-8859-1"));
+//                textValue=new String(textValue.getBytes("US-ASCII"));
+
+
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            textValue=textValue.replaceAll("/?", "");
+            textValue=textValue.replaceAll("QMQM", "?");
+
+            Log.e("After decription value",textValue+"");
             final  JSONObject mainOBJ = new JSONObject();
 
             try {
@@ -2132,7 +2174,7 @@ public class ReadFragment extends Fragment {
             ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "selected_playline", 0);
             complexPreferences.putObject("current_playline", playLine);
             complexPreferences.commit();
-            Toast.makeText(getActivity(), "Pupil", Toast.LENGTH_SHORT).show();
+
             Intent i=new Intent(getActivity(), SelectTeacherForChat.class);
             startActivity(i);
 
@@ -2467,23 +2509,22 @@ public class ReadFragment extends Fragment {
                     @Override
                     protected void onPostExecute(Void aVoid) {
                         super.onPostExecute(aVoid);
+
+
+
+                        for(int i=0;i<aus.size();i++){
+                            if(aus.get(i).AssignedUserName.contains(currentUser.getFirstName()+" "+currentUser.getLastName())){
+                                marrMyCastMatches.add(playLine.RoleName);
+                            }
+                        }
+
                         readSectionedAdapter.notifyDataSetChanged();
                     }
                 }.execute();
 
-
-
-
-
-
             }
         }.execute();
-
-
-
     }
-
-
 
     private void updatePlayUsingMethodParams(final String s) {
 
@@ -2534,8 +2575,6 @@ public class ReadFragment extends Fragment {
 
             }
         }.execute();
-
-
 
     }
 

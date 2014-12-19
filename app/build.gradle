@@ -40,6 +40,8 @@ dependencies {
     compile 'org.apache.httpcomponents:httpcore:4.4-beta1'
     compile files('src/main/libs/mviddeviceconnector.jar')
     compile files('src/main/libs/picasso-2.4.0.jar')
+    compile files('src/main/libs/sun.misc.BASE64Decoder.jar.zip')
+
 }
 
 repositories {

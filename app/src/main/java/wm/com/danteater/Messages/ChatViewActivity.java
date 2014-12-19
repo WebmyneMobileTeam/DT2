@@ -51,6 +51,7 @@ import wm.com.danteater.model.DatabaseWrapper;
 import wm.com.danteater.model.RecordedAudio;
 import wm.com.danteater.model.SharedPreferenceRecordedAudio;
 import wm.com.danteater.model.TextWatcherAdapter;
+import wm.com.danteater.model.TimeStampComparator;
 import wm.com.danteater.my_plays.FragmentMyPlay;
 import wm.com.danteater.my_plays.ReadActivityFromPreview;
 import wm.com.danteater.my_plays.ShareActivityForPerform;
@@ -220,7 +221,8 @@ public class ChatViewActivity extends BaseActivity {
 
         messagesForConversationArrayList=new GsonBuilder().create().fromJson(response,listType);
         // Get Last Message Object
-        Collections.reverse(messagesForConversationArrayList);
+        Collections.sort(messagesForConversationArrayList, new TimeStampComparator());
+
         messagesForConversationLastObject=messagesForConversationArrayList.get(messagesForConversationArrayList.size()-1);
         setupReceivedMessages(messagesForConversationArrayList);
 

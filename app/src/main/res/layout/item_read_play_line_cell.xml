@@ -105,6 +105,7 @@
     </LinearLayout>
 
     <include
+
         android:id="@+id/cellMenuReadLineTeacher"
         layout="@layout/readplay_playline_menu"
         android:layout_gravity="right"

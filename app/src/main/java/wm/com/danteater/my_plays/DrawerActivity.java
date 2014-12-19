@@ -404,6 +404,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.badge_value,menu);
+
         return false;
     }
 }

@@ -20,14 +20,14 @@ public class MessagesForConversation {
     @SerializedName("MessageText")
     public String MessageText;
     @SerializedName("postedTimeStamp")
-    public String postedTimeStamp;
+    public Double postedTimeStamp;
     @SerializedName("isRead")
     public String isRead;
 
     public MessagesForConversation() {
     }
 
-    public MessagesForConversation(String id, String orderId, String lineId, String fromUserId, String toUserId, String messageText, String postedTimeStamp, String isRead) {
+    public MessagesForConversation(String id, String orderId, String lineId, String fromUserId, String toUserId, String messageText, Double postedTimeStamp, String isRead) {
         Id = id;
         OrderId = orderId;
         LineId = lineId;
