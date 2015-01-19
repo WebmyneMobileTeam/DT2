@@ -296,7 +296,7 @@ public class ChatViewFromRead extends BaseActivity{
 
                         String[] line = msg.MessageText.split(System.getProperty("line.separator"));
                     for(int i=0; i<line.length; i++ ) {
-                        Log.e("line value: ", line[i] + "");
+//                        Log.e("line value: ", line[i] + "");
                     }
                         String visibleLine = line[1] + "\n" + line[2];
                         AdvancedSpannableString spannableString = new AdvancedSpannableString(visibleLine);
@@ -323,7 +323,7 @@ public class ChatViewFromRead extends BaseActivity{
 
                         String[] lines = msg.MessageText.split(System.getProperty("line.separator"));
                     for(int i=0; i<lines.length; i++ ) {
-                        Log.e("line value: ", lines[i] + "");
+//                        Log.e("line value: ", lines[i] + "");
                     }
                         String visibleLines = lines[1] + "\n" + lines[2];
                         final AdvancedSpannableString spannableStrin = new AdvancedSpannableString(visibleLines);
@@ -358,10 +358,12 @@ public class ChatViewFromRead extends BaseActivity{
 
     private void gotoSpecificPage(final Play play){
         DatabaseWrapper dbh = new DatabaseWrapper(ChatViewFromRead.this);
+        dbh.openDataBase();
         boolean hasPlay = dbh.hasPlayWithPlayOrderIdText(play.OrderId);
         dbh.close();
 
         if(hasPlay == true){
+            dbh.openDataBase();
             plyIDAfterUpdate = dbh.getPlayIdFromDBForOrderId(play.OrderId);
             dbh.close();
             SharedPreferences pre = getSharedPreferences("Plays", MODE_PRIVATE);
@@ -387,6 +389,7 @@ public class ChatViewFromRead extends BaseActivity{
 
                             Play receivedPlay = new GsonBuilder().create().fromJson(response, Play.class);
                             DatabaseWrapper db = new DatabaseWrapper(ChatViewFromRead.this);
+                            db.openDataBase();
                             db.insertPlay(receivedPlay, false);
                             db.close();
 
@@ -440,7 +443,7 @@ public class ChatViewFromRead extends BaseActivity{
             protected String doInBackground(String... params) {
 
                 DatabaseWrapper dbh = new DatabaseWrapper(ChatViewFromRead.this);
-
+                dbh.openDataBase();
                 ply = dbh.retrievePlayWithId(playid);
                 dbh.close();
 

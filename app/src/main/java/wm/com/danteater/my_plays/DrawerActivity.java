@@ -87,7 +87,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
         }
 
         // header
-        txtHeader.setText("Mine Stykker");
+        txtHeader.setText("Mine stykker");
         initFields();
         initDrawer();
     }

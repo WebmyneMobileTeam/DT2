@@ -49,7 +49,7 @@ public class SharedPreferenceTeachers {
         Gson gson = new Gson();
         String jsonFavorites = gson.toJson(teachers);
         editor.putString(PREF_VALUE, jsonFavorites);
-        Log.e("teacher list:",jsonFavorites+"");
+//        Log.e("teacher list:",jsonFavorites+"");
         editor.commit();
     }
 
@@ -61,7 +61,7 @@ public class SharedPreferenceTeachers {
         Gson gson = new Gson();
         User[] favoriteItems = gson.fromJson(jsonFavorites,User[].class);
         productList = new ArrayList<User>(Arrays.asList(favoriteItems));
-        Log.e("teacher array",productList+"");
+//        Log.e("teacher array",productList+"");
         return (ArrayList<User>) productList;
     }
 

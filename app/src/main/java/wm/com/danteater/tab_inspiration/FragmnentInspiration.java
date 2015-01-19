@@ -306,13 +306,13 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
         dialog.title("Henter inspirationer");
         dialog.show();
 
-        Log.e("Order ID ",selectedPlay.PlayId);
+//        Log.e("Order ID ",selectedPlay.PlayId);
         new CallWebService("http://api.danteater.dk/api/Inspiration/"+selectedPlay.PlayId,CallWebService.TYPE_JSONARRAY) {
 
             @Override
             public void response(String response) {
 
-                Log.e("Response from inspiration ",response);
+//                Log.e("Response from inspiration ",response);
 
                 Type listType = new TypeToken<List<Inspiration>>() {}.getType();
                 inspirations = new GsonBuilder().create().fromJson(response,listType);

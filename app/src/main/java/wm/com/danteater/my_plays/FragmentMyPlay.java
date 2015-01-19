@@ -81,6 +81,7 @@ import wm.com.danteater.search.FragmentSearch;
 public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChangeListener {
 
     public  ArrayList<Group> classes = new ArrayList<Group>();
+    DatabaseWrapper dbh ;
     public  ArrayList<User> teachers;
     private SharedPreferenceTeachers sharedPreferenceTeachers;
     private SharedPreferenceClasses sharedPreferenceClasses;
@@ -142,6 +143,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         teachers= new ArrayList<User>();
+       dbh = new DatabaseWrapper(getActivity());
         sharedPreferenceClasses=new SharedPreferenceClasses();
         sharedPreferenceTeachers = new SharedPreferenceTeachers();
 //        sharedPreferenceRecordedAudio=new SharedPreferenceRecordedAudio();
@@ -493,7 +495,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                     cUser = complexPreferencesForUser.getObject("current_user", User.class);
                     SharedPreferences pre = getActivity().getSharedPreferences("session_id", getActivity().MODE_PRIVATE);
                     session_id = pre.getString("session_id", "");
-                    Log.e("Session ID : ",""+session_id);
+//                    Log.e("Session ID : ",""+session_id);
                     //ShareActivityForPreview.teachers.clear();
 //                    sharedPreferenceTeachers.clearTeacher(getActivity());
                     retriveSchoolTeachers(session_id, cUser.getDomain());
@@ -735,7 +737,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
 //                    ShareActivityForPerform.pupils.clear();
 //                    sharedPreferenceClasses.clearClass(getActivity());
 //                    sharedPreferenceTeachers.clearTeacher(getActivity());
-                    Log.e("session id",session_id+"");
+//                    Log.e("session id",session_id+"");
                     retriveSchoolClasses(session_id, cUser.getDomain());
                     retriveSchoolTeachers(session_id, cUser.getDomain());
 
@@ -850,7 +852,8 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
     private void gotoSpecificPage(final int play_index,int tab_index, final Play play, final ACTIVITY_TYPE act_type){
 
 
-        DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
+
+        dbh.openDataBase();
         boolean hasPlay = dbh.hasPlayWithPlayOrderIdText(play.OrderId);
         dbh.close();
 
@@ -902,12 +905,12 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                                         JSONObject jsonObject = arr.getJSONObject(i);
                                         PlayLines playLine = new GsonBuilder().create().fromJson(jsonObject.toString(),PlayLines.class);
 
-                                        DatabaseWrapper dbWrap = new DatabaseWrapper(getActivity());
+
 //                                        Log.e("Before update playId ",play.PlayId);
                                         SharedPreferences pre = getActivity().getSharedPreferences("Plays", getActivity().MODE_PRIVATE);
-
-                                        dbWrap.updatePlayLine(playLine,pre.getInt("playid",0));
-                                        dbWrap.close();
+                                        dbh.openDataBase();
+                                        dbh.updatePlayLine(playLine,pre.getInt("playid",0));
+                                        dbh.close();
 
 
                                     }
@@ -928,7 +931,8 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                                 super.onPostExecute(s);
                                 dialog_next.dismiss();
 
-                                DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
+                                dbh.openDataBase();
+
                                 plyIDAfterUpdate = dbh.getPlayIdFromDBForOrderId(play.OrderId);
                                 dbh.close();
                                 SharedPreferences pre = getActivity().getSharedPreferences("Plays", getActivity().MODE_PRIVATE);
@@ -976,9 +980,10 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                         protected String doInBackground(String... params) {
 
                             Play receivedPlay = new GsonBuilder().create().fromJson(response, Play.class);
-                            DatabaseWrapper db = new DatabaseWrapper(getActivity());
-                            db.insertPlay(receivedPlay, false);
-                            db.close();
+
+                            dbh.openDataBase();
+                            dbh.insertPlay(receivedPlay, false);
+                            dbh.close();
 
                             return null;
                         }
@@ -1029,8 +1034,8 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
             @Override
             protected String doInBackground(String... params) {
 
-                DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
-
+//                Log.e("retrive","process begin");
+                dbh.openDataBase();
                 ply = dbh.retrievePlayWithId(playid);
                 dbh.close();
 
@@ -1048,7 +1053,6 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 switch (act_type){
 
                     case ORDER_ACTIVITY:
-
 
                         Intent i1 = new Intent(getActivity(), ReadActivityFromPreview.class);
                         i1.putExtra("currentState",STATE_PREVIEW);
@@ -1171,7 +1175,7 @@ public class FragmentMyPlay extends Fragment implements RadioGroup.OnCheckedChan
                 public void onResponse(JSONObject jobj) {
 
                     String res = jobj.toString();
-                  Log.e("response for retrive school teachers...: ", res + "");
+//                  Log.e("response for retrive school teachers...: ", res + "");
 
                     BeanGroupMemberInfo beanGroupMemberInfo = new GsonBuilder().create().fromJson(res, BeanGroupMemberInfo.class);
                     BeanGroupMemberResult beanGroupMemberResult = beanGroupMemberInfo.getBeanGroupMemberResult();

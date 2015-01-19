@@ -64,7 +64,7 @@ public class InspirationDetailsView extends Dialog{
         iv.getLayoutParams().height = (int)(ctx.getResources().getDisplayMetrics().widthPixels/3);
         iv.requestLayout();
         tvComment = (EditText)convertView.findViewById(R.id.txtDialogCommentInspiration);
-        tvComment.setHint("Hjælp andre lærere med gore ideer fra jeres forestilling. Lav en kort beskrivelse her…");
+        tvComment.setHint("Hjælp andre lærere med gode ideer fra jeres forestilling. Lav en kort beskrivelse her…");
         tvName = (TextView)convertView.findViewById(R.id.txtDialogUserDetailInspiration);
         tvGem = (TextView)convertView.findViewById(R.id.txtDialogGemInspiration);
         setCanceledOnTouchOutside(true);
@@ -80,7 +80,7 @@ public class InspirationDetailsView extends Dialog{
         txtCancelInspirationDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                ((InputMethodManager)ctx.getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(tvComment.getWindowToken(), 0);
                 dismiss();
             }
         });

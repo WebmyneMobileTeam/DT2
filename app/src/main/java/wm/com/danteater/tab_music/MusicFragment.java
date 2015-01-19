@@ -416,7 +416,6 @@ public class MusicFragment extends Fragment {
                                 CURRENT_PLAYING_POSITION = position;
                                 CURRENT_PLAYING_SECTION = section;
                                 try {
-
                                     FileInputStream fis = new FileInputStream(audioPath);
                                     FileDescriptor fd = fis.getFD();
                                     mediaPlayer.reset();
@@ -427,8 +426,6 @@ public class MusicFragment extends Fragment {
                                         int s = Integer.parseInt(STATE_HOLDER.get(hackn).toString().split("#")[0]);
                                         mediaPlayer.seekTo(s);
                                     }
-
-
                                 }catch(FileNotFoundException e){}
                                 catch (IOException e){}
 

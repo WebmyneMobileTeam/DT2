@@ -384,7 +384,7 @@ public class LoginActivity extends BaseActivity {
         try {
             SharedPreferences preferences = getSharedPreferences("session_id", MODE_PRIVATE);
             String sessionId=preferences.getString("session_id","");
-            Log.e("==================================================",sessionId);
+//            Log.e("==================================================",sessionId);
             params.put("session_id", sessionId);
             request_params2.put("methodname", "keepAlive");
             request_params2.put("type", "jsonwsp/request");
@@ -401,7 +401,7 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onResponse(JSONObject jobj) {
                 String res = jobj.toString();
-                Log.e("????????????  response continue: ", res + "");
+//                Log.e("????????????  response continue: ", res + "");
 
             }
         }, new Response.ErrorListener() {

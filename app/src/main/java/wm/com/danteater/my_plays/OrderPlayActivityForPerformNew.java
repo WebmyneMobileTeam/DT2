@@ -492,7 +492,7 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
                             .create().fromJson(res, BeanOrderPlayReview.class);
 
                     selectedPlay.OrderId = beanOrderPlayReview.PlayOrderId;
-
+                    dbHelper.openDataBase();
 
                     if(dbHelper.hasPlayWithPlayOrderIdText(selectedPlay.OrderId)) {
 
@@ -525,12 +525,6 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
 
                             }
                         }.execute();
-
-
-
-
-
-
 
                     } else {
 
@@ -578,7 +572,7 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
 
                     }
 
-
+                    dbHelper.close();
                 }
             }, new Response.ErrorListener() {
 
@@ -608,6 +602,7 @@ public class OrderPlayActivityForPerformNew extends BaseActivity {
 //                Log.e("Response play full:", response + "");
                 Play receivedPlay = new GsonBuilder().create().fromJson(response, Play.class);
                 DatabaseWrapper db = new DatabaseWrapper(OrderPlayActivityForPerformNew.this);
+                db.openDataBase();
                 db.insertPlay(receivedPlay, false);
                 db.close();
 

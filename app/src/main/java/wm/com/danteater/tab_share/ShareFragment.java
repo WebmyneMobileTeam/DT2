@@ -131,8 +131,15 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
     public void onResume() {
         super.onResume();
 
-        // students list
-        adapter = new MyPagerAdapter(getActivity().getSupportFragmentManager(), classList);
+
+        classNames=new ArrayList<String>();
+        for(int i=0;i<classList.size();i++) {
+            if(!(classList.get(i).getGroupName().equalsIgnoreCase("1.A") || classList.get(i).getGroupName().equalsIgnoreCase("1.B")) ) {
+                classNames.add(classList.get(i).getGroupName());
+            }
+        }
+        Collections.sort(classNames);
+        adapter = new MyPagerAdapter(getActivity().getSupportFragmentManager(), classNames);
         pager.setAdapter(adapter);
         final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources().getDisplayMetrics());
         pager.setPageMargin(pageMargin);
@@ -292,27 +299,29 @@ public class ShareFragment extends Fragment implements RadioGroup.OnCheckedChang
 
 	/*	private final String[] TITLES = { "Categories", "Home", "Top Paid", "Top Free", "Top Grossing", "Top New Paid",
 				"Top New Free", "Trending" };*/
-    ArrayList<Group> classesList;
-        public MyPagerAdapter(FragmentManager fm,ArrayList<Group> classesList ) {
+    ArrayList<String> classesList;
+        public MyPagerAdapter(FragmentManager fm,ArrayList<String> classesList ) {
             super(fm);
             this.classesList=classesList;
         }
         @Override
         public CharSequence getPageTitle(int position) {
-           classNames=new ArrayList<String>();
-            for(int i=0;i<classesList.size();i++) {
-                classNames.add(classesList.get(i).getGroupName());
-            }
-            Collections.sort(classNames);
 
-            return classNames.get(position);
+            Log.e("classNames.get(position)",classNames.get(position)+"");
+
+            if(classNames.get(position).equalsIgnoreCase("1.A_2")){
+                return "1.A";
+            } else if(classNames.get(position).equalsIgnoreCase("1.B_2")){
+                return "1.B";
+            } else {
+                return classNames.get(position);
+            }
         }
 
         @Override
         public int getCount() {
-            return classesList.size();
+            return classNames.size();
         }
-
 
         @Override
         public Fragment getItem(int position) {

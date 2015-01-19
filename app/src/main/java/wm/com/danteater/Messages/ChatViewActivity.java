@@ -460,10 +460,12 @@ public class ChatViewActivity extends BaseActivity {
             Log.e("new Order id:",play.OrderId+"");
         }
 
+        dbh.openDataBase();
         boolean hasPlay = dbh.hasPlayWithPlayOrderIdText(play.OrderId);
         dbh.close();
 
         if(hasPlay == true){
+            dbh.openDataBase();
             plyIDAfterUpdate = dbh.getPlayIdFromDBForOrderId(play.OrderId);
             dbh.close();
             SharedPreferences pre = getSharedPreferences("Plays", MODE_PRIVATE);
@@ -473,9 +475,9 @@ public class ChatViewActivity extends BaseActivity {
             gotoNextPage();
         }
         else{
-            Log.e("hasplay","false");
+//            Log.e("hasplay","false");
             // insert new play to db
-            Log.e("order id:....",API.link_retrievePlayContentsForPlayOrderId +play.OrderId+"");
+//            Log.e("order id:....",API.link_retrievePlayContentsForPlayOrderId +play.OrderId+"");
             new CallWebService(API.link_retrievePlayContentsForPlayOrderId +play.OrderId,CallWebService.TYPE_JSONOBJECT) {
 
                 @Override
@@ -489,6 +491,7 @@ public class ChatViewActivity extends BaseActivity {
 
                             Play receivedPlay = new GsonBuilder().create().fromJson(response, Play.class);
                             DatabaseWrapper db = new DatabaseWrapper(ChatViewActivity.this);
+                            db.openDataBase();
                             db.insertPlay(receivedPlay, false);
                             db.close();
 
@@ -541,7 +544,7 @@ public class ChatViewActivity extends BaseActivity {
             protected String doInBackground(String... params) {
 
                 DatabaseWrapper dbh = new DatabaseWrapper(ChatViewActivity.this);
-
+                dbh.openDataBase();
                 ply = dbh.retrievePlayWithId(playid);
                 dbh.close();
 
@@ -563,7 +566,7 @@ public class ChatViewActivity extends BaseActivity {
                     @Override
                     public void response(final String response) {
                         dialog_next.dismiss();
-                        Log.e("Response recorded audio  : ", "" + response);
+//                        Log.e("Response recorded audio  : ", "" + response);
                         Type listType = new TypeToken<ArrayList<RecordedAudio>>(){}.getType();
                         ArrayList<RecordedAudio> recordedList = new GsonBuilder().create().fromJson(response, listType);
                         ReadFragment.sharedPreferenceRecordedAudio.clearAudio(ChatViewActivity.this);

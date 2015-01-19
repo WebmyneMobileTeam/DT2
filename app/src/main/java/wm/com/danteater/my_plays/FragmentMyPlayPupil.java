@@ -184,7 +184,7 @@ public class FragmentMyPlayPupil extends Fragment {
             @Override
             public void response(String response) {
                 dialog.dismiss();
-                Log.e("json response", response + "");
+//                Log.e("json response", response + "");
                 handleDataAfterResponseVolly(response);
             }
 
@@ -355,6 +355,7 @@ public class FragmentMyPlayPupil extends Fragment {
 
 
             DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
+            dbh.openDataBase();
             boolean hasPlay = dbh.hasPlayWithPlayOrderIdText(play.OrderId);
             dbh.close();
 
@@ -390,6 +391,7 @@ public class FragmentMyPlayPupil extends Fragment {
                                         JSONArray arr = new JSONArray(response);
 
                                         DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
+                                        dbh.openDataBase();
                                         plyIDAfterUpdate = dbh.getPlayIdFromDBForOrderId(play.OrderId);
                                         state.playID = plyIDAfterUpdate;
                                         dbh.close();
@@ -400,6 +402,7 @@ public class FragmentMyPlayPupil extends Fragment {
                                             PlayLines playLine = new GsonBuilder().create().fromJson(jsonObject.toString(),PlayLines.class);
 
                                             DatabaseWrapper dbWrap = new DatabaseWrapper(getActivity());
+                                            dbWrap.openDataBase();
                                             dbWrap.updatePlayLine(playLine,Integer.parseInt(play.PlayId));
                                             dbWrap.close();
 
@@ -458,6 +461,7 @@ public class FragmentMyPlayPupil extends Fragment {
 
                                 Play receivedPlay = new GsonBuilder().create().fromJson(response, Play.class);
                                 DatabaseWrapper db = new DatabaseWrapper(getActivity());
+                                db.openDataBase();
                                 db.insertPlay(receivedPlay, false);
                                 db.close();
 
@@ -503,6 +507,7 @@ public class FragmentMyPlayPupil extends Fragment {
                 protected String doInBackground(String... params) {
 
                     DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
+                    dbh.openDataBase();
                     ply = dbh.retrievePlayWithId(state.playID);
                     dbh.close();
 

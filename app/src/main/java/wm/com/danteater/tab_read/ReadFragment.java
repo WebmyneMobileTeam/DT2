@@ -223,7 +223,7 @@ public class ReadFragment extends Fragment {
             @Override
             public void response(final String response) {
 
-                Log.e("Response recorded audio  : ", "" + response);
+//                Log.e("Response recorded audio  : ", "" + response);
                 Type listType = new TypeToken<ArrayList<RecordedAudio>>(){}.getType();
               recordedList = new GsonBuilder().create().fromJson(response, listType);
 
@@ -236,7 +236,7 @@ public class ReadFragment extends Fragment {
 
 
                     try {
-                        Log.e("isPreview: ", FragmentMyPlay.isPreview + "");
+//                        Log.e("isPreview: ", FragmentMyPlay.isPreview + "");
                         sharedPreferenceRecordedAudio = new SharedPreferenceRecordedAudio();
                         recordedList = sharedPreferenceRecordedAudio.loadAudio(getActivity());
 
@@ -328,6 +328,10 @@ public class ReadFragment extends Fragment {
                 }
             }.start();*/
         }
+        DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
+        dbh.openDataBase();
+        marrMyCastMatches = dbh.getMyCastMatchesForUserId(currentUser.getUserId(),selectedPlay.pID);
+        dbh.close();
     }
 
     public void updatePlaySpecificData() {
@@ -343,7 +347,7 @@ public class ReadFragment extends Fragment {
                 _marrSharedWithUsersString = response;
                 _marrSharedWithUsers = new ArrayList<SharedUser>();
                 _marrSharedWithUsers = new GsonBuilder().create().fromJson(response,listType);
-                Log.e("_maarSharedWithUsers ",""+_marrSharedWithUsers);
+//                Log.e("_maarSharedWithUsers ",""+_marrSharedWithUsers);
 
             }
 
@@ -353,9 +357,7 @@ public class ReadFragment extends Fragment {
             }
         }.start();
 
-        DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
-        marrMyCastMatches = dbh.getMyCastMatchesForUserId(currentUser.getUserId(),selectedPlay.pID);
-        dbh.close();
+
 
         if(marrPlayLines == null){
             marrPlayLines = new ArrayList<String>();
@@ -543,7 +545,7 @@ public class ReadFragment extends Fragment {
                                 for(Map.Entry<String,ArrayList<PlayLines>> entry : dicPlayLines.entrySet()){
                                     list.addAll(entry.getValue());
                                     n++;
-                                    Log.e("number of section: ",n+"");
+//                                    Log.e("number of section: ",n+"");
                                 }
                                 ArrayList<PlayLines> playLineListData=new ArrayList<PlayLines>();
                                 for(PlayLines playLines: list){
@@ -553,17 +555,21 @@ public class ReadFragment extends Fragment {
 
 
                                 Collections.sort(playLineListData,new LineNumberComparator());
-                                Log.e("total size",listRead.getCount()+"");
+//                                Log.e("total size",listRead.getCount()+"");
 
-                                Log.e("filter size",playLineListData.size()+"");
+//                                Log.e("filter size",playLineListData.size()+"");
                                 for(int i=0;i<playLineListData.size();i++){
-                                    Log.e("searching : ","line number: "+playLineListData.get(i).LineCount+" position: "+i);
+//                                    Log.e("searching : ","line number: "+playLineListData.get(i).LineCount+" position: "+i);
                                     if(edGotoLine.getText().toString().equalsIgnoreCase(playLineListData.get(i).LineCount+"")){
                                         newLinePostion=i;
-                                        Log.e("search result : ","line number: "+playLineListData.get(i).LineCount+" position: "+i);
+//                                        Log.e("search result : ","line number: "+playLineListData.get(i).LineCount+" position: "+i);
                                     }
                                 }
 
+
+                                for(int i=0;i<listRead.getCount();i++) {
+
+                                }
                                 listRead.setSelection(newLinePostion+5);
 
                             } else {
@@ -589,6 +595,7 @@ public class ReadFragment extends Fragment {
 
             @Override
             protected String doInBackground(String... params) {
+
 
                 updatePlaySpecificData();
                 return null;
@@ -953,7 +960,7 @@ public class ReadFragment extends Fragment {
                             for (int i = 0; i < recordedList.size(); i++) {
                                 if (recordedList.get(i).getLineID().toString().contains(playLine.getLineID().toString())) {
                                     isUserAudioAvailable = true;
-                                    Log.e("is User Audio .......................",isUserAudioAvailable+"");
+//                                    Log.e("is User Audio .......................",isUserAudioAvailable+"");
                                 }
                             }
                         } catch (Exception e) {
@@ -1123,7 +1130,6 @@ public class ReadFragment extends Fragment {
                         String sCheck = marrMyCastMatches.get(i).toString();
                         if(sCheck.equalsIgnoreCase(playLine.RoleName)){
                             mark = true;
-
                         }
                     }
                     //TODO
@@ -1194,7 +1200,7 @@ public class ReadFragment extends Fragment {
                     holderRecordPlayPlayLineCell.cellRecordPlayPlayLine.setStartRecording(new CellRecordPlayPlayLine.RecordingAudio() {
                         @Override
                         public void startRecording() {
-                            Log.e("recording: ","recording started");
+//                            Log.e("recording: ","recording started");
 
                             new AsyncTask<Void,Void,Void>(){
                                 @Override
@@ -1206,7 +1212,7 @@ public class ReadFragment extends Fragment {
                                         mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
                                         mFileName = fileDir.getAbsolutePath();
                                         mFileName += "/"+playLine.LineID+".aac";
-                                        Log.e("line id.............:",playLine.LineID+"");
+//                                        Log.e("line id.............:",playLine.LineID+"");
                                         mRecorder.setOutputFile(mFileName);
 
                                         try {
@@ -1230,7 +1236,7 @@ public class ReadFragment extends Fragment {
 
                         @Override
                         public void stopRecording() {
-                            Log.e("recording: ","recording ended");
+//                            Log.e("recording: ","recording ended");
                             new AsyncTask<Void,Void,Void>() {
                                 @Override
                                 protected Void doInBackground(Void... voids) {
@@ -1575,8 +1581,8 @@ public class ReadFragment extends Fragment {
                         isplayPauseAudioclicked=true;
 
                         for(int i=0;i<audioPlayLineList.size();i++){
-                            Log.e("isSoundAvailable",audioPlayLineList.get(i).isSoundAvailable()+"");
-                            Log.e("line number",(Integer.parseInt(audioPlayLineList.get(i).LineID.substring(audioPlayLineList.get(i).LineID.lastIndexOf("-") + 1))+""));
+//                            Log.e("isSoundAvailable",audioPlayLineList.get(i).isSoundAvailable()+"");
+//                            Log.e("line number",(Integer.parseInt(audioPlayLineList.get(i).LineID.substring(audioPlayLineList.get(i).LineID.lastIndexOf("-") + 1))+""));
                         }
                             if(nextLine<audioPlayLineList.size()) {
                                 nextLine = (Integer.parseInt(audioPlayLineList.get(indexPostion).LineID.substring(audioPlayLineList.get(indexPostion).LineID.lastIndexOf("-") + 1)));
@@ -1661,7 +1667,7 @@ public class ReadFragment extends Fragment {
         }
 
         if(shouldDownloadLastestVersion==true){
-            Log.e("playLines..........................",playLines.LineID+"");
+//            Log.e("playLines..........................",playLines.LineID+"");
             downloadAndPlayreordedAudio(soundId, playLines, imgPlay, isRecordButton, endTime);
         }
     }
@@ -1753,13 +1759,13 @@ public class ReadFragment extends Fragment {
 
 
                     String url = "";
-                    Log.e("response string............ ", "" + responseString.toString());
+//                    Log.e("response string............ ", "" + responseString.toString());
                     try{
                         JSONObject jsonObject = new JSONObject(responseString.toString());
                         JSONObject inerObj = jsonObject.getJSONObject("result");
                         url = inerObj.getString("url");
 
-                        Log.e("URL ", "" + url.toString());
+//                        Log.e("URL ", "" + url.toString());
 
                     }catch(Exception e){}
 
@@ -1776,7 +1782,7 @@ public class ReadFragment extends Fragment {
     private void downloadRecordedFile(String url, final PlayLines playLines,final ImageView imgPlay, final String soundId,final boolean isRecordButton,final WMTextView endTime){
 
         final  String theURL ="https://mvid-services.mv-nordic.com/theater-v1/"+url;
-        Log.e("final url to be download ",""+theURL);
+//        Log.e("final url to be download ",""+theURL);
 
         new AsyncTask<Void,Void,Void>() {
             @Override
@@ -1878,7 +1884,7 @@ public class ReadFragment extends Fragment {
                         if(nextLine<audioPlayLineList.size()) {
 
                             nextLine = (Integer.parseInt(audioPlayLineList.get(indexPostion).LineID.substring(audioPlayLineList.get(indexPostion).LineID.lastIndexOf("-") + 1)));
-                            Log.e("nextLine......", nextLine + "");
+//                            Log.e("nextLine......", nextLine + "");
                             listRead.setSelection(nextLine - mSubtractionCount);
                             if (audioPlayLineList.get(indexPostion).isSoundAvailable() == true) {
                                 playUserAudio(audioPlayLineList.get(indexPostion), null, false, null);
@@ -1911,7 +1917,7 @@ public class ReadFragment extends Fragment {
                 text.append(line.currentText());
                 text.append(" ");
             }
-            Log.e("text...",text+"");
+//            Log.e("text...",text+"");
             String textValue=text.toString();
             textValue.replaceAll("/?", "QMQM");
             try {
@@ -1928,7 +1934,7 @@ public class ReadFragment extends Fragment {
             textValue=textValue.replaceAll("/?", "");
             textValue=textValue.replaceAll("QMQM", "?");
 
-            Log.e("After decription value",textValue+"");
+//            Log.e("After decription value",textValue+"");
             final  JSONObject mainOBJ = new JSONObject();
 
             try {
@@ -2020,13 +2026,13 @@ public class ReadFragment extends Fragment {
 
 
                         String url = "";
-                        Log.e("Response for retreiving song TTF ", "" + responseString.toString());
+//                        Log.e("Response for retreiving song TTF ", "" + responseString.toString());
                         try{
                             JSONObject jsonObject = new JSONObject(responseString.toString());
                             JSONObject inerObj = jsonObject.getJSONObject("result");
                             url = inerObj.getString("url");
 
-                            Log.e("Inner URL ", "" + url.toString());
+//                            Log.e("Inner URL ", "" + url.toString());
 
                         }catch(Exception e){}
 
@@ -2045,7 +2051,7 @@ public class ReadFragment extends Fragment {
     private void downloadSpeechFile(String url,final PlayLines playLines,final ImageView imgPlay) {
 
         final  String theURL ="https://mvid-services.mv-nordic.com/theater-v1/"+url;
-        Log.e("final url to be download ",""+theURL);
+//        Log.e("final url to be download ",""+theURL);
 
         new AsyncTask<Void,Void,Void>() {
             @Override
@@ -2122,7 +2128,7 @@ public class ReadFragment extends Fragment {
                         indexPostion++;
                         if(nextLine<audioPlayLineList.size()) {
                             nextLine = (Integer.parseInt(audioPlayLineList.get(indexPostion).LineID.substring(audioPlayLineList.get(indexPostion).LineID.lastIndexOf("-") + 1)));
-                            Log.e("nextLine......", nextLine + "");
+//                            Log.e("nextLine......", nextLine + "");
                             listRead.setSelection(nextLine - mSubtractionCount);
                             if (audioPlayLineList.get(indexPostion).isSoundAvailable() == true) {
                                 playUserAudio(audioPlayLineList.get(indexPostion), null, false, null);
@@ -2214,6 +2220,13 @@ public class ReadFragment extends Fragment {
 //        Log.e("Size of shared people is ",""+_marrSharedWithUsers.size());
         boolean pupilsFound = false;
 
+        //TODO
+        for(int i=0;i<marrMyCastMatches.size();i++){
+            if(marrMyCastMatches.get(i).contains(playLine.RoleName)){
+                marrMyCastMatches.remove(playLine.RoleName);
+
+            }
+        }
         if(_marrSharedWithUsers == null || _marrSharedWithUsers.isEmpty() || _marrSharedWithUsers.size()<0){
             pupilsFound = false;
 
@@ -2495,13 +2508,25 @@ public class ReadFragment extends Fragment {
                 new AsyncTask<Void, Void, Void>() {
 
                     @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+//                        for(int i=0;i<marrMyCastMatches.size();i++){
+//                            Log.e("role ",marrMyCastMatches.get(i)+"");
+//                            Log.e("role name",playLine.RoleName+"");
+//                            if(marrMyCastMatches.get(i).contains(currentUser.getFirstName()+" "+currentUser.getLastName())){
+//                                marrMyCastMatches.remove(playLine.RoleName);
+//                            }
+//                        }
+                    }
+
+                    @Override
                     protected Void doInBackground(Void... voids) {
                         DatabaseWrapper dbh = new DatabaseWrapper(getActivity());
 //                        Log.e("Play ID before inserting assigned users ",""+selectedPlay.pID);
 //                        Log.e("Play ID before inserting assigned users my roles",""+myRoles);
-
-                        marrMyCastMatches = dbh.getMyCastMatchesForRoleNames(myRoles,selectedPlay.pID);
-                        dbh.close();
+//                        dbh.openDataBase();
+//                        marrMyCastMatches = dbh.getMyCastMatchesForRoleNames(myRoles,selectedPlay.pID);
+//                        dbh.close();
 
                         return null;
                     }
@@ -2509,8 +2534,6 @@ public class ReadFragment extends Fragment {
                     @Override
                     protected void onPostExecute(Void aVoid) {
                         super.onPostExecute(aVoid);
-
-
 
                         for(int i=0;i<aus.size();i++){
                             if(aus.get(i).AssignedUserName.contains(currentUser.getFirstName()+" "+currentUser.getLastName())){

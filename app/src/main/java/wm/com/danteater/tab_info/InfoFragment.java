@@ -118,7 +118,7 @@ public class InfoFragment extends Fragment {
             @Override
             public void response(String response) {
 
-                Log.e("Response from inspiration ",response);
+//                Log.e("Response from inspiration ",response);
 
                 Type listType = new TypeToken<List<Inspiration>>() {}.getType();
                 inspirations = new GsonBuilder().create().fromJson(response,listType);
@@ -310,6 +310,7 @@ public class InfoFragment extends Fragment {
 
                 Play receivedPlay = new GsonBuilder().create().fromJson(response, Play.class);
                 DatabaseWrapper db = new DatabaseWrapper(getActivity());
+                db.openDataBase();
                 db.insertPlay(receivedPlay, false);
                 db.close();
 

@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
 import com.mvnordic.mviddeviceconnector.L;
@@ -31,12 +32,12 @@ import wm.com.danteater.Play.TextLines;
 /**
  * Created by dhruvil on 16-09-2014.
  *
- * TODO - getPlays
+ * TOD - getPlays
  *
  *
- * TODO - getPlaysForPerformance
+ * TOD- getPlaysForPerformance
  *
- * TODO - getPlaysForReview
+ * TOD - getPlaysForReview
  *
  *
  * TOD - retrievePlayLinesForPlay [Play]
@@ -47,9 +48,9 @@ import wm.com.danteater.Play.TextLines;
  *
  * TOD - getMyCastMatchesForUserId [userIdString, playId]
  *
- * TODO - getMyCastMatchesForRoleNames [roleNames, playId]
+ * TOD - getMyCastMatchesForRoleNames [roleNames, playId]
  *
- * TODO - retrievePlayLineForId [lineId, playId]
+ * TOD - retrievePlayLineForId [lineId, playId]
  *
  * TOD - retrieveTextLines [playLine]
  *
@@ -65,7 +66,7 @@ import wm.com.danteater.Play.TextLines;
  *
  * TOD - updateTextLine [textLine, playLineId, index]
  *
- * TODO - removeTextLinesForPlayLineId [playLineId]
+ * TOD - removeTextLinesForPlayLineId [playLineId]
  *
  * TOD - getPlayIdFromDBForOrderId [orderId]
  *
@@ -181,6 +182,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
 
     public boolean hasPlayWithPlayOrderIdText(String playOrderIdText) {
+        //TODO
         // looping through all rows and adding to list
  /*       if (cursor.moveToFirst()) {
             do {
@@ -190,7 +192,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 */
         System.out.println("play orderidtext : " + playOrderIdText);
         boolean hasPlay = false;
-        myDataBase = this.getWritableDatabase();
+//        myDataBase = this.getWritableDatabase();
         String selectQuery = "SELECT * FROM plays WHERE play_order_id_text_ ="+"\""+playOrderIdText.toString().trim()+"\"";
         Cursor cursor = myDataBase.rawQuery(selectQuery, null);
 
@@ -201,14 +203,14 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         }
 
         cursor.close();
-        myDataBase.close();
+//        myDataBase.close();
 
         return hasPlay;
     }
 
 
     public void insertPlay(Play play,boolean wasPlayAlreadyOrderedForPreview){
-
+        //TODO
         ContentValues cvPlays = new ContentValues();
         cvPlays.put("play_id_text_",play.PlayId);
         cvPlays.put("play_order_id_text_",play.OrderId.trim());
@@ -225,14 +227,17 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         cvPlays.put("version_",play.PlayVersion);
         cvPlays.put("order_type_",play.OrderType);
 
-        myDataBase = this.getWritableDatabase();
+//        myDataBase = this.getWritableDatabase();
+        myDataBase.beginTransaction();
         myDataBase.insert("plays",null,cvPlays);
-        myDataBase.close();
+        myDataBase.setTransactionSuccessful();
+        myDataBase.endTransaction();
+//        myDataBase.close();
 
         // Add PlayLines
 
-        myDataBase = this.getWritableDatabase();
-        String selectQuery = "SELECT * FROM plays WHERE play_order_id_text_ ="+"\""+play.OrderId.toString().trim()+"\"";
+//        myDataBase = this.getWritableDatabase();
+        String selectQuery = "SELECT id_ FROM plays WHERE play_order_id_text_ ="+"\""+play.OrderId.toString().trim()+"\"";
         Cursor cursor = myDataBase.rawQuery(selectQuery, null);
 
         cursor.moveToFirst();
@@ -245,16 +250,68 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         editor.putInt("playid",playID);
         editor.commit();
         state.playID = playID;
-
-
+//        setPlayLine(play,playID);
         for(PlayLines line : play.playLinesList){
             insertPlayLine(line,playID);
         }
 
     }
 
-    public void insertPlayLine(PlayLines play_line,int playid){
+//    private void setPlayLine(Play play,int playid){
+//
+//
+//        String sql = "Insert or Replace into playlines (line_number_,playline_id_text_,play_id_,role_name_,show_role_highlight_,allow_comments_,allow_recording_,show_into_words_,show_line_number_,main_line_type_,role_line_count_,is_last_song_line_,cast_matches_) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+//        myDataBase.beginTransaction();
+//        try {
+//            SQLiteStatement stmt = myDataBase.compileStatement(sql);
+//
+//            for (int i = 0; i < play.playLinesList.size(); i++) {
+//
+//                StringBuffer castMatchesString = new StringBuffer("");
+//        Log.i("Cast Main list ",""+play.playLinesList.get(i).castMatchesList);
+//
+//                for (int i1 = 0; i1 < play.playLinesList.get(i).castMatchesList.size(); i1++) {
+//
+//                    String s = play.playLinesList.get(i).castMatchesList.get(i1).toString();
+////            Log.e("Cast child  ",s);
+//                    if (i1 == play.playLinesList.get(i).castMatchesList.size() - 1) {
+//                        castMatchesString.append(s.toString());
+//                    } else {
+//                        castMatchesString.append(s.toString() + ";");
+//                    }
+//                }
+//
+//                play.playLinesList.get(i).castMatchesString = castMatchesString.toString();
+//                Log.e("line id: ",play.playLinesList.get(i).LineID+"");
+//                stmt.bindString(1, play.playLinesList.get(i).LineCount+"");
+//                stmt.bindString(2, play.playLinesList.get(i).LineID);
+//                stmt.bindString(3, playid+"");
+//                stmt.bindString(4, play.playLinesList.get(i).RoleName);
+//                stmt.bindString(5, play.playLinesList.get(i).showRoleHighlight+"");
+//                stmt.bindString(6, play.playLinesList.get(i).allowComments+"");
+//                stmt.bindString(7, play.playLinesList.get(i).allowRecording+"");
+//                stmt.bindString(8, play.playLinesList.get(i).showIntoWords+"");
+//                stmt.bindString(9, play.playLinesList.get(i).showLineNumber+"");
+//                stmt.bindString(10, play.playLinesList.get(i).MainLineType);
+//                stmt.bindString(11, play.playLinesList.get(i).RoleLinesCount);
+//                stmt.bindString(12, play.playLinesList.get(i).isLastSongLine+"");
+//                stmt.bindString(13, play.playLinesList.get(i).castMatchesString);
+//                stmt.execute();
+////            stmt.clearBindings();
+//
+//
+//
+//
+//
+//            }
+//            myDataBase.setTransactionSuccessful();
+//        }finally {
+//            myDataBase.endTransaction();
+//        }
+//    }
 
+    public void insertPlayLine(PlayLines play_line,int playid){
+            //TODO
 
         StringBuffer castMatchesString = new StringBuffer("");
 //        Log.i("Cast Main list ",""+play_line.castMatchesList);
@@ -271,7 +328,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
         play_line.castMatchesString = castMatchesString.toString();
 //        Log.i("Cast matches string  ",castMatchesString.toString());
-        //
+
         ContentValues cvPlays = new ContentValues();
         cvPlays.put("line_number_",play_line.LineCount);
         cvPlays.put("playline_id_text_",play_line.LineID);
@@ -287,12 +344,15 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         cvPlays.put("is_last_song_line_",play_line.isLastSongLine);
         cvPlays.put("cast_matches_",play_line.castMatchesString);
 
-        myDataBase = this.getWritableDatabase();
+//        myDataBase = this.getWritableDatabase();
+        myDataBase.beginTransaction();
         myDataBase.insert("playlines",null,cvPlays);
-        myDataBase.close();
+        myDataBase.setTransactionSuccessful();
+        myDataBase.endTransaction();
+//        myDataBase.close();
 
         //
-        myDataBase = this.getWritableDatabase();
+//        myDataBase = this.getWritableDatabase();
         String selectQuery = "SELECT id_ FROM playlines WHERE playline_id_text_ ="+"\""+play_line.LineID.toString().trim()+"\"";
         Cursor cursor = myDataBase.rawQuery(selectQuery, null);
         cursor.moveToFirst();
@@ -316,83 +376,175 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
             removeAssignedUsersForPlayLine(play_line,playid);
 
 //            Log.e("No of assigned user",""+play_line.assignedUsersList.size());
-            for(AssignedUsers assignedUser : play_line.assignedUsersList){
-
-                insertAssignedUser(assignedUser,play_line,playid);
-            }
+//            for(AssignedUsers assignedUser : play_line.assignedUsersList){
+//
+//                insertAssignedUser(assignedUser,play_line,playid);
+//            }
+            setAssignedUser(play_line,playid);
         }
 
         // textlines
-        for(TextLines textLine : play_line.textLinesList){
-            insertTextLine(textLine,playLineId);
-        }
+        setTextLine(play_line,playLineId);
 
+//        for(TextLines textLine : play_line.textLinesList){
+//            insertTextLine(textLine,playLineId);
+//        }
+
+
+        setComments(play_line,playLineId);
         //comments
-        for(Comments comment : play_line.commentsList){
-            insertComment(comment,playLineId);
-        }
+//        for(Comments comment : play_line.commentsList){
+//            insertComment(comment,playLineId);
+//        }
 
+        setSongFiles(play_line,playLineId);
         //song file
-        for(SongFiles songFile : play_line.songFilesList){
-            insertSongFile(songFile,playLineId);
+//        for(SongFiles songFile : play_line.songFilesList){
+//            insertSongFile(songFile,playLineId);
+//        }
+
+    }
+
+    private void setSongFiles(PlayLines play_line, int playLineId) {
+        String sql = "Insert or Replace into songFiles (playline_id_,title_,file_url_,file_type_,available_for_students_,file_description_) VALUES (?,?,?,?,?,?)";
+        myDataBase.beginTransaction();
+        try {
+            SQLiteStatement stmt = myDataBase.compileStatement(sql);
+
+            for (int i = 0; i < play_line.songFilesList.size(); i++) {
+                stmt.bindString(1, playLineId + "");
+                stmt.bindString(2, play_line.songFilesList.get(i).SongTitle);
+                stmt.bindString(3, play_line.songFilesList.get(i).SongMp3Url);
+                stmt.bindString(4, play_line.songFilesList.get(i).FileType+"");
+                stmt.bindString(5, play_line.songFilesList.get(i).FileAvailableForStudents+"");
+                stmt.bindString(6, play_line.songFilesList.get(i).FileDescription+"");
+                stmt.execute();
+//            stmt.clearBindings();
+            }
+            myDataBase.setTransactionSuccessful();
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            myDataBase.endTransaction();
+        }
+    }
+//    private void insertSongFile(SongFiles songFile, int playLineId) {
+//
+//        //TODO
+//        ContentValues cvLineText = new ContentValues();
+//        cvLineText.put("playline_id_",playLineId);
+//        cvLineText.put("title_",songFile.SongTitle);
+//        cvLineText.put("file_url_",songFile.SongMp3Url);
+//        cvLineText.put("file_type_",songFile.FileType);
+//        cvLineText.put("available_for_students_",songFile.FileAvailableForStudents);
+//        cvLineText.put("file_description_",songFile.FileDescription);
+//
+////        myDataBase = this.getWritableDatabase();
+//        myDataBase.beginTransaction();
+//        myDataBase.insert("songFiles",null,cvLineText);
+////        myDataBase.close();
+//        myDataBase.setTransactionSuccessful();
+//        myDataBase.endTransaction();
+//
+//    }
+
+    private void setComments(PlayLines play_line, int playLineId) {
+        String sql = "Insert or Replace into comments (playline_id_,username_,text_,private_) VALUES (?,?,?,?)";
+        myDataBase.beginTransaction();
+        try {
+            SQLiteStatement stmt = myDataBase.compileStatement(sql);
+
+            for (int i = 0; i < play_line.commentsList.size(); i++) {
+                stmt.bindString(1, playLineId + "");
+                stmt.bindString(2, play_line.commentsList.get(i).userName);
+                stmt.bindString(3, play_line.commentsList.get(i).commentText);
+                stmt.bindString(4, play_line.commentsList.get(i).isPrivate+"");
+                stmt.execute();
+//            stmt.clearBindings();
+            }
+            myDataBase.setTransactionSuccessful();
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            myDataBase.endTransaction();
+        }
+    }
+//    private void insertComment(Comments comment, int playLineId) {
+//
+//        //TODO
+////        Log.i("In insert comments ","insert comments for the ");
+//
+//        ContentValues cvLineText = new ContentValues();
+//        cvLineText.put("playline_id_",playLineId);
+//        cvLineText.put("username_",comment.userName);
+//        cvLineText.put("text_",comment.commentText);
+//        cvLineText.put("private_",comment.isPrivate);
+//
+////        myDataBase = this.getWritableDatabase();
+//        myDataBase.beginTransaction();
+//
+//
+//        myDataBase.insert("comments",null,cvLineText);
+//        myDataBase.setTransactionSuccessful();
+//        myDataBase.endTransaction();
+////        myDataBase.close();
+//
+//    }
+
+    private void setTextLine(PlayLines play_line, int playLineId){
+       String sql = "Insert or Replace into textlines (playline_id_,type_,original_text_,altered_text_) VALUES (?,?,?,?)";
+        myDataBase.beginTransaction();
+        try {
+            SQLiteStatement stmt = myDataBase.compileStatement(sql);
+
+            for (int i = 0; i < play_line.textLinesList.size(); i++) {
+                stmt.bindString(1, playLineId + "");
+                stmt.bindString(2, play_line.textLinesList.get(i).LineType);
+                stmt.bindString(3, play_line.textLinesList.get(i).LineText);
+                if(play_line.textLinesList.get(i).alteredLineText !=null) {
+                    stmt.bindString(4, play_line.textLinesList.get(i).alteredLineText);
+                } else {
+                    stmt.bindString(4, "");
+                }
+                stmt.execute();
+//            stmt.clearBindings();
+            }
+            myDataBase.setTransactionSuccessful();
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            myDataBase.endTransaction();
         }
 
     }
 
-    private void insertSongFile(SongFiles songFile, int playLineId) {
 
-        ContentValues cvLineText = new ContentValues();
-        cvLineText.put("playline_id_",playLineId);
-        cvLineText.put("title_",songFile.SongTitle);
-        cvLineText.put("file_url_",songFile.SongMp3Url);
-        cvLineText.put("file_type_",songFile.FileType);
-        cvLineText.put("available_for_students_",songFile.FileAvailableForStudents);
-        cvLineText.put("file_description_",songFile.FileDescription);
+//    private void insertTextLine(TextLines textLine, int playLineId) {
+//        //TODO
+//
+//
+//        ContentValues cvLineText = new ContentValues();
+//        cvLineText.put("playline_id_",playLineId);
+//        cvLineText.put("type_",textLine.LineType);
+//        cvLineText.put("original_text_",textLine.LineText);
+//        cvLineText.put("altered_text_",textLine.alteredLineText);
+//
+////        myDataBase = this.getWritableDatabase();
+//        myDataBase.beginTransaction();
+//        myDataBase.insert("textlines",null,cvLineText);
+//
+//        myDataBase.setTransactionSuccessful();
+//        myDataBase.endTransaction();
+////        myDataBase.close();
+//
+//    }
 
-        myDataBase = this.getWritableDatabase();
-        myDataBase.insert("songFiles",null,cvLineText);
-        myDataBase.close();
-
-
-    }
-
-    private void insertComment(Comments comment, int playLineId) {
-
-
-//        Log.i("In insert comments ","insert comments for the ");
-
-        ContentValues cvLineText = new ContentValues();
-        cvLineText.put("playline_id_",playLineId);
-        cvLineText.put("username_",comment.userName);
-        cvLineText.put("text_",comment.commentText);
-        cvLineText.put("private_",comment.isPrivate);
-
-        myDataBase = this.getWritableDatabase();
-        myDataBase.insert("comments",null,cvLineText);
-        myDataBase.close();
-
-    }
-
-    private void insertTextLine(TextLines textLine, int playLineId) {
-
-        ContentValues cvLineText = new ContentValues();
-        cvLineText.put("playline_id_",playLineId);
-        cvLineText.put("type_",textLine.LineType);
-        cvLineText.put("original_text_",textLine.LineText);
-        cvLineText.put("altered_text_",textLine.alteredLineText);
-
-        myDataBase = this.getWritableDatabase();
-        myDataBase.insert("textlines",null,cvLineText);
-        myDataBase.close();
-
-    }
-
-    public void insertAssignedUser(AssignedUsers assignedUsers,PlayLines play_line, int playid) {
+    private void setAssignedUser(PlayLines play_line, int playid){
         String roleName = null;
 //        Log.e("PlayID while assign user inserted ",""+playid);
         if(play_line.RoleName == null || play_line.RoleName.equalsIgnoreCase("")){
 
-            myDataBase = this.getWritableDatabase();
+//            myDataBase = this.getWritableDatabase();
             String selectQuery = "SELECT role_name_ FROM playlines WHERE play_id_ ="+playid+" AND playline_id_text_ ="+"\""+play_line.LineID.toString().trim()+"\"";
 //            Log.e("Query for inserting assigned user",selectQuery);
             Cursor cursor = myDataBase.rawQuery(selectQuery, null);
@@ -408,28 +560,75 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
             }
             cursor.close();
 
-
-
         }
 
-        ContentValues cvInsertAssignedUsers = new ContentValues();
-        cvInsertAssignedUsers.put("play_id_",playid);
-        cvInsertAssignedUsers.put("role_name_",play_line.RoleName);
-        cvInsertAssignedUsers.put("assigned_user_id_",assignedUsers.AssignedUserId);
-        cvInsertAssignedUsers.put("assigned_user_name_",assignedUsers.AssignedUserName);
+        String sql = "Insert or Replace into assigned_users (play_id_,role_name_,assigned_user_id_,assigned_user_name_) VALUES (?,?,?,?)";
+        myDataBase.beginTransaction();
+        try {
+            SQLiteStatement stmt = myDataBase.compileStatement(sql);
 
-        myDataBase = this.getWritableDatabase();
-        myDataBase.insert("assigned_users",null,cvInsertAssignedUsers);
-        myDataBase.close();
+            for (int i = 0; i < play_line.assignedUsersList.size(); i++) {
+                stmt.bindString(1, playid + "");
+                stmt.bindString(2, play_line.RoleName);
+                stmt.bindString(3, play_line.assignedUsersList.get(i).AssignedUserId);
 
+                    stmt.bindString(4, play_line.assignedUsersList.get(i).AssignedUserName);
+
+                stmt.execute();
+//            stmt.clearBindings();
+            }
+            myDataBase.setTransactionSuccessful();
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            myDataBase.endTransaction();
+        }
     }
+//    public void insertAssignedUser(AssignedUsers assignedUsers,PlayLines play_line, int playid) {
+//        //TODO
+//        String roleName = null;
+////        Log.e("PlayID while assign user inserted ",""+playid);
+//        if(play_line.RoleName == null || play_line.RoleName.equalsIgnoreCase("")){
+//
+////            myDataBase = this.getWritableDatabase();
+//            String selectQuery = "SELECT role_name_ FROM playlines WHERE play_id_ ="+playid+" AND playline_id_text_ ="+"\""+play_line.LineID.toString().trim()+"\"";
+////            Log.e("Query for inserting assigned user",selectQuery);
+//            Cursor cursor = myDataBase.rawQuery(selectQuery, null);
+//            cursor.moveToFirst();
+//
+//            if (cursor.moveToFirst()) {
+//                do {
+//                    roleName = new String();
+//                    roleName = cursor.getString(cursor.getColumnIndex("role_name_"));
+////                    Log.e("RoleNameAfterFetching",roleName);
+//                    play_line.RoleName = roleName;
+//                } while (cursor.moveToNext());
+//            }
+//            cursor.close();
+//
+//        }
+//
+//        ContentValues cvInsertAssignedUsers = new ContentValues();
+//        cvInsertAssignedUsers.put("play_id_",playid);
+//        cvInsertAssignedUsers.put("role_name_",play_line.RoleName);
+//        cvInsertAssignedUsers.put("assigned_user_id_",assignedUsers.AssignedUserId);
+//        cvInsertAssignedUsers.put("assigned_user_name_",assignedUsers.AssignedUserName);
+//
+////        myDataBase = this.getWritableDatabase();
+//        myDataBase.beginTransaction();
+//        myDataBase.insert("assigned_users",null,cvInsertAssignedUsers);
+//        myDataBase.setTransactionSuccessful();
+//        myDataBase.endTransaction();
+////        myDataBase.close();
+//
+//    }
 
     public void removeAssignedUsersForPlayLine(PlayLines play_line,int playID) {
 
 //        Log.e("---------------------------------------------","In delete");
         if(play_line.RoleName == null || play_line.RoleName.equalsIgnoreCase("")){
 
-            myDataBase = this.getWritableDatabase();
+//            myDataBase = this.getWritableDatabase();
             String selectQuery = "SELECT role_name_ FROM playlines WHERE playline_id_text_ ="+"\""+play_line.LineID.toString().trim()+"\"";
             Cursor cursor = myDataBase.rawQuery(selectQuery, null);
             cursor.moveToFirst();
@@ -445,17 +644,17 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
             cursor.close();
 //            Log.e("---------------------------------------------","Before delete");
             // delete query
-            myDataBase = this.getWritableDatabase();
+//            myDataBase = this.getWritableDatabase();
             myDataBase.delete("assigned_users","play_id_" + " = ? AND " + "role_name_" + " = ?",new String[]{""+playID,roleName});
-            myDataBase.close();
+//            myDataBase.close();
 //            Log.e("---------------------------------------------","After delete");
 
         }
     }
 
     public void updatePlayLine(PlayLines play_line,int playID){
-
-        myDataBase = this.getWritableDatabase();
+            //TODO
+//        myDataBase = this.getWritableDatabase();
         String selectQuery = "SELECT id_ FROM playlines WHERE playline_id_text_ ="+"\""+play_line.LineID.toString().trim()+"\"";
         Cursor cursor = myDataBase.rawQuery(selectQuery, null);
         cursor.moveToFirst();
@@ -491,9 +690,10 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         }
 
         if(play_line.commentsList != null && play_line.commentsList.size()>0){
-            for(Comments comment : play_line.commentsList){
-                insertComment(comment,playLineID);
-            }
+//            for(Comments comment : play_line.commentsList){
+//                insertComment(comment,playLineID);
+//            }
+            setComments(play_line,playLineID);
         }
 
         if(play_line.songFilesList != null && play_line.songFilesList.size()>0){
@@ -501,9 +701,10 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         }
 
         //song file
-        for(SongFiles songFile : play_line.songFilesList){
-            insertSongFile(songFile,playLineID);
-        }
+        setSongFiles(play_line,playLineID);
+//        for(SongFiles songFile : play_line.songFilesList){
+//            insertSongFile(songFile,playLineID);
+//        }
 
         if(play_line.MainLineType == null){
             play_line.MainLineType = getPlayLineTypeForLineId(play_line.LineID);
@@ -511,25 +712,26 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
         if(play_line.playLineType() == PlayLines.PlayLType.PlayLineTypeRole){
             removeAssignedUsersForPlayLine(play_line,playID);
-            for(AssignedUsers assignedUser : play_line.assignedUsersList){
-                insertAssignedUser(assignedUser,play_line,playID);
-            }
+//            for(AssignedUsers assignedUser : play_line.assignedUsersList){
+//                insertAssignedUser(assignedUser,play_line,playID);
+//            }
+            setAssignedUser(play_line,playID);
         }
 
-        myDataBase.close();
+//        myDataBase.close();
     }
 
     private void removeAllSongsForPlayLineId(int playLineID) {
 
-        myDataBase = this.getWritableDatabase();
+//        myDataBase = this.getWritableDatabase();
         myDataBase.delete("songfiles","playline_id_" + " = ?",new String[]{""+playLineID});
-        myDataBase.close();
+//        myDataBase.close();
     }
 
 
     public String getPlayLineTypeForLineId(String lineID) {
 
-        myDataBase = this.getWritableDatabase();
+//        myDataBase = this.getWritableDatabase();
         String selectQuery = "SELECT main_line_type_ FROM playlines WHERE playline_id_text_ ="+"\""+lineID+"\"";
         Cursor cursor = myDataBase.rawQuery(selectQuery, null);
         cursor.moveToFirst();
@@ -546,16 +748,16 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
     public void removeAllCommentsForPlayLineId(int playLineID) {
 
-        myDataBase = this.getWritableDatabase();
+//        myDataBase = this.getWritableDatabase();
         myDataBase.delete("comments","playline_id_" + " = ?",new String[]{""+playLineID});
-        myDataBase.close();
+//        myDataBase.close();
 
     }
 
 
 
     public void updateTextLine(TextLines textLine, int playLineID, int index) {
-        myDataBase = this.getWritableDatabase();
+//        myDataBase = this.getWritableDatabase();
         String selectQuery = "SELECT id_ FROM textlines WHERE playline_id_ ="+playLineID;
         Cursor cursor = myDataBase.rawQuery(selectQuery, null);
         cursor.moveToFirst();
@@ -573,9 +775,9 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
                     ContentValues cvTextLines = new ContentValues();
                     cvTextLines.put("altered_text_",textLine.alteredLineText);
 
-                    myDataBase = this.getWritableDatabase();
+//                    myDataBase = this.getWritableDatabase();
                     myDataBase.update("textlines",cvTextLines,"id_ " + " = ?",new String[]{""+textLineID});
-                    myDataBase.close();
+//                    myDataBase.close();
                 }
                 count++;
 
@@ -587,9 +789,9 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
 
     public int getPlayIdFromDBForOrderId(String orderId) {
-
+            //TODO
 //        Log.e("Database ","getPlayIdFromDBForOrderId");
-        myDataBase = this.getWritableDatabase();
+//        myDataBase = this.getWritableDatabase();
         String selectQuery = "SELECT id_ FROM plays WHERE play_order_id_text_ ="+"\""+orderId+"\"";
         Cursor cursor = myDataBase.rawQuery(selectQuery, null);
         cursor.moveToFirst();
@@ -601,7 +803,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
             } while (cursor.moveToNext());
         }
-        myDataBase.close();
+//        myDataBase.close();
 
         return playID;
 
@@ -612,9 +814,9 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         ContentValues cvTextLines = new ContentValues();
         cvTextLines.put("order_type_",play.OrderType);
 
-        myDataBase = this.getWritableDatabase();
+//        myDataBase = this.getWritableDatabase();
         myDataBase.update("plays",cvTextLines," play_order_id_text_ " + " = ?",new String[]{""+play.OrderId});
-        myDataBase.close();
+//        myDataBase.close();
     }
 
     public ArrayList getMyCastMatchesForUserId(String userID,int playID){
@@ -622,7 +824,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
         String mlt = "Rolle";
 
         ArrayList marrMyCastMatches = new ArrayList();
-        myDataBase = this.getWritableDatabase();
+//        myDataBase = this.getWritableDatabase();
         String rolenameQuery = "SELECT role_name_ FROM assigned_users WHERE play_id_ = "+playID+" AND assigned_user_id_ ="+"\""+userID+"\"";
 //       Log.e("Role name query database ",rolenameQuery);
         Cursor cursor = myDataBase.rawQuery(rolenameQuery, null);
@@ -639,17 +841,17 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
                     marrMyCastMatches.add(roleNameForUserId);
                 }
 
-                myDataBase = this.getWritableDatabase();
+//                myDataBase = this.getWritableDatabase();
 
 
-                       // "role_name_" + " = ? AND " + "main_line_type_" + " = ?"
+                // "role_name_" + " = ? AND " + "main_line_type_" + " = ?"
 
                 String wher = "role_name_" + " = ? AND " + "main_line_type_" + " = ?";
                 String[] FIELDS = { "cast_matches_" };
 
-              //  myDataBase.qu
-              //  String castMatchesQuery = "SELECT cast_matches_ FROM playlines WHERE role_name_ ="+"\""+roleNameForUserId+"\""+"AND main_line_type_ ="+"\""+mlt+"\"";
-              //  System.out.println("castMatces String query : "+castMatchesQuery);
+                //  myDataBase.qu
+                //  String castMatchesQuery = "SELECT cast_matches_ FROM playlines WHERE role_name_ ="+"\""+roleNameForUserId+"\""+"AND main_line_type_ ="+"\""+mlt+"\"";
+                //  System.out.println("castMatces String query : "+castMatchesQuery);
                 //Cursor castMatchesCursor = myDataBase.rawQuery(castMatchesQuery, null);
                 Cursor castMatchesCursor =   myDataBase.query("playlines", FIELDS, wher, new String[]{roleNameForUserId,mlt}, null, null, null);
                 String castMatchesString = null;
@@ -681,7 +883,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
                     }
 
 
-                  //  marrMyCastMatches.addAll(new ArrayList(Arrays.asList(arrMAtchesForRole)));
+                    //  marrMyCastMatches.addAll(new ArrayList(Arrays.asList(arrMAtchesForRole)));
                 }
 
             }
@@ -693,7 +895,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
     public Play retrievePlayWithId(int playID){
 
-        myDataBase = this.getWritableDatabase();
+//        myDataBase = this.getWritableDatabase();
         String selectQuery = "SELECT * FROM plays WHERE id_ = "+playID;
         Cursor cursor = myDataBase.rawQuery(selectQuery, null);
         cursor.moveToFirst();
@@ -737,7 +939,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
     public void retrievePlayLinesForPlay(Play play){
 
-        myDataBase = this.getWritableDatabase();
+//        myDataBase = this.getWritableDatabase();
         String selectQuery = "SELECT * FROM playlines WHERE play_id_ ="+play.pID;
         Cursor cursor = myDataBase.rawQuery(selectQuery, null);
         cursor.moveToFirst();
@@ -843,7 +1045,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
 
 
-        myDataBase = this.getWritableDatabase();
+//        myDataBase = this.getWritableDatabase();
         String selectQuery = "SELECT * FROM songfiles WHERE playline_id_ ="+playlineModelObject.lID;
         Cursor cursor = myDataBase.rawQuery(selectQuery, null);
         cursor.moveToFirst();
@@ -892,7 +1094,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
     public void retrieveComments(PlayLines playlineModelObject) {
 
-        myDataBase = this.getWritableDatabase();
+//        myDataBase = this.getWritableDatabase();
         String selectQuery = "SELECT * FROM comments WHERE playline_id_ ="+playlineModelObject.lID;
         Cursor cursor = myDataBase.rawQuery(selectQuery, null);
         cursor.moveToFirst();
@@ -936,7 +1138,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
     public void retrieveTextLines(PlayLines playlineModelObject) {
 
-        myDataBase = this.getWritableDatabase();
+//        myDataBase = this.getWritableDatabase();
         String selectQuery = "SELECT * FROM textlines WHERE playline_id_ ="+playlineModelObject.lID;
         Cursor cursor = myDataBase.rawQuery(selectQuery, null);
         cursor.moveToFirst();
@@ -966,7 +1168,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
     public void retrieveAssignedUsers(PlayLines playlineModelObject, int pID) {
 
-        myDataBase = this.getWritableDatabase();
+//        myDataBase = this.getWritableDatabase();
         String selectQuery = "SELECT * FROM assigned_users WHERE play_id_ ="+pID+" AND role_name_ ="+"\""+playlineModelObject.RoleName+"\"";
         Cursor cursor = myDataBase.rawQuery(selectQuery, null);
         cursor.moveToFirst();
@@ -994,7 +1196,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
     }
 
     public ArrayList<String> getMyCastMatchesForRoleNames(ArrayList<String> rolenames,int playid){
-        myDataBase = this.getWritableDatabase();
+//        myDataBase = this.getWritableDatabase();
         String mlt = "Rolle";
         ArrayList<String> marrMyCastMatches = new ArrayList<String>();
 
@@ -1040,7 +1242,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
 
     public boolean IsDatabseEmpty() {
         boolean isDatabaseEmpty;
-        myDataBase = this.getWritableDatabase();
+//        myDataBase = this.getWritableDatabase();
         String selectQuery = "SELECT * FROM plays";
         Cursor cursor = myDataBase.rawQuery(selectQuery, null);
 
@@ -1050,7 +1252,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
             isDatabaseEmpty=true;
         }
         cursor.close();
-        myDataBase.close();
+//        myDataBase.close();
 
         return  isDatabaseEmpty;
     }

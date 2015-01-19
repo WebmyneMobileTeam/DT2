@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
@@ -85,6 +86,7 @@ public class PinnedHeaderListView extends ListView implements OnScrollListener {
         int section = mAdapter.getSectionForPosition(firstVisibleItem);
         int viewType = mAdapter.getSectionHeaderViewType(section);
         mCurrentHeader = getSectionHeaderView(section, mCurrentHeaderViewType != viewType ? null : mCurrentHeader);
+
         ensurePinnedHeaderLayout(mCurrentHeader);
         mCurrentHeaderViewType = viewType;
 
@@ -96,6 +98,7 @@ public class PinnedHeaderListView extends ListView implements OnScrollListener {
                 float headerTop = header.getTop();
                 float pinnedHeaderHeight = mCurrentHeader.getMeasuredHeight();
                 header.setVisibility(VISIBLE);
+
                 if (pinnedHeaderHeight >= headerTop && headerTop > 0) {
                     mHeaderOffset = headerTop - header.getHeight();
                 } else if (headerTop <= 0) {
@@ -157,6 +160,7 @@ public class PinnedHeaderListView extends ListView implements OnScrollListener {
         // <
         // HONEYCOMB
         mCurrentHeader.draw(canvas);
+
         canvas.restoreToCount(saveCount);
     }
 
