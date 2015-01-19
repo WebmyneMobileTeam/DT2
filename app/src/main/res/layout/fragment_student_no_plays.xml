@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="wm.com.danteater.excercise.FragmentExcerciseForTeacher">
+    tools:context="dk.danteater.danteater.excercise.FragmentExcerciseForTeacher">
 
     <LinearLayout
         android:id="@+id/labelView"
@@ -13,7 +13,7 @@
         android:background="@color/apptheme_color"
         android:layout_height="wrap_content">
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Inspiration er på vej. Vi ser frem til at modtage nogle kreative indslag og billeder fra dig."
@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Din lærer har ikke delt et skuespil med dig endnu..."
@@ -54,7 +54,7 @@
             android:verticalSpacing="2dp"
             android:drawSelectorOnTop="true" />
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="...men du kan jo se lidt dramaøvelser, mens du venter"

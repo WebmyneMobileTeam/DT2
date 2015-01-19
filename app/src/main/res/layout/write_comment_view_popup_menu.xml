@@ -18,7 +18,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:id="@+id/writeCommentPopupTitle"
             android:layout_alignParentLeft="true"
             android:layout_width="wrap_content"
@@ -27,7 +27,7 @@
             android:textColor="@android:color/black"
             android:textSize="@dimen/normalText" />
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:id="@+id/writeCommentPopupCancel"
             android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
@@ -59,7 +59,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <wm.com.danteater.customviews.SegmentedGroup
+        <dk.danteater.danteater.customviews.SegmentedGroup
             android:layout_alignParentLeft="true"
             android:layout_toLeftOf="@+id/writeCommentPopupSave"
             android:id="@+id/writeCommentPopupSegmentedGroup"
@@ -89,9 +89,9 @@
                 android:text="Kun til mig selv"
                 style="@style/RadioButton" />
 
-        </wm.com.danteater.customviews.SegmentedGroup>
+        </dk.danteater.danteater.customviews.SegmentedGroup>
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:id="@+id/writeCommentPopupSave"
             android:layout_alignParentRight="true"
             android:layout_width="wrap_content"

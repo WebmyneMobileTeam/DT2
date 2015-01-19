@@ -11,7 +11,7 @@
         android:background="@color/apptheme_color"
         android:padding="8dp"
         android:layout_height="wrap_content">
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:id="@+id/txtDownloadAllMusic"
             android:singleLine="true"
             android:layout_width="match_parent"

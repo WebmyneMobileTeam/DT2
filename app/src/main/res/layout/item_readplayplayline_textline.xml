@@ -22,7 +22,7 @@
             android:background="@drawable/compose"/>
 
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:id="@+id/readPlayLineCellDescription"
             android:padding="1dp"
             android:textStyle="normal"

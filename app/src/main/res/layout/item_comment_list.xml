@@ -14,7 +14,7 @@
         android:src="@drawable/compose_yellow"
         android:scaleType="centerInside" />
 
-    <wm.com.danteater.customviews.WMTextView
+    <dk.danteater.danteater.customviews.WMTextView
         android:id="@+id/txtItemCommentText"
         android:textStyle="italic"
         android:layout_width="match_parent"

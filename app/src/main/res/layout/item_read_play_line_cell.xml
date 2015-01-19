@@ -18,7 +18,7 @@
         android:paddingLeft="@dimen/activity_margin"
         android:layout_height="wrap_content">
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
         android:id="@+id/readPlayLineCellRollName"
         android:layout_alignParentLeft="true"
         android:layout_marginTop="16dp"
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/ic_more" />
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:layout_alignParentRight="true"
             android:id="@+id/readPlayLineCellLineNumber"
             android:padding="4dp"
@@ -51,7 +51,7 @@
 
     </RelativeLayout>
 
-    <wm.com.danteater.customviews.FullLengthListView
+    <dk.danteater.danteater.customviews.FullLengthListView
         android:id="@+id/listViewReadPlayLineText"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -62,7 +62,7 @@
         android:dividerHeight="0dp"
        >
 
-        </wm.com.danteater.customviews.FullLengthListView>
+        </dk.danteater.danteater.customviews.FullLengthListView>
    <!-- <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
             android:background="@drawable/compose"/>
 
 
-        <wm.com.danteater.customviews.WMTextView
+        <WMTextView
             android:id="@+id/readPlayLineCellDescription"
             android:padding="1dp"
             android:textStyle="normal"

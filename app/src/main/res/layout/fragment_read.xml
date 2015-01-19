@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    tools:context="wm.com.danteater.tab_read.ReadFragment">
+    tools:context="dk.danteater.danteater.tab_read.ReadFragment">
 
 
 
@@ -12,12 +12,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"></wm.com.danteater.customviews.HeaderListView>-->
 
-    <wm.com.danteater.customviews.PinnedHeaderListView
+    <dk.danteater.danteater.customviews.PinnedHeaderListView
         android:id="@+id/listViewRead"
         android:layout_width="match_parent"
         android:dividerHeight="1dp"
         android:divider="#d1d1d1"
-        android:layout_height="match_parent"></wm.com.danteater.customviews.PinnedHeaderListView>
+        android:layout_height="match_parent"></dk.danteater.danteater.customviews.PinnedHeaderListView>
 
 
     <include

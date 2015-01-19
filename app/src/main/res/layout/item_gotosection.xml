@@ -17,7 +17,7 @@
         android:src="@drawable/ic_music_small"
         android:scaleType="centerInside" />
 
-    <wm.com.danteater.customviews.WMTextView
+    <dk.danteater.danteater.customviews.WMTextView
         android:id="@+id/txtGoToSectionList"
         android:text="@string/hello_world"
         android:layout_width="wrap_content"

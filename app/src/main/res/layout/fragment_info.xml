@@ -47,7 +47,7 @@
         android:clickable="true"
         android:layout_gravity="bottom">
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
 
             android:paddingLeft="4dp"
             android:text="Download til gennemsyn gemmes under [ Mine Stykker ]"

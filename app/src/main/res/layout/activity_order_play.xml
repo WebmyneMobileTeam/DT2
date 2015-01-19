@@ -31,7 +31,7 @@
             android:paddingRight="@dimen/activity_margin"
             android:layout_height="wrap_content">
 
-            <wm.com.danteater.customviews.WMTextView
+            <dk.danteater.danteater.customviews.WMTextView
                 android:id="@+id/txtOrderDetails"
                 android:layout_width="match_parent"
                 android:textColor="@color/apptheme_color"
@@ -49,14 +49,14 @@
         android:paddingRight="@dimen/activity_margin"
         android:orientation="horizontal">
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Skole: "
             android:textColor="@color/apptheme_color"
             android:textSize="@dimen/fragment_my_play_small_text" />
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:id="@+id/schoolId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -72,14 +72,14 @@
         android:paddingRight="@dimen/activity_margin"
         android:orientation="horizontal">
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Navn: "
             android:textColor="@color/apptheme_color"
             android:textSize="@dimen/fragment_my_play_small_text" />
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:id="@+id/userName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -87,7 +87,7 @@
             android:textSize="@dimen/fragment_my_play_small_text" />
     </LinearLayout>
 
-    <wm.com.danteater.customviews.WMTextView
+    <dk.danteater.danteater.customviews.WMTextView
         android:id="@+id/btnPlayOrder"
         android:layout_width="match_parent"
         android:layout_height="@dimen/fragment_search_button_height"

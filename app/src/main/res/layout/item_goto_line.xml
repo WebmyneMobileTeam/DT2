@@ -8,7 +8,7 @@
     android:orientation="horizontal"
     android:layout_height="wrap_content">
 
-    <wm.com.danteater.customviews.WMEdittext
+    <dk.danteater.danteater.customviews.WMEdittext
         android:id="@+id/edGotoLine"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
 
 
 
-    <wm.com.danteater.customviews.WMTextView
+    <dk.danteater.danteater.customviews.WMTextView
         android:id="@+id/txtGotoLine"
         android:text="Gå"
         android:paddingLeft="16dp"

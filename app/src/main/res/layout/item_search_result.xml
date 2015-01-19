@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <wm.com.danteater.customviews.WMTextView
+            <dk.danteater.danteater.customviews.WMTextView
                 android:id="@+id/sResultTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
         </RelativeLayout>
 
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:id="@+id/sResultSubTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
                 android:layout_marginRight="2dp"
                 android:src="@drawable/ic_number_of_participants_small" />
 
-            <wm.com.danteater.customviews.WMTextView
+            <dk.danteater.danteater.customviews.WMTextView
                 android:id="@+id/sResultParticipants"
 
                 android:layout_width="wrap_content"
@@ -102,7 +102,7 @@
                 android:layout_marginRight="2dp"
                 android:src="@drawable/ic_music_small" />
 
-            <wm.com.danteater.customviews.WMTextView
+            <dk.danteater.danteater.customviews.WMTextView
                 android:id="@+id/sResultMusics"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -129,7 +129,7 @@
                 android:layout_marginRight="2dp"
                 android:src="@drawable/ic_age_small" />
 
-            <wm.com.danteater.customviews.WMTextView
+            <dk.danteater.danteater.customviews.WMTextView
                 android:id="@+id/sResultAge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -156,7 +156,7 @@
                 android:layout_marginRight="2dp"
                 android:src="@drawable/ic_duration_small" />
 
-            <wm.com.danteater.customviews.WMTextView
+            <dk.danteater.danteater.customviews.WMTextView
                 android:id="@+id/sResultDuration"
                 android:layout_width="wrap_content"
 

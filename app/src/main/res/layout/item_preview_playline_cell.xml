@@ -14,7 +14,7 @@
 
         android:layout_height="wrap_content">
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:layout_alignParentLeft="true"
             android:id="@+id/previewPlayLineCellRollName"
             android:padding="2dp"
@@ -25,7 +25,7 @@
             android:text="Role name"
             android:textSize="@dimen/normalText" />
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:layout_alignParentRight="true"
             android:id="@+id/previewPlayLineCellLineNumber"
             android:layout_centerVertical="true"
@@ -40,7 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:layout_alignParentRight="true"
             android:padding="4dp"
             android:layout_centerVertical="true"

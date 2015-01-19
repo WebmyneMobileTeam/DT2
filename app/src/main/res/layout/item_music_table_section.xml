@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="-8dp"
             android:background="@drawable/ic_music_note"/>
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:id="@+id/music_table_section_title"
             android:layout_width="0dp"
             android:layout_weight="1"

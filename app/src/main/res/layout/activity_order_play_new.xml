@@ -26,7 +26,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 >
-                <wm.com.danteater.customviews.WMTextView
+                <dk.danteater.danteater.customviews.WMTextView
                     android:id="@+id/txtNumberOfPerformance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
             android:orientation="horizontal"
 
             >
-            <wm.com.danteater.customviews.WMTextView
+            <dk.danteater.danteater.customviews.WMTextView
                 android:id="@+id/txtFirstDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -89,7 +89,7 @@
                 android:layout_centerVertical="true"
                 android:text="Dato for premiere"
                 android:textSize="@dimen/fragment_my_play_small_text" />
-            <wm.com.danteater.customviews.WMTextView
+            <dk.danteater.danteater.customviews.WMTextView
                 android:id="@+id/txtFirstDateValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -126,7 +126,7 @@
             android:orientation="horizontal"
 
             >
-            <wm.com.danteater.customviews.WMTextView
+            <dk.danteater.danteater.customviews.WMTextView
                 android:id="@+id/txtRehearsalView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -169,7 +169,7 @@
             android:orientation="horizontal"
 
             >
-            <wm.com.danteater.customviews.WMTextView
+            <dk.danteater.danteater.customviews.WMTextView
                 android:id="@+id/txtSecondDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -177,7 +177,7 @@
                 android:layout_centerVertical="true"
                 android:text="Dato for sidste opførelse"
                 android:textSize="@dimen/fragment_my_play_small_text" />
-            <wm.com.danteater.customviews.WMTextView
+            <dk.danteater.danteater.customviews.WMTextView
                 android:id="@+id/txtSecondDateValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -221,7 +221,7 @@
             android:paddingLeft="@dimen/activity_margin"
             android:paddingRight="@dimen/activity_margin"
             android:layout_height="match_parent">
-            <wm.com.danteater.customviews.WMTextView
+            <dk.danteater.danteater.customviews.WMTextView
                 android:textSize="@dimen/fragment_my_play_small_text"
                 android:textColor="@color/apptheme_color"
                 android:text="Det er gratis at bestille et stykke til opførelse. Forfatterafgiften er også inkluderet i abonnementet.
@@ -257,14 +257,14 @@ Du kan rette disse oplysninger senere."
             android:paddingRight="@dimen/activity_margin"
             android:orientation="horizontal">
 
-            <wm.com.danteater.customviews.WMTextView
+            <dk.danteater.danteater.customviews.WMTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Skole: "
                 android:textColor="@color/apptheme_color"
                 android:textSize="@dimen/fragment_my_play_small_text" />
 
-            <wm.com.danteater.customviews.WMTextView
+            <dk.danteater.danteater.customviews.WMTextView
                 android:id="@+id/schoolId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -280,14 +280,14 @@ Du kan rette disse oplysninger senere."
             android:paddingRight="@dimen/activity_margin"
             android:orientation="horizontal">
 
-            <wm.com.danteater.customviews.WMTextView
+            <dk.danteater.danteater.customviews.WMTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Navn: "
                 android:textColor="@color/apptheme_color"
                 android:textSize="@dimen/fragment_my_play_small_text" />
 
-            <wm.com.danteater.customviews.WMTextView
+            <dk.danteater.danteater.customviews.WMTextView
                 android:id="@+id/userName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -295,7 +295,7 @@ Du kan rette disse oplysninger senere."
                 android:textSize="@dimen/fragment_my_play_small_text" />
         </LinearLayout>
     </LinearLayout>
-    <wm.com.danteater.customviews.WMTextView
+    <dk.danteater.danteater.customviews.WMTextView
         android:id="@+id/btnPlayOrderView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/fragment_search_button_height"

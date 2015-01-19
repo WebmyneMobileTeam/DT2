@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:layout_alignParentLeft="true"
             android:id="@+id/readPlaySongLineCellRollName"
             android:padding="2dp"
@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:id="@+id/readPlaySongLineCellDescription"
             android:layout_alignParentRight="true"
             android:padding="4dp"

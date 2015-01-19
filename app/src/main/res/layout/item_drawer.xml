@@ -6,7 +6,7 @@
 
     android:orientation="horizontal">
 
-    <wm.com.danteater.customviews.WMTextView
+    <dk.danteater.danteater.customviews.WMTextView
         android:layout_gravity="left|center_vertical"
         android:paddingBottom="8dp"
         android:paddingTop="8dp"
@@ -17,9 +17,9 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/normalText">
 
-    </wm.com.danteater.customviews.WMTextView>
+    </dk.danteater.danteater.customviews.WMTextView>
 
-    <wm.com.danteater.customviews.WMTextView
+    <dk.danteater.danteater.customviews.WMTextView
         android:layout_gravity="center_vertical|right"
         android:id="@+id/notification_count_value"
         android:layout_width="wrap_content"

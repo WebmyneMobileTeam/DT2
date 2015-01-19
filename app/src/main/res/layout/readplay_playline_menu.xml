@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/ic_more_white" />
 
-    <wm.com.danteater.customviews.WMTextView
+    <dk.danteater.danteater.customviews.WMTextView
         android:id="@+id/readPlayLineMenuEdit"
         android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
@@ -28,7 +28,7 @@
         android:textColor="@android:color/white"
         android:textSize="@dimen/small_text" />
 
-    <wm.com.danteater.customviews.WMTextView
+    <dk.danteater.danteater.customviews.WMTextView
         android:id="@+id/readPlayLineMenuNote"
         android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
@@ -40,7 +40,7 @@
         android:textColor="@android:color/white"
         android:textSize="@dimen/small_text" />
 
-    <wm.com.danteater.customviews.WMTextView
+    <dk.danteater.danteater.customviews.WMTextView
         android:id="@+id/readPlayLineMenuChat"
         android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"

@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:id="@+id/editLineViewPopupTitle"
             android:layout_alignParentLeft="true"
             android:layout_width="wrap_content"
@@ -29,7 +29,7 @@
             android:textColor="@android:color/black"
             android:textSize="@dimen/normalText" />
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:id="@+id/editLineViewPopupCancel"
             android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
@@ -62,7 +62,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:id="@+id/editLineViewPopupSave"
             android:layout_alignParentRight="true"
             android:layout_width="wrap_content"

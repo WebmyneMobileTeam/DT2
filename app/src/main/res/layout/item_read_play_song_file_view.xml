@@ -20,7 +20,7 @@
         android:orientation="horizontal"
         android:layout_height="match_parent">
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:id="@+id/readPlaySongFileViewTitle"
             android:layout_width="0dp"
             android:paddingLeft="@dimen/activity_margin"

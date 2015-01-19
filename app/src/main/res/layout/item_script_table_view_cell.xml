@@ -22,7 +22,7 @@
 
         android:layout_height="wrap_content">
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:id="@+id/script_table_view_cell_title"
             android:layout_width="0dp"
             android:layout_weight="1"

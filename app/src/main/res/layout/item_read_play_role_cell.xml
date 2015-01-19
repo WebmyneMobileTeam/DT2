@@ -9,7 +9,7 @@
     android:layout_height="wrap_content">
 
 
-    <wm.com.danteater.customviews.WMTextView
+    <dk.danteater.danteater.customviews.WMTextView
         android:id="@+id/readPlayRoleTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,7 +17,7 @@
         android:layout_marginTop="2dp"
         android:textColor="@android:color/black"
         android:textSize="@dimen/normalText"/>
-    <wm.com.danteater.customviews.WMTextView
+    <dk.danteater.danteater.customviews.WMTextView
         android:id="@+id/readPlayRoleDescription"
         android:layout_width="match_parent"
 
@@ -26,7 +26,7 @@
         android:textColor="@android:color/black"
         android:textSize="@dimen/medium_text"/>
 
-    <wm.com.danteater.customviews.WMTextView
+    <dk.danteater.danteater.customviews.WMTextView
         android:id="@+id/readPlayRoleSongTitle"
         android:layout_width="match_parent"
 
@@ -40,7 +40,7 @@
         android:padding="2dp"
         android:layout_height="wrap_content">
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:id="@+id/readPlayRoleNotAssigned"
             android:layout_alignParentLeft="true"
             android:layout_width="wrap_content"
@@ -49,7 +49,7 @@
             android:textColor="@android:color/darker_gray"
             android:textSize="@dimen/small_text"/>
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:id="@+id/readPlayroleAssignedButton"
             android:layout_alignParentRight="true"
             android:layout_width="wrap_content"

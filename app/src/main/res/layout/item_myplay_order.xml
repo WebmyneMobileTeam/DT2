@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:id="@+id/txtOrderTitle"
             android:singleLine="true"
             android:layout_width="match_parent"
@@ -36,7 +36,7 @@
     </RelativeLayout>
 
 
-    <wm.com.danteater.customviews.WMTextView
+    <dk.danteater.danteater.customviews.WMTextView
         android:id="@+id/txtOrderAuther"
         android:singleLine="true"
         android:layout_width="match_parent"
@@ -45,7 +45,7 @@
         android:textColor="@color/gray_color"
         android:textSize="@dimen/fragment_my_play_small_text" />
 
-    <wm.com.danteater.customviews.WMTextView
+    <dk.danteater.danteater.customviews.WMTextView
         android:id="@+id/txtOrderDuration1"
         android:layout_width="match_parent"
         android:singleLine="true"
@@ -54,7 +54,7 @@
         android:textColor="@color/gray_color"
         android:textSize="@dimen/fragment_my_play_small_text" />
 
-    <wm.com.danteater.customviews.WMTextView
+    <dk.danteater.danteater.customviews.WMTextView
         android:singleLine="true"
         android:id="@+id/txtOrderDuration2"
         android:layout_width="match_parent"
@@ -63,7 +63,7 @@
         android:textColor="@color/gray_color"
         android:textSize="@dimen/fragment_my_play_small_text" />
 
-    <wm.com.danteater.customviews.WMTextView
+    <dk.danteater.danteater.customviews.WMTextView
         android:singleLine="true"
         android:id="@+id/txtOrderNumberOfPerformance"
         android:layout_width="match_parent"
@@ -78,7 +78,7 @@
         android:layout_gravity="center_vertical"
         android:gravity="center_vertical">
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:id="@+id/btnOrdering"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -91,7 +91,7 @@
 
             android:textSize="@dimen/fragment_my_play_button_text" />
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:id="@+id/btnShareOrder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -102,7 +102,7 @@
             android:text="Del med elever"
             android:textSize="@dimen/fragment_my_play_button_text" />
 
-        <!--<wm.com.danteater.customviews.WMTextView-->
+        <!--<WMTextView-->
         <!--android:id="@+id/btnReadOrder"-->
         <!--android:layout_width="wrap_content"-->
         <!--android:layout_height="wrap_content"-->

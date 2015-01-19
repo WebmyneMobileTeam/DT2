@@ -9,7 +9,7 @@
     android:orientation="vertical">
 
 
-    <wm.com.danteater.customviews.WMTextView
+    <dk.danteater.danteater.customviews.WMTextView
         android:id="@+id/txtOrderTitlePupil"
         android:singleLine="true"
         android:layout_width="match_parent"
@@ -20,7 +20,7 @@
         android:textSize="@dimen/normalText" />
 
 
-    <wm.com.danteater.customviews.WMTextView
+    <dk.danteater.danteater.customviews.WMTextView
         android:id="@+id/txtOrderAutherPupil"
         android:singleLine="true"
         android:layout_width="match_parent"
@@ -29,7 +29,7 @@
         android:textColor="@color/gray_color"
         android:textSize="@dimen/fragment_my_play_small_text" />
 
-    <wm.com.danteater.customviews.WMTextView
+    <dk.danteater.danteater.customviews.WMTextView
         android:id="@+id/txtOrderDuration1Pupil"
         android:layout_width="match_parent"
         android:singleLine="true"
@@ -38,7 +38,7 @@
         android:textColor="@color/gray_color"
         android:textSize="@dimen/fragment_my_play_small_text" />
 
-    <wm.com.danteater.customviews.WMTextView
+    <dk.danteater.danteater.customviews.WMTextView
         android:singleLine="true"
         android:id="@+id/txtOrderDuration2Pupil"
         android:layout_width="match_parent"
@@ -47,7 +47,7 @@
         android:textColor="@color/gray_color"
         android:textSize="@dimen/fragment_my_play_small_text" />
 
-    <wm.com.danteater.customviews.WMTextView
+    <dk.danteater.danteater.customviews.WMTextView
         android:singleLine="true"
         android:id="@+id/txtOrderNumberOfPerformancePupil"
         android:layout_width="match_parent"

@@ -6,7 +6,7 @@
     android:orientation="horizontal"
     >
 
-    <wm.com.danteater.customviews.WMTextView
+    <dk.danteater.danteater.customviews.WMTextView
         android:id="@+id/item_orderplay_rehersal_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

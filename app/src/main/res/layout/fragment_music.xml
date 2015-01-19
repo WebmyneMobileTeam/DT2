@@ -3,15 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    tools:context="wm.com.danteater.tab_music.MusicFragment">
+    tools:context="dk.danteater.danteater.tab_music.MusicFragment">
 
-    <wm.com.danteater.customviews.PinnedHeaderListView
+    <dk.danteater.danteater.customviews.PinnedHeaderListView
         android:id="@+id/listViewMusic"
         android:layout_width="match_parent"
         android:dividerHeight="1dp"
         android:divider="#d1d1d1"
         android:layout_height="match_parent">
-        </wm.com.danteater.customviews.PinnedHeaderListView>
+        </dk.danteater.danteater.customviews.PinnedHeaderListView>
 
 
 </FrameLayout>

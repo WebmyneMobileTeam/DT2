@@ -10,7 +10,7 @@
         android:layout_height="48dp"
         android:background="#d5d5d5">
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:id="@+id/txtBackAssignRole"
             android:text="Annuller"
             android:layout_gravity="center_vertical"
@@ -20,7 +20,7 @@
             android:textColor="@color/apptheme_color"
             android:textSize="18sp" />
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:text="Tildel rolle"
             android:layout_gravity="center"
             android:id="@+id/tildelRolle"
@@ -29,7 +29,7 @@
             android:textColor="#000"
             android:textSize="18sp" />
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
             android:id="@+id/btnAssignUserTildel"
             android:text="Tildel"
             android:layout_gravity="right|center_vertical"

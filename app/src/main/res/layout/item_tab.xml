@@ -8,7 +8,7 @@
     android:gravity="center"
     android:layout_height="wrap_content">
 
-    <wm.com.danteater.customviews.WMImageView
+    <dk.danteater.danteater.customviews.WMImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:scaleType="centerInside"

@@ -12,7 +12,7 @@
         android:visibility="gone"
         android:background="@drawable/ic_music_selected" />
 
-    <wm.com.danteater.customviews.WMTextView
+    <dk.danteater.danteater.customviews.WMTextView
         android:id="@+id/readPlaySongCelltitle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -31,7 +31,7 @@
 
     </LinearLayout>-->
 
-    <wm.com.danteater.customviews.FullLengthListView
+    <dk.danteater.danteater.customviews.FullLengthListView
         android:id="@+id/listViewReadMusic"
         android:layout_width="match_parent"
         android:dividerHeight="1dp"

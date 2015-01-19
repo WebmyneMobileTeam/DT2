@@ -16,7 +16,7 @@ android:layout_gravity="center_horizontal"
 
         android:layout_height="60dp" />
 
-    <wm.com.danteater.customviews.WMTextView
+    <dk.danteater.danteater.customviews.WMTextView
         android:id="@+id/video_title"
         android:text="Title"
         android:gravity="center"

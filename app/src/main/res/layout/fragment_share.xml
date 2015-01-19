@@ -4,9 +4,9 @@
     android:background="@android:color/white"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="wm.com.danteater.tab_share.ShareFragment">
+    tools:context="dk.danteater.danteater.tab_share.ShareFragment">
 
-    <wm.com.danteater.customviews.SegmentedGroup
+    <dk.danteater.danteater.customviews.SegmentedGroup
         android:id="@+id/segmentShare"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
             android:text="Elever"
             style="@style/RadioButton" />
 
-    </wm.com.danteater.customviews.SegmentedGroup>
+    </dk.danteater.danteater.customviews.SegmentedGroup>
 
 
     <LinearLayout
@@ -41,7 +41,7 @@
         android:visibility="visible"
         android:orientation="vertical">
 
-    <wm.com.danteater.customviews.PagerSlidingTabStrip
+    <dk.danteater.danteater.customviews.PagerSlidingTabStrip
         android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="48dip"

@@ -7,7 +7,7 @@
     android:paddingBottom="8dp"
     android:layout_height="wrap_content">
 
-    <wm.com.danteater.customviews.WMTextView
+    <dk.danteater.danteater.customviews.WMTextView
         android:id="@+id/txtCircleChat"
         android:text="kf"
         android:layout_gravity="bottom"
@@ -18,7 +18,7 @@
         android:background="@drawable/circle_chat"
         android:textSize="14sp" />
 
-    <wm.com.danteater.customviews.WMTextView
+    <dk.danteater.danteater.customviews.WMTextView
         android:id="@+id/txtChatData"
         android:text="@string/hello_world"
         android:maxWidth="250dp"

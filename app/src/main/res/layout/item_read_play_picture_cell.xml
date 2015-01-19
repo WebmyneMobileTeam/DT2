@@ -16,7 +16,7 @@
         android:scaleType="centerInside" />
 
 
-    <wm.com.danteater.customviews.WMButton
+    <dk.danteater.danteater.customviews.WMButton
         android:id="@+id/readPlayPictureCellLoadImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
         android:background="@color/greenTheme"
         android:textColor="@android:color/white" />
 
-    <wm.com.danteater.customviews.WMButton
+    <dk.danteater.danteater.customviews.WMButton
         android:id="@+id/readPlayPictureCellSaveImage"
         android:layout_marginTop="@dimen/activity_margin"
         android:layout_width="match_parent"

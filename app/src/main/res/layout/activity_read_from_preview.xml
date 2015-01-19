@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#fff"
-    tools:context="wm.com.danteater.my_plays.ReadActivityFromPreview">
+    tools:context="dk.danteater.danteater.my_plays.ReadActivityFromPreview">
 
 
 
@@ -25,7 +25,7 @@
             android:layout_gravity="right|center_vertical"
             android:scaleType="centerInside" />
 
-        <wm.com.danteater.customviews.WMTextView
+        <dk.danteater.danteater.customviews.WMTextView
 
             android:paddingLeft="4dp"
             android:text="Du har stykket til gennemsyn.\nBestil til opførelse her."
