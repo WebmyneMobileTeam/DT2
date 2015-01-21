@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/normalText"
         android:textColor="@android:color/white"
-        android:text="Section"
+        android:text=""
         android:paddingLeft="16dp"
         android:paddingRight="4dp"
         android:textStyle="bold"
@@ -27,6 +27,7 @@
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:layout_height="match_parent">
+
         <dk.danteater.danteater.customviews.WMTextView
             android:visibility="gone"
             android:id="@+id/playPauseAll"
@@ -39,6 +40,7 @@
             android:text="Afspil alle"
 
           />
+
     <CheckBox
         android:visibility="gone"
         android:gravity="center_vertical|right"

@@ -17,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -250,16 +251,17 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
 
 
             final ImageView iv = new ImageView(getActivity());
-            iv.setScaleType(ImageView.ScaleType.FIT_XY);
-            iv.setImageResource(R.drawable.cameraadd);
-
+            iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            iv.setImageResource(R.drawable.cameraaddtwo);
+//            TextView txtPlaceHolder=new TextView(getActivity());
+//            txtPlaceHolder.setText("Del dine ideer");
 
         LinearLayout linearItem = new LinearLayout(getActivity());
         linearItem.setGravity(Gravity.CENTER);
         linearItem.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams ip = new LinearLayout.LayoutParams(HACK_WIDTH,HACK_HEIGHT);
         linearItem.addView(iv,ip);
-
+//        linearItem.addView(txtPlaceHolder,ip);
         gridInspiration.addView(linearItem, 0, layoutParams);
 
             registerForContextMenu(iv);

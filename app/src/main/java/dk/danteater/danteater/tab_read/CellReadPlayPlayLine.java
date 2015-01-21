@@ -224,6 +224,10 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
         if (showComments == true) {
 
             ArrayList<Comments> comments = playLine.commentsList;
+            for(int i=0;i<playLine.commentsList.size();i++){
+                Log.e("comments...",playLine.commentsList.get(i).isPrivate+"");
+                Log.e("comments...",playLine.commentsList.get(i).commentText+"");
+            }
 //            Log.e("SSSIIIEEEZZZEEE ",""+comments.size());
             ArrayList<Comments> finalComments = new ArrayList<Comments>();
 
@@ -246,7 +250,7 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
                 txt.setTypeface(null,Typeface.ITALIC);
                 ImageView img = (ImageView)vComment.findViewById(R.id.imgCommentCompose);
 
-                if(com.isPrivate){
+                if(com.isPrivate==true){
                     img.setImageResource(R.drawable.compose_green);
                 }else{
                     img.setImageResource(R.drawable.compose_yellow);
@@ -436,8 +440,6 @@ public class CellReadPlayPlayLine implements View.OnClickListener{
                         isprivate = false;
                     }else if(segmentedGroup.getCheckedRadioButtonId() == R.id.writeCommentPopupShareWithMe){
                         isprivate = true;
-                    }else{
-                        isprivate = false;
                     }
                     dialog.dismiss();
                     onTextLineUpdated.onCommentAdded(writeCommentPopupTextArea.getText().toString(),isprivate);

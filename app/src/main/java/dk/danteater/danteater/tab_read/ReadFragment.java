@@ -28,6 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
@@ -50,8 +51,12 @@ import org.apache.http.conn.scheme.SchemeRegistry;
 
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.SingleClientConnManager;
@@ -68,6 +73,8 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -177,14 +184,20 @@ public class ReadFragment extends Fragment {
     File fileDir;
     public static MediaPlayer mTextToSpeechPlayer;
     public MediaPlayer downloadedSoundPlayer;
-
-
+    public TextView txtSectionTile;
 
     public int nextLine=0;
     public int indexPostion=0;
 
     ArrayList<PlayLines> audioPlayLineList;
     ArrayList<RecordedAudio> recordedList;
+    View include_fakeHeader;
+    WMTextView hackPlayPauseAll;
+    WMTextView hackSectionTitle;
+    CheckBox hackCbShowMyData;
+    private int hackCount=0;
+
+
 
     public static ReadFragment newInstance(String param1, String param2) {
         ReadFragment fragment = new ReadFragment();
@@ -487,8 +500,148 @@ public class ReadFragment extends Fragment {
         // Inflate the layout for this fragment
         View convertView = inflater.inflate(R.layout.fragment_read, container, false);
         layout_gotoLine = (View)convertView.findViewById(R.id.layout_item_goto_line);
+        include_fakeHeader = (View)convertView.findViewById(R.id.include_fakeHeader);
+
+
+
+//        include_fakeHeader.setVisibility(View.GONE);
+        hackSectionTitle= (WMTextView)include_fakeHeader.findViewById(R.id.readPlaySectionName);
+
+        hackPlayPauseAll= (WMTextView)include_fakeHeader.findViewById(R.id.playPauseAll);
+        hackCbShowMyData= (CheckBox)include_fakeHeader.findViewById(R.id.cbShowMyData);
         listRead = (PinnedHeaderListView)convertView.findViewById(R.id.listViewRead);
-        listRead.setFastScrollEnabled(true);
+        hackCbShowMyData.setVisibility(View.GONE);
+
+        if(currentState == STATE_RECORD){
+
+            hackPlayPauseAll.setVisibility(View.VISIBLE);
+        } else {
+            hackPlayPauseAll.setVisibility(View.GONE);
+
+
+        }
+
+        if(isPupil && !(currentState==STATE_RECORD)) {
+            hackCbShowMyData.setVisibility(View.VISIBLE);
+        }
+        if(isplayPauseAudioclicked==true){
+            hackPlayPauseAll.setText("Pause");
+            hackPlayPauseAll.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_pause, 0, 0, 0);
+
+        } else {
+            hackPlayPauseAll.setText("Afspil alle");
+            hackPlayPauseAll.setCompoundDrawablesWithIntrinsicBounds( R.drawable.ic_play, 0, 0, 0);
+
+        }
+
+        hackCbShowMyData.setChecked(isHeaderChecked);
+
+        hackPlayPauseAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isplayPauseAudioclicked==false){
+                    hackPlayPauseAll.setText("Pause");
+                    hackPlayPauseAll.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_pause, 0, 0, 0);
+                    isplayPauseAudioclicked=true;
+
+                    for(int i=0;i<audioPlayLineList.size();i++){
+//                            Log.e("isSoundAvailable",audioPlayLineList.get(i).isSoundAvailable()+"");
+//                            Log.e("line number",(Integer.parseInt(audioPlayLineList.get(i).LineID.substring(audioPlayLineList.get(i).LineID.lastIndexOf("-") + 1))+""));
+                    }
+                    if(nextLine<audioPlayLineList.size()) {
+                        nextLine = (Integer.parseInt(audioPlayLineList.get(indexPostion).LineID.substring(audioPlayLineList.get(indexPostion).LineID.lastIndexOf("-") + 1)));
+
+                        listRead.setSelection(nextLine - mSubtractionCount);
+
+                        if (audioPlayLineList.get(indexPostion).isSoundAvailable() == true) {
+                            playUserAudio(audioPlayLineList.get(indexPostion), null, false, null);
+                        } else {
+                            downloadAndPlayRecordTextToSpeech(audioPlayLineList.get(indexPostion), null);
+                        }
+                    }
+
+
+
+
+
+
+
+//                        }
+                } else {
+                    hackPlayPauseAll.setText("Afspil alle");
+                    hackPlayPauseAll.setCompoundDrawablesWithIntrinsicBounds( R.drawable.ic_play, 0, 0, 0);
+                    isplayPauseAudioclicked=false;
+
+                    if(mTextToSpeechPlayer !=null && mTextToSpeechPlayer.isPlaying()){
+                        mTextToSpeechPlayer.stop();
+                    }
+                    if(downloadedSoundPlayer !=null && downloadedSoundPlayer.isPlaying()) {
+                        downloadedSoundPlayer.stop();
+                    }
+
+
+                }
+            }
+        });
+
+        hackCbShowMyData.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checkboxValue) {
+                if(checkboxValue==true){
+
+                    isHeaderChecked=true;
+                    if(currentState == STATE_RECORD) {
+
+                    } else {
+
+                        updatePlaySpecificData();
+                        readSectionedAdapter.notifyDataSetChanged();
+                    }
+                } else {
+                    isHeaderChecked=false;
+                    if(currentState == STATE_RECORD) {
+
+                    } else {
+                        updatePlaySpecificData();
+                        readSectionedAdapter.notifyDataSetChanged();
+                    }
+                }
+            }
+        });
+//        listRead.setFastScrollEnabled(true);
+        listRead.setOnShowHide(new PinnedHeaderListView.OnShowHide() {
+            @Override
+            public void onShow(String text)
+            {
+                include_fakeHeader.setVisibility(View.VISIBLE);
+
+                hackSectionTitle.setText(text);
+
+                if(hackCbShowMyData.isShown()) {
+                    hackCbShowMyData.setChecked(isHeaderChecked);
+                }
+
+
+            }
+
+            @Override
+            public void onHide(String text) {
+                include_fakeHeader.setVisibility(View.VISIBLE);
+
+                hackSectionTitle.setText(text);
+
+                if(hackCbShowMyData.isShown()) {
+                    hackCbShowMyData.setChecked(isHeaderChecked);
+                }
+            }
+
+
+
+
+        });
+
+
+
 
         edGotoLine = (WMEdittext)layout_gotoLine.findViewById(R.id.edGotoLine);
         txtGotoLine = (WMTextView)layout_gotoLine.findViewById(R.id.txtGotoLine);
@@ -512,7 +665,7 @@ public class ReadFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
+        hackCount=0;
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         txtGotoLine.setOnClickListener(new View.OnClickListener() {
@@ -1317,6 +1470,7 @@ public class ReadFragment extends Fragment {
                         }
                     }
 
+
                     holderReadPlayPlayLineCell.cellReadPlayPlayLine.setupForPlayLine(indexForFirstScene,section,position,playLine,currentState,mark22);
                     holderReadPlayPlayLineCell.cellReadPlayPlayLine.setOnTextLineUpdated(new CellReadPlayPlayLine.OnTextLineUpdated() {
 
@@ -1536,34 +1690,45 @@ public class ReadFragment extends Fragment {
             } else {
                 layout = (LinearLayout) convertView;
             }
+
+            if(hackCount==0){
+                hackSectionTitle.setText(marrPlaySections.get(0));
+                hackCount=hackCount+1;
+            }
+
             ((TextView) layout.findViewById(R.id.readPlaySectionName)).setText(marrPlaySections.get(section));
             cbShowMyData=(CheckBox) layout.findViewById(R.id.cbShowMyData);
             playPasueAll=(WMTextView) layout.findViewById(R.id.playPauseAll);
+            cbShowMyData.setVisibility(View.GONE);
+            playPasueAll.setVisibility(View.GONE);
+//            if(currentState == STATE_RECORD){
+//
+//                playPasueAll.setVisibility(View.VISIBLE);
+//            } else {
+//                playPasueAll.setVisibility(View.GONE);
+//
+//
+//            }
+//
+//
+//
+//            if(isPupil && !(currentState==STATE_RECORD)) {
+//                cbShowMyData.setVisibility(View.VISIBLE);
+//            }
+//            if(isplayPauseAudioclicked==true){
+//                playPasueAll.setText("Pause");
+//                playPasueAll.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_pause, 0, 0, 0);
+//
+//                hackPlayPauseAll.setText("Pause");
+//                hackPlayPauseAll.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_pause, 0, 0, 0);
+//            } else {
+//                playPasueAll.setText("Afspil alle");
+//                playPasueAll.setCompoundDrawablesWithIntrinsicBounds( R.drawable.ic_play, 0, 0, 0);
+//                hackPlayPauseAll.setText("Afspil alle");
+//                hackPlayPauseAll.setCompoundDrawablesWithIntrinsicBounds( R.drawable.ic_play, 0, 0, 0);
+//            }
 
-            if(currentState == STATE_RECORD){
-                cbShowMyData.setVisibility(View.GONE);
-                playPasueAll.setVisibility(View.VISIBLE);
-            } else {
-                playPasueAll.setVisibility(View.GONE);
-                cbShowMyData.setVisibility(View.VISIBLE);
-                cbShowMyData.setText("Vis kum mine replikker");
-            }
-            if(FragmentMyPlay.isPreview){
-                cbShowMyData.setVisibility(View.GONE);
-            }
-
-            if(isPupil && !(currentState==STATE_RECORD)) {
-                cbShowMyData.setVisibility(View.VISIBLE);
-            }
-            if(isplayPauseAudioclicked==true){
-                playPasueAll.setText("Pause");
-                playPasueAll.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_pause, 0, 0, 0);
-            } else {
-                playPasueAll.setText("Afspil alle");
-                playPasueAll.setCompoundDrawablesWithIntrinsicBounds( R.drawable.ic_play, 0, 0, 0);
-            }
-
-            cbShowMyData.setChecked(isHeaderChecked);
+//            cbShowMyData.setChecked(isHeaderChecked);
 
             playPasueAll.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1619,6 +1784,7 @@ public class ReadFragment extends Fragment {
                     if(checkboxValue==true){
 
                         isHeaderChecked=true;
+
                         if(currentState == STATE_RECORD) {
 
                         } else {
@@ -1628,6 +1794,7 @@ public class ReadFragment extends Fragment {
                         }
                     } else {
                         isHeaderChecked=false;
+
                         if(currentState == STATE_RECORD) {
 
                         } else {
@@ -1910,24 +2077,35 @@ public class ReadFragment extends Fragment {
                 text.append(line.currentText());
                 text.append(" ");
             }
-//            Log.e("text...",text+"");
+            Log.e("text...",text+"");
             String textValue=text.toString();
-            textValue.replaceAll("/?", "QMQM");
+//            textValue.replaceAll("/?", "QMQM");
             try {
 
+                String xmlstring = "Здравей' хора";
+                String utf8string = convertToUTF8(xmlstring);
+                for (int i = 0; i < utf8string.length(); ++i) {
+                    Log.e("new string", utf8string.charAt(i)+"");
 
-                textValue=new String(textValue.getBytes("UTF-8"));
+                }
+
+//                  textValue=new String(URLEncoder.encode(textValue, "UTF-8"));
+//                textValue=new String(textValue.getBytes("UTF-8"));
 //                textValue=new String(textValue.getBytes("ISO-8859-1"));
+//                textValue= new String(textValue.toString().getBytes("ISO-8859-1"),"US-ASCII");
+//                textValue= new String(textValue.toString().getBytes("US-ASCII"),"ISO-8859-1");
+                textValue= new String(textValue.toString().getBytes("UTF-8"),"ISO-8859-1");
+
 //                textValue=new String(textValue.getBytes("US-ASCII"));
 
-
-            } catch (UnsupportedEncodingException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-            textValue=textValue.replaceAll("/?", "");
-            textValue=textValue.replaceAll("QMQM", "?");
 
-//            Log.e("After decription value",textValue+"");
+//            textValue=textValue.replaceAll("/?", "");
+//            textValue=textValue.replaceAll("QMQM", "?");
+
+            Log.e("After decription value",textValue+"");
             final  JSONObject mainOBJ = new JSONObject();
 
             try {
@@ -1988,10 +2166,10 @@ public class ReadFragment extends Fragment {
                             HttpEntity entity = MultipartEntityBuilder.create()
                                     .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
                                     .setBoundary(boundary)
+
+                                    .setCharset(Charset.forName("UTF-8"))
                                     .addPart("body", new StringBody(mainOBJ.toString()))
                                     .build();
-
-
 
                             httppost.setEntity(entity);
                             try {
@@ -1999,14 +2177,10 @@ public class ReadFragment extends Fragment {
                                 BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
                                 responseString = reader.readLine();
 
-
                             } catch (Exception e) {
 
                                 e.printStackTrace();
                             }
-
-
-
 
                         }catch (Exception e){}
 
@@ -2016,7 +2190,6 @@ public class ReadFragment extends Fragment {
                     @Override
                     protected void onPostExecute(Void aVoid) {
                         super.onPostExecute(aVoid);
-
 
                         String url = "";
 //                        Log.e("Response for retreiving song TTF ", "" + responseString.toString());
@@ -2061,7 +2234,6 @@ public class ReadFragment extends Fragment {
             }
 
             @Override
-
             protected Void doInBackground(Void... voids) {
 
                 int count;
@@ -2101,8 +2273,6 @@ public class ReadFragment extends Fragment {
                 }
                 //TODO
                 playTextToSpeechFile(playLines,imgPlay);
-
-
             }
         }.execute();
 
@@ -2627,5 +2797,15 @@ public class ReadFragment extends Fragment {
 
         }
         updatePlayUsingMethodParams(methodParams.toString());
+    }
+
+    public static String convertToUTF8(String s) {
+        String out = null;
+        try {
+            out = new String(s.getBytes("UTF-8"), "ISO-8859-1");
+        } catch (java.io.UnsupportedEncodingException e) {
+            return null;
+        }
+        return out;
     }
 }

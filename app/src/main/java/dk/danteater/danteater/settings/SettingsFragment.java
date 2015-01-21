@@ -125,8 +125,13 @@ public class SettingsFragment extends Fragment {
         btnappshare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent sendIntent = new Intent();
 
-                getActivity().openContextMenu(v);
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, shareLink);
+                sendIntent.setType("text/plain");
+                startActivity(Intent.createChooser(sendIntent, "Del med"));
+//                getActivity().openContextMenu(v);
             }
         });
 

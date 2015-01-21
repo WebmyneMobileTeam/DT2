@@ -10,11 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import dk.danteater.danteater.R;
 import dk.danteater.danteater.circle_indicator.CirclePageIndicator;
 import dk.danteater.danteater.circle_indicator.PageIndicator;
 import dk.danteater.danteater.customviews.WMTextView;
+import dk.danteater.danteater.excercise.VideoPlay;
 import dk.danteater.danteater.my_plays.DrawerActivity;
 
 
@@ -36,7 +38,7 @@ public class GuideStartup extends Activity {
         btnStartUp=(WMTextView)findViewById(R.id.btnStartUp);
         btnSkip=(WMTextView)findViewById(R.id.btnSkip);
         mIndicator = (CirclePageIndicator)findViewById(R.id.guideIndicator);
-        int[]   guideImages={R.drawable.tutorial1,R.drawable.tutorial2,R.drawable.tutorial3};
+        int[]   guideImages={R.drawable.tutorial1,R.drawable.tutorial2,R.drawable.tutorial3,R.drawable.tutorial4};
         pagerAdapter= new GuideAdapter(this, guideImages);
         viewPager.setAdapter(pagerAdapter);
         mIndicator.setViewPager(viewPager);
@@ -51,7 +53,7 @@ public class GuideStartup extends Activity {
             public void onPageSelected(int i) {
                 currentPage=i;
 //                int item=viewPager.getCurrentItem();
-                if(currentPage==2) {
+                if(currentPage==3) {
                     btnStartUp.setVisibility(View.VISIBLE);
                     btnSkip.setVisibility(View.GONE);
                 } else {
@@ -59,7 +61,6 @@ public class GuideStartup extends Activity {
                     btnSkip.setVisibility(View.VISIBLE);
                 }
             }
-
 
             public final int getCurrentPage() {
                 return currentPage;
@@ -115,6 +116,14 @@ public class GuideStartup extends Activity {
             ImageView guideImage=new ImageView(context);
             guideImage.setImageResource(guideImages[position]);
             ((ViewPager) container).addView(guideImage, 0);
+            guideImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent ia = new Intent(GuideStartup.this, VideoPlay.class);
+                    ia.putExtra("video_path", R.raw.tutorial);
+                    startActivity(ia);
+                }
+            });
             return guideImage;
         }
 

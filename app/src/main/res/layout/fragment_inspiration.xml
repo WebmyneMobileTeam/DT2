@@ -45,12 +45,16 @@
             android:layout_weight="1">
 
             <dk.danteater.danteater.customviews.WMTextView
+                android:layout_margin="16dp"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:background="@color/apptheme_color"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Inspiration:"
+                android:text="Inspiration"
                 android:textSize="@dimen/normalText"
                 android:gravity="center_vertical"
-                android:paddingLeft="@dimen/activity_margin"
+                android:paddingLeft="4dp"
                 android:paddingRight="@dimen/activity_margin"
                 android:paddingTop="4dp"
                 android:paddingBottom="4dp"
@@ -78,12 +82,16 @@
             android:layout_weight="1">
 
             <dk.danteater.danteater.customviews.WMTextView
+                android:layout_margin="16dp"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:background="@color/apptheme_color"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Tips til instruktøren:"
+                android:text="Tips til instruktøren"
                 android:textSize="@dimen/normalText"
                 android:gravity="center_vertical"
-                android:paddingLeft="@dimen/activity_margin"
+                android:paddingLeft="4dp"
                 android:paddingRight="@dimen/activity_margin"
                 android:paddingTop="4dp"
                 android:paddingBottom="4dp"
@@ -107,12 +115,16 @@
             android:layout_weight="1">
 
             <dk.danteater.danteater.customviews.WMTextView
+                android:layout_margin="16dp"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:background="@color/apptheme_color"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Dramaøvelser til eleverne:"
+                android:text="Dramaøvelser til eleverne"
                 android:textSize="@dimen/normalText"
                 android:gravity="center_vertical"
-                android:paddingLeft="@dimen/activity_margin"
+                android:paddingLeft="4dp"
                 android:paddingRight="@dimen/activity_margin"
                 android:paddingTop="4dp"
                 android:paddingBottom="4dp"

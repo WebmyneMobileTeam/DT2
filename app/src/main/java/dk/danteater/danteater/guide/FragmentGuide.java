@@ -2,6 +2,7 @@ package dk.danteater.danteater.guide;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
@@ -14,7 +15,7 @@ import android.widget.ImageView;
 import dk.danteater.danteater.R;
 import dk.danteater.danteater.circle_indicator.CirclePageIndicator;
 import dk.danteater.danteater.circle_indicator.PageIndicator;
-
+import dk.danteater.danteater.excercise.VideoPlay;
 
 
 /**
@@ -56,7 +57,8 @@ public class FragmentGuide extends Fragment {
         View view=inflater.inflate(R.layout.fragment_guide, container, false);
         viewPager = (ViewPager) view.findViewById(R.id.guideSlider);
         mIndicator = (CirclePageIndicator)view.findViewById(R.id.guideIndicator);
-        int[]   guideImages={R.drawable.tutorial1,R.drawable.tutorial2,R.drawable.tutorial3};
+
+        int[]   guideImages={R.drawable.tutorial1,R.drawable.tutorial2,R.drawable.tutorial3,R.drawable.tutorial4};
         pagerAdapter= new GuideAdapter(getActivity(), guideImages);
         viewPager.setAdapter(pagerAdapter);
         mIndicator.setViewPager(viewPager);
@@ -90,6 +92,14 @@ public class FragmentGuide extends Fragment {
            ImageView guideImage=new ImageView(context);
             guideImage.setImageResource(guideImages[position]);
             ((ViewPager) container).addView(guideImage, 0);
+            guideImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent ia = new Intent(getActivity(), VideoPlay.class);
+                    ia.putExtra("video_path", R.raw.tutorial);
+                    startActivity(ia);
+                }
+            });
             return guideImage;
         }
 

@@ -69,7 +69,8 @@
 
             android:name=".excercise.VideoPlay"
             android:label="@string/title_activity_guide_startup"
-            android:screenOrientation="landscape" >
+
+             >
         </activity>
         <activity
             android:screenOrientation="portrait"

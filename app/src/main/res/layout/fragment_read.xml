@@ -3,28 +3,41 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    tools:context="dk.danteater.danteater.tab_read.ReadFragment">
-
-
+    tools:context="wm.com.danteater.tab_read.ReadFragment">
 
    <!-- <wm.com.danteater.customviews.HeaderListView
         android:id="@+id/listViewRead"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></wm.com.danteater.customviews.HeaderListView>-->
 
-    <dk.danteater.danteater.customviews.PinnedHeaderListView
-        android:id="@+id/listViewRead"
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:dividerHeight="1dp"
-        android:divider="#d1d1d1"
-        android:layout_height="match_parent"></dk.danteater.danteater.customviews.PinnedHeaderListView>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+
+            android:id="@+id/include_fakeHeader"
+            layout="@layout/item_read_play_section_view"></include>
+
+        <dk.danteater.danteater.customviews.PinnedHeaderListView
+            android:id="@+id/listViewRead"
+            android:layout_width="match_parent"
+            android:dividerHeight="1dp"
+            android:divider="#d1d1d1"
+            android:layout_height="match_parent"></dk.danteater.danteater.customviews.PinnedHeaderListView>
+
+
+
+    </LinearLayout>
+
 
 
     <include
         android:id="@+id/layout_item_goto_line"
         layout="@layout/item_goto_line"
         android:layout_width="wrap_content"
-
         android:layout_marginTop="-50dp"
         android:layout_height="wrap_content"
         android:layout_gravity="top|center_horizontal"

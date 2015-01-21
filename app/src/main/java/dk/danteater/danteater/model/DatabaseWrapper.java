@@ -1113,11 +1113,17 @@ public class DatabaseWrapper extends SQLiteOpenHelper{
                 commentModelObject.comment_id = ""+cursor.getInt(cursor.getColumnIndex("id_"));
                 commentModelObject.userName = cursor.getString(cursor.getColumnIndex("username_"));
                 commentModelObject.commentText = cursor.getString(cursor.getColumnIndex("text_"));
-                if(cursor.getInt(cursor.getColumnIndex("private_")) == 0){
-                    commentModelObject.isPrivate = false;
-                }else{
+//                commentModelObject.isPrivate=cursor.getString(cursor.getColumnIndex("private_"));
+                if(cursor.getString(cursor.getColumnIndex("private_")).equalsIgnoreCase("true")){
                     commentModelObject.isPrivate = true;
+                } else {
+                    commentModelObject.isPrivate = false;
                 }
+//                if(cursor.getInt(cursor.getColumnIndex("private_")) == 0){
+//                    commentModelObject.isPrivate = false;
+//                }else{
+//                    commentModelObject.isPrivate = true;
+//                }
 
                 playlineModelObject.commentsList.add(commentModelObject);
 
