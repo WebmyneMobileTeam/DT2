@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-public abstract class SectionedBaseAdapterForMusic extends BaseAdapter implements MusicSectionAdapter.PinnedSectionedHeaderAdapter {
+public abstract class SectionedBaseAdapterForMusic extends BaseAdapter implements MusicPinnedHeaderListView.PinnedSectionedHeaderAdapter {
 
     private static int HEADER_VIEW_TYPE = 0;
     private static int ITEM_VIEW_TYPE = 0;

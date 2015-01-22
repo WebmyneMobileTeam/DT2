@@ -6,6 +6,9 @@
     <dimen name="normalText">18sp</dimen>
     <dimen name="medium_text">16sp</dimen>
     <dimen name="small_text">12dp</dimen>
+    <integer name="image_width">160</integer>
+    <integer name="image_height">90</integer>
+
 
     <!-- navigation drawer dimentions -->
     <dimen name="circle_image_size_blue">36dp</dimen>

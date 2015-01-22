@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -56,6 +57,7 @@ import java.util.List;
 import dk.danteater.danteater.Play.Play;
 import dk.danteater.danteater.R;
 import dk.danteater.danteater.customviews.HUD;
+import dk.danteater.danteater.customviews.WMTextView;
 import dk.danteater.danteater.excercise.VideoPlay;
 import dk.danteater.danteater.login.User;
 import dk.danteater.danteater.model.CallWebService;
@@ -92,11 +94,11 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
     private ArrayList<Inspiration> inspirations;
     private LinearLayout linearInspirationView;
     private LinearLayout linearTeacherInspirations;
-
+    private WMTextView txtPupilSection,txtTeacherSection,txtInspirationSection;
     private User currentUser;
 
-    public static int HACK_WIDTH = 160;
-    public static int HACK_HEIGHT = 90;
+//    public static int HACK_WIDTH = 0;
+//    public static int HACK_HEIGHT = 0;
     public String badgeValue;
 //    private Menu menu;
     public static FragmnentInspiration newInstance(String param1, String param2) {
@@ -119,12 +121,20 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
         currentUser = complexPreferences.getObject("current_user", User.class);
         setHasOptionsMenu(true);
 
-
+//        HACK_WIDTH=getResources().getInteger(R.integer.image_width);
+//        HACK_HEIGHT=getResources().getInteger(R.integer.image_height);
+//        HACK_WIDTH=convertDpToPixel(HACK_WIDTH,getActivity());
+//        HACK_HEIGHT=convertDpToPixel(HACK_HEIGHT,getActivity());
+//        Log.e("width", HACK_WIDTH+"");
+//        Log.e("height", HACK_HEIGHT+"");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_inspiration, container, false);
+        txtPupilSection= (WMTextView)view.findViewById(R.id.txtPupilSection);
+        txtTeacherSection= (WMTextView)view.findViewById(R.id.txtPupilSection);
+        txtInspirationSection= (WMTextView)view.findViewById(R.id.txtPupilSection);
 
         gridTeachers = (GridLayout) view.findViewById(R.id.gridTeacherInspiration);
         gridPupils = (GridLayout) view.findViewById(R.id.gridPupilsInspiration);
@@ -176,8 +186,8 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
                 tv.setText(arrCaptionsTeachers[i]);
                 GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(new ViewGroup.MarginLayoutParams(w / 2, w / 4));
 
-                iv.getLayoutParams().width = HACK_WIDTH;
-                iv.getLayoutParams().height = HACK_HEIGHT;
+                iv.getLayoutParams().width = (int)(w/2.5);
+                iv.getLayoutParams().height = (int)(w/5.5);
                 iv.requestLayout();
 
                 vIT.setOnClickListener(new View.OnClickListener() {
@@ -195,9 +205,6 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
 
         }
 
-
-
-
             for (int k = 0; k < arrVideosPupils.length; k++) {
 
                 final int Another = k;
@@ -208,8 +215,8 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
                 tvn.setText(arrCaptionsPupils[k]);
                 GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(new ViewGroup.MarginLayoutParams(w / 2, w / 4));
 
-                ivn.getLayoutParams().width = HACK_WIDTH;
-                ivn.getLayoutParams().height = HACK_HEIGHT;
+                ivn.getLayoutParams().width = (int)(w/2.5);
+                ivn.getLayoutParams().height = (int)(w/5.5);
                 ivn.requestLayout();
 
 
@@ -253,13 +260,15 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
             final ImageView iv = new ImageView(getActivity());
             iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             iv.setImageResource(R.drawable.cameraaddtwo);
+
 //            TextView txtPlaceHolder=new TextView(getActivity());
 //            txtPlaceHolder.setText("Del dine ideer");
 
         LinearLayout linearItem = new LinearLayout(getActivity());
         linearItem.setGravity(Gravity.CENTER);
         linearItem.setOrientation(LinearLayout.VERTICAL);
-        LinearLayout.LayoutParams ip = new LinearLayout.LayoutParams(HACK_WIDTH,HACK_HEIGHT);
+
+        LinearLayout.LayoutParams ip = new LinearLayout.LayoutParams((int)(w/2.5),(int)(w/4.5));
         linearItem.addView(iv,ip);
 //        linearItem.addView(txtPlaceHolder,ip);
         gridInspiration.addView(linearItem, 0, layoutParams);
@@ -337,9 +346,8 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
             LinearLayout linearItem = new LinearLayout(getActivity());
             linearItem.setGravity(Gravity.CENTER);
             linearItem.setOrientation(LinearLayout.VERTICAL);
-            LinearLayout.LayoutParams ip = new LinearLayout.LayoutParams(HACK_WIDTH,HACK_HEIGHT);
+            LinearLayout.LayoutParams ip = new LinearLayout.LayoutParams((int)(w/2.5),(int)(w/4.5));
             linearItem.addView(ivi,ip);
-
 
             gridInspiration.addView(linearItem,layoutParams);
             if(inspirations.get(showInsp).ImageUrlSmall != null && !inspirations.get(showInsp).ImageUrlSmall.equalsIgnoreCase("")){
@@ -379,13 +387,18 @@ public class FragmnentInspiration extends Fragment implements ImageChooserListen
 
     }
 
+//    public static int convertDpToPixel(int dp, Context context){
+//        Resources resources = context.getResources();
+//        DisplayMetrics metrics = resources.getDisplayMetrics();
+//        float px = dp * (metrics.densityDpi / 160f);
+//        return (int)px;
+//    }
 
-
-    public static float convertPixelsToDp(float px, Context context){
+    public static int convertPixelsToDp(int px, Context context){
         Resources resources = context.getResources();
         DisplayMetrics metrics = resources.getDisplayMetrics();
         float dp = px / (metrics.densityDpi / 160f);
-        return dp;
+        return (int)dp;
     }
 
     @Override

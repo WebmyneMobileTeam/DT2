@@ -28,7 +28,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
@@ -51,12 +50,8 @@ import org.apache.http.conn.scheme.SchemeRegistry;
 
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.ByteArrayBody;
-import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.SingleClientConnManager;
@@ -70,10 +65,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -229,7 +222,7 @@ public class ReadFragment extends Fragment {
             @Override
             public void response(final String response) {
 
-//                Log.e("Response recorded audio  : ", "" + response);
+                Log.e("Response recorded audio  : ", "" + response);
                 Type listType = new TypeToken<ArrayList<RecordedAudio>>(){}.getType();
               recordedList = new GsonBuilder().create().fromJson(response, listType);
 
@@ -544,10 +537,10 @@ public class ReadFragment extends Fragment {
                     hackPlayPauseAll.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_pause, 0, 0, 0);
                     isplayPauseAudioclicked=true;
 
-                    for(int i=0;i<audioPlayLineList.size();i++){
-//                            Log.e("isSoundAvailable",audioPlayLineList.get(i).isSoundAvailable()+"");
-//                            Log.e("line number",(Integer.parseInt(audioPlayLineList.get(i).LineID.substring(audioPlayLineList.get(i).LineID.lastIndexOf("-") + 1))+""));
-                    }
+//                    for(int i=0;i<audioPlayLineList.size();i++){
+////                            Log.e("isSoundAvailable",audioPlayLineList.get(i).isSoundAvailable()+"");
+////                            Log.e("line number",(Integer.parseInt(audioPlayLineList.get(i).LineID.substring(audioPlayLineList.get(i).LineID.lastIndexOf("-") + 1))+""));
+//                    }
                     if(nextLine<audioPlayLineList.size()) {
                         nextLine = (Integer.parseInt(audioPlayLineList.get(indexPostion).LineID.substring(audioPlayLineList.get(indexPostion).LineID.lastIndexOf("-") + 1)));
 
@@ -608,7 +601,7 @@ public class ReadFragment extends Fragment {
                 }
             }
         });
-//        listRead.setFastScrollEnabled(true);
+        listRead.setFastScrollEnabled(true);
         listRead.setOnShowHide(new PinnedHeaderListView.OnShowHide() {
             @Override
             public void onShow(String text)
@@ -1530,7 +1523,7 @@ public class ReadFragment extends Fragment {
                         holderReadPlayNoteCell = (ViewHolder.HolderReadPlayNoteCell)convertView.getTag();
                     }
 
-                    holderReadPlayNoteCell.cellReadPlayNote.setupForPlayLine(indexForFirstScene,section,playLine,currentState);
+                    holderReadPlayNoteCell.cellReadPlayNote.setupForPlayLine(indexForFirstScene,section,playLine,currentState,marrPlaySections.get(section));
 
                     holderReadPlayNoteCell.cellReadPlayNote.setOnTextLineUpdated(new CellReadPlayNote.OnTextLineUpdated() {
                         @Override
@@ -1556,7 +1549,7 @@ public class ReadFragment extends Fragment {
                     }else{
                         holderReadPlayInfoCell = (ViewHolder.HolderReadPlayInfoCell)convertView.getTag();
                     }
-                    holderReadPlayInfoCell.cellReadPlayInfo.setupForPlayLine(indexForFirstScene,section,playLine,currentState);
+                    holderReadPlayInfoCell.cellReadPlayInfo.setupForPlayLine(indexForFirstScene,section,playLine,currentState,marrPlaySections.get(section));
 
                     break;
 

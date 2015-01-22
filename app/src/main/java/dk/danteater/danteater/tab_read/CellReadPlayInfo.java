@@ -32,7 +32,7 @@ public class CellReadPlayInfo {
         this.ctx = context;
     }
 
-    public void setupForPlayLine(int indexForFirstScene,int section,PlayLines playline,int current_state){
+    public void setupForPlayLine(int indexForFirstScene,int section,PlayLines playline,int current_state, String sectionName){
 
         tvInfo.setText("");
 
@@ -44,7 +44,9 @@ public class CellReadPlayInfo {
             convertView.setBackgroundColor(ctx.getResources().getColor(R.color.read_play_cell));
         }
 
-
+//        if((current_state == STATE_RECORD) && !(sectionName.contains("scene") || sectionName.contains("akt"))){
+//            convertView.setBackgroundColor(ctx.getResources().getColor(R.color.read_play_cell));
+//        }
 
 
         ArrayList<TextLines> textLines = playline.textLinesList;

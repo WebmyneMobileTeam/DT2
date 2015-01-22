@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -72,7 +73,7 @@ public class CellReadPlayNote implements View.OnClickListener{
         this.convertView = view;
     }
 
-    public void setupForPlayLine(int firstIndex,int section,PlayLines playline,int current_state){
+    public void setupForPlayLine(int firstIndex,int section,PlayLines playline,int current_state, String sectionName){
         this.pl = playline;
 
 
@@ -115,6 +116,10 @@ public class CellReadPlayNote implements View.OnClickListener{
         if((section<firstIndex-1 || section==0) && !(current_state == STATE_RECORD)){
             convertView.setBackgroundColor(ctx.getResources().getColor(R.color.read_play_cell));
         }
+
+//        if((current_state == STATE_RECORD) && !(sectionName.contains("scene") || sectionName.contains("akt"))){
+//            convertView.setBackgroundColor(ctx.getResources().getColor(R.color.read_play_cell));
+//        }
 
         if(user.checkPupil(user.getRoles())){
             btnMenu.setVisibility(View.INVISIBLE);

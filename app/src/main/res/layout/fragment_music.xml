@@ -5,13 +5,13 @@
     android:background="@android:color/white"
     tools:context="dk.danteater.danteater.tab_music.MusicFragment">
 
-    <dk.danteater.danteater.customviews.PinnedHeaderListView
+    <dk.danteater.danteater.customviews.MusicPinnedHeaderListView
         android:id="@+id/listViewMusic"
         android:layout_width="match_parent"
         android:dividerHeight="1dp"
         android:divider="#d1d1d1"
         android:layout_height="match_parent">
-        </dk.danteater.danteater.customviews.PinnedHeaderListView>
+        </dk.danteater.danteater.customviews.MusicPinnedHeaderListView>
 
 
 </FrameLayout>

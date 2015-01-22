@@ -22,13 +22,53 @@
                 android:layout_height="match_parent" >
             </WebView>
 
-            <GridLayout
-                android:useDefaultMargins="true"
-                android:alignmentMode="alignBounds"
-                android:columnCount="2"
-                android:id="@+id/gridInspiration"
+
+
+            <LinearLayout
+
+                android:id="@+id/linearInspirationView"
+                android:background="@android:color/white"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"></GridLayout>
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1">
+
+                <dk.danteater.danteater.customviews.WMTextView
+                    android:id="@+id/txtInspirationSection"
+                    android:layout_margin="@dimen/activity_margin"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold"
+                    android:background="@color/apptheme_color"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="lærer til lærer inspiration"
+                    android:textSize="@dimen/normalText"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="@dimen/activity_margin"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    />
+
+
+                <GridLayout
+
+
+                    android:columnCount="2"
+                    android:id="@+id/gridInspiration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"></GridLayout>
+
+
+            </LinearLayout>
+
+            <!--<GridLayout-->
+                <!--android:useDefaultMargins="true"-->
+                <!--android:alignmentMode="alignBounds"-->
+                <!--android:columnCount="2"-->
+                <!--android:id="@+id/gridInspiration"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"></GridLayout>-->
 
 
 
@@ -72,8 +112,6 @@
             android:layout_marginRight="8dp"
             android:layout_gravity="right|center_vertical"
             android:scaleType="centerInside" />
-
-
 
     </RelativeLayout>
 </LinearLayout>

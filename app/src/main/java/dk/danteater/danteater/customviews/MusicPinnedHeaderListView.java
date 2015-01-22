@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.*;
 import android.widget.AbsListView.OnScrollListener;
 
-public class MusicSectionAdapter extends ListView implements OnScrollListener {
+public class MusicPinnedHeaderListView extends ListView implements OnScrollListener {
 
     private OnScrollListener mOnScrollListener;
 
@@ -35,17 +35,17 @@ public class MusicSectionAdapter extends ListView implements OnScrollListener {
     private int mWidthMode;
     private int mHeightMode;
 
-    public MusicSectionAdapter(Context context) {
+    public MusicPinnedHeaderListView(Context context) {
         super(context);
         super.setOnScrollListener(this);
     }
 
-    public MusicSectionAdapter(Context context, AttributeSet attrs) {
+    public MusicPinnedHeaderListView(Context context, AttributeSet attrs) {
         super(context, attrs);
         super.setOnScrollListener(this);
     }
 
-    public MusicSectionAdapter(Context context, AttributeSet attrs, int defStyle) {
+    public MusicPinnedHeaderListView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         super.setOnScrollListener(this);
     }
@@ -179,12 +179,12 @@ public class MusicSectionAdapter extends ListView implements OnScrollListener {
     public static abstract class OnItemClickListener implements AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int rawPosition, long id) {
-            SectionedBaseAdapter adapter;
+            SectionedBaseAdapterForMusic adapter;
             if (adapterView.getAdapter().getClass().equals(HeaderViewListAdapter.class)) {
                 HeaderViewListAdapter wrapperAdapter = (HeaderViewListAdapter) adapterView.getAdapter();
-                adapter = (SectionedBaseAdapter) wrapperAdapter.getWrappedAdapter();
+                adapter = (SectionedBaseAdapterForMusic) wrapperAdapter.getWrappedAdapter();
             } else {
-                adapter = (SectionedBaseAdapter) adapterView.getAdapter();
+                adapter = (SectionedBaseAdapterForMusic) adapterView.getAdapter();
             }
             int section = adapter.getSectionForPosition(rawPosition);
             int position = adapter.getPositionInSectionForPosition(rawPosition);

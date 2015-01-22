@@ -4,143 +4,148 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-<FrameLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="dk.danteater.danteater.excercise.FragmentExcerciseForTeacher">
+    <FrameLayout
 
-    <LinearLayout
-        android:id="@+id/labelView"
-        android:visibility="gone"
-        android:orientation="vertical"
-        android:layout_gravity="center"
-        android:layout_width="@dimen/inspiration_coming_label_width"
-        android:background="@color/apptheme_color"
-        android:layout_height="wrap_content">
-
-        <dk.danteater.danteater.customviews.WMTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Inspiration er på vej. Vi ser frem til at modtage nogle kreative indslag og billeder fra dig."
-            android:textSize="@dimen/normalText"
-            android:textColor="@android:color/white"
-            android:gravity="center"
-            android:layout_margin="@dimen/activity_margin" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/teacherView"
-        android:visibility="visible"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="match_parent"
+        tools:context="dk.danteater.danteater.excercise.FragmentExcerciseForTeacher">
 
         <LinearLayout
-            android:id="@+id/linearInspirationView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:id="@+id/labelView"
+            android:visibility="gone"
             android:orientation="vertical"
-            android:layout_weight="1">
+            android:layout_gravity="center"
+            android:layout_width="@dimen/inspiration_coming_label_width"
+            android:background="@color/apptheme_color"
+            android:layout_height="wrap_content">
 
             <dk.danteater.danteater.customviews.WMTextView
-                android:layout_margin="16dp"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"
-                android:background="@color/apptheme_color"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Inspiration"
+                android:text="Inspiration er på vej. Vi ser frem til at modtage nogle kreative indslag og billeder fra dig."
                 android:textSize="@dimen/normalText"
-                android:gravity="center_vertical"
-                android:paddingLeft="4dp"
-                android:paddingRight="@dimen/activity_margin"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
-                />
-
-
-            <GridLayout
-
-
-                android:columnCount="2"
-                android:id="@+id/gridInspiration"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"></GridLayout>
-
-
-        </LinearLayout>
-
-
-        <!---->
-        <LinearLayout
-            android:id="@+id/linearTeacherInspirations"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1">
-
-            <dk.danteater.danteater.customviews.WMTextView
-                android:layout_margin="16dp"
                 android:textColor="@android:color/white"
-                android:textStyle="bold"
-                android:background="@color/apptheme_color"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Tips til instruktøren"
-                android:textSize="@dimen/normalText"
-                android:gravity="center_vertical"
-                android:paddingLeft="4dp"
-                android:paddingRight="@dimen/activity_margin"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
-                />
-
-
-            <GridLayout
-
-                android:columnCount="2"
-                android:id="@+id/gridTeacherInspiration"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"></GridLayout>
-
+                android:gravity="center"
+                android:layout_margin="@dimen/activity_margin" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:id="@+id/teacherView"
+            android:visibility="visible"
             android:orientation="vertical"
-            android:layout_weight="1">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-            <dk.danteater.danteater.customviews.WMTextView
-                android:layout_margin="16dp"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"
-                android:background="@color/apptheme_color"
+
+            <LinearLayout
+
+                android:id="@+id/linearInspirationView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Dramaøvelser til eleverne"
-                android:textSize="@dimen/normalText"
-                android:gravity="center_vertical"
-                android:paddingLeft="4dp"
-                android:paddingRight="@dimen/activity_margin"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
-                />
+                android:orientation="vertical"
+                android:layout_weight="1">
 
-            <GridLayout
-                android:columnCount="2"
-                android:id="@+id/gridPupilsInspiration"
+                <dk.danteater.danteater.customviews.WMTextView
+                    android:id="@+id/txtInspirationSection"
+                    android:layout_margin="@dimen/activity_margin"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold"
+                    android:background="@color/apptheme_color"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="lærer til lærer inspiration"
+                    android:textSize="@dimen/normalText"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="@dimen/activity_margin"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    />
+
+
+                <GridLayout
+
+
+                    android:columnCount="2"
+                    android:id="@+id/gridInspiration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"></GridLayout>
+
+
+            </LinearLayout>
+
+
+            <!---->
+            <LinearLayout
+                android:id="@+id/linearTeacherInspirations"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1">
+
+                <dk.danteater.danteater.customviews.WMTextView
+                    android:id="@+id/txtTeacherSection"
+                    android:layout_margin="@dimen/activity_margin"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold"
+                    android:background="@color/apptheme_color"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tips til instruktøren"
+                    android:textSize="@dimen/normalText"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="@dimen/activity_margin"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    />
+
+
+                <GridLayout
+
+                    android:columnCount="2"
+                    android:id="@+id/gridTeacherInspiration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"></GridLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1">
+
+                <dk.danteater.danteater.customviews.WMTextView
+                    android:id="@+id/txtPupilSection"
+            android:layout_margin="@dimen/activity_margin"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold"
+                    android:background="@color/apptheme_color"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Dramaøvelser til eleverne"
+                    android:textSize="@dimen/normalText"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="@dimen/activity_margin"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    />
+
+                <GridLayout
+                    android:columnCount="2"
+                    android:id="@+id/gridPupilsInspiration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
                 </GridLayout>
 
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
 
-</FrameLayout>
+    </FrameLayout>
 
 </ScrollView>

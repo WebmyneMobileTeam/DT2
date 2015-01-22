@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 
@@ -89,23 +90,24 @@ public class InfoFragment extends Fragment {
         super.onResume();
         ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(getActivity()).build();
         ImageLoader.getInstance().init(configuration);
-        showInspirations();
+//        showInspirations();
+        fetchAndDisplayInspirations();
+
     }
 
-    private void showInspirations() {
 
-
+    public void fetchAndDisplayInspirations() {
 
         inspirations = new ArrayList<Inspiration>();
         inspirations.clear();
-        gridInspiration.removeAllViews();
 
+        gridInspiration.removeAllViews();
 
         final HUD dialog = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
         dialog.title("Henter inspirationer");
         dialog.show();
 
-
+//        Log.e("Order ID ",selectedPlay.PlayId);
         new CallWebService("http://api.danteater.dk/api/Inspiration/"+beanSearch.PlayId,CallWebService.TYPE_JSONARRAY) {
 
             @Override
@@ -117,8 +119,8 @@ public class InfoFragment extends Fragment {
                 inspirations = new GsonBuilder().create().fromJson(response,listType);
                 dialog.dismiss();
                 fillInspirations();
-            }
 
+            }
             @Override
             public void error(VolleyError error) {
                 error.printStackTrace();
@@ -126,13 +128,6 @@ public class InfoFragment extends Fragment {
 
             }
         }.start();
-
-
-
-
-
-
-
 
     }
 
@@ -144,14 +139,23 @@ public class InfoFragment extends Fragment {
         for(int i=0;i<inspirations.size();i++){
 
             final int showInsp = i;
-            GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(new ViewGroup.MarginLayoutParams(w / 2, w / 4));
+            GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(new ViewGroup.MarginLayoutParams(w /2, w / 4));
+
             layoutParams.setGravity(Gravity.CENTER);
             final ImageView ivi = new ImageView(getActivity());
-            ivi.setPadding((int)convertPixelsToDp(32,getActivity()),(int)convertPixelsToDp(16,getActivity()),(int)convertPixelsToDp(32,getActivity()),(int)convertPixelsToDp(16,getActivity()));
-//            ivi.setScaleType(ImageView.ScaleType.FIT_XY);
-//            ivi.setImageResource(R.drawable.camerax);
-            gridInspiration.addView(ivi,layoutParams);
 
+//            ivi.setImageResource(R.drawable.camerax);
+//            ivi.setPadding((int)convertPixelsToDp(32,getActivity()),(int)convertPixelsToDp(16,getActivity()),(int)convertPixelsToDp(32,getActivity()),(int)convertPixelsToDp(16,getActivity()));
+            ivi.requestLayout();
+            ivi.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+            LinearLayout linearItem = new LinearLayout(getActivity());
+            linearItem.setGravity(Gravity.CENTER);
+            linearItem.setOrientation(LinearLayout.VERTICAL);
+            LinearLayout.LayoutParams ip = new LinearLayout.LayoutParams((int)(w/2.5),(int)(w/4.5));
+            linearItem.addView(ivi,ip);
+
+            gridInspiration.addView(linearItem,layoutParams);
             if(inspirations.get(showInsp).ImageUrlSmall != null && !inspirations.get(showInsp).ImageUrlSmall.equalsIgnoreCase("")){
 
 //                ImageLoader.getInstance().loadImage(inspirations.get(showInsp).ImageUrlSmall
@@ -164,10 +168,14 @@ public class InfoFragment extends Fragment {
 //                    }
 //                });
 
+
                 Picasso.with(getActivity())
                         .load(inspirations.get(showInsp).ImageUrlSmall)
                         .placeholder(R.drawable.camerax)
-                        .fit()
+//                        .centerCrop()
+//                        .resize(175, 95)
+                                // optional
+                                // optional
                         .into(ivi);
             }
 
@@ -179,16 +187,102 @@ public class InfoFragment extends Fragment {
                     inspView.setTypeView();
                     inspView.setupExistingInspiration(inspirations.get(showInsp));
                     inspView.show();
-
-
-
-
                 }
             });
         }
 
-
     }
+
+//    private void showInspirations() {
+//
+//
+//
+//        inspirations = new ArrayList<Inspiration>();
+//        inspirations.clear();
+//        gridInspiration.removeAllViews();
+//
+//
+//        final HUD dialog = new HUD(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
+//        dialog.title("Henter inspirationer");
+//        dialog.show();
+//
+//
+//        new CallWebService("http://api.danteater.dk/api/Inspiration/"+beanSearch.PlayId,CallWebService.TYPE_JSONARRAY) {
+//
+//            @Override
+//            public void response(String response) {
+//
+////                Log.e("Response from inspiration ",response);
+//
+//                Type listType = new TypeToken<List<Inspiration>>() {}.getType();
+//                inspirations = new GsonBuilder().create().fromJson(response,listType);
+//                dialog.dismiss();
+//                fillInspirations();
+//            }
+//
+//            @Override
+//            public void error(VolleyError error) {
+//                error.printStackTrace();
+//                dialog.dismiss();
+//
+//            }
+//        }.start();
+//
+//    }
+
+//    private void fillInspirations() {
+//
+//
+//        int w = getResources().getDisplayMetrics().widthPixels;
+//
+//        for(int i=0;i<inspirations.size();i++){
+//
+//            final int showInsp = i;
+//            GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(new ViewGroup.MarginLayoutParams(w / 2, w / 4));
+//            layoutParams.setGravity(Gravity.CENTER);
+//            final ImageView ivi = new ImageView(getActivity());
+//            ivi.setPadding((int)convertPixelsToDp(32,getActivity()),(int)convertPixelsToDp(16,getActivity()),(int)convertPixelsToDp(32,getActivity()),(int)convertPixelsToDp(16,getActivity()));
+////            ivi.setScaleType(ImageView.ScaleType.FIT_XY);
+////            ivi.setImageResource(R.drawable.camerax);
+//            gridInspiration.addView(ivi,layoutParams);
+//
+//            if(inspirations.get(showInsp).ImageUrlSmall != null && !inspirations.get(showInsp).ImageUrlSmall.equalsIgnoreCase("")){
+//
+////                ImageLoader.getInstance().loadImage(inspirations.get(showInsp).ImageUrlSmall
+////                        ,new SimpleImageLoadingListener() {
+////                    @Override
+////                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+////
+////                        ivi.setImageBitmap(loadedImage);
+////
+////                    }
+////                });
+//
+//                Picasso.with(getActivity())
+//                        .load(inspirations.get(showInsp).ImageUrlSmall)
+//                        .placeholder(R.drawable.camerax)
+//                        .fit()
+//                        .into(ivi);
+//            }
+//
+//            ivi.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//
+//                    InspirationDetailsView inspView = new InspirationDetailsView(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
+//                    inspView.setTypeView();
+//                    inspView.setupExistingInspiration(inspirations.get(showInsp));
+//                    inspView.show();
+//
+//
+//
+//
+//                }
+//            });
+//        }
+//
+//
+//    }
 
     public static float convertPixelsToDp(float px, Context context){
         Resources resources = context.getResources();

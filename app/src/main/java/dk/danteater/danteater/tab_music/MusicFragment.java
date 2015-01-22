@@ -38,8 +38,9 @@ import dk.danteater.danteater.Play.PlayLines;
 import dk.danteater.danteater.Play.SongFiles;
 import dk.danteater.danteater.R;
 import dk.danteater.danteater.customviews.HUD;
-import dk.danteater.danteater.customviews.PinnedHeaderListView;
-import dk.danteater.danteater.customviews.SectionedBaseAdapter;
+
+import dk.danteater.danteater.customviews.MusicPinnedHeaderListView;
+import dk.danteater.danteater.customviews.SectionedBaseAdapterForMusic;
 import dk.danteater.danteater.customviews.WMTextView;
 import dk.danteater.danteater.model.ComplexPreferences;
 import dk.danteater.danteater.tab_read.ViewHolder;
@@ -60,7 +61,7 @@ public class MusicFragment extends Fragment {
     private ArrayList<String> marrSectionTitles=new ArrayList<String>();
     private ArrayList<ArrayList<SongFiles>> marrSectionsWithContent=new ArrayList<ArrayList<SongFiles>>();
     private ArrayList<SongFiles> marrSongFilesMP3=new ArrayList<SongFiles>();
-    public PinnedHeaderListView listMusic;
+    public MusicPinnedHeaderListView listMusic;
     private HUD dialog;
     public static int MP3_FILE = 0;
     public static int PDF_FILE = 1;
@@ -140,7 +141,7 @@ public class MusicFragment extends Fragment {
         txtNoMusic=(TextView)convertView.findViewById(R.id.txtNoMusic);
         txtDownloadAllMusic=(WMTextView)listHeaderView.findViewById(R.id.txtDownloadAllMusic);
         imgDownloadAllMusic=(ImageView)listHeaderView.findViewById(R.id.imgDownloadAllMusic);
-        listMusic = (PinnedHeaderListView)convertView.findViewById(R.id.listViewMusic);
+        listMusic = (MusicPinnedHeaderListView)convertView.findViewById(R.id.listViewMusic);
         listMusic.addHeaderView(listHeaderView);
         listMusic.setAdapter(musicSectionedAdapter);
         imgDownloadAllMusic.setOnClickListener(new View.OnClickListener() {
@@ -221,7 +222,7 @@ public class MusicFragment extends Fragment {
         return convertView;
     }
 
-    public class MusicSectionedAdapter extends SectionedBaseAdapter {
+    public class MusicSectionedAdapter extends SectionedBaseAdapterForMusic {
 
         private LayoutInflater mInflater;
 
